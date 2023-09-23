@@ -42,8 +42,8 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class CheatCommand extends BaseCommand {
 
-    public CheatCommand() {
-        super("cheat", ADMIN_PERMISSION, false, false);
+    public CheatCommand(String commandName, boolean allowConsole) {
+        super(commandName, ADMIN_PERMISSION, allowConsole, false);
     }
 
     @Override
@@ -53,14 +53,37 @@ public class CheatCommand extends BaseCommand {
             return true;
         }
 
-        if (args.size() >= 1) {
+        int offset = isConsoleCommand() ? 1 : 0;
+
+        Game game;
+        Player defaultPlayer;
+        if (offset == 1) {
+            if (args.isEmpty()) {
+                sender.sendMessage(i18n("unknown_usage"));
+                return true;
+            }
+
+            game = Main.getGame(args.get(0));
+
+            if (game == null) {
+                sender.sendMessage(i18n("no_arena_found"));
+                return true;
+            }
+
+            defaultPlayer = null;
+        } else {
             Player player = (Player) sender;
             if (!Main.isPlayerInGame(player)) {
                 sender.sendMessage(i18n("you_arent_in_game"));
                 return true;
             }
-            Game game = Main.getPlayerGameProfile(player).getGame();
-            if (args.get(0).equalsIgnoreCase("startemptygame")) {
+            game = Main.getPlayerGameProfile(player).getGame();
+            defaultPlayer = player;
+        }
+
+
+        if (args.size() >= offset + 1) {
+            if (args.get(offset).equalsIgnoreCase("startemptygame") && offset != 1) { // not allowed for console
                 if (game.getStatus() == GameStatus.WAITING) {
                     game.forceGameToStart = true;
                     sender.sendMessage(i18n("game_forced"));
@@ -70,7 +93,7 @@ public class CheatCommand extends BaseCommand {
                 return true;
             }
 
-            switch (args.get(0).toLowerCase()) {
+            switch (args.get(offset).toLowerCase()) {
                 case "give":
                     {
                         if (game.getStatus() != GameStatus.RUNNING) {
@@ -78,29 +101,32 @@ public class CheatCommand extends BaseCommand {
                             return true;
                         }
 
-                        if (args.size() < 2) {
+                        if (args.size() < offset + 2) {
                             sender.sendMessage(i18n("unknown_usage"));
                             return true;
                         }
-                        String resource = args.get(1);
+                        String resource = args.get(offset + 1);
                         ItemSpawnerType type = Main.getSpawnerType(resource);
                         if (type == null) {
                             sender.sendMessage(i18n("admin_command_invalid_spawner_type"));
                             return true;
                         }
-                        int stack = 1;
-                        if (args.size() > 2) {
+                        int stack = offset + 1;
+                        if (args.size() > offset + 2) {
                             try {
-                                stack = Integer.parseInt(args.get(2));
+                                stack = Integer.parseInt(args.get(offset + 2));
                             } catch (Throwable ignored) {}
                         }
-                        Player player1 = player;
-                        if (args.size() > 3) {
-                            player1 = Bukkit.getPlayer(args.get(3));
+                        Player player1 = defaultPlayer;
+                        if (args.size() > offset + 3) {
+                            player1 = Bukkit.getPlayer(args.get(offset + 3));
                             if (player1 == null || !game.isPlayerInAnyTeam(player1)) {
                                 sender.sendMessage(i18n("cheat_invalid_player"));
                                 return true;
                             }
+                        } else if (defaultPlayer == null) {
+                            sender.sendMessage(i18n("unknown_usage"));
+                            return true;
                         }
                         GamePlayer gamePlayer = Main.getPlayerGameProfile(player1);
                         if (gamePlayer.isSpectator) {
@@ -120,13 +146,16 @@ public class CheatCommand extends BaseCommand {
                             return true;
                         }
 
-                        Player player1 = player;
-                        if (args.size() > 1) {
-                            player1 = Bukkit.getPlayer(args.get(1));
+                        Player player1 = defaultPlayer;
+                        if (args.size() > offset + 1) {
+                            player1 = Bukkit.getPlayer(args.get(offset + 1));
                             if (player1 == null || !game.isPlayerInAnyTeam(player1)) {
                                 sender.sendMessage(i18n("cheat_invalid_player"));
                                 return true;
                             }
+                        } else if (defaultPlayer == null) {
+                            sender.sendMessage(i18n("unknown_usage"));
+                            return true;
                         }
                         GamePlayer gamePlayer = Main.getPlayerGameProfile(player1);
                         if (gamePlayer.isSpectator) {
@@ -148,11 +177,11 @@ public class CheatCommand extends BaseCommand {
                             return true;
                         }
 
-                        if (args.size() < 2) {
+                        if (args.size() < offset + 2) {
                             sender.sendMessage(i18n("unknown_usage"));
                             return true;
                         }
-                        String name = args.get(1);
+                        String name = args.get(offset + 1);
                         Team team1 = game.getTeamFromName(name);
                         if (team1 == null) {
                             sender.sendMessage(i18n("admin_command_team_is_not_exists"));
@@ -192,8 +221,13 @@ public class CheatCommand extends BaseCommand {
                     break;
                 case "jointeam":
                     {
-                        if (args.size() >= 2) {
-                            String name = args.get(1);
+                        if (defaultPlayer == null) { // does not currently work with console
+                            sender.sendMessage(i18n("cheat_please_provide_valid_cheat_type"));
+                            return true;
+                        }
+
+                        if (args.size() >= offset + 2) {
+                            String name = args.get(offset + 1);
                             Team team1 = game.getTeamFromName(name);
                             if (team1 == null) {
                                 sender.sendMessage(i18n("admin_command_team_is_not_exists"));
@@ -201,16 +235,16 @@ public class CheatCommand extends BaseCommand {
                             }
 
                             if (game.getStatus() == GameStatus.WAITING) {
-                                game.selectPlayerTeam(player, team1, true, true, false);
+                                game.selectPlayerTeam(defaultPlayer, team1, true, true, false);
                             } else {
                                 if (game.getCurrentTeamFromTeam(team1) == null) {
                                     sender.sendMessage(i18n("team_not_in_game").replace("%name%", name));
                                     return true;
                                 }
 
-                                game.selectPlayerTeam(player, team1, true, false, true);
+                                game.selectPlayerTeam(defaultPlayer, team1, true, false, true);
 
-                                GamePlayer gP = Main.getPlayerGameProfile(player);
+                                GamePlayer gP = Main.getPlayerGameProfile(defaultPlayer);
                                 CurrentTeam team = game.getPlayerTeam(gP);
                                 if (team != null) {
                                     if (gP.isSpectator) {
@@ -221,7 +255,7 @@ public class CheatCommand extends BaseCommand {
                                 }
                             }
                         } else {
-                            GamePlayer gP = Main.getPlayerGameProfile(player);
+                            GamePlayer gP = Main.getPlayerGameProfile(defaultPlayer);
                             if (game.getStatus() == GameStatus.WAITING) {
                                 game.joinRandomTeam(gP, true, true, false);
                             } else {
@@ -254,30 +288,47 @@ public class CheatCommand extends BaseCommand {
             return;
         }
 
-        if (args.size() == 1) {
-            completion.addAll(Arrays.asList("give", "kill", "startemptygame", "destroybed", "destroyallbeds", "jointeam"));
+        int offset = isConsoleCommand() ? 1 : 0;
+
+        if (args.size() == 1 && offset == 1) {
+            completion.addAll(Main.getGameNames());
+            return;
         }
-        if (Main.isPlayerInGame((Player) sender)) {
-            if (args.size() > 1 && args.get(0).equals("give")) {
-                GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
-                if (args.size() == 2) {
+
+        if (args.size() == offset + 1) {
+            if (offset == 1) {
+                completion.addAll(Arrays.asList("give", "kill", "destroybed", "destroyallbeds"));
+            } else {
+                completion.addAll(Arrays.asList("give", "kill", "startemptygame", "destroybed", "destroyallbeds", "jointeam"));
+            }
+            return;
+        }
+
+        Game game;
+        if (offset == 1) {
+            game = Main.getGame(args.get(0));
+        } else {
+            game = (Game) Main.getInstance().getGameOfPlayer((Player) sender);
+        }
+
+        if (game != null) {
+            if (args.size() > offset + 1 && args.get(offset).equals("give")) {
+                if (args.size() == offset + 2) {
                     completion.addAll(Main.getAllSpawnerTypes());
-                } else if (args.size() == 3) {
+                } else if (args.size() == offset + 3) {
                     completion.addAll(Arrays.asList("1", "2", "4", "8", "16", "32", "64"));
-                } else if (args.size() == 4) {
-                    completion.addAll(gPlayer.getGame().getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
+                } else if (args.size() == offset + 4) {
+                    completion.addAll(game.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
                 }
             }
-            if (args.size() > 1 && args.get(0).equals("kill")) {
-                GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
-                if (args.size() == 2) {
-                    completion.addAll(gPlayer.getGame().getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
+            if (args.size() > offset + 1 && args.get(offset).equals("kill")) {
+                if (args.size() == offset + 2) {
+                    completion.addAll(game.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
                 }
             }
-            if (args.size() > 1 && (args.get(0).equalsIgnoreCase("destroybed") || args.get(0).equalsIgnoreCase("jointeam"))) {
-                GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
-                if (args.size() == 2) {
-                    completion.addAll(gPlayer.getGame().getRunningTeams().stream().map(Team::getName).collect(Collectors.toList()));
+            if (args.size() > offset + 1 && (args.get(offset).equalsIgnoreCase("destroybed") || args.get(offset).equalsIgnoreCase("jointeam"))) {
+                if (args.size() == offset + 2) {
+                    completion.addAll(game.getRunningTeams().stream().map(Team::getName).collect(Collectors.toList()));
                 }
             }
         }

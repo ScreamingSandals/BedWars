@@ -368,3 +368,7 @@ help_bw_cheat_jointeam: "/bw cheat jointeam [team] - &cJoins an admin to the spe
 cheat_received_target_blocks_destroy: "&aBeds of all teams have been destroyed!"
 kicking_in: "&cLeaving the arena in: &7%time%"
 game_ended_too_early: "&cThe game ends too early. No one wins."
+help_bw_cheatin_give: "/bw cheatIn <game> give <resource> <amount> <player> - &cGives player specified amount of resource"
+help_bw_cheatin_kill: "/bw cheatIn <game> kill <player> - &cKills specified player"
+help_bw_cheatin_destroybed: "/bw cheatIn <game> destroybed <team> - &cDestroys bed of the specific team"
+help_bw_cheatin_destroyallbeds: "/bw cheatIn <game> destroyallbeds - &cDestroys all beds in the game"

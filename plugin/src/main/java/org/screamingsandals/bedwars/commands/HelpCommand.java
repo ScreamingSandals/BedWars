@@ -57,6 +57,13 @@ public class HelpCommand extends BaseCommand {
         console.sendMessage(i18nonly("help_bw_alljoin"));
         console.sendMessage(i18nonly("help_bw_dump"));
         console.sendMessage(i18nonly("help_bw_reload"));
+
+        if (Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
+            console.sendMessage(i18nonly("help_bw_cheatin_give"));
+            console.sendMessage(i18nonly("help_bw_cheatin_kill"));
+            console.sendMessage(i18nonly("help_bw_cheatin_destroybed"));
+            console.sendMessage(i18nonly("help_bw_cheatin_destroyallbeds"));
+        }
     }
 
     public void sendHelp(Player player) {
@@ -104,6 +111,10 @@ public class HelpCommand extends BaseCommand {
                 player.sendMessage(i18nonly("help_bw_cheat_destroyallbeds"));
                 player.sendMessage(i18nonly("help_bw_cheat_jointeam"));
                 player.sendMessage(i18nonly("help_bw_cheat_startemptygame"));
+                player.sendMessage(i18nonly("help_bw_cheatin_give"));
+                player.sendMessage(i18nonly("help_bw_cheatin_kill"));
+                player.sendMessage(i18nonly("help_bw_cheatin_destroybed"));
+                player.sendMessage(i18nonly("help_bw_cheatin_destroyallbeds"));
             }
 
             player.sendMessage(i18nonly("help_bw_admin_info"));

@@ -1883,8 +1883,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
-                    teamSelectorInventory.destroy();
-                    teamSelectorInventory = null;
+                    if (teamSelectorInventory != null) {
+                        teamSelectorInventory.destroy();
+                        teamSelectorInventory = null;
+                    }
 
                     if (gameScoreboard.getObjective("lobby") != null) {
                         gameScoreboard.getObjective("lobby").unregister();
