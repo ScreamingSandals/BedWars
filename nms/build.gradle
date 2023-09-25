@@ -187,7 +187,10 @@ accessors {
         constructor ClientboundSetTitlesPacket$Type, Component
         constructor ClientboundSetTitlesPacket$Type, Component, int, int, int
     }
-    mapClass('net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket')
+    var EnumParticle = mapClass('net.minecraft.server.VVV.EnumParticle') // 1.8.8, Spigot mapped
+    mapClass('net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket') {
+        constructor EnumParticle, boolean, float, float, float, float, float, float, float, int, int[]
+    }
     var Goal = mapClass('net.minecraft.world.entity.ai.goal.Goal')
     mapClass('net.minecraft.world.entity.ai.goal.GoalSelector') {
         constructor Supplier

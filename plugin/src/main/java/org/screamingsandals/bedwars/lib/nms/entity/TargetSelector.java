@@ -35,11 +35,6 @@ public class TargetSelector extends Selector implements HurtByTargetGoalAccessor
 		ClassStorage.setField(handler, MobAccessor.FIELD_TARGET.get(), target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
-
-	@Deprecated
-	public TargetSelector attackNearestTarget(int a, String targetClass) {
-		return attackNearestTarget(a, ClassStorage.safeGetClass("{nms}." + targetClass));
-	}
 	
 	public TargetSelector attackNearestTarget(int a, Class<?> targetClass) {
 		try {
