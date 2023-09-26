@@ -51,40 +51,40 @@ data:
      stack:
       type: LEATHER_HELMET
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of bronze
      properties: "applycolorbyteam"
      stack:
       type: LEATHER_LEGGINGS
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of bronze
      properties: "applycolorbyteam"
      stack:
       type: LEATHER_BOOTS
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of iron
      stack:
       type: CHAINMAIL_CHESTPLATE
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 3 of iron
      stack:
       type: CHAINMAIL_CHESTPLATE
       enchants:
-       PROTECTION_ENVIRONMENTAL: 2
+        protection: 2
    - price: 7 of iron
      stack:
       type: CHAINMAIL_CHESTPLATE
       enchants:
-       PROTECTION_ENVIRONMENTAL: 3
+        protection: 3
    - price: 10 of gold
      stack:
       type: IRON_HELMET
       display-name: Helm
       enchants:
-       PROTECTION_ENVIRONMENTAL: 2
+        protection: 2
        
 - stack: "DIAMOND_SWORD;1;Swords;Click here to get sword for attacking your enemies"
   column: center
@@ -93,36 +93,36 @@ data:
      stack:
       type: STICK
       enchants:
-       KNOCKBACK: 1
+        knockback: 1
    - price: 1 of iron
      stack:
       type: GOLDEN_SWORD
       enchants:
-       DAMAGE_ALL: 1
+        sharpness: 1
    - price: 3 of iron
      stack:
       type: GOLDEN_SWORD
       enchants:
-       DAMAGE_ALL: 2
+        sharpness: 2
    - price: 7 of iron
      stack:
       type: GOLDEN_SWORD
       enchants:
-       DAMAGE_ALL: 3
+        sharpness: 3
    - price: 3 of gold
      stack:
       type: GOLDEN_SWORD
       enchants:
-       DAMAGE_ALL: 2
-       KNOCKBACK: 1
+        sharpness: 2
+        knockback: 1
    - price: 15 of gold
      stack:
       type: GOLDEN_AXE
       display-name: "Axe of Infinity"
       enchants:
-       DAMAGE_ALL: 1
-       DURABILITY: 1
-       KNOCKBACK: 1
+        sharpness: 1
+        unbreaking: 1
+        knockback: 1
        
 - stack: "BOW;1;Bows;Prove yourself as a marksman with these wonderful bows"
   column: right
@@ -131,32 +131,32 @@ data:
      stack:
       type: BOW
       enchants:
-       ARROW_INFINITE: 1
+        infinity: 1
    - price: 7 of gold
      stack:
       type: BOW
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_DAMAGE: 1
+        infinity: 1
+        power: 1
    - price: 13 of gold
      stack:
       type: BOW
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_DAMAGE: 2
+        infinity: 1
+        power: 2
    - price: 14 of gold
      stack:
       type: BOW
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_FIRE: 1
+        infinity: 1
+        flame: 1
    - price: 15 of gold
      stack:
       type: BOW
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_FIRE: 1
-       ARROW_KNOCKBACK: 1
+        infinity: 1
+        flame: 1
+        punch: 1
    - ARROW for 1 of gold
 
 - stack: "COOKED_PORKCHOP;1;Eat;Are you hungry? Get something to eat."
@@ -351,14 +351,14 @@ data:
      stack:
       type: IRON_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 1
+        fortune: 1
    - price: 2 of iron
      stack:
       type: IRON_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 2
+        fortune: 2
    - price: 1 of gold
      stack:
       type: IRON_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 3
+        fortune: 3

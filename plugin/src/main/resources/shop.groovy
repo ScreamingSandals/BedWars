@@ -25,37 +25,37 @@ inventory {
         item('LEATHER_HELMET for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
         item('LEATHER_LEGGINGS for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
         item('LEATHER_BOOTS for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
         item('CHAINMAIL_CHESTPLATE for 1 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
         item('CHAINMAIL_CHESTPLATE for 3 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL', 2
+            stack.enchant 'protection', 2
         }
 
         item('CHAINMAIL_CHESTPLATE for 7 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL', 3
+            stack.enchant 'protection', 3
         }
 
         item('IRON_HELMET for 10 of gold') {
             stack {
                 name 'Helm'
-                enchant 'PROTECTION_ENVIRONMENTAL', 2
+                enchant 'protection', 2
             }
         }
     }
@@ -65,32 +65,32 @@ inventory {
         column 'center'
 
         item('STICK for 8 of bronze') {
-            stack.enchant 'KNOCKBACK'
+            stack.enchant 'knockback'
         }
 
         item('GOLDEN_SWORD for 1 of iron') {
-            stack.enchant 'DAMAGE_ALL'
+            stack.enchant 'sharpness'
         }
 
         item('GOLDEN_SWORD for 3 of iron') {
-            stack.enchant 'DAMAGE_ALL', 2
+            stack.enchant 'sharpness', 2
         }
 
         item('GOLDEN_SWORD for 7 of iron') {
-            stack.enchant 'DAMAGE_ALL', 3
+            stack.enchant 'sharpness', 3
         }
 
         item('GOLDEN_SWORD for 3 of gold') {
             stack.enchant ([
-                    'DAMAGE_ALL': 2,
-                    'KNOCKBACK': 1
+                    'sharpness': 2,
+                    'knockback': 1
             ])
         }
 
         item('GOLDEN_AXE for 15 of gold') {
             stack {
                 name 'Axe of Infinity'
-                enchant (['DAMAGE_ALL', 'DURABILITY', 'KNOCKBACK'])
+                enchant (['sharpness', 'unbreaking', 'knockback'])
             }
         }
 
@@ -100,26 +100,26 @@ inventory {
         column 'right'
 
         item('BOW for 3 of gold') {
-            stack.enchant 'ARROW_INFINITE'
+            stack.enchant 'infinity'
         }
 
         item('BOW for 7 of gold') {
-            stack.enchant (['ARROW_INFINITE', 'ARROW_DAMAGE'])
+            stack.enchant (['infinity', 'power'])
         }
 
         item('BOW for 13 of gold') {
             stack.enchant ([
-                    'ARROW_INFINITE': 1,
-                    'ARROW_DAMAGE': 2
+                    'infinity': 1,
+                    'power': 2
             ])
         }
 
         item('BOW for 14 of gold') {
-            stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE'])
+            stack.enchant (['infinity',  'flame'])
         }
 
         item('BOW for 15 of gold') {
-            stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE', 'ARROW_KNOCKBACK'])
+            stack.enchant (['infinity',  'flame', 'punch'])
         }
 
         item('ARROW for 1 of gold')
@@ -327,15 +327,15 @@ inventory {
         column 'right'
 
         item('IRON_PICKAXE for 4 of bronze') {
-            stack.enchant 'LOOT_BONUS_BLOCKS'
+            stack.enchant 'fortune'
         }
 
         item('IRON_PICKAXE for 2 of iron') {
-            stack.enchant 'LOOT_BONUS_BLOCKS', 2
+            stack.enchant 'fortune', 2
         }
 
         item('IRON_PICKAXE for 1 of gold') {
-            stack.enchant 'LOOT_BONUS_BLOCKS', 3
+            stack.enchant 'fortune', 3
         }
     }
 
