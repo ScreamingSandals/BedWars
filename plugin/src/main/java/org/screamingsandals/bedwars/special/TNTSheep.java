@@ -96,7 +96,8 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
 
         entity = sheep;
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-            .getTargetSelector().attackTarget(target);
+            .getTargetSelector();
+        sheep.setTarget(target);
 
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
         tnt.setFuseTicks(explosionTime);
