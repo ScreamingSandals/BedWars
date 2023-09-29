@@ -63,6 +63,13 @@ respawn-cooldown:
 stop-team-spawners-on-die: false
 # Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+
 prefer-1-19-4-display-entities: true
+remember-what-scoreboards-players-had-before: false
+use-chunk-tickets-if-available: true
+reset-full-spawner-countdown-after-picking: true
+players-can-win-game-only-after-seconds: 0
+kick-players-upon-final-death:
+  enabled: false
+  delay: 5
 allowed-commands: []
 change-allowed-commands-to-blacklist: false
 bungee:
@@ -72,6 +79,7 @@ bungee:
   server: hub
   auto-game-connect: false
   kick-when-proxy-too-slow: true
+  select-random-game: true
   motd:
     enabled: false
     waiting: '%name%: Waiting for players [%current%/%max%]'
@@ -363,6 +371,7 @@ hotbar:
 breakable:
   enabled: false
   asblacklist: false
+  explosions: false
   blocks: []
 leaveshortcuts:
   enabled: false

@@ -100,6 +100,8 @@ These command have to be enabled manually using the config option `enable-cheat-
 * `/bw cheat destroyallbeds` - Destroys all beds in the game
 * `/bw cheat jointeam [team]` - Joins an admin to the specified team or to current team ignoring its size (can also be used while the game is running, however the team must have some players)
 
+Additionaly to `/bw cheat` command, there is the `/bw cheatIn <game> <cheat> [params...]` command. This command allows the admin to execute cheat in a game they are not joined to, or from console. Currently supports the following cheats: `give`, `kill`, `destroybed` ad `destroyallbeds`.
+
 #### Misc
 
 * `/bw alljoin [arena]` - Joins all players without `bw.disable.alljoin` permission to the arena (permission: `bw.admin.alljoin`)

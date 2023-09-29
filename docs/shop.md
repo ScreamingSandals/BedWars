@@ -4,7 +4,7 @@ Screaming BedWars plugin uses our own lib called SimpleInventories to create and
 
 ## Creating a new item
 
-To create a new item, first you need to know internal item's name. You can either use Minecraft Wiki or [this page](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) to get the name. If you use Minecraft Wiki, the name will usually start with `minecraft:`, this part can be omitted from the final name and for compatibility reasons it is better to omit it (so `minecraft:stone` will be just `stone` in the shop file). 
+To create a new item, first you need to know internal item's name. You can use [Minecraft Wiki](https://minecraft.wiki) to get the specific resource name. The name usually starts with `minecraft:`, this part can be omitted from the final name.
 
 You can also use modern names in legacy environments (1.8.8-1.12.2). If the modern name does not work, check [this page](https://helpch.at/docs/1.12.2/org/bukkit/Material.html) for old names. Old names are deprecated and they may not be supported in future releases of BedWars.
 
@@ -72,7 +72,7 @@ items:
   price: 9 iron
 ```
 
-As we can see, the `stack` attribute is now map, which allows more attributes to be present. For example, we can enchant our Super Pickaxe with Fortune III.
+As we can see, the `stack` attribute is now a map, which allows more attributes to be present. For example, we can enchant our Super Pickaxe with Fortune III.
 
 ```yaml
 - stack: 
@@ -83,7 +83,7 @@ As we can see, the `stack` attribute is now map, which allows more attributes to
   price: 5 gold
 ```
 
-The enchantment names can be found [here](https://www.digminecraft.com/lists/enchantment_list_pc.php). You can also use [Bukkit names](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html) to specify enchants.
+The enchantment names can be found [here](https://www.digminecraft.com/lists/enchantment_list_pc.php).
 
 For list of all available options visit [this page](https://github.com/ScreamingSandals/SimpleInventories/wiki/Variable:-stack).
 

@@ -24,7 +24,7 @@ Use the `applycolorbyteam` property, for example:
   properties:
     - name: "applycolorbyteam"
   stack:
-    type: WHITE_WOOL
+    type: white_wool
     amount: 2
 ```
 
@@ -60,22 +60,22 @@ You can by doing the following
 ```yaml
 game-start-items: true
 gived-game-start-items:
-- LEATHER_HELMET
-- LEATHER_BOOTS
-- LEATHER_LEGGINGS
-- LEATHER_CHESTPLATE
-- WOODEN_SWORD
+- leather_helmet
+- leather_boots
+- leather_leggings
+- leather_chestplate
+- wooden_sword
 ```
 
 ### Respawn
 ```yaml
 player-respawn-items: true
 gived-player-respawn-items: 
-- LEATHER_HELMET
-- LEATHER_BOOTS
-- LEATHER_LEGGINGS
-- LEATHER_CHESTPLATE
-- WOODEN_SWORD
+- leather_helmet
+- leather_boots
+- leather_leggings
+- leather_chestplate
+- wooden_sword
 ```
 
 ## Villagers do not spawn
@@ -125,11 +125,6 @@ First, we will provide no support if you mess this up somehow, **arena files are
 3. First filled is name, enter your new one. The name cannot look like this `test arena` and always needs to be one string, that means `test-arena`. The name also must be unique, that means you cannot have two arenas with the same name.
 4. Save the file
 5. Restart or reload the server 
-
-## Kicked from server with strange errors
-That is not our fault. You are probably using version older than `1.9.4`. Nametags, scoreboars and others might be causing that.  
-We ``don't support 1.8.x`` in any way.  
-If you are still having this error on a newer version, feel free to contact us on our Discord server.
 
 ## Class version errors
 `SomeClass has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0 (unable to load class SomeClass)`

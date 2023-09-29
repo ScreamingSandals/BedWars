@@ -15,7 +15,7 @@ This is how it should look in you shop.yml file:
       shop-name: "Bronze upgrade of the team %team%"
       notify-team: true
   stack:
-    type: DIAMOND_BLOCK
+    type: diamond_block
     amount: 1
     display-name: "Bronze upgrade of the team %team%"
 ```

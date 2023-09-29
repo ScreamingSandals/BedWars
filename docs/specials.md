@@ -23,7 +23,7 @@ Here is an example of the arrow blocker configured in shop:
     protection-time: 10
     delay: 5
   stack:
-    type: ENDER_EYE
+    type: ender_eye
     display-name: "Arrow Blocker"
     lore:
       - "Block arrows that are coming"
@@ -46,7 +46,7 @@ If you want to use the global configuration, you simply do not specify the optio
 - price: 5 of gold
   properties: "ArrowBlocker"
   stack:
-    type: ENDER_EYE
+    type: ender_eye
     display-name: "Arrow Blocker"
     lore:
       - "Block arrows that are coming"
@@ -82,12 +82,6 @@ There are 5 event types:
 
 Below is an example of fully-configured lucky block with all these events used. Additionally, each event can have a variable `message`. This message will then be send to the player who broke the block. 
 
-
-!!! warning
-
-    Unlike the rest of the plugin, lucky blocks still use Bukkit's ConfigurationSerializable format for items and potion effects. This is subject to change at any time.
-
-
 ```yaml
 - price: 7 of iron
   properties:
@@ -98,21 +92,17 @@ Below is an example of fully-configured lucky block with all these events used. 
     - type: teleport
       height: 50
     - type: item
-      stack:
-        ==: org.bukkit.inventory.ItemStack
-        type: DIRT
-        v: 1519
+      stack: dirt
       message: "This sends you message, you can add it to all of these types."
     - type: potion
       effect:
-        ==: org.bukkit.potion.PotionEffect
-        effect: 15
+        effect: blindness
         amplifier: 2
         duration: 100
         ambient: true
-        has-particles: true
-        has-icon: true
-  stack: SPONGE;1;Lucky Block
+        particles: true
+        icon: true
+  stack: sponge;1;Lucky Block
 ```
 
 ## Magnet Shoes
@@ -169,7 +159,7 @@ Here is an example of warp powder configured in shop:
     teleport-time: 6
     delay: 0
   stack:
-    type: GUNPOWDER
+    type: gunpowder
     display-name: "Warp Powder"
     lore:
       - "When using this powder you'll get"
@@ -192,7 +182,7 @@ If you want to use the global configuration, you simply do not specify the optio
 - price: 7 of iron
   properties: "WarpPowder"
   stack:
-    type: GUNPOWDER
+    type: gunpowder
     display-name: "Warp Powder"
     lore:
       - "When using this powder you'll get"
