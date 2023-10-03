@@ -16,7 +16,7 @@ multiverse = "4.0.0"
 
 # plugins
 screaming-plugin-builder = "1.0.82"
-nms-mapper = "1.4.5"
+nms-mapper = "1.4.6"
 buildconfig = "3.0.2"
 
 configurate = "4.1.2"
