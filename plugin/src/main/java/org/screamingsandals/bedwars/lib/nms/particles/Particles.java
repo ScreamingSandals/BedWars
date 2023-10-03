@@ -20,13 +20,14 @@
 package org.screamingsandals.bedwars.lib.nms.particles;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundLevelParticlesPacketAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.EnumParticleAccessor;
 
 // we are not using this class anyways (unless someone run bw on 1.8)
 public class Particles {
@@ -40,15 +41,13 @@ public class Particles {
 				try {
 					Object selectedParticle = null;
 					particleName = particleName.toUpperCase();
-					for (Object obj : EnumParticle.getEnumConstants()) {
+					for (Object obj : EnumParticleAccessor.TYPE.get().getEnumConstants()) {
 						if (particleName.equalsIgnoreCase((String) getMethod(obj, "b").invoke())) {
 							selectedParticle = obj;
 							break;
 						}
 					}
-					Object packet = PacketPlayOutWorldParticles
-						.getConstructor(EnumParticle, boolean.class, float.class, float.class, float.class, float.class,
-							float.class, float.class, float.class, int.class, int[].class)
+					Object packet = ClientboundLevelParticlesPacketAccessor.CONSTRUCTOR_0.get()
 						.newInstance(selectedParticle, true, loc.getX(), loc.getY(), loc.getZ(), offsetX, offsetY,
 							offsetZ, extra, count, new int[] {});
 					sendPacket(player, packet);

@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.api.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.Game;
 
@@ -37,7 +38,7 @@ public class BedwarsGameEndingEvent extends Event {
 	/**
 	 * @param game
 	 */
-	public BedwarsGameEndingEvent(Game game, RunningTeam winningTeam) {
+	public BedwarsGameEndingEvent(Game game, @Nullable RunningTeam winningTeam) {
 		this.winningTeam = winningTeam;
 		this.game = game;
 	}
@@ -56,7 +57,7 @@ public class BedwarsGameEndingEvent extends Event {
 	/**
 	 * @return team that won bedwars match
 	 */
-	public RunningTeam getWinningTeam() {
+	public @Nullable RunningTeam getWinningTeam() {
 		return this.winningTeam;
 	}
 

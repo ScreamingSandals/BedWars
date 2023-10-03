@@ -19,156 +19,150 @@
 
 data:
 #-   stack:
-#      type: GOLDEN_APPLE
+#      type: golden_apple
 #      amount: 1
-#      meta:
-#        ==: ItemMeta
-#        meta-type: UNSPECIFIC
-#        display-name: "Example category"
-#        lore:
-#        - "This is my category!"
-#        - "Please buy things inside!"
+#      display-name: "Example category"
+#      lore:
+#      - "This is my category!"
+#      - "Please buy things inside!"
 #    items:
 #    - price: 50
 #      price-type: "bronze"
 #      stack:
-#        type: DIAMOND_SWORD
+#        type: diamond_sword
 #        amount: 1
-#        meta:
-#          ==: ItemMeta
-#          meta-type: UNSPECIFIC
-#          enchants:
-#            DAMAGE_ALL: 2
-#          repair-cost: 1
-#          Damage: 99
+#        enchants:
+#          sharpness: 2
+#        repair-cost: 1
+#        damage: 99
 # Value 'applycolorbyteam' is used for automatic-coloring-in-shop.
 # See WarpPowder for more info.
 
-- stack: "DIAMOND_CHESTPLATE;1;Armor;Protect yourself with armor! Click here."
+- stack: "diamond_chestplate;1;Armor;Protect yourself with armor! Click here."
   items:
    - price: 1 of bronze
      properties: "applycolorbyteam"
      stack:
-      type: LEATHER_HELMET
+      type: leather_helmet
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of bronze
      properties: "applycolorbyteam"
      stack:
-      type: LEATHER_LEGGINGS
+      type: leather_leggings
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of bronze
      properties: "applycolorbyteam"
      stack:
-      type: LEATHER_BOOTS
+      type: leather_boots
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 1 of iron
      stack:
-      type: CHAINMAIL_CHESTPLATE
+      type: chainmail_chestplate
       enchants:
-       PROTECTION_ENVIRONMENTAL: 1
+        protection: 1
    - price: 3 of iron
      stack:
-      type: CHAINMAIL_CHESTPLATE
+      type: chainmail_chestplate
       enchants:
-       PROTECTION_ENVIRONMENTAL: 2
+        protection: 2
    - price: 7 of iron
      stack:
-      type: CHAINMAIL_CHESTPLATE
+      type: chainmail_chestplate
       enchants:
-       PROTECTION_ENVIRONMENTAL: 3
+        protection: 3
    - price: 10 of gold
      stack:
-      type: IRON_HELMET
+      type: iron_helmet
       display-name: Helm
       enchants:
-       PROTECTION_ENVIRONMENTAL: 2
+        protection: 2
        
-- stack: "DIAMOND_SWORD;1;Swords;Click here to get sword for attacking your enemies"
+- stack: "diamond_sword;1;Swords;Click here to get sword for attacking your enemies"
   column: center
   items:
    - price: 8 of bronze
      stack:
-      type: STICK
+      type: stick
       enchants:
-       KNOCKBACK: 1
+        knockback: 1
    - price: 1 of iron
      stack:
-      type: GOLDEN_SWORD
+      type: golden_sword
       enchants:
-       DAMAGE_ALL: 1
+        sharpness: 1
    - price: 3 of iron
      stack:
-      type: GOLDEN_SWORD
+      type: golden_sword
       enchants:
-       DAMAGE_ALL: 2
+        sharpness: 2
    - price: 7 of iron
      stack:
-      type: GOLDEN_SWORD
+      type: golden_sword
       enchants:
-       DAMAGE_ALL: 3
+        sharpness: 3
    - price: 3 of gold
      stack:
-      type: GOLDEN_SWORD
+      type: golden_sword
       enchants:
-       DAMAGE_ALL: 2
-       KNOCKBACK: 1
+        sharpness: 2
+        knockback: 1
    - price: 15 of gold
      stack:
-      type: GOLDEN_AXE
+      type: golden_axe
       display-name: "Axe of Infinity"
       enchants:
-       DAMAGE_ALL: 1
-       DURABILITY: 1
-       KNOCKBACK: 1
+        sharpness: 1
+        unbreaking: 1
+        knockback: 1
        
-- stack: "BOW;1;Bows;Prove yourself as a marksman with these wonderful bows"
+- stack: "bow;1;Bows;Prove yourself as a marksman with these wonderful bows"
   column: right
   items:
    - price: 3 of gold
      stack:
-      type: BOW
+      type: bow
       enchants:
-       ARROW_INFINITE: 1
+        infinity: 1
    - price: 7 of gold
      stack:
-      type: BOW
+      type: bow
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_DAMAGE: 1
+        infinity: 1
+        power: 1
    - price: 13 of gold
      stack:
-      type: BOW
+      type: bow
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_DAMAGE: 2
+        infinity: 1
+        power: 2
    - price: 14 of gold
      stack:
-      type: BOW
+      type: bow
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_FIRE: 1
+        infinity: 1
+        flame: 1
    - price: 15 of gold
      stack:
-      type: BOW
+      type: bow
       enchants:
-       ARROW_INFINITE: 1
-       ARROW_FIRE: 1
-       ARROW_KNOCKBACK: 1
-   - ARROW for 1 of gold
+        infinity: 1
+        flame: 1
+        punch: 1
+   - arrow for 1 of gold
 
-- stack: "COOKED_PORKCHOP;1;Eat;Are you hungry? Get something to eat."
+- stack: "cooked_porkchop;1;Eat;Are you hungry? Get something to eat."
   row: 3
   column: 2
   items:
-   - COOKED_PORKCHOP;2 for 4 of bronze
-   - GOLDEN_APPLE for 2 of iron
-   - BREAD;10 for 5 of gold
+   - cooked_porkchop;2 for 4 of bronze
+   - golden_apple for 2 of iron
+   - bread;10 for 5 of gold
 
 - stack:
-    type: POTION
+    type: potion
     display-name: "Drinks"
     lore:
       - "Not enough? Use these potions and you'll feel better!"
@@ -177,44 +171,44 @@ data:
   column: 6
   items:
     - stack:
-        type: POTION
+        type: potion
         potion-type: healing
       price: 3 of iron
     - stack:
-        type: POTION
+        type: potion
         potion-type: strong_healing
       price: 5 of iron
     - stack:
-        type: POTION
+        type: potion
         potion-type: swiftness
       price: 7 of iron
     - stack:
-        type: POTION
+        type: potion
         potion-type: strength
       price: 1 of gold
     - stack:
-        type: POTION
+        type: potion
         potion-type: regeneration
       price: 3 of gold
 
-- stack: "SANDSTONE;1;Blocks;Get to the others! Possible with blocks."
+- stack: "sandstone;1;Blocks;Get to the others! Possible with blocks."
   linebreak: before
   items:
-   - CUT_SANDSTONE;2 for 1 of bronze
-   - END_STONE;3 for 7 of bronze
-   - IRON_BLOCK for 3 of iron
-   - GLOWSTONE;4 for 15 of bronze
+   - cut_sandstone;2 for 1 of bronze
+   - end_stone;3 for 7 of bronze
+   - iron_block for 3 of iron
+   - glowstone;4 for 15 of bronze
    - price: 4 of bronze
      properties: "applycolorbyteam"
-     stack: GLASS
+     stack: glass
 
-- stack: "TNT;1;Useful Stuff;Looking for useful stuff? Here are some!"
+- stack: "tnt;1;Useful Stuff;Looking for useful stuff? Here are some!"
   column: center
   items:
-   - CHEST for 1 of iron
-   - ENDER_CHEST for 1 of gold
+   - chest for 1 of iron
+   - ender_chest for 1 of gold
    - price: 3 of iron
-     stack: "TNT;1;Autoigniteable TNT"
+     stack: "tnt;1;Autoigniteable TNT"
      properties:
       - name: "AutoIgniteableTnt"
         explosion-time: 5
@@ -224,7 +218,7 @@ data:
       - name: "WarpPowder"
         delay: 6
      stack:
-      type: GUNPOWDER
+      type: gunpowder
       display-name: "Warp Powder"
       lore:
        - "When using this powder you'll get"
@@ -236,31 +230,28 @@ data:
         data:
          - sound: ENTITY_SHEEP_AMBIENT
          - effect:
-            ==: org.bukkit.potion.PotionEffect
-            effect: 15
+            effect: blindness
             amplifier: 2
             duration: 100
             ambient: true
-            has-particles: true
-            has-icon: true
+            particles: true
+            icon: true
          - effect:
-            ==: org.bukkit.potion.PotionEffect
-            effect: 18
+            effect: weakness
             amplifier: 2
             duration: 100
             ambient: true
-            has-particles: true
-            has-icon: true
+            particles: true
+            icon: true
          - effect:
-            ==: org.bukkit.potion.PotionEffect
-            effect: 2
+            effect: slowness
             amplifier: 2
             duration: 100
             ambient: true
-            has-particles: true
-            has-icon: true
+            particles: true
+            icon: true
      stack:
-      type: STRING
+      type: string
       display-name: "Trap"
       lore:
        - "Get informed if an enemy steps on your trap"
@@ -270,7 +261,7 @@ data:
       - name: "MagnetShoes"
         probability: 75
      stack:
-      type: IRON_BOOTS
+      type: iron_boots
       display-name: "Magnet-Shoes"
       lore:
        - "Wear those shoes and have a 75%"
@@ -278,7 +269,7 @@ data:
    - price: 5 of iron
      properties: "Tracker"
      stack:
-      type: COMPASS
+      type: compass
       display-name: "Tracker"
       lore:
        - "Wanna know where your closest target is?"
@@ -288,7 +279,7 @@ data:
       - name: "rescueplatform"
         delay: 5
      stack:
-      type: BLAZE_ROD
+      type: blaze_rod
       display-name: "Rescue Platform"
       lore:
        - "Protect yourself from falling into"
@@ -299,7 +290,7 @@ data:
       - name: "arrowblocker"
         delay: 5
      stack:
-      type: ENDER_EYE
+      type: ender_eye
       display-name: "Arrow Blocker"
       lore:
        - "Block arrows that are coming"
@@ -309,7 +300,7 @@ data:
      properties:
       - name: "protectionwall"
      stack:
-      type: BRICKS
+      type: bricks
       display-name: "Protection Wall"
       lore:
        - "Instantly builds a wall that"
@@ -320,7 +311,7 @@ data:
         speed: 0.25
         follow: 16.0
      stack:
-      type: GHAST_SPAWN_EGG
+      type: ghast_spawn_egg
       display-name: "Golem"
       lore:
        - "An iron golem that will protect"
@@ -328,7 +319,7 @@ data:
    - price: 10 of gold
      properties: "TNTSheep"
      stack:
-      type: SHEEP_SPAWN_EGG
+      type: sheep_spawn_egg
       display-name: "TNT Sheep"
       lore:
        - "Use the TNT-Sheep! It will"
@@ -337,28 +328,28 @@ data:
    - price: 40 of iron
      properties: "ThrowableFireball"
      stack:
-       type: FIRE_CHARGE
+       type: fire_charge
        display-name: "Fireball"
        lore:
          - "Is it a bird? Is it a plane?"
          - "By the time you know"
          - "you are dead!"
 
-- stack: "DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes."
+- stack: "diamond_pickaxe;1;Pickaxes;Destroy others blocks? Use these pickaxes."
   column: right
   items:
    - price: 4 of bronze
      stack:
-      type: IRON_PICKAXE
+      type: iron_pickaxe
       enchants:
-       LOOT_BONUS_BLOCKS: 1
+        fortune: 1
    - price: 2 of iron
      stack:
-      type: IRON_PICKAXE
+      type: iron_pickaxe
       enchants:
-       LOOT_BONUS_BLOCKS: 2
+        fortune: 2
    - price: 1 of gold
      stack:
-      type: IRON_PICKAXE
+      type: iron_pickaxe
       enchants:
-       LOOT_BONUS_BLOCKS: 3
+        fortune: 3

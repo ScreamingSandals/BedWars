@@ -162,6 +162,8 @@ public class Configurator {
         checkOrSetConfig(modify, "prefer-1-19-4-display-entities", true);
         checkOrSetConfig(modify, "remember-what-scoreboards-players-had-before", false);
         checkOrSetConfig(modify, "use-chunk-tickets-if-available", true);
+        checkOrSetConfig(modify, "reset-full-spawner-countdown-after-picking", true);
+        checkOrSetConfig(modify, "players-can-win-game-only-after-seconds", 0);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);

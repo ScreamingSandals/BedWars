@@ -1,200 +1,255 @@
+import me.kcra.takenaka.gradle.BuildConfig
+
 import java.util.function.Consumer
 import java.util.function.Supplier
 
-apply plugin: 'org.screamingsandals.nms-mapper'
+apply plugin: 'me.kcra.takenaka.accessor'
 
-sourceSets.main.java.srcDirs += 'src/generated/java'
-
-// after any changes in this file, please rebuild project to see changes in your ide
-
-nmsGen {
-    basePackage = "org.screamingsandals.bedwars.lib.nms.accessors"
-    sourceSet = "src/generated/java"
-    cleanOnRebuild = true
-    minMinecraftVersion = "1.8.8"
-
-    // spigot: prefix means that spigot mapping will be used, for spigot mappings we don't specify package
-    var NBTTagCompound = reqClass('spigot:NBTTagCompound')
-            .reqConstructor()
-            .reqMethod('searge:func_74768_a', String, int)
-    var IChatBaseComponent = reqClass('spigot:IChatBaseComponent')
-            .reqMethod('spigot:getLegacyString')
-            .reqMethod('getString')
-    var IAttribute = reqClass('net.minecraft.world.entity.ai.attributes.Attribute')
-    reqClass('spigot:IChatBaseComponent$ChatSerializer')
-        .reqMethod('searge:func_150699_a', String) // spigot don't have mapping for that and I think obfuscated:a can successfully fail
-        .reqMethod('searge:func_240643_a_', String) // 1.16+
-    var DataWatcher = reqClass('spigot:DataWatcher')
-        .reqMethod("spigot:watch", int.class, Object.class)
-        .reqMethod('packDirty')
-        .reqMethod('clearDirty')
-        .reqMethod('getAll')
-    var World = reqClass('spigot:World')
-            .reqMethod('spigot:getMethodProfilerSupplier') // 1.17 and newer
-            .reqMethod('spigot:getMethodProfiler') // for something between new and old versions
-            .reqField('spigot:methodProfiler:1.9.4') // for older versions
-    var Entity = reqClass('spigot:Entity')
-        .reqField('spigot:world')
-        .reqMethod('spigot:getWorld')
-        .reqMethod('searge:func_184198_c', NBTTagCompound)
-        .reqMethod('searge:func_70020_e', NBTTagCompound)
-        .reqMethod('spigot:setLocation', double, double, double, float, float)
-        .reqMethod('spigot:getId')
-        .reqMethod('spigot:getDataWatcher')
-        .reqMethod('spigot:setCustomName', IChatBaseComponent)
-        .reqMethod('spigot:locX')
-        .reqMethod('spigot:locY')
-        .reqMethod('spigot:locZ')
-        .reqMethod('spigot:getYRot')
-        .reqMethod('spigot:getXRot')
-        .reqMethod('spigot:getCustomName')
-        .reqMethod('spigot:setCustomNameVisible', boolean)
-        .reqMethod('spigot:getCustomNameVisible')
-        .reqMethod('spigot:setInvisible', boolean)
-        .reqMethod('spigot:isInvisible')
-        .reqMethod('spigot:setNoGravity', boolean)
-        .reqMethod('spigot:isNoGravity')
-        // old
-        .reqField('spigot:yaw')
-        .reqField('spigot:pitch')
-        .reqField('spigot:locX')
-        .reqField('spigot:locY')
-        .reqField('spigot:locZ')
-        .reqMethod('spigot:setCustomName', String)
-    reqClass('spigot:EntityArmorStand')
-        .reqConstructor(World, double, double, double)
-        .reqMethod('spigot:setSmall', boolean)
-        .reqMethod('spigot:isSmall')
-        .reqMethod('spigot:setArms', boolean)
-        .reqMethod('spigot:hasArms')
-        .reqMethod('spigot:setBasePlate', boolean)
-        .reqMethod('spigot:hasBasePlate')
-        .reqMethod('spigot:setMarker', boolean)
-        .reqMethod('spigot:isMarker')
-    var EntityCreature = reqClass('spigot:EntityCreature')
-    var EntityInsentient = reqClass('spigot:EntityInsentient')
-        .reqField('spigot:goalSelector')
-        .reqField('spigot:targetSelector')
-        .reqField('spigot:goalTarget')
-    var EntityLiving = reqClass('spigot:EntityLiving')
-        .reqMethod('spigot:getAttributeInstance', IAttribute)
-        .reqMethod('spigot:getAttributeMap')
-        .reqMethod('spigot:getCombatTracker')
-    reqClass('spigot:AttributeMapBase')
-        .reqMethod('searge:func_111150_b', IAttribute)
-        .reqField('searge:field_233777_d_') // provider
-    reqClass('spigot:AttributeProvider')
-        .reqField('searge:field_233802_a_')
-    reqClass('spigot:EntityPlayer')
-        .reqField('spigot:playerConnection')
-        .reqMethod('tellNeutralMobsThatIDied')
-        .reqMethod('spigot:setSpectatorTarget', Entity)
-    var EnumClientCommand = reqClass('spigot:PacketPlayInClientCommand$EnumClientCommand')
-        .reqEnumField('spigot:PERFORM_RESPAWN')
-    var EnumTitleAction = reqClass('spigot:PacketPlayOutTitle$EnumTitleAction') // does not exist in 1.17
-        .reqEnumField('spigot:TITLE')
-        .reqEnumField('spigot:SUBTITLE')
-        .reqEnumField('spigot:TIMES')
-    reqClass('spigot:GenericAttributes')
-        .reqField('spigot:MAX_HEALTH')
-        .reqField('spigot:FOLLOW_RANGE')
-        .reqField('spigot:KNOCKBACK_RESISTANCE')
-        .reqField('spigot:MOVEMENT_SPEED')
-        .reqField('spigot:FLYING_SPEED')
-        .reqField('spigot:ATTACK_DAMAGE')
-        .reqField('spigot:ATTACK_KNOCKBACK')
-        .reqField('spigot:ATTACK_SPEED')
-        .reqField('spigot:ARMOR')
-        .reqField('spigot:ARMOR_TOUGHNESS')
-        .reqField('spigot:LUCK')
-    var Packet = reqClass('spigot:Packet')
-    var PacketPlayInClientCommand = reqClass('spigot:PacketPlayInClientCommand')
-        .reqConstructor(EnumClientCommand)
-    reqClass('spigot:PacketPlayInUseEntity')
-        .reqField('searge:field_149567_a')
-    reqClass('spigot:PacketPlayOutEntityDestroy')
-        .reqConstructor(int) // 1.17 retardation
-        .reqConstructor(int[])
-    reqClass('spigot:PacketPlayOutEntityMetadata')
-        .reqConstructor(int, DataWatcher, boolean) // <= 1.19.2
-        .reqConstructor(int, List) // 1.19.3
-    reqClass('spigot:PacketPlayOutEntityTeleport')
-        .reqConstructor(Entity)
-    reqClass('spigot:PacketPlayOutExperience')
-        .reqConstructor(float, int, int)
-    reqClass('spigot:PacketPlayOutSpawnEntity')
-        .reqConstructor(EntityLiving) // 1.19-1.19.2
-        .reqConstructor(Entity) // 1.19.3
-    reqClass('spigot:PacketPlayOutSpawnEntityLiving')
-        .reqConstructor(EntityLiving)
-    reqClass('spigot:PacketPlayOutTitle') // does not exist in 1.17
-        .reqConstructor(EnumTitleAction, IChatBaseComponent)
-        .reqConstructor(EnumTitleAction, IChatBaseComponent, int, int, int)
-    reqClass('spigot:PacketPlayOutWorldParticles')
-    var PathfinderGoal = reqClass('spigot:PathfinderGoal')
-    reqClass('spigot:PathfinderGoalSelector')
-        .reqConstructor(Supplier)
-        .reqMethod('searge:func_75776_a', int, PathfinderGoal)
-    reqClass('spigot:PathfinderGoalMeleeAttack')
-        .reqConstructor(EntityCreature, double, boolean)
-    reqClass('spigot:PathfinderGoalNearestAttackableTarget')
-        .reqConstructor(EntityInsentient, Class, boolean) // 1.14+
-        .reqConstructor(EntityCreature, Class, boolean) // <= 1.13.2
-    reqClass('spigot:PlayerConnection')
-        .reqField('spigot:networkManager')
-        .reqMethod('spigot:sendPacket', Packet)
-        .reqMethod('searge:func_147342_a', PacketPlayInClientCommand)
-    reqClass('spigot:NetworkManager')
-        .reqField('spigot:channel')
-    reqClass('spigot:PacketPlayOutPlayerListHeaderFooter')
-        .reqConstructor()
-        .reqConstructor(IChatBaseComponent, IChatBaseComponent)
-        .reqField('spigot:header')
-        .reqField('spigot:footer')
-    reqClass('net.minecraft.world.entity.ai.attributes.AttributeInstance')
-        .reqConstructor(IAttribute, Consumer)
-        .reqMethod('spigot:setValue', double)
-        .reqMethod('spigot:getValue')
-    reqClass('spigot:CombatTracker')
-        .reqMethod('spigot:getDeathMessage')
-        .reqMethod('recheckStatus')
-    reqClass('spigot:EntityHuman')
-        .reqMethod('spigot:releaseShoulderEntities')
-    reqClass('spigot:EntityWither')
-        .reqConstructor(World)
-    reqClass('spigot:EntityEnderDragon')
-        .reqConstructor(World)
-        .reqField('spigot:children')
-    reqClass('spigot:PathfinderGoalFloat')
-        .reqConstructor(EntityInsentient)
-    reqClass('spigot:PathfinderGoalRandomStroll')
-        .reqConstructor(EntityCreature, double)
-    reqClass('spigot:PathfinderGoalRandomLookaround')
-        .reqConstructor(EntityInsentient)
-    reqClass('spigot:PathfinderGoalHurtByTarget')
-        .reqConstructor(EntityCreature, boolean, Class[]) // old
-        .reqConstructor(EntityCreature, Class[]) // new
-    reqClass('spigot:EntityIronGolem')
-
-    // Text display entities
-    reqClass('net.minecraft.world.entity.EntityType') {
-        reqEnumField('TEXT_DISPLAY')
-    }
-
-    reqClass('net.minecraft.world.entity.Display$BillboardConstraints') {
-        reqEnumField('CENTER')
-    }
-
-    reqClass('net.minecraft.world.entity.Display') {
-        reqMethod('setBillboardConstraints', '@Display$BillboardConstraints')
-    }
-
-    reqClass('net.minecraft.world.entity.Display$TextDisplay') {
-        reqConstructor('@EntityType', World)
-
-        reqMethod('getText')
-        reqMethod('setText', IChatBaseComponent)
-    }
+dependencies {
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.2"
+    api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
-tasks.getByName('compileJava').dependsOn('generateNmsComponents')
+// after any changes in this file, please run the generateAccessors task to see changes in your ide
+
+accessors {
+    // uncomment this and remove the mappingBundle dependency,
+    // if you want to develop against custom versions
+    /*versionRange('1.8.8', '1.20.2') {
+        // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
+        // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
+        // exclude 1.9.1 and 1.9.3 - no mappings at all
+        exclude '1.16', '1.10.1', '1.8.9', '1.9.1', '1.9.3'
+
+        // include only releases, no snapshots
+        includeTypes 'release'
+    }*/
+
+    basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
+    accessedNamespaces 'spigot'
+    accessorType 'reflection'
+
+    var CompoundTag = mapClass('net.minecraft.nbt.CompoundTag') {
+        constructor()
+        method void, 'putInt', String, int
+    }
+    var Component = mapClass('net.minecraft.network.chat.Component') {
+        getter String, 'coloredString'
+        getter String, 'string'
+    }
+    var Attribute = mapClass 'net.minecraft.world.entity.ai.attributes.Attribute'
+    mapClass('net.minecraft.network.chat.Component$Serializer') {
+        method Component, 'fromJson', String // 1.16 and below
+        method 'net.minecraft.network.chat.MutableComponent', 'fromJson', String // 1.16.1 and higher
+    }
+    var SynchedEntityData = mapClass('net.minecraft.network.syncher.SynchedEntityData') {
+        method void, 'watch', int, Object
+        method List, 'packDirty'
+        method void, 'clearDirty'
+        getter List, 'all'
+        getter List, 'nonDefaultValues'
+    }
+    var Level = mapClass('net.minecraft.world.level.Level') {
+        getter Supplier, 'profilerSupplier' // 1.17 and newer
+        getter 'net.minecraft.util.profiling.ProfilerFiller', 'profiler' // for something between new and old versions
+        field 'net.minecraft.server.VVV.MethodProfiler', 'methodProfiler' // for older versions, Spigot mapped
+    }
+    var Entity = mapClass('net.minecraft.world.entity.Entity') {
+        field Level, 'level'
+        getter Level, 'commandSenderWorld'
+        method boolean, 'saveAsPassenger', CompoundTag
+        method void, 'load', CompoundTag
+        method void, 'absMoveTo', double, double, double, float, float
+        getter int, 'id'
+        getter SynchedEntityData, 'entityData'
+        getter Component, 'customName'
+        setter Component, 'customName'
+        getter double, 'x'
+        getter double, 'y'
+        getter double, 'z'
+        getter float, 'xRot'
+        getter float, 'yRot'
+        getter boolean, 'customNameVisible'
+        setter boolean, 'customNameVisible'
+        getter boolean, 'invisible'
+        setter boolean, 'invisible'
+        getter boolean, 'noGravity'
+        setter boolean, 'noGravity'
+        // old
+        field float, 'yRot'
+        field float, 'xRot'
+        field double, 'x'
+        field double, 'y'
+        field double, 'z'
+        setter String, 'customName' // Spigot mapped
+    }
+    mapClass('net.minecraft.world.entity.decoration.ArmorStand') {
+        constructor Level, double, double, double
+        getter boolean, 'small'
+        setter boolean, 'small'
+        getter boolean, 'showArms'
+        setter boolean, 'showArms'
+        getter boolean, 'noBasePlate'
+        setter boolean, 'noBasePlate'
+        getter boolean, 'marker'
+        setter boolean, 'marker'
+    }
+    var PathfinderMob = mapClass 'net.minecraft.world.entity.PathfinderMob'
+    var AttributeSupplier = mapClass('net.minecraft.world.entity.ai.attributes.AttributeSupplier') {
+        field Map, 'instances'
+    }
+    var AttributeInstance = mapClass('net.minecraft.world.entity.ai.attributes.AttributeInstance') {
+        constructor Attribute, Consumer
+        getter double, 'value'
+        setter double, 'baseValue'
+    }
+    var AttributeMap = mapClass('net.minecraft.world.entity.ai.attributes.AttributeMap') {
+        method AttributeInstance, 'registerAttribute', Attribute
+        field AttributeSupplier, 'supplier'
+    }
+    var LivingEntity = mapClass('net.minecraft.world.entity.LivingEntity') {
+        method AttributeInstance, 'getAttribute', Attribute
+        getter AttributeMap, 'attributes'
+        getter 'net.minecraft.world.damagesource.CombatTracker', 'combatTracker'
+    }
+    var Mob = mapClass('net.minecraft.world.entity.Mob') {
+        field 'net.minecraft.world.entity.ai.goal.GoalSelector', 'goalSelector'
+        field 'net.minecraft.world.entity.ai.goal.GoalSelector', 'targetSelector'
+        field LivingEntity, 'target'
+    }
+    var Packet = mapClass('net.minecraft.network.protocol.Packet')
+    var ServerboundClientCommandPacket$Action = mapClass('net.minecraft.network.protocol.game.ServerboundClientCommandPacket$Action') {
+        enumConstant 'PERFORM_RESPAWN'
+    }
+    var ServerboundClientCommandPacket = mapClass('net.minecraft.network.protocol.game.ServerboundClientCommandPacket') {
+        constructor ServerboundClientCommandPacket$Action
+    }
+    var Connection = mapClass('net.minecraft.network.Connection') {
+        field 'io.netty.channel.Channel', 'channel'
+    }
+    var ServerGamePacketListenerImpl = mapClass('net.minecraft.server.network.ServerGamePacketListenerImpl') {
+        field Connection, 'connection' // <= 1.20.1
+        method void, 'send', Packet // <= 1.20.1
+        method void, 'handleClientCommand', ServerboundClientCommandPacket
+    }
+    mapClass('net.minecraft.server.network.ServerCommonPacketListenerImpl') { // 1.20.2+
+        field Connection, 'connection'
+        method void, 'send', Packet
+    }
+    mapClass('net.minecraft.server.level.ServerPlayer') {
+        field ServerGamePacketListenerImpl, 'connection'
+        method void, 'tellNeutralMobsThatIDied'
+        setter Entity, 'camera'
+    }
+    mapClass('net.minecraft.world.entity.ai.attributes.Attributes') {
+        field Attribute, 'MAX_HEALTH'
+        field Attribute, 'FOLLOW_RANGE'
+        field Attribute, 'KNOCKBACK_RESISTANCE'
+        field Attribute, 'MOVEMENT_SPEED'
+        field Attribute, 'FLYING_SPEED'
+        field Attribute, 'ATTACK_DAMAGE'
+        field Attribute, 'ATTACK_KNOCKBACK'
+        field Attribute, 'ATTACK_SPEED'
+        field Attribute, 'ARMOR'
+        field Attribute, 'ARMOR_TOUGHNESS'
+        field Attribute, 'LUCK'
+    }
+    mapClass('net.minecraft.network.protocol.game.ServerboundInteractPacket') {
+        field int, 'entityId'
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket') {
+        constructor int // 1.17
+        constructor int[]
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket') {
+        constructor int, SynchedEntityData, boolean // <= 1.19.2
+        constructor int, List // 1.19.3
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket') {
+        constructor Entity
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundSetExperiencePacket') {
+        constructor float, int, int
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundAddEntityPacket') {
+        constructor LivingEntity // 1.19-1.19.2
+        constructor Entity // 1.19.3
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundAddMobPacket') {
+        constructor LivingEntity
+    }
+    var ClientboundSetTitlesPacket$Type = mapClass('net.minecraft.network.protocol.game.ClientboundSetTitlesPacket$Type') { // 1.16.5 and lower
+        enumConstant 'TITLE'
+        enumConstant 'SUBTITLE'
+        enumConstant 'TIMES'
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundSetTitlesPacket') {
+        constructor ClientboundSetTitlesPacket$Type, Component
+        constructor ClientboundSetTitlesPacket$Type, Component, int, int, int
+    }
+    var EnumParticle = mapClass('net.minecraft.server.VVV.EnumParticle') // 1.8.8, Spigot mapped
+    mapClass('net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket') {
+        constructor EnumParticle, boolean, float, float, float, float, float, float, float, int, int[]
+    }
+    var Goal = mapClass('net.minecraft.world.entity.ai.goal.Goal')
+    mapClass('net.minecraft.world.entity.ai.goal.GoalSelector') {
+        constructor Supplier
+        method void, 'addGoal', int, Goal
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.MeleeAttackGoal') {
+        constructor PathfinderMob, double, boolean
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal') {
+        constructor Mob, Class, boolean // 1.14+
+        constructor 'net.minecraft.server.VVV.EntityCreature', Class, boolean // <= 1.13.2, Spigot mapped
+    }
+    mapClass('net.minecraft.network.protocol.game.ClientboundTabListPacket') {
+        constructor()
+        constructor Component, Component
+        field Component, 'header'
+        field Component, 'footer'
+    }
+    mapClass('net.minecraft.world.damagesource.CombatTracker') {
+        getter Component, 'deathMessage'
+        method void, 'recheckStatus'
+    }
+    mapClass('net.minecraft.world.entity.player.Player') {
+        method void, 'removeEntitiesOnShoulder'
+    }
+    mapClass('net.minecraft.world.entity.boss.wither.WitherBoss') {
+        constructor 'net.minecraft.server.VVV.World' // Spigot mapped
+    }
+    mapClass('net.minecraft.world.entity.boss.enderdragon.EnderDragon') {
+        constructor 'net.minecraft.server.VVV.World' // Spigot mapped
+        field 'net.minecraft.world.entity.boss.EnderDragonPart[]', 'subEntities'
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.FloatGoal') {
+        constructor Mob
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.RandomStrollGoal') {
+        constructor PathfinderMob, double
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.RandomLookAroundGoal') {
+        constructor Mob
+    }
+    mapClass('net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal') {
+        constructor 'net.minecraft.server.VVV.EntityCreature', boolean, Class[] // old, Spigot mapped
+        constructor PathfinderMob, Class[] // new
+    }
+    mapClass('net.minecraft.world.entity.animal.IronGolem')
+    var EntityType = mapClass('net.minecraft.world.entity.EntityType') {
+        enumConstant 'TEXT_DISPLAY'
+    }
+    var Display$BillboardConstraints = mapClass('net.minecraft.world.entity.Display$BillboardConstraints') {
+        enumConstant 'CENTER'
+    }
+    mapClass('net.minecraft.world.entity.Display') {
+        setter Display$BillboardConstraints, 'billboardConstraints'
+    }
+    mapClass('net.minecraft.world.entity.Display$TextDisplay') {
+        constructor EntityType, Level
+
+        getter Component, 'text'
+        setter Component, 'text'
+    }
+}

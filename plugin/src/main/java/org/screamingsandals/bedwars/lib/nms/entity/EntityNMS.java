@@ -22,14 +22,14 @@ package org.screamingsandals.bedwars.lib.nms.entity;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.screamingsandals.bedwars.lib.nms.accessors.ComponentAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.EntityAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponentAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.tab.TabManager;
 
-public class EntityNMS {
+public class EntityNMS implements EntityAccessor {
 	protected Object handler;
 
 	protected EntityNMS() {}
@@ -44,29 +44,29 @@ public class EntityNMS {
 
 	public Location getLocation() {
 		if (Version.isVersion(1, 16)) {
-			double locX = (double) ClassStorage.getMethod(handler, EntityAccessor.getMethodLocX1()).invoke();
-			double locY = (double) ClassStorage.getMethod(handler, EntityAccessor.getMethodLocY1()).invoke();
-			double locZ = (double) ClassStorage.getMethod(handler, EntityAccessor.getMethodLocZ1()).invoke();
+			double locX = (double) ClassStorage.getMethod(handler, METHOD_GET_X.get()).invoke();
+			double locY = (double) ClassStorage.getMethod(handler, METHOD_GET_Y.get()).invoke();
+			double locZ = (double) ClassStorage.getMethod(handler, METHOD_GET_Z.get()).invoke();
 			float yaw, pitch;
 			if (Version.isVersion(1,17)) {
-				yaw = (float) ClassStorage.getMethod(handler, EntityAccessor.getMethodGetYRot1()).invoke();
-				pitch = (float) ClassStorage.getMethod(handler, EntityAccessor.getMethodGetXRot1()).invoke();
+				yaw = (float) ClassStorage.getMethod(handler, METHOD_GET_Y_ROT.get()).invoke();
+				pitch = (float) ClassStorage.getMethod(handler, METHOD_GET_X_ROT.get()).invoke();
 			} else {
-				yaw = (float) ClassStorage.getField(handler, EntityAccessor.getFieldYaw());
-				pitch = (float) ClassStorage.getField(handler, EntityAccessor.getFieldPitch());
+				yaw = (float) ClassStorage.getField(handler, FIELD_Y_ROT.get());
+				pitch = (float) ClassStorage.getField(handler, FIELD_X_ROT.get());
 			}
 
-			Object world = ClassStorage.getMethod(handler, EntityAccessor.getMethodGetWorld1()).invoke();
+			Object world = ClassStorage.getMethod(handler, METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 			World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 
 			return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
 		} else {
-			double locX = (double) ClassStorage.getField(handler, EntityAccessor.getFieldLocX());
-			double locY = (double) ClassStorage.getField(handler, EntityAccessor.getFieldLocY());
-			double locZ = (double) ClassStorage.getField(handler, EntityAccessor.getFieldLocZ());
-			float yaw = (float) ClassStorage.getField(handler, EntityAccessor.getFieldYaw());
-			float pitch = (float) ClassStorage.getField(handler, EntityAccessor.getFieldPitch());
-			Object world = ClassStorage.getMethod(handler, EntityAccessor.getMethodGetWorld1()).invoke();
+			double locX = (double) ClassStorage.getField(handler, FIELD_X.get());
+			double locY = (double) ClassStorage.getField(handler, FIELD_Y.get());
+			double locZ = (double) ClassStorage.getField(handler, FIELD_Z.get());
+			float yaw = (float) ClassStorage.getField(handler, FIELD_Y_ROT.get());
+			float pitch = (float) ClassStorage.getField(handler, FIELD_X_ROT.get());
+			Object world = ClassStorage.getMethod(handler, METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 			World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 
 			return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
@@ -75,13 +75,13 @@ public class EntityNMS {
 
 	
 	public void setLocation(Location location) {
-		Object world = ClassStorage.getMethod(handler, EntityAccessor.getMethodGetWorld1()).invoke();
+		Object world = ClassStorage.getMethod(handler, METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 		World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 		if (!location.getWorld().equals(craftWorld)) {
-			ClassStorage.setField(handler, EntityAccessor.getFieldWorld(), ClassStorage.getHandle(location.getWorld()));
+			ClassStorage.setField(handler, FIELD_LEVEL.get(), ClassStorage.getHandle(location.getWorld()));
 		}
 		
-		ClassStorage.getMethod(handler, EntityAccessor.getMethodSetLocation1())
+		ClassStorage.getMethod(handler, METHOD_ABS_MOVE_TO.get())
 			.invoke(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 	}
 
@@ -90,28 +90,28 @@ public class EntityNMS {
 	}
 
 	public int getId() {
-		return (int) ClassStorage.getMethod(handler, EntityAccessor.getMethodGetId1()).invoke();
+		return (int) ClassStorage.getMethod(handler, METHOD_GET_ID.get()).invoke();
 	}
 
 	public Object getDataWatcher() {
-		return ClassStorage.getMethod(handler, EntityAccessor.getMethodGetDataWatcher1()).invoke();
+		return ClassStorage.getMethod(handler, METHOD_GET_ENTITY_DATA.get()).invoke();
 	}
 
 	public void setCustomName(String name) {
-		InstanceMethod method = ClassStorage.getMethod(handler, EntityAccessor.getMethodSetCustomName1());
+		InstanceMethod method = ClassStorage.getMethod(handler, METHOD_SET_CUSTOM_NAME.get());
 		if (method.getReflectedMethod() != null) {
 			method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod())
 				.invokeStatic("{\"text\": \"" + name + "\"}"));
 		} else {
-			ClassStorage.getMethod(handler, EntityAccessor.getMethodSetCustomName2()).invoke(name);
+			ClassStorage.getMethod(handler, METHOD_SET_CUSTOM_NAME_1.get()).invoke(name);
 		}
 	}
 
 	public String getCustomName() {
-		Object textComponent = ClassStorage.getMethod(handler, EntityAccessor.getMethodGetCustomName1()).invoke();
+		Object textComponent = ClassStorage.getMethod(handler, METHOD_GET_CUSTOM_NAME.get()).invoke();
 		String text = "";
-		if (IChatBaseComponentAccessor.getType().isInstance(textComponent)) {
-			text = (String) ClassStorage.getMethod(textComponent, IChatBaseComponentAccessor.getMethodGetLegacyString1()).invoke();
+		if (ComponentAccessor.TYPE.get().isInstance(textComponent)) {
+			text = (String) ClassStorage.getMethod(textComponent, ComponentAccessor.METHOD_GET_COLORED_STRING.get()).invoke();
 		} else {
 			text = textComponent.toString();
 		}
@@ -119,26 +119,26 @@ public class EntityNMS {
 	}
 
 	public void setCustomNameVisible(boolean visible) {
-		ClassStorage.getMethod(handler, EntityAccessor.getMethodSetCustomNameVisible1()).invoke(visible);
+		ClassStorage.getMethod(handler, METHOD_SET_CUSTOM_NAME_VISIBLE.get()).invoke(visible);
 	}
 
 	public boolean isCustomNameVisible() {
-		return (boolean) ClassStorage.getMethod(handler, EntityAccessor.getMethodGetCustomNameVisible1()).invoke();
+		return (boolean) ClassStorage.getMethod(handler, METHOD_IS_CUSTOM_NAME_VISIBLE.get()).invoke();
 	}
 
 	public void setInvisible(boolean invisible) {
-		ClassStorage.getMethod(handler, EntityAccessor.getMethodSetInvisible1()).invoke(invisible);
+		ClassStorage.getMethod(handler, METHOD_SET_INVISIBLE.get()).invoke(invisible);
 	}
 
 	public boolean isInvisible() {
-		return (boolean) ClassStorage.getMethod(handler, EntityAccessor.getMethodIsInvisible1()).invoke();
+		return (boolean) ClassStorage.getMethod(handler, METHOD_IS_INVISIBLE.get()).invoke();
 	}
 	
 	public void setGravity(boolean gravity) {
-		ClassStorage.getMethod(handler, EntityAccessor.getMethodSetNoGravity1()).invoke(!gravity);
+		ClassStorage.getMethod(handler, METHOD_SET_NO_GRAVITY.get()).invoke(!gravity);
 	}
 	
 	public boolean isGravity() {
-		return !((boolean) ClassStorage.getMethod(handler, EntityAccessor.getMethodIsNoGravity1()).invoke());
+		return !((boolean) ClassStorage.getMethod(handler, METHOD_IS_NO_GRAVITY.get()).invoke());
 	}
 }

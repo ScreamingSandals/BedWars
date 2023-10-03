@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -32,46 +31,13 @@ import org.screamingsandals.bedwars.lib.nms.accessors.*;
 
 public class ClassStorage {
 
-	public static final boolean NMS_BASED_SERVER = safeGetClass("org.bukkit.craftbukkit.Main") != null;
 	public static final boolean IS_SPIGOT_SERVER = safeGetClass("org.spigotmc.SpigotConfig") != null;
 	public static final boolean HAS_CHUNK_TICKETS = getMethod(Chunk.class, "addPluginChunkTicket", Plugin.class).getReflectedMethod() != null;
-	public static final String NMS_VERSION = checkNMSVersion();
-
-	public static final class NMS {
-		/* not used by bw since 1.9 */
-		public static final Class<?> EnumParticle = safeGetClass("{nms}.EnumParticle"); // why is it even used
-		public static final Class<?> PacketPlayOutWorldParticles = PacketPlayOutWorldParticlesAccessor.getType();
-	}
-	
-	private static String checkNMSVersion() {
-		/* Useless since MC 1.17 */
-		/* if NMS is not found, finding class will fail, but we still need some string */
-		String nmsVersion = "nms_not_found"; 
-		
-		if (NMS_BASED_SERVER) {
-			String packName = Bukkit.getServer().getClass().getPackage().getName();
-			nmsVersion = packName.substring(packName.lastIndexOf('.') + 1);
-		}
-		
-		return nmsVersion;
-	}
 	
 	public static Class<?> safeGetClass(String... clazz) {
 		for (String claz : clazz) {
 			try {
-				return Class.forName(claz
-					// CRAFTBUKKIT/SPIGOT/PAPER before 1.17
-					.replace("{obc}", "org.bukkit.craftbukkit." + NMS_VERSION)
-					.replace("{nms}", "net.minecraft.server." + NMS_VERSION)
-					// CAULDRON BASED
-					.replace("{f:ent}", "net.minecraft.entity")
-					.replace("{f:goal}", "net.minecraft.entity.ai.goal")
-					.replace("{f:nbt}", "net.minecraft.nbt")
-					.replace("{f:net}", "net.minecraft.network")
-					.replace("{f:nms}", "net.minecraft.server")
-					.replace("{f:util}", "net.minecraft.util")
-					.replace("{f:world}", "net.minecraft.world")
-				);
+				return Class.forName(claz);
 			} catch (ClassNotFoundException ignored) {
 			}
 		}
@@ -248,18 +214,22 @@ public class ClassStorage {
 	public static Object getPlayerConnection(Player player) {
 		Object handler = getMethod(player, "getHandle").invoke();
 		if (handler != null) {
-			return getField(handler, EntityPlayerAccessor.getFieldPlayerConnection());
+			return getField(handler, ServerPlayerAccessor.FIELD_CONNECTION.get());
 		}
 		return null;
 	}
 	
 	public static boolean sendPacket(Player player, Object packet) {
-		if (!PacketAccessor.getType().isInstance(packet)) {
+		if (!PacketAccessor.TYPE.get().isInstance(packet)) {
 			return false;
 		}
 		Object connection = getPlayerConnection(player);
 		if (connection != null) {
-			getMethod(connection, PlayerConnectionAccessor.getMethodSendPacket1()).invoke(packet);
+			if (ServerCommonPacketListenerImplAccessor.METHOD_SEND.get() != null) {
+				getMethod(connection, ServerCommonPacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+			} else {
+				getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+			}
 			return true;
 		}
 		return false;
@@ -289,26 +259,26 @@ public class ClassStorage {
 	}
 
 	public static Object getMethodProfiler(Object handler) {
-		Object methodProfiler = getMethod(handler, WorldAccessor.getMethodGetMethodProfiler1()).invoke();
+		Object methodProfiler = getMethod(handler, LevelAccessor.METHOD_GET_PROFILER.get()).invoke();
 		if (methodProfiler == null) {
-			methodProfiler = getField(handler, WorldAccessor.getFieldMethodProfiler());
+			methodProfiler = getField(handler, LevelAccessor.FIELD_METHOD_PROFILER.get());
 		}
 		return methodProfiler;
 	}
 	
 	public static Object obtainNewPathfinderSelector(Object handler) {
 		try {
-			Object world = getMethod(handler, EntityAccessor.getMethodGetWorld1()).invoke();
+			Object world = getMethod(handler, EntityAccessor.METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 			try {
 				// 1.17
-				return PathfinderGoalSelectorAccessor.getConstructor0().newInstance(getMethod(world, WorldAccessor.getMethodGetMethodProfilerSupplier1()).invoke());
+				return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance(getMethod(world, LevelAccessor.METHOD_GET_PROFILER_SUPPLIER.get()).invoke());
 			} catch (Throwable ignored) {
 				try {
 					// 1.16
-					return PathfinderGoalSelectorAccessor.getConstructor0().newInstance((Supplier<?>) () -> getMethodProfiler(world));
+					return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance((Supplier<?>) () -> getMethodProfiler(world));
 				} catch (Throwable ignore) {
 					// Pre 1.16
-					return PathfinderGoalSelectorAccessor.getType().getConstructors()[0].newInstance(getMethodProfiler(world));
+					return GoalSelectorAccessor.TYPE.get().getConstructors()[0].newInstance(getMethodProfiler(world));
 				}
 			}
 		} catch (Throwable t) {

@@ -1,12 +1,12 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.81' apply false
-    id 'org.screamingsandals.nms-mapper' version '1.4.4' apply false
+    id 'org.screamingsandals.plugin-builder' version '1.0.84' apply false
+    id 'me.kcra.takenaka.accessor' version '1.0.0' apply false
     id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
 }
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.30-SNAPSHOT'
+    version = '0.2.30'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
@@ -18,6 +18,11 @@ if (version.toString().endsWith('-SNAPSHOT')) {
 subprojects {
     System.setProperty("JavadocUploadCustomDirectoryPath", "sbw-0-2-x")
     apply plugin: 'java'
+
+    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+        project.ext.disablePublishingToMaven = true
+    }
+
     apply plugin: 'org.screamingsandals.plugin-builder'
 
     repositories {
@@ -40,6 +45,7 @@ subprojects {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
+        relocate 'me.kcra.takenaka', 'org.screamingsandals.bedwars.lib.takenaka'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))

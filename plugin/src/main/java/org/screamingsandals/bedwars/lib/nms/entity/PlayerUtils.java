@@ -19,18 +19,15 @@
 
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayInClientCommandAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayInClientCommand_i_EnumClientCommandAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutExperienceAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PlayerConnectionAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
+
+import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
 public class PlayerUtils {
 	public static void respawn(Plugin instance, Player player, long delay) {
@@ -42,11 +39,15 @@ public class PlayerUtils {
 					player.spigot().respawn();
 				} catch (Throwable t) {
 					try {
-						Object selectedObj = PacketPlayInClientCommand_i_EnumClientCommandAccessor.getFieldPERFORM_RESPAWN();
-						Object packet = PacketPlayInClientCommandAccessor.getConstructor0()
+						Object selectedObj = ServerboundClientCommandPacket$ActionAccessor.FIELD_PERFORM_RESPAWN.get();
+						Object packet = ServerboundClientCommandPacketAccessor.CONSTRUCTOR_0.get()
 							.newInstance(selectedObj);
 						Object connection = getPlayerConnection(player);
-						getMethod(connection, PlayerConnectionAccessor.getMethodFunc_147342_a1()).invoke(packet);
+						if (ServerCommonPacketListenerImplAccessor.METHOD_SEND.get() != null) {
+							getMethod(connection, ServerCommonPacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+						} else {
+							getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+						}
 					} catch (Throwable ignored) {
 						t.printStackTrace();
 					}
@@ -57,7 +58,7 @@ public class PlayerUtils {
 
 	public static void fakeExp(Player player, float percentage, int levels) {
 		try {
-			Object packet = PacketPlayOutExperienceAccessor.getConstructor0()
+			Object packet = ClientboundSetExperiencePacketAccessor.CONSTRUCTOR_0.get()
 				.newInstance(percentage, player.getTotalExperience(), levels);
 			sendPacket(player, packet);
 		} catch (Throwable t) {

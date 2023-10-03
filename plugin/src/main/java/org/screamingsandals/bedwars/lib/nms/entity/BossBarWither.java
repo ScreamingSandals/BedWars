@@ -21,11 +21,10 @@ package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Wither;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityWitherAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.WitherBossAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
-public class BossBarWither extends FakeEntityNMS<Wither> {
+public class BossBarWither extends FakeEntityNMS<Wither> implements WitherBossAccessor {
 
     public BossBarWither(Location location) {
         super(construct(location));
@@ -37,9 +36,9 @@ public class BossBarWither extends FakeEntityNMS<Wither> {
 
     public static Object construct(Location location) {
         try {
-            final Object nmsEntity = EntityWitherAccessor.getConstructor0()
+            final Object nmsEntity = CONSTRUCTOR_0.get()
                     .newInstance(ClassStorage.getHandle(location.getWorld()));
-            ClassStorage.getMethod(EntityAccessor.getMethodSetLocation1()).invokeInstance(
+            ClassStorage.getMethod(METHOD_ABS_MOVE_TO.get()).invokeInstance(
                     nmsEntity,
                     location.getX(),
                     location.getY(),

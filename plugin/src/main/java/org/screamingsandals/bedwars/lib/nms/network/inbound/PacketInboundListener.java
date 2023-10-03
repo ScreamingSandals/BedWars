@@ -19,17 +19,18 @@
 
 package org.screamingsandals.bedwars.lib.nms.network.inbound;
 
-import org.bukkit.entity.Player;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.screamingsandals.bedwars.lib.nms.accessors.NetworkManagerAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PlayerConnectionAccessor;
+import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.accessors.ConnectionAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ServerCommonPacketListenerImplAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ServerGamePacketListenerImplAccessor;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
+import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getField;
+import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getPlayerConnection;
 
-public abstract class PacketInboundListener{
+public abstract class PacketInboundListener implements ServerGamePacketListenerImplAccessor {
 
 	private static int ID = 0;
 
@@ -69,8 +70,13 @@ public abstract class PacketInboundListener{
 	
 	private Channel getChannel(Player player) {
 		try {
-			Object manager = getField(getPlayerConnection(player), PlayerConnectionAccessor.getFieldNetworkManager());
-			Channel channel = (Channel) getField(manager, NetworkManagerAccessor.getFieldChannel());
+			Object manager;
+			if (ServerCommonPacketListenerImplAccessor.FIELD_CONNECTION.get() != null) {
+				manager = getField(getPlayerConnection(player), ServerCommonPacketListenerImplAccessor.FIELD_CONNECTION.get());
+			} else {
+				manager = getField(getPlayerConnection(player), FIELD_CONNECTION.get());
+			}
+			Channel channel = (Channel) getField(manager, ConnectionAccessor.FIELD_CHANNEL.get());
 			return channel;
 		} catch (Throwable t) {
 		}

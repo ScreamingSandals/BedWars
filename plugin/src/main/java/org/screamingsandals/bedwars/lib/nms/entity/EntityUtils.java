@@ -32,7 +32,7 @@ public class EntityUtils {
 		double attackDamage) {
 		try {
 			Object handler = ClassStorage.getHandle(mob);
-			if (!EntityInsentientAccessor.getType().isInstance(handler)) {
+			if (!MobAccessor.TYPE.get().isInstance(handler)) {
 				throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
 			}
 			
@@ -40,7 +40,7 @@ public class EntityUtils {
 			
 			GoalSelector selector = entityLiving.getGoalSelector();
 			selector.clearSelector();
-			selector.registerPathfinder(0, PathfinderGoalMeleeAttackAccessor.getConstructor0().newInstance(handler, 1.0D, false));
+			selector.registerPathfinder(0, MeleeAttackGoalAccessor.CONSTRUCTOR_0.get().newInstance(handler, 1.0D, false));
 			
 			entityLiving.setAttribute(Attribute.MOVEMENT_SPEED, speed);
 			entityLiving.setAttribute(Attribute.FOLLOW_RANGE, follow);
@@ -63,7 +63,7 @@ public class EntityUtils {
 													  double attackDamage) {
 		try {
 			Object handler = ClassStorage.getHandle(mob);
-			if (!EntityInsentientAccessor.getType().isInstance(handler)) {
+			if (!MobAccessor.TYPE.get().isInstance(handler)) {
 				throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
 			}
 
@@ -71,10 +71,10 @@ public class EntityUtils {
 
 			GoalSelector selector = entityLiving.getGoalSelector();
 			selector.clearSelector();
-			selector.registerPathfinder(0, PathfinderGoalFloatAccessor.getConstructor0().newInstance(handler));
-			selector.registerPathfinder(1, PathfinderGoalMeleeAttackAccessor.getConstructor0().newInstance(handler, 1.0D, false));
-			selector.registerPathfinder(2, PathfinderGoalRandomStrollAccessor.getConstructor0().newInstance(handler, 1.0D));
-			selector.registerPathfinder(3, PathfinderGoalRandomLookaroundAccessor.getConstructor0().newInstance(handler));
+			selector.registerPathfinder(0, FloatGoalAccessor.CONSTRUCTOR_0.get().newInstance(handler));
+			selector.registerPathfinder(1, MeleeAttackGoalAccessor.CONSTRUCTOR_0.get().newInstance(handler, 1.0D, false));
+			selector.registerPathfinder(2, RandomStrollGoalAccessor.CONSTRUCTOR_0.get().newInstance(handler, 1.0D));
+			selector.registerPathfinder(3, RandomLookAroundGoalAccessor.CONSTRUCTOR_0.get().newInstance(handler));
 
 			entityLiving.setAttribute(Attribute.MOVEMENT_SPEED, speed);
 			entityLiving.setAttribute(Attribute.FOLLOW_RANGE, follow);
@@ -98,11 +98,11 @@ public class EntityUtils {
 				Object handler = ClassStorage.getHandle(entity);
 				Object tag = ClassStorage.getMethod(handler, "getNBTTag").invoke();
 				if (tag == null) {
-					tag = NBTTagCompoundAccessor.getConstructor0().newInstance();
+					tag = CompoundTagAccessor.CONSTRUCTOR_0.get().newInstance();
 				}
-				ClassStorage.getMethod(handler, "c,func_184198_c", NBTTagCompoundAccessor.getType()).invoke(tag);
-				ClassStorage.getMethod(NBTTagCompoundAccessor.getMethodFunc_74768_a1()).invokeInstance(tag, "NoAI", 1);
-				ClassStorage.getMethod(handler, EntityAccessor.getMethodFunc_70020_e1()).invoke(tag);
+				ClassStorage.getMethod(handler, "c,func_184198_c", CompoundTagAccessor.TYPE.get()).invoke(tag);
+				ClassStorage.getMethod(CompoundTagAccessor.METHOD_PUT_INT.get()).invokeInstance(tag, "NoAI", 1);
+				ClassStorage.getMethod(handler, EntityAccessor.METHOD_LOAD.get()).invoke(tag);
 			} catch (Throwable ignored) {
 			}
 		}

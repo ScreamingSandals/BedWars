@@ -45,6 +45,10 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
 
+    public boolean spawnerLockedFull;
+    public int countdownDelay;
+    public int currentCycle;
+
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team, int maxSpawnedResources) {
         this.loc = loc;
         this.type = type;
@@ -127,13 +131,13 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		}
     		return calculated;
     	}
+
+        flushDeathItems();
     	
-    	/* Update spawned items */
-        spawnedItems.removeIf(Entity::isDead);
-    	
-    	int spawned = spawnedItems.size();
+    	int spawned = getSpawnedItemsCount();
     	
     	if (spawned >= maxSpawnedResources) {
+            spawnerLockedFull = true;
     		if (countdown != null && !spawnerIsFullHologram) {
         		spawnerIsFullHologram = true;
     			countdown.setLine(1, i18nonly("spawner_is_full"));
@@ -145,13 +149,17 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		if (spawnerIsFullHologram && !rerenderHologram) {
     			rerenderHologram = true;
     			spawnerIsFullHologram = false;
-    		} else if (countdown != null && (calculated + spawned) == maxSpawnedResources) {
-        		spawnerIsFullHologram = true;
-    			countdown.setLine(1, i18nonly("spawner_is_full"));
+    		} else if ((calculated + spawned) == maxSpawnedResources) {
+                spawnerLockedFull = true;
+                if (countdown != null) {
+                    spawnerIsFullHologram = true;
+                    countdown.setLine(1, i18nonly("spawner_is_full"));
+                }
     		}
     		return calculated;
     	}
-    	
+
+        spawnerLockedFull = true;
 		if (countdown != null && !spawnerIsFullHologram) {
     		spawnerIsFullHologram = true;
 			countdown.setLine(1, i18nonly("spawner_is_full"));
@@ -169,10 +177,22 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public void remove(Item item) {
     	if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
     		spawnedItems.remove(item);
-    		if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
+    		if (spawnerIsFullHologram && maxSpawnedResources > getSpawnedItemsCount()) {
     			spawnerIsFullHologram = false;
     			rerenderHologram = true;
     		}
     	}
+    }
+
+    public void flushDeathItems() {
+        /* Update spawned items */
+        spawnedItems.removeIf(Entity::isDead);
+    }
+
+    /**
+     * Works only if maxSpawnedResources > 0
+     */
+    public int getSpawnedItemsCount() {
+        return spawnedItems.stream().mapToInt(i -> i.getItemStack().getAmount()).sum();
     }
 }

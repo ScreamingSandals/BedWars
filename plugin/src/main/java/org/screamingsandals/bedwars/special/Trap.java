@@ -27,6 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.List;
 import java.util.Map;
@@ -74,8 +75,10 @@ public class Trap extends SpecialItem implements org.screamingsandals.bedwars.ap
             }
 
             if (data.containsKey("effect")) {
-                PotionEffect effect = (PotionEffect) data.get("effect");
-                player.addPotionEffect(effect);
+                PotionEffect effect = StackParser.getPotionEffect(data.get("effect"));
+                if (effect != null) {
+                    player.addPotionEffect(effect);
+                }
             }
 
             if (data.containsKey("damage")) {

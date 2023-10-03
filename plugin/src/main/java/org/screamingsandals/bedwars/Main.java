@@ -83,7 +83,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private boolean isDisabling = false;
     private boolean isSpigot, isLegacy;
     private boolean isVault;
-    private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
     private HashMap<String, Game> games = new HashMap<>();
@@ -138,10 +137,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isLegacy() {
         return instance.isLegacy;
-    }
-
-    public static boolean isNMS() {
-        return instance.isNMS;
     }
 
     public static void depositPlayer(Player player, double coins) {
@@ -360,7 +355,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         instance = this;
         version = this.getDescription().getVersion();
         boolean snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        isNMS = ClassStorage.NMS_BASED_SERVER;
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
@@ -434,7 +428,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new MainlobbyCommand();
         new LeaderboardCommand();
         new DumpCommand();
-        new CheatCommand();
+        new CheatCommand("cheat", false);
+        new CheatCommand("cheatIn", true);
 
         BwCommandsExecutor cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);

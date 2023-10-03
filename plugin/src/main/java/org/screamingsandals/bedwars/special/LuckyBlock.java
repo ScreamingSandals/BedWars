@@ -29,6 +29,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.List;
 import java.util.Map;
@@ -64,12 +65,15 @@ public class LuckyBlock extends SpecialItem implements org.screamingsandals.bedw
         String type = (String) map.getOrDefault("type", "nothing");
         switch (type) {
             case "item":
-                ItemStack stack = ((ItemStack) map.get("stack")).clone();
+                Object potentialStack = map.get("stack");
+                ItemStack stack = potentialStack instanceof ItemStack ? ((ItemStack) potentialStack).clone() : StackParser.parse(map.get("stack"));
                 placedLocation.getWorld().dropItem(placedLocation, stack);
                 break;
             case "potion":
-                PotionEffect potionEffect = (PotionEffect) map.get("effect");
-                broker.addPotionEffect(potionEffect);
+                PotionEffect potionEffect = StackParser.getPotionEffect(map.get("effect"));
+                if (potionEffect != null) {
+                    broker.addPotionEffect(potionEffect);
+                }
                 break;
             case "tnt":
                 new BukkitRunnable() {

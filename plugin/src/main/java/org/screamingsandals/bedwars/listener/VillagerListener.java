@@ -53,7 +53,7 @@ public class VillagerListener implements Listener {
                 }
 
                 for (GameStore store : game.getGameStoreList()) {
-                    if (store.getEntity().equals(event.getRightClicked())) {
+                    if (event.getRightClicked().equals(store.getEntity())) {
                         event.setCancelled(true);
                         open(store, event, game);
                     }

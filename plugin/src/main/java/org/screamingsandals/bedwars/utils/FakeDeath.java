@@ -50,9 +50,9 @@ public class FakeDeath {
 
         String message = null;
         try {
-            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), EntityLivingAccessor.getMethodGetCombatTracker1()).invoke();
-            Object component = ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.getMethodGetDeathMessage1()).invoke();
-            message = (String) ClassStorage.getMethod(component, IChatBaseComponentAccessor.getMethodGetString1()).invoke();
+            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), LivingEntityAccessor.METHOD_GET_COMBAT_TRACKER.get()).invoke();
+            Object component = ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.METHOD_GET_DEATH_MESSAGE.get()).invoke();
+            message = (String) ClassStorage.getMethod(component, ComponentAccessor.METHOD_GET_STRING.get()).invoke();
         } catch (Throwable ignored) {}
 
         PlayerDeathEvent event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
@@ -84,14 +84,14 @@ public class FakeDeath {
         // ignoring PacketPlayOutCombatEvent, client mustn't know that he died
 
         try {
-            ClassStorage.getMethod(ClassStorage.getHandle(player), EntityHumanAccessor.getMethodReleaseShoulderEntities1()).invoke();
+            ClassStorage.getMethod(ClassStorage.getHandle(player), PlayerAccessor.METHOD_REMOVE_ENTITIES_ON_SHOULDER.get()).invoke();
         } catch (Throwable ignored) {}
 
         if (Main.getVersionNumber() >= 116) {
             try {
                 Boolean b = deathWorld.getGameRuleValue(GameRule.FORGIVE_DEAD_PLAYERS);
                 if (b != null && b) {
-                    ClassStorage.getMethod(ClassStorage.getHandle(player), EntityPlayerAccessor.getMethodTellNeutralMobsThatIDied1()).invoke();
+                    ClassStorage.getMethod(ClassStorage.getHandle(player), ServerPlayerAccessor.METHOD_TELL_NEUTRAL_MOBS_THAT_I_DIED.get()).invoke();
                 }
             } catch (Throwable ignored) {}
         }
@@ -120,12 +120,12 @@ public class FakeDeath {
         }
 
         try {
-            ClassStorage.getMethod(ClassStorage.getHandle(player), EntityPlayerAccessor.getMethodSetSpectatorTarget1()).invoke(ClassStorage.getHandle(player));
+            ClassStorage.getMethod(ClassStorage.getHandle(player), ServerPlayerAccessor.METHOD_SET_CAMERA.get()).invoke(ClassStorage.getHandle(player));
         } catch (Throwable ignored) {}
 
         try {
-            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), EntityLivingAccessor.getMethodGetCombatTracker1()).invoke();
-            ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.getMethodRecheckStatus1()).invoke();
+            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), LivingEntityAccessor.METHOD_GET_COMBAT_TRACKER.get()).invoke();
+            ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.METHOD_RECHECK_STATUS.get()).invoke();
         } catch (Throwable ignored) {}
 
         // respawn location will be changed by PlayerListener
