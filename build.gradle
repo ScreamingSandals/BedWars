@@ -1,12 +1,12 @@
 plugins {
     id 'org.screamingsandals.plugin-builder' version '1.0.84' apply false
-    id 'me.kcra.takenaka.accessor' version '1.0.0' apply false
+    id 'me.kcra.takenaka.accessor' version '1.0.4-SNAPSHOT' apply false
     id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
 }
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.30'
+    version = '0.2.31-SNAPSHOT'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {

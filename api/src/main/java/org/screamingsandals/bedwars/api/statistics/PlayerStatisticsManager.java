@@ -23,8 +23,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PlayerStatisticsManager {
+    
+    PlayerStatistic getStatistic(UUID uuid);
 
     List<LeaderboardEntry> getLeaderboard(int count);
 
+    /**
+     * @see #getStatistic(UUID) 
+     */
     PlayerStatistic loadStatistic(UUID uuid);
 }
