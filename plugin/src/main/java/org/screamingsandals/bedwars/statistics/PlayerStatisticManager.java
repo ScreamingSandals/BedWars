@@ -215,7 +215,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             playerStatistic.setName(player.getName());
         }
         this.playerStatistic.put(uuid, playerStatistic);
-        allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
+        updateScore(playerStatistic);
         return playerStatistic;
     }
 
