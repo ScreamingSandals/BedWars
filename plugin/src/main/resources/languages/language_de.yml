@@ -25,7 +25,7 @@ leave: "%name% &chat das Spiel verlassen!"
 game_already_running: "&cSpiel &7%arena% &cläuft bereits!"
 game_is_full: "&cSpiel &7%arena% &cist voll!"
 unknown_command: "&cUnbekannter Befehl! Nutze &4/bw help &cfür Hilfe!"
-unknown_usage: "&cUngültige Argumente! Nutze &4/bw help &cfür Hilfe!"
+unknown_usage: "&cUngültige Anzahl an Argumente! Nutze &4/bw help &cfür Hilfe!"
 no_arena_found: "&cSpiel wurde nicht gefunden!"
 usage_bw_join: "&cBenutze: /bw join <Spiel>"
 usage_bw_admin: "&cBenutze: /bw admin <Spiel> <add|edit|remove|save|...> ..."
@@ -34,7 +34,7 @@ allready_exists: "&cDieses Spiel existiert bereits!"
 allready_working_on_it: "&cDieses Spiel existiert bereits, ist jedoch noch nicht fertig!"
 arena_not_in_edit: "&cSpiel existiert nicht oder läuft bereits! Deaktiviere es mit
   &7/bw admin <Spiel> edit &coder aktiviere es mit &7/bw admin <Spiel> save"
-no_permissions: "&cDu hast keine Berechtigung, das zu tun!"
+no_permissions: "&cDu hast keine Berechtigung das zu tun!"
 arena_must_be_in_edit_mode: "&cSpiel muss sich im edit-Modus befinden: &7/bw admin
   <Spiel> edit!"
 arena_removed: "&c&lSpiel wurde entfernt!"
@@ -192,7 +192,7 @@ admin_command_store_living_entity_type_set: "&aLebewesentyp des Shops wurde zu &
   geändert!"
 admin_command_upgrades: "&aUpgrades wurden auf &7%bool%&a gesetzt!"
 safe_reload: "&a>Es wird gewartet, bis alle Spiele gestoppt sind oder 60 Sekunden
-  vorbei sind, bevor das Plugin neu geladen wird."
+  vorbei sind, bevor das Plugin neu geladen wird!"
 safe_reload_failed_to_stop_game: "&cManche Spiele konnten in der Zeit nicht gestoppt
   werden, die Arena könnte beschädigt sein!"
 holo_not_enabled: "&cHologramm nicht verfügbar. Ist Holographic Displays installiert?"
@@ -459,3 +459,6 @@ help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cBeitritt eines Admins zum 
   Spiel verwendet werden, allerdings muss das Team einige Spieler haben)
 protect_your_door: '%teamcolor%&lBeschütze deine tür!'
 door_is_destroyed: Tür von %team%§r wurde zerstört!
+destroy_this_door: '%teamcolor%&lZerstöre diese Tür!'
+protect_your_door_destroyed: '&7&lTür ist zerstört.'
+kicking_in: '&cVerlasse Arena in: &7%time%'
