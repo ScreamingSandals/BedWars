@@ -61,6 +61,8 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Boolean> DISABLE_CAKE_EATING = ConfigurationKey.of(Boolean.class, "disable-cake-eating");
     ConfigurationKey<Boolean> DISABLE_FLIGHT = ConfigurationKey.of(Boolean.class, "disable-flight");
     ConfigurationKey<Boolean> ALLOW_FAKE_DEATH = ConfigurationKey.of(Boolean.class, "allow-fake-death");
+    ConfigurationKey<Boolean> RESET_FULL_SPAWNER_COUNTDOWN_AFTER_PICKING = ConfigurationKey.of(Boolean.class, "reset-full-spawner-countdown-after-picking");
+    ConfigurationKey<Integer> PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS = ConfigurationKey.of(Integer.class, "players-can-win-game-only-after-seconds");
 
     ConfigurationKey<String> PREFIX = ConfigurationKey.of(String.class, "prefix");
     ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");

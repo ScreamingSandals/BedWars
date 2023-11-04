@@ -29,6 +29,11 @@ import java.util.UUID;
 public interface PlayerStatisticsManager {
 
     List<? extends LeaderboardEntry> getLeaderboard(int count);
+    
+    PlayerStatistic getStatistic(UUID uuid);
 
+    /**
+     * @see #getStatistic(UUID) 
+     */
     PlayerStatistic loadStatistic(UUID uuid);
 }

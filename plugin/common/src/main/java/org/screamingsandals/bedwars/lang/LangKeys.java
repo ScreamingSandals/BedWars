@@ -145,6 +145,7 @@ public class LangKeys {
     public final String[] IN_GAME_BOSSBAR_RUNNING = {"in_game", "bossbar", "running"};
     public final String[] IN_GAME_END_YOU_WON = {"in_game", "end", "you_won"};
     public final String[] IN_GAME_END_YOU_LOST = {"in_game", "end", "you_lost"};
+    public final String[] IN_GAME_END_GAME_ENDED_TOO_EARLY = {"in_game", "end", "game_ended_too_early"};
     public final String[] IN_GAME_END_TEAM_WIN = {"in_game", "end", "team_win"};
     public final String[] IN_GAME_END_GAME_END = {"in_game", "end", "game_end"};
     public final String[] IN_GAME_RESPAWN_PROTECTION_REMAINING = {"in_game", "respawn_protection", "remaining"};

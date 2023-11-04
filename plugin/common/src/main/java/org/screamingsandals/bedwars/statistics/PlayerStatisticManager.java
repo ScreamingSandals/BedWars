@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.statistics;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -86,11 +87,21 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return null;
         }
 
-        if (!this.playerStatistic.containsKey(player.getUuid())) {
-            return this.loadStatistic(player.getUuid());
+        return getStatistic(player.getUuid());
+    }
+
+
+    @Override
+    public PlayerStatisticImpl getStatistic(UUID uuid) {
+        if (uuid == null) {
+            return null;
         }
 
-        return this.playerStatistic.get(player.getUuid());
+        if (!this.playerStatistic.containsKey(uuid)) {
+            return this.loadStatistic(uuid);
+        }
+
+        return this.playerStatistic.get(uuid);
     }
 
     @OnEnable
@@ -239,7 +250,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
 
         this.playerStatistic.put(playerStatistic.getUuid(), playerStatistic);
-        this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
+        updateScore(playerStatistic);
         return playerStatistic;
     }
 
@@ -264,7 +275,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
 
         this.playerStatistic.put(uuid, playerStatistic);
-        this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
+        updateScore(playerStatistic);
         return playerStatistic;
     }
 

@@ -162,6 +162,8 @@ public class MainConfig {
                 .key("prefer-1-19-4-display-entities").defValue(true)
                 .key("remember-what-scoreboards-players-had-before").defValue(false)
                 .key("use-chunk-tickets-if-available").defValue(true)
+                .key("reset-full-spawner-countdown-after-picking").defValue(true)
+                .key("players-can-win-game-only-after-seconds").defValue(0)
                 .section("kick-players-upon-final-death")
                     .key("enabled").defValue(false)
                     .key("delay").defValue(5)

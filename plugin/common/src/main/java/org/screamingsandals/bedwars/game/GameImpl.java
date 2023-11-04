@@ -2069,86 +2069,92 @@ public class GameImpl implements Game {
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
-                        TeamImpl winner = null;
-                        for (var t : teamsInGame) {
-                            if (t.isAlive()) {
-                                winner = t;
-                                String time = getFormattedTimeLeft(gameTime - countdown);
-                                var message = Message
-                                        .of(LangKeys.IN_GAME_END_TEAM_WIN)
-                                        .prefixOrDefault(getCustomPrefixComponent())
-                                        .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                        .placeholder("time", time);
-                                boolean madeRecord = processRecord(t, gameTime - countdown);
-                                for (BedWarsPlayer player : players) {
-                                    player.sendMessage(message);
-                                    if (getPlayerTeam(player) == t) {
-                                        Message.of(LangKeys.IN_GAME_END_YOU_WON)
-                                                .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                                .placeholder("time", time)
-                                                .times(TitleUtils.defaultTimes())
-                                                .title(player);
-                                        EconomyUtils.deposit(player, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_WIN, 0.0));
+                        if (gameTime - countdown < configurationContainer.getOrDefault(GameConfigurationContainer.PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, 0)) {
+                            Message.of(LangKeys.IN_GAME_END_YOU_LOST)
+                                    .join(LangKeys.IN_GAME_END_GAME_ENDED_TOO_EARLY)
+                                    .title(players);
+                        } else {
+                            TeamImpl winner = null;
+                            for (var t : teamsInGame) {
+                                if (t.isAlive()) {
+                                    winner = t;
+                                    String time = getFormattedTimeLeft(gameTime - countdown);
+                                    var message = Message
+                                            .of(LangKeys.IN_GAME_END_TEAM_WIN)
+                                            .prefixOrDefault(getCustomPrefixComponent())
+                                            .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
+                                            .placeholder("time", time);
+                                    boolean madeRecord = processRecord(t, gameTime - countdown);
+                                    for (BedWarsPlayer player : players) {
+                                        player.sendMessage(message);
+                                        if (getPlayerTeam(player) == t) {
+                                            Message.of(LangKeys.IN_GAME_END_YOU_WON)
+                                                    .join(LangKeys.IN_GAME_END_TEAM_WIN)
+                                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
+                                                    .placeholder("time", time)
+                                                    .times(TitleUtils.defaultTimes())
+                                                    .title(player);
+                                            EconomyUtils.deposit(player, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_WIN, 0.0));
 
-                                        SpawnEffects.spawnEffect(this, player, "game-effects.end");
+                                            SpawnEffects.spawnEffect(this, player, "game-effects.end");
 
-                                        if (PlayerStatisticManager.isEnabled()) {
-                                            var statistic = PlayerStatisticManager.getInstance()
-                                                    .getStatistic(player);
-                                            statistic.addWins(1);
-                                            statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_WIN, 50));
+                                            if (PlayerStatisticManager.isEnabled()) {
+                                                var statistic = PlayerStatisticManager.getInstance()
+                                                        .getStatistic(player);
+                                                statistic.addWins(1);
+                                                statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_WIN, 50));
 
-                                            if (madeRecord) {
-                                                statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_RECORD, 100));
+                                                if (madeRecord) {
+                                                    statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_RECORD, 100));
+                                                }
+
+                                                if (StatisticsHolograms.isEnabled()) {
+                                                    StatisticsHolograms.getInstance().updateHolograms(player);
+                                                }
+
+                                                if (MainConfig.getInstance().node("statistics", "show-on-game-end")
+                                                        .getBoolean()) {
+                                                    StatsCommand.sendStats(player, PlayerStatisticManager.getInstance().getStatistic(player));
+                                                }
+
                                             }
+
+                                            if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
+                                                if (PlayerStatisticManager.isEnabled()) {
+                                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+                                                    GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
+                                                } else {
+                                                    GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, 0);
+                                                }
+                                                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+                                                    if (PlayerStatisticManager.isEnabled()) {
+                                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+                                                        GameImpl.this.dispatchRewardCommands("player-win", player, statistic.getScore());
+                                                    } else {
+                                                        GameImpl.this.dispatchRewardCommands("player-win", player, 0);
+                                                    }
+                                                }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
+                                            }
+                                        } else {
+                                            Message.of(LangKeys.IN_GAME_END_YOU_LOST)
+                                                    .join(LangKeys.IN_GAME_END_TEAM_WIN)
+                                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
+                                                    .placeholder("time", time)
+                                                    .times(TitleUtils.defaultTimes())
+                                                    .title(player);
 
                                             if (StatisticsHolograms.isEnabled()) {
                                                 StatisticsHolograms.getInstance().updateHolograms(player);
                                             }
-
-                                            if (MainConfig.getInstance().node("statistics", "show-on-game-end")
-                                                    .getBoolean()) {
-                                                StatsCommand.sendStats(player, PlayerStatisticManager.getInstance().getStatistic(player));
-                                            }
-
-                                        }
-
-                                        if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                                            if (PlayerStatisticManager.isEnabled()) {
-                                                var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                                                GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
-                                            } else {
-                                                GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, 0);
-                                            }
-                                            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                                                if (PlayerStatisticManager.isEnabled()) {
-                                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                                                    GameImpl.this.dispatchRewardCommands("player-win", player, statistic.getScore());
-                                                } else {
-                                                    GameImpl.this.dispatchRewardCommands("player-win", player, 0);
-                                                }
-                                            }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
-                                        }
-                                    } else {
-                                        Message.of(LangKeys.IN_GAME_END_YOU_LOST)
-                                                .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                                .placeholder("time", time)
-                                                .times(TitleUtils.defaultTimes())
-                                                .title(player);
-
-                                        if (StatisticsHolograms.isEnabled()) {
-                                            StatisticsHolograms.getInstance().updateHolograms(player);
                                         }
                                     }
+                                    break;
                                 }
-                                break;
                             }
-                        }
 
-                        var endingEvent = new GameEndingEventImpl(this, winner);
-                        EventManager.fire(endingEvent);
+                            var endingEvent = new GameEndingEventImpl(this, winner);
+                            EventManager.fire(endingEvent);
+                        }
                         EventManager.fire(statusE);
                         Debug.info(name + ": game is ending");
 

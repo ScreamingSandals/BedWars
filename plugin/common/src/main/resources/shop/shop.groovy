@@ -1,25 +1,5 @@
 /*
- * Copyright (C) 2022 ScreamingSandals
- *
- * This file is part of Screaming BedWars.
- *
- * Screaming BedWars is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Screaming BedWars is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
- */
-
-package shop
-/*
- * Copyright (C) 2022 ScreamingSandals
+ * Copyright (C) 2023 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -39,165 +19,163 @@ package shop
 
 inventory {
 
-    category ('DIAMOND_CHESTPLATE;1;Armor;Protect yourself with armor! Click here.') {
+    category ('diamond_chestplate;1;Armor;Protect yourself with armor! Click here.') {
 
 
-        item('LEATHER_HELMET for 1 of bronze') {
+        item('leather_helmet for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
-        item('LEATHER_LEGGINGS for 1 of bronze') {
+        item('leather_leggings for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
-        item('LEATHER_BOOTS for 1 of bronze') {
+        item('leather_boots for 1 of bronze') {
             property 'applycolorbyteam'
 
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+            stack.enchant 'protection'
         }
 
-        item('CHAINMAIL_CHESTPLATE for 1 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL'
+        item('chainmail_chestplate for 1 of iron') {
+            stack.enchant 'protection'
         }
 
-        item('CHAINMAIL_CHESTPLATE for 3 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL', 2
+        item('chainmail_chestplate for 3 of iron') {
+            stack.enchant 'protection', 2
         }
 
-        item('CHAINMAIL_CHESTPLATE for 7 of iron') {
-            stack.enchant 'PROTECTION_ENVIRONMENTAL', 3
+        item('chainmail_chestplate for 7 of iron') {
+            stack.enchant 'protection', 3
         }
 
-        item('IRON_HELMET for 10 of gold') {
+        item('iron_helmet for 10 of gold') {
             stack {
                 name 'Helm'
-                enchant 'PROTECTION_ENVIRONMENTAL', 2
+                enchant 'protection', 2
             }
         }
     }
 
 
-    category ('DIAMOND_SWORD;1;Swords;Click here to get sword for attacking your enemies') {
+    category ('diamond_sword;1;Swords;Click here to get sword for attacking your enemies') {
         column 'center'
 
-        item('STICK for 8 of bronze') {
-            stack.enchant 'KNOCKBACK'
+        item('stick for 8 of bronze') {
+            stack.enchant 'knockback'
         }
 
-        item('WOODEN_SWORD for 1 of iron') {
-            stack.enchant 'DAMAGE_ALL'
+        item('wooden_sword for 1 of iron') {
+            stack.enchant 'sharpness'
         }
 
-        item('STONE_SWORD for 3 of iron') {
-            stack.enchant 'DAMAGE_ALL'
+        item('stone_sword for 3 of iron') {
+            stack.enchant 'sharpness'
         }
 
-        item('IRON_SWORD for 7 of iron') {
-            stack.enchant 'DAMAGE_ALL' 
+        item('iron_sword for 7 of iron') {
+            stack.enchant 'sharpness'
         }
 
-        item('IRON_SWORD for 3 of gold') {
+        item('iron_sword for 3 of gold') {
             stack.enchant ([
-                    'DAMAGE_ALL': 1,
-                    'KNOCKBACK': 1
+                    'sharpness': 1,
+                    'knockback': 1
             ])
         }
 
     }
 
-    category ('BOW;1;Bows;Prove yourself as a marksman with these wonderful bows') {
+    category ('bow;1;Bows;Prove yourself as a marksman with these wonderful bows') {
         column 'right'
 
-        item('BOW for 3 of gold') {
-            stack.enchant 'ARROW_INFINITE'
+        item('bow for 3 of gold') {
+            stack.enchant 'infinity'
         }
 
-        item('BOW for 7 of gold') {
-            stack.enchant (['ARROW_INFINITE', 'ARROW_DAMAGE'])
+        item('bow for 7 of gold') {
+            stack.enchant (['infinity', 'power'])
         }
 
-        item('BOW for 13 of gold') {
+        item('bow for 13 of gold') {
             stack.enchant ([
-                    'ARROW_INFINITE': 1,
-                    'ARROW_DAMAGE': 2
+                    'infinity': 1,
+                    'power': 2
             ])
         }
 
-        item('BOW for 16 of gold') {
-            stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE'])
+        item('bow for 16 of gold') {
+            stack.enchant (['infinity',  'flame'])
         }
 
-        item('BOW for 18 of gold') {
-            stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE', 'ARROW_KNOCKBACK'])
+        item('bow for 18 of gold') {
+            stack.enchant (['infinity',  'flame', 'punch'])
         }
 
-        item('ARROW for 1 of gold')
+        item('arrow for 1 of gold')
     }
 
-    category ('COOKED_PORKCHOP;1;Eat;Are you hungry? Get something to eat.') {
+    category ('cooked_porkchop;1;Eat;Are you hungry? Get something to eat.') {
         row 3
         column 2
 
-        item ('COOKED_PORKCHOP;2 for 4 of bronze')
-        item ('GOLDEN_APPLE for 16 of iron')
+        item ('cooked_porkchop;2 for 4 of bronze')
+        item ('golden_apple for 16 of iron')
     }
 
     /* THIS PART IS NOT DONE, NOW I'M WORKING ON POTION-TYPE INTEGRATION */
 
-    category ('POTION;1;Drinks;Not enough? Use these potions and you\'ll feel better!') {
+    category ('potion;1;Drinks;Not enough? Use these potions and you\'ll feel better!') {
         stack.potion 'strength'
         row 3
         column 6
 
-        item ('POTION for 3 of iron') {
+        item ('potion for 3 of iron') {
             stack.potion 'healing'
         }
 
-        item ('POTION for 5 of iron') {
+        item ('potion for 5 of iron') {
             stack.potion 'strong_healing'
         }
 
-        item ('POTION for 1 of gold') {
+        item ('potion for 1 of gold') {
             stack.potion 'swiftness'
         }
 
-        item ('POTION for 5 of gold') {
+        item ('potion for 5 of gold') {
             stack.potion 'strength'
         }
-
     }
 
-    category ('SANDSTONE;1;Blocks;Get to the others! Possible with blocks.') {
+    category ('sandstone;1;Blocks;Get to the others! Possible with blocks.') {
         linebreak 'before'
 
-        item('CUT_SANDSTONE;2 for 1 of bronze')
-        item('END_STONE;3 for 7 of bronze')
-        item('IRON_BLOCK for 3 of iron')
-        item('GLOWSTONE;4 for 15 of bronze')
-        item('GLASS for 4 of bronze') {
+        item('cut_sandstone;2 for 1 of bronze')
+        item('end_stone;3 for 7 of bronze')
+        item('iron_block for 3 of iron')
+        item('glowstone;4 for 15 of bronze')
+        item('glass for 4 of bronze') {
             property 'applycolorbyteam'
         }
-        item('LADDER for 2 of bronze')
-
+        item('ladder for 2 of bronze')
     }
 
-    category ('TNT;1;Useful Stuff;Looking for useful stuff? Here are some!') {
+    category ('tnt;1;Useful Stuff;Looking for useful stuff? Here are some!') {
         column 'center'
 
-        item('CHEST for 1 of iron')
-        item('ENDER_CHEST for 1 of gold')
-        item('TNT;1;Autoigniteable TNT for 3 of iron') {
+        item('chest for 1 of iron')
+        item('ender_chest for 1 of gold')
+        item('tnt;1;Autoigniteable TNT for 3 of iron') {
             property 'AutoIgniteableTnt', [
                     'explosion-time': 5,
                     'damage-placer': false
             ]
         }
-        item('GUNPOWDER;1;Warp Powder for 7 of iron') {
-            stack.lore ([
+        item('gunpowder;1;Warp Powder for 7 of iron') {
+            stack.lore([
                     "When using this powder you'll get",
                     "teleported to you spawn point within 6 seconds",
                     "Warning: Any movement will stop the process"
@@ -207,8 +185,8 @@ inventory {
                     delay: 6
             ]
         }
-        item('STRING;1;Trap for 3 of iron') {
-            stack.lore ([
+        item('string;1;Trap for 3 of iron') {
+            stack.lore([
                     "Get informed if an enemy steps on your trap",
                     "and your enemy won't be able to move properly."
             ]);
@@ -220,38 +198,38 @@ inventory {
                             ],
                             [
                                     effect: [
-                                            'effect': 'blindness',
+                                            'effect'   : 'blindness',
                                             'amplifier': 2,
-                                            'duration': 100,
-                                            'ambient': true,
-                                            'has-particles': true,
-                                            'has-icon': true
+                                            'duration' : 100,
+                                            'ambient'  : true,
+                                            'particles': true,
+                                            'icon'     : true
                                     ]
                             ],
                             [
                                     effect: [
-                                            'effect': 'weakness',
+                                            'effect'   : 'weakness',
                                             'amplifier': 2,
-                                            'duration': 100,
-                                            'ambient': true,
-                                            'has-particles': true,
-                                            'has-icon': true
+                                            'duration' : 100,
+                                            'ambient'  : true,
+                                            'particles': true,
+                                            'icon'     : true
                                     ]
                             ],
                             [
                                     effect: [
-                                            'effect': 'slowness',
+                                            'effect'   : 'slowness',
                                             'amplifier': 2,
-                                            'duration': 100,
-                                            'ambient': true,
-                                            'has-particles': true,
-                                            'has-icon': true
+                                            'duration' : 100,
+                                            'ambient'  : true,
+                                            'particles': true,
+                                            'icon'     : true
                                     ]
                             ]
                     ]
             ]
         }
-        item('IRON_BOOTS;1;Magnet-Shoes for 6 of iron') {
+        item('iron_boots;1;Magnet-Shoes for 6 of iron') {
             stack.lore([
                     "Wear those shoes and have a 75%",
                     "chance of getting no knockback!"
@@ -261,7 +239,7 @@ inventory {
                     probability: 75
             ]
         }
-        item('COMPASS;1;Tracker for 5 of iron') {
+        item('compass;1;Tracker for 5 of iron') {
             stack.lore([
                     "Wanna know where your closest target is?",
                     "Let's try this out!"
@@ -269,7 +247,7 @@ inventory {
 
             property 'tracker'
         }
-        item('BLAZE_ROD;1;"Rescue Platform" for 15 of iron') {
+        item('blaze_rod;1;"Rescue Platform" for 15 of iron') {
             stack.lore([
                     "Protect yourself from falling into",
                     "void with a Rescue Platform.",
@@ -280,7 +258,7 @@ inventory {
                     delay: 5
             ]
         }
-        item('ENDER_EYE;1;Arrow Blocker for 5 of gold') {
+        item('ender_eye;1;Arrow Blocker for 5 of gold') {
             stack.lore([
                     "Block arrows that are coming",
                     "for you with black magic.",
@@ -288,10 +266,10 @@ inventory {
             ])
 
             property 'arrowblocker', [
-                    delay: 10
+                    delay: 5
             ]
         }
-        item('BRICKS;1;Protection Wall for 64 of bronze') {
+        item('bricks;1;Protection Wall for 64 of bronze') {
             stack.lore([
                     "Instantly builds a wall that",
                     "can save your life!"
@@ -299,7 +277,7 @@ inventory {
 
             property 'protectionwall'
         }
-        item('GHAST_SPAWN_EGG;1;Golem for 24 of iron') {
+        item('ghast_spawn_egg;1;Golem for 24 of iron') {
             stack.lore([
                     "An iron golem that will protect",
                     "your team from the enemies."
@@ -310,7 +288,7 @@ inventory {
                     follow: 16.0
             ]
         }
-        item('SHEEP_SPAWN_EGG;1;TNT Sheep for 10 of gold') {
+        item('sheep_spawn_egg;1;TNT Sheep for 10 of gold') {
             stack.lore([
                     "Use the TNT-Sheep! It will",
                     "walk towards your closest enemy",
@@ -319,7 +297,7 @@ inventory {
 
             property 'TNTSheep'
         }
-        item('FIRE_CHARGE;1;Fireball for 40 of iron') {
+        item('fire_charge;1;Fireball for 40 of iron') {
             stack.lore([
                     "Is it a bird? Is it a plane?",
                     "By the time you know",
@@ -329,29 +307,28 @@ inventory {
             property 'ThrowableFireball'
         }
 
-        item('EGG;1;Bridge Egg for 20 of gold') {
+        item('egg;1;Bridge Egg for 20 of gold') {
             stack.lore([
                     "This egg creates a trail of bridge after it's thrown"
             ])
 
             property 'BridgeEgg'
         }
-
     }
 
-    category ('DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes.') {
+    category ('diamond_pickaxe;1;Pickaxes;Destroy others blocks? Use these pickaxes.') {
         column 'right'
 
-        item('WOODEN_PICKAXE for 4 of bronze') {
-            stack.enchant 'EFFICIENCY'
+        item('wooden_pickaxe for 4 of bronze') {
+            stack.enchant 'efficiency'
         }
 
-        item('STONE_PICKAXE for 2 of iron') {
-            stack.enchant 'EFFICIENCY'
+        item('stone_pickaxe for 2 of iron') {
+            stack.enchant 'efficiency'
         }
 
-        item('IRON_PICKAXE for 1 of gold') {
-            stack.enchant 'EFFICIENCY'
+        item('iron_pickaxe for 1 of gold') {
+            stack.enchant 'efficiency'
         }
     }
 

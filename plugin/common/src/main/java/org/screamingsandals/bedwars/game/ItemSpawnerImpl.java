@@ -144,7 +144,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         /* Update spawned items */
         spawnedItems.removeIf(Entity::isDead);
 
-        int spawned = spawnedItems.size();
+        int spawned = getSpawnedItemsCount();
 
         if (spawned >= maxSpawnedResources) {
             if (hologram != null && !spawnerIsFullHologram) {
@@ -194,11 +194,18 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     public void remove(ItemEntity item) {
         if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
             spawnedItems.remove(item);
-            if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
+            if (spawnerIsFullHologram && maxSpawnedResources > getSpawnedItemsCount()) {
                 spawnerIsFullHologram = false;
                 rerenderHologram = true;
             }
         }
+    }
+
+    /**
+     * Works only if maxSpawnedResources > 0
+     */
+    public int getSpawnedItemsCount() {
+        return spawnedItems.stream().mapToInt(i -> i.getItem().getAmount()).sum();
     }
 
     @Override

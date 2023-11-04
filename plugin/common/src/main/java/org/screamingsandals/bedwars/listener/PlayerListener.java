@@ -372,6 +372,10 @@ public class PlayerListener {
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
             Server.getConnectedPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player));
         }
+
+        if (PlayerStatisticManager.isEnabled()) {
+            PlayerStatisticManager.getInstance().loadStatistic(event.player().getUuid());
+        }
     }
 
     @OnEvent(order = EventExecutionOrder.LAST)

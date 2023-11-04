@@ -101,6 +101,8 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(DISABLE_CAKE_EATING, "disable-cake-eating");
         register(DISABLE_FLIGHT, "disable-flight");
         register(ALLOW_FAKE_DEATH, "allow-fake-death");
+        register(RESET_FULL_SPAWNER_COUNTDOWN_AFTER_PICKING, "reset-full-spawner-countdown-after-picking");
+        register(PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, "players-can-win-game-only-after-seconds");
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);
