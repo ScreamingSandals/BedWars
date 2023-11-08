@@ -16,10 +16,10 @@ jointeam-entity-show-name: true
 # are teammates allowed to damage themselves?
 friendlyfire: false
 # do items drop from players when killed in the arena?
-player-drops: false
+player-drops: true
 # should the players be joined to a random team after the lobby waiting time passes?
 # if false, the game won't start until everyone chooses a team
-join-randomly-after-lobby-timeout: true
+join-randomly-after-lobby-timeout: false
 # should BedWars prevent players from killing the merchants?
 prevent-killing-villagers: true
 # should the compass for choosing teams be available in the lobby?
@@ -28,39 +28,44 @@ compass-enabled: true
 join-randomly-on-lobby-join: false
 add-wool-to-inventory-on-join: true
 prevent-spawning-mobs: true
-spawner-holograms: false
+spawner-holograms: true
 spawner-disable-merge: true
 prevent-lobby-spawn-mobs-in-radius: 16
 spawner-holo-height: 0.25
 spawner-holograms-countdown: true
-damage-when-player-is-not-in-arena: true
+damage-when-player-is-not-in-arena: false
 remove-unused-target-blocks: true
 allow-block-falling: true
-game-start-items: true
+game-start-items: false
 player-respawn-items: false
-gived-game-start-items:
-- wooden_sword
-- leather_helmet
-- leather_boots
-- leather_leggings
-- leather_chestplate
-disable-hunger: true
+# When game-start-items is enabled, the player is going to get all items listed in the following list.
+# Example:
+# gived-game-start-items:
+# - wooden_sword
+# - leather_helmet
+# - leather_boots
+# - leather_leggings
+# - leather_chestplate
+gived-game-start-items: []
+gived-player-respawn-items: []
+disable-hunger: false
 automatic-coloring-in-shop: true
 sell-max-64-per-click-in-shop: true
 enable-cheat-command-for-admins: false
 shopkeepers-are-silent: true
-destroy-placed-blocks-by-explosion-except:
-- ''
+destroy-placed-blocks-by-explosion-except: []
 destroy-placed-blocks-by-explosion: true
 holo-above-bed: true
 allow-spectator-join: false
 disable-server-message:
   player-join: false
   player-leave: false
+disable-flight: true
 respawn-cooldown:
   enabled: true
   time: 5
 stop-team-spawners-on-die: false
+allow-fake-death: false
 # Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+
 prefer-1-19-4-display-entities: true
 remember-what-scoreboards-players-had-before: false
@@ -91,20 +96,30 @@ farmBlocks:
   enable: false
   blocks: []
 scoreboard:
-  enable: false
-  title: &a%game%&r - %time%
-  bedLost: &c✘
-  bedExists: &a✔
+  enable: true
+  title: '&a%game%&r - %time%'
+  bedLost: '&c✘'
+  anchorEmpty: '&e✘'
+  bedExists: '&a✔'
   teamTitle: '%bed%%color%%team%'
-  anchorEmpty: &e✘
 title:
   enabled: true
   fadeIn: 0
   stay: 20
   fadeOut: 0
+shop:
+  rows: 4
+  render-actual-rows: 6
+  render-offset: 9
+  render-header-start: 0
+  render-footer-start: 45
+  items-on-row: 9
+  show-page-numbers: true
+  inventory-type: CHEST
+  citizens-enabled: false
 items:
   jointeam: COMPASS
-  leavegame: RED_BED
+  leavegame: SLIME_BALL
   startgame: DIAMOND
   shopback: BARRIER
   shopcosmetic: GRAY_STAINED_GLASS_PANE
@@ -112,44 +127,37 @@ items:
   pageforward: ARROW
   team-select: WHITE_WOOL
 vault:
-  enable: false
+  enable: true
   reward:
     kill: 5
     win: 20
     final-kill: 5
     bed-destroy: 0
 resources:
-  emerald:
-    material: EMERALD
-    color: GREEN
-    name: Emerald
-    interval: 60
-    translate: resource_emerald
-    spread: 0.1
-  diamond:
-    material: DIAMOND
-    color: BLUE
-    name: Diamond
-    interval: 30
-    translate: resource_diamond
-    spread: 0.1
-  iron:
-    material: IRON_INGOT
-    color: WHITE
-    name: Iron
-    interval: 2.5
-    translate: resource_iron
-    spread: 1.0
   gold:
     material: GOLD_INGOT
     color: GOLD
     name: Gold
-    interval: 8
+    interval: 20
     translate: resource_gold
+    spread: 1.0
+  iron:
+    material: IRON_INGOT
+    color: GRAY
+    name: Iron
+    interval: 10
+    translate: resource_iron
+    spread: 1.0
+  bronze:
+    material: BRICK
+    color: DARK_RED
+    name: Bronze
+    interval: 1
+    translate: resource_bronze
     spread: 1.0
 respawn:
   protection-enabled: true
-  protection-time: 5
+  protection-time: 10
   show-messages: true
 specials:
   action-bar-messages: true
@@ -169,7 +177,7 @@ specials:
     distance: 2
     material: CUT_SANDSTONE
   tnt-sheep:
-    speed: 2.0
+    speed: 0.25
     follow-range: 10.0
     max-target-distance: 32
     explosion-time: 8
@@ -196,7 +204,7 @@ specials:
     incendiary: true
     damage-thrower: true
   auto-igniteable-tnt:
-    explosion-time: 3
+    explosion-time: 8
     damage-placer: true
     damage: 4.0
 sounds:
@@ -268,14 +276,14 @@ game-effects:
   beddestroy: {}
   warppowdertick: {}
 lobby-scoreboard:
-  enabled: false
-  title: &eBEDWARS
+  enabled: true
+  title: '&eBEDWARS'
   content:
   - ' '
   - '&fMap: &2%arena%'
   - '&fPlayers: &2%players%&f/&2%maxplayers%'
   - ' '
-  - &fWaiting ...
+  - '&fWaiting ...'
   - ' '
 statistics:
   enabled: true
@@ -284,12 +292,12 @@ statistics:
   bed-destroyed-kills: false
   scores:
     kill: 10
+    final-kill: 0
     die: 0
     win: 50
     bed-destroy: 25
     lose: 0
     record: 100
-    final-kill: 0
 database:
   host: localhost
   port: 3306
@@ -349,11 +357,13 @@ rewards:
 lore:
   generate-automatically: true
   text:
-  - '&7Cost: &f%price% %resource%'
-  - ''
+  - '&7Price:'
+  - '&7%price% %resource%'
+  - '&7Amount:'
+  - '&7%amount%'
 sign:
   lines:
-  - &c&l[BedWars]
+  - '&c&l[BedWars]'
   - '%arena%'
   - '%status%'
   - '%players%'
@@ -384,21 +394,10 @@ mainlobby:
 turnOnExperimentalGroovyShop: false
 preventSpectatorFlyingAway: false
 removePurchaseMessages: false
+removePurchaseFailedMessages: false
+removeUpgradeMessages: false
 disableCakeEating: true
 disableDragonEggTeleport: true
-disable-flight: true
-shop:
-  rows: 4
-  render-actual-rows: 6
-  render-offset: 9
-  render-header-start: 0
-  render-footer-start: 45
-  items-on-row: 9
-  show-page-numbers: true
-  inventory-type: CHEST
-  citizens-enabled: true
-gived-player-respawn-items: []
-allow-fake-death: false
 preventArenaFromGriefing: false
 update-checker:
   zero:
@@ -435,7 +434,7 @@ tab:
     contents:
     - '&eexample.com'
     - '&fWow!!'
-    - &a%spectators% are watching this match
+    - '&a%spectators% are watching this match'
   hide-spectators: true
   hide-foreign-players: false
 default-permissions:
@@ -446,6 +445,7 @@ default-permissions:
   rejoin: true
   autojoin: true
   leaderboard: true
+  party: true
 # The following sections requires Parties plugin to be installed
 party:
   enabled: false
@@ -454,6 +454,10 @@ party:
 ```
 
 ## Custom resources
+
+!!! tip
+    If you want to switch to `emerald`, `diamond`, `iron` and `gold` specifically, you may want to have another Hypixel features on your server, like upgrades. 
+    In that case, we would recommend you checking out [SBA](https://www.spigotmc.org/resources/sba-screaming-bedwars-addon-1-8-8-1-20-1.99149/).
 
 Open the config (`plugins/BedWars/config.yml`) and scroll down, until you find a section called `resources`. Using `Ctrl+F` helps you to search for it.
 
