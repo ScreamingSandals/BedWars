@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 ScreamingSandals
+ * Copyright (C) 2023 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -22,6 +22,8 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.bedwars.commands.cheat.CheatAdminCommand;
+import org.screamingsandals.bedwars.commands.cheat.CheatConsoleCommand;
 import org.screamingsandals.bedwars.commands.migrate.MigrateBedWars1058Command;
 import org.screamingsandals.bedwars.commands.migrate.MigrateBedWarsRelCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -42,7 +44,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         AdminCommand.class,
         AlljoinCommand.class,
         AutojoinCommand.class,
-        CheatCommand.class,
+        CheatAdminCommand.class,
+        CheatConsoleCommand.class,
         DumpCommand.class,
         HelpCommand.class,
         JoinCommand.class,
