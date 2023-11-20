@@ -50,11 +50,19 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return null;
         }
 
-        if (!this.playerStatistic.containsKey(player.getUniqueId())) {
-            return this.loadStatistic(player.getUniqueId());
+        return getStatistic(player.getUniqueId());
+    }
+
+    public PlayerStatistic getStatistic(UUID uuid) {
+        if (uuid == null) {
+            return null;
         }
 
-        return this.playerStatistic.get(player.getUniqueId());
+        if (!this.playerStatistic.containsKey(uuid)) {
+            return this.loadStatistic(uuid);
+        }
+
+        return this.playerStatistic.get(uuid);
     }
 
     public void initialize() {
@@ -191,6 +199,13 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return playerStatistic;
         }
 
+        if (!this.fileDatabase.isConfigurationSection("data." + uuid.toString())) {
+            Main.getInstance().getLogger().warning("Statistics of player with UUID " + uuid + " are not properly saved and the plugin cannot load them!");
+            PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
+            this.playerStatistic.put(uuid, playerStatistic);
+            return playerStatistic;
+        }
+
         HashMap<String, Object> deserialize = new HashMap<>();
         deserialize.putAll(this.fileDatabase.getConfigurationSection("data." + uuid.toString()).getValues(false));
         PlayerStatistic playerStatistic = new PlayerStatistic(deserialize);
@@ -200,7 +215,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             playerStatistic.setName(player.getName());
         }
         this.playerStatistic.put(uuid, playerStatistic);
-        allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
+        updateScore(playerStatistic);
         return playerStatistic;
     }
 

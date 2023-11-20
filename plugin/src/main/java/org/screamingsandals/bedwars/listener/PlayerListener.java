@@ -324,6 +324,10 @@ public class PlayerListener implements Listener {
         if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
             Bukkit.getOnlinePlayers().stream().filter(Main::isPlayerInGame).forEach(p -> Main.getPlayerGameProfile(p).hidePlayer(player));
         }
+
+        if (Main.isPlayerStatisticsEnabled()) {
+            Main.getPlayerStatisticsManager().loadStatistic(event.getPlayer().getUniqueId());
+        }
     }
 
     @SuppressWarnings("unchecked")
