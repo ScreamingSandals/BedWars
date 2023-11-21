@@ -35,8 +35,10 @@ public class DatabaseManager {
     private int port;
     private String user;
     private boolean useSSL;
+    private boolean addTimezone;
+    private String timezoneID;
 
-    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, boolean useSSL) {
+    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, boolean useSSL, boolean addTimezone, String timezoneID) {
         this.host = host;
         this.port = port;
         this.user = user;
@@ -44,12 +46,14 @@ public class DatabaseManager {
         this.database = database;
         this.tablePrefix = tablePrefix;
         this.useSSL = useSSL;
+        this.addTimezone = addTimezone;
+        this.timezoneID = timezoneID;
     }
 
     public void initialize() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
-                + "?autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID() + "&useSSL=" + useSSL);
+                + "?autoReconnect=true" + (addTimezone && timezoneID != null ? "&serverTimezone=" + timezoneID : "") + "&useSSL=" + useSSL);
         config.setUsername(this.user);
         config.setPassword(this.password);
         config.addDataSourceProperty("cachePrepStmts", "true");
