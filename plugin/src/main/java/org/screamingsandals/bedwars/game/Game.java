@@ -2696,7 +2696,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         for (SignBlock signBlock : gameSigns) {
-            if (signBlock.getLocation().getChunk().isLoaded()) {
+            if (signBlock.getLocation() != null && signBlock.getLocation().getChunk().isLoaded()) {
                 BlockState blockState = signBlock.getLocation().getBlock().getState();
                 if (blockState instanceof Sign) {
                     Sign sign = (Sign) blockState;
