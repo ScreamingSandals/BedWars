@@ -1332,6 +1332,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 statusbar = BossBarSelector.getBossBar(lobbySpawn);
             }
             preparing = false;
+            Bukkit.getPluginManager().callEvent(new BedWarsGameEnabledEvent(this));
         }
     }
 
@@ -1348,6 +1349,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         } else {
             afterRebuild = GameStatus.DISABLED;
         }
+        Bukkit.getPluginManager().callEvent(new BedWarsGameDisabledEvent(this));
     }
 
     public void joinToGame(Player player) {
