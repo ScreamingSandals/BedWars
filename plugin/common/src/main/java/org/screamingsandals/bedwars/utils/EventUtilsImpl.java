@@ -45,6 +45,8 @@ public class EventUtilsImpl implements EventUtils {
             Map.entry(ApplyPropertyToDisplayedItemEvent.class, ApplyPropertyToDisplayedItemEventImpl.class),
             Map.entry(ApplyPropertyToItemEvent.class, ApplyPropertyToItemEventImpl.class),
             Map.entry(GameChangedStatusEvent.class, GameChangedStatusEventImpl.class),
+            Map.entry(GameDisabledEvent.class, GameDisabledEventImpl.class),
+            Map.entry(GameEnabledEvent.class, GameEnabledEventImpl.class),
             Map.entry(GameEndEvent.class, GameEndEventImpl.class),
             Map.entry(GameEndingEvent.class, GameEndingEventImpl.class),
             Map.entry(GameStartedEvent.class, GameStartedEventImpl.class),

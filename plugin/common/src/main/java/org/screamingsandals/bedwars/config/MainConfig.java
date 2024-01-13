@@ -562,6 +562,8 @@ public class MainConfig {
                     .key("password").defValue("secret")
                     .key("table-prefix").defValue("bw_")
                     .key("useSSL").defValue(false)
+                    .key("add-timezone-to-connection-string").defValue(true)
+                    .key("timezone-id").defValue(TimeZone.getDefault().getID())
                     .back()
                 .section("bossbar")
                     .key("use-xp-bar").defValue(false)

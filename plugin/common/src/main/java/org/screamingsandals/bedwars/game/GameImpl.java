@@ -1286,6 +1286,7 @@ public class GameImpl implements Game {
                 statusbar = new BossBarImpl();
             }
             preparing = false;
+            EventManager.fire(new GameEnabledEventImpl(this));
         }
     }
 
@@ -1303,6 +1304,7 @@ public class GameImpl implements Game {
         } else {
             afterRebuild = GameStatus.DISABLED;
         }
+        EventManager.fire(new GameDisabledEventImpl(this));
     }
 
     @Override
