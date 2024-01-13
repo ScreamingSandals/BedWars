@@ -10,7 +10,6 @@ dependencies {
 
     /* SHADED */
     implementation libs.bstats
-    implementation project(':BedWars-NMS')
     implementation(libs.commodore) { // brigadier support for Bukkit/Spigot
         exclude group: 'com.mojang', module: 'brigadier'
     }

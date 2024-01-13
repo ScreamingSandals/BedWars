@@ -28,7 +28,6 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
@@ -40,6 +39,7 @@ import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
@@ -50,6 +50,7 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.ai.AiManager;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.economy.EconomyManager;
+import org.screamingsandals.lib.fakedeath.FakeDeath;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.plugin.PluginUtils;
@@ -100,6 +101,7 @@ import java.util.stream.Collectors;
                 EconomyManager.class,
                 PlatformService.class,
                 AiManager.class,
+                FakeDeath.class,
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,
@@ -214,8 +216,15 @@ public class BedWarsPlugin implements BedwarsAPI {
         return MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
     }
 
-    public static List<String> getAllSpawnerTypes(GameImpl game) {
-        return game.getGameVariant().getItemSpawnerTypeNames();
+    public static void processFakeDeath(@NotNull BedWarsPlayer bedWarsPlayer) {
+        /* BedWars Player is required = they have custom teleport method */
+
+        FakeDeath.die(bedWarsPlayer, (player, keepInventory) -> {
+            if (keepInventory) {
+                bedWarsPlayer.invClean();
+            }
+            bedWarsPlayer.resetLife();
+        });
     }
 
     @OnPluginLoad

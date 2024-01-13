@@ -13,7 +13,6 @@
 /*/build/
 /plugin/*/build/
 /plugin/universal/test-environment/
-/nms/src/generated/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache

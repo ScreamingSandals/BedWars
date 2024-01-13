@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.bukkit;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -42,16 +41,11 @@ import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
 import org.screamingsandals.bedwars.bukkit.listener.BungeeMotdListener;
 import org.screamingsandals.bedwars.bukkit.region.LegacyRegion;
-import org.screamingsandals.bedwars.bukkit.utils.BukkitFakeDeath;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAccessor;
-import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
-import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket_i_ActionAccessor;
 import org.screamingsandals.bedwars.region.BWRegion;
-import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
@@ -61,7 +55,6 @@ import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockBreakE
 import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockPlaceEvent;
 import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.BukkitBossBar1_8;
 import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.GlobalBossBarBackend1_8;
-import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
@@ -83,10 +76,7 @@ import java.util.function.Consumer;
         BukkitBStatsMetrics.class,
         BungeeMotdListener.class
 })
-@Getter
 public class BukkitPlatformService extends PlatformService {
-    private final FakeDeath fakeDeath = new BukkitFakeDeath();
-
     @OnPostEnable
     public void onPostEnable() {
         if (!Server.isVersion(1, 9)) {
@@ -100,25 +90,6 @@ public class BukkitPlatformService extends PlatformService {
                 // invalid value
             }
         }
-    }
-
-    @Override
-    public void respawnPlayer(@NotNull org.screamingsandals.lib.player.Player playerWrapper, long delay) {
-        var player = playerWrapper.as(Player.class);
-        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-            try {
-                player.spigot().respawn();
-            } catch (Throwable t) {
-                try {
-                    var selectedObj = ServerboundClientCommandPacket_i_ActionAccessor.getFieldPERFORM_RESPAWN();
-                    var packet = Reflect.construct(ServerboundClientCommandPacketAccessor.getConstructor0(), selectedObj);
-                    var connection = ClassStorage.getPlayerConnection(player);
-                    Reflect.fastInvoke(connection, ServerGamePacketListenerImplAccessor.getMethodHandleClientCommand1(), packet);
-                } catch (Throwable ignored) {
-                    t.printStackTrace();
-                }
-            }
-        }, delay, TaskerTime.TICKS);
     }
 
     @Override

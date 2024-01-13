@@ -16,7 +16,6 @@ multiverse = "4.0.0"
 
 # plugins
 screaming-plugin-builder = "1.0.82"
-nms-mapper = "1.4.6"
 buildconfig = "3.0.2"
 
 configurate = "4.1.2"
@@ -41,5 +40,4 @@ configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", ver
 [plugins]
 screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
 screaming-plugin-slib = { id = "org.screamingsandals.plugin-slib", version.ref = "screaming-plugin-builder" }
-nms-mapper = { id = "org.screamingsandals.nms-mapper", version.ref = "nms-mapper" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }

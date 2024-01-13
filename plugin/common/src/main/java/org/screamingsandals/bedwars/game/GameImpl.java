@@ -1994,7 +1994,7 @@ public class GameImpl implements Game {
                         team.start();
                     }
 
-                    if (Server.isVersion(1, 15) && (!PlatformService.getInstance().getFakeDeath().isAvailable() || !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
+                    if (Server.isVersion(1, 15) && (!configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
                         world.setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
                     }
                     preparing = false;

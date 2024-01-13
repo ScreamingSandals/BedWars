@@ -41,11 +41,6 @@ public abstract class PlatformService {
         return ServiceManager.get(PlatformService.class);
     }
 
-    @NotNull
-    public abstract FakeDeath getFakeDeath();
-
-    public abstract void respawnPlayer(@NotNull Player player, long delay);
-
     public abstract void reloadPlugin(@NotNull CommandSender sender);
 
     public abstract void spawnEffect(@NotNull Location location, @NotNull String value);

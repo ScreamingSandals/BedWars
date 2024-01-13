@@ -12,8 +12,6 @@ pluginManagement {
 rootProject.name = 'BedWars-parent'
 include(':BedWars-API')
 project(':BedWars-API').projectDir = file('api')
-include(':BedWars-NMS')
-project(':BedWars-NMS').projectDir = file('nms')
 include(':BedWars')
 project(':BedWars').projectDir = file('plugin/universal')
 include(':BedWars-common')

@@ -1,7 +1,6 @@
 plugins {
     alias libs.plugins.screaming.plugin.builder apply false
     alias libs.plugins.screaming.plugin.slib apply false
-    alias libs.plugins.nms.mapper apply false
     alias libs.plugins.buildconfig apply false
 }
 
@@ -20,34 +19,33 @@ subprojects {
 
     apply plugin: 'org.screamingsandals.plugin-builder'
 
-    if (project.name != 'BedWars-NMS') {
-        apply plugin: 'org.screamingsandals.plugin-slib'
+    apply plugin: 'org.screamingsandals.plugin-slib'
 
-        slib {
-            version(libs.versions.screaming.lib)
+    slib {
+        version(libs.versions.screaming.lib)
 
-            multiModulePlatforms('BedWars-%s', 'bukkit')
-            multiModuleUniversalSubproject('BedWars') // custom name
-            multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.types')
-            useApiConfigurationInsteadOfImplementation(true)
+        multiModulePlatforms('BedWars-%s', 'bukkit')
+        multiModuleUniversalSubproject('BedWars') // custom name
+        multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.types')
+        useApiConfigurationInsteadOfImplementation(true)
 
-            additionalContent {
-                module('cloud')
-                module('hologram')
-                module('placeholders')
-                module('sidebar')
-                module('healthindicator')
-                module('npc')
-                module('signs')
-                module('economy')
-                module('ai')
+        additionalContent {
+            module('cloud')
+            module('hologram')
+            module('placeholders')
+            module('sidebar')
+            module('healthindicator')
+            module('npc')
+            module('signs')
+            module('economy')
+            module('ai')
+            module('fakedeath')
 
-                lang()
-                singleModule('cloud-extras')
+            lang()
+            singleModule('cloud-extras')
 
-                simpleInventories {
-                    version(libs.versions.simple.inventories)
-                }
+            simpleInventories {
+                version(libs.versions.simple.inventories)
             }
         }
     }

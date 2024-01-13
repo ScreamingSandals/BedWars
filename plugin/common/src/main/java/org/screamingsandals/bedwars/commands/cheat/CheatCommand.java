@@ -27,7 +27,7 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.PlatformService;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -160,12 +160,7 @@ public abstract class CheatCommand extends BaseCommand {
                                 return;
                             }
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
-                                var fakeDeath = PlatformService.getInstance().getFakeDeath();
-                                if (fakeDeath.isAvailable()) {
-                                    fakeDeath.die(bwPlayer);
-                                } else {
-                                    bwPlayer.setHealth(0);
-                                }
+                                BedWarsPlugin.processFakeDeath(bwPlayer);
                             } else {
                                 bwPlayer.setHealth(0);
                             }

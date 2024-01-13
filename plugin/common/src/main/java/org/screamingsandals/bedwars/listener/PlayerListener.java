@@ -70,6 +70,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -253,9 +254,9 @@ public class PlayerListener {
                     }
                 }
             }
-            if (!PlatformService.getInstance().getFakeDeath().isAvailable() || !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
+            if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlatformService.getInstance().respawnPlayer(victim, 3L);
+                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, victim::respawn, 3L, TaskerTime.TICKS);
             }
             if (victimTeam == null) {
                 return; // we shouldn't continue further in that case
@@ -780,12 +781,9 @@ public class PlayerListener {
 
                 // TODO: check this, there was final damage before
                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false) && !event.cancelled() && (player.getHealth() - event.damage() <= 0)) {
-                    var fakeDeath = PlatformService.getInstance().getFakeDeath();
-                    if (fakeDeath.isAvailable()) {
-                        event.cancelled(true);
-                        Debug.info(player.getName() + " is going to be respawned via FakeDeath");
-                        fakeDeath.die(gPlayer);
-                    }
+                    event.cancelled(true);
+                    Debug.info(player.getName() + " is going to be respawned via FakeDeath");
+                    BedWarsPlugin.processFakeDeath(gPlayer);
                 }
             }
         }
