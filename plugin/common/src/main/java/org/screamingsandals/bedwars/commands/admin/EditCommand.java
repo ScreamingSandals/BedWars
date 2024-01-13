@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 ScreamingSandals
+ * Copyright (C) 2024 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
