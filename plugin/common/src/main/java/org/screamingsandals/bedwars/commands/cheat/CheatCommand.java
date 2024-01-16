@@ -90,7 +90,7 @@ public abstract class CheatCommand extends BaseCommand {
                             return game.getGameVariant().getItemSpawnerTypeNames();
                         })
                 )
-                .argument(IntegerArgument.optional("amount", 1))
+                .argument(this.allowConsole ? IntegerArgument.of("amount") : IntegerArgument.optional("amount", 1))
                 .argument(constructPlayerArgument(manager))
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
@@ -264,19 +264,19 @@ public abstract class CheatCommand extends BaseCommand {
                 })
         );
 
+        var teamArgument = StringArgument.<CommandSender>newBuilder("team")
+                .withSuggestionsProvider((c, s) -> {
+                    var game = getGameForSuggestionProvider(c);
+                    if (game == null) {
+                        return List.of();
+                    }
+
+                    return game.getActiveTeams().stream().map(TeamImpl::getName).collect(Collectors.toList());
+                });
+
         manager.command(commandSenderWrapperBuilder
                 .literal("joinTeam")
-                .argument(StringArgument.<CommandSender>newBuilder("team")
-                        .withSuggestionsProvider((c, s) -> {
-                            var game = getGameForSuggestionProvider(c);
-                            if (game == null) {
-                                return List.of();
-                            }
-
-                            return game.getActiveTeams().stream().map(TeamImpl::getName).collect(Collectors.toList());
-                        })
-                        .asOptional()
-                )
+                .argument(this.allowConsole ? teamArgument : teamArgument.asOptional())
                 .argument(constructPlayerArgument(manager))
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
