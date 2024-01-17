@@ -511,7 +511,7 @@ public class MainConfig {
                                 "power", 1,
                                 "effects", List.of(
                                         Map.of(
-                                                "type", "small",
+                                                "type", "small_ball",
                                                 "flicker", false,
                                                 "trail", false,
                                                 "colors", List.of(
