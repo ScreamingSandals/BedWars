@@ -21,10 +21,20 @@ package org.screamingsandals.bedwars.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.configuration.ConfigurationSection;
+import org.screamingsandals.bedwars.Main;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.TimeZone;
+import java.util.Enumeration;
 
 public class DatabaseManager {
     private String tablePrefix;
@@ -34,33 +44,79 @@ public class DatabaseManager {
     private String password;
     private int port;
     private String user;
-    private boolean useSSL;
-    private boolean addTimezone;
-    private String timezoneID;
+    private ConfigurationSection params;
+    private String type;
+    private String driver;
 
-    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, boolean useSSL, boolean addTimezone, String timezoneID) {
+    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, ConfigurationSection params, String type, String driver) {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
         this.database = database;
         this.tablePrefix = tablePrefix;
-        this.useSSL = useSSL;
-        this.addTimezone = addTimezone;
-        this.timezoneID = timezoneID;
+        this.params = params;
+        this.type = type;
+        this.driver = driver;
     }
 
     public void initialize() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
-                + "?autoReconnect=true" + (addTimezone && timezoneID != null ? "&serverTimezone=" + timezoneID : "") + "&useSSL=" + useSSL);
+        config.setJdbcUrl("jdbc:" +  this.type + "://" + this.host + ":" + this.port + "/" + this.database);
         config.setUsername(this.user);
         config.setPassword(this.password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        for (String key : params.getKeys(false)) {
+            config.addDataSourceProperty(key, params.getString(key));
+        }
+
+        ClassLoader contextCl = null;
+        Class<?> driverClazz = null;
+
+        if (driver != null && !"default".equalsIgnoreCase(driver)) {
+            try {
+                URLClassLoader cl = new URLClassLoader(new URL[] {Main.getInstance().getDataFolder().toPath().resolve(driver).toAbsolutePath().toUri().toURL()}, ClassLoader.getSystemClassLoader().getParent());
+                try (InputStream is = cl.getResourceAsStream("META-INF/services/java.sql.Driver")) {
+                    if (is == null) {
+                        throw new RuntimeException("Database driver JAR does not contain JDBC 4 compatible driver");
+                    }
+                    String driverClassName = null;
+                    try (InputStreamReader isr = new InputStreamReader(is);
+                         BufferedReader reader = new BufferedReader(isr)) {
+                         driverClassName = reader.readLine();
+                    }
+                    if (driverClassName == null) {
+                        throw new RuntimeException("Database driver JAR does not contain JDBC 4 compatible driver");
+                    }
+                    driverClazz = cl.loadClass(driverClassName);
+                    contextCl = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(cl);
+                    config.setDriverClassName(driverClassName);
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         this.dataSource = new HikariDataSource(config);
+
+        if (contextCl != null) {
+            Thread.currentThread().setContextClassLoader(contextCl);
+        }
+
+        if (driverClazz != null) {
+            Enumeration<Driver> drivers = DriverManager.getDrivers();
+            while (drivers.hasMoreElements()) {
+                Driver driver = drivers.nextElement();
+                if (driver.getClass().equals(driverClazz)) {
+                    try {
+                        DriverManager.deregisterDriver(driver);
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
     }
 
     public Connection getConnection() {

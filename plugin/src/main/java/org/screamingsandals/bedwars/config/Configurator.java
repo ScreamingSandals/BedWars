@@ -435,9 +435,29 @@ public class Configurator {
         checkOrSetConfig(modify, "database.user", "root");
         checkOrSetConfig(modify, "database.password", "secret");
         checkOrSetConfig(modify, "database.table-prefix", "bw_");
-        checkOrSetConfig(modify, "database.add-timezone-to-connection-string", true);
-        checkOrSetConfig(modify, "database.timezone-id", TimeZone.getDefault().getID());
-        checkOrSetConfig(modify, "database.useSSL", false);
+        checkOrSetConfig(modify, "database.type", "mysql");
+        checkOrSetConfig(modify, "database.driver", "default");
+        if (!config.isSet("database.params")) {
+            checkOrSetConfig(modify, "database.params", new HashMap<>());
+            checkOrSetConfig(modify, "database.params.useSSL", config.getBoolean("database.useSSL", false));
+            if (config.getBoolean("database.add-timezone-to-connection-string", true)) {
+                checkOrSetConfig(modify, "database.params.serverTimezone", config.getString("database.timezone-id", TimeZone.getDefault().getID()));
+            }
+            checkOrSetConfig(modify, "database.params.autoReconnect", true);
+            checkOrSetConfig(modify, "database.params.cachePrepStmts", true);
+            checkOrSetConfig(modify, "database.params.prepStmtCacheSize", 250);
+            checkOrSetConfig(modify, "database.params.prepStmtCacheSqlLimit", 2048);
+
+            if (config.isSet("database.useSSL")) {
+                config.set("database.useSSL", null);
+            }
+            if (config.isSet("database.add-timezone-to-connection-string")) {
+                config.set("database.add-timezone-to-connection-string", null);
+            }
+            if (config.isSet("database.timezone-id")) {
+                config.set("database.timezone-id", null);
+            }
+        }
 
         checkOrSetConfig(modify, "bossbar.use-xp-bar", false);
         checkOrSetConfig(modify, "bossbar.lobby.enable", true);

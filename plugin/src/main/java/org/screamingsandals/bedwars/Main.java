@@ -385,9 +385,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
                 configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
                 configurator.config.getString("database.password"), configurator.config.getString("database.db"),
-                configurator.config.getString("database.table-prefix", "bw_"), configurator.config.getBoolean("database.useSSL"),
-                configurator.config.getBoolean("database.add-timezone-to-connection-string"),
-                configurator.config.getString("database.timezone-id"));
+                configurator.config.getString("database.table-prefix", "bw_"),
+                configurator.config.getConfigurationSection("database.params"),
+                configurator.config.getString("database.type", "mysql"),
+                configurator.config.getString("database.driver", "default"));
 
         if (isPlayerStatisticsEnabled()) {
             playerStatisticsManager = new PlayerStatisticManager();
