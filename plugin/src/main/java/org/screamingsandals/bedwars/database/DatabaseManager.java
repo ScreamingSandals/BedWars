@@ -83,7 +83,13 @@ public class DatabaseManager {
                     String driverClassName = null;
                     try (InputStreamReader isr = new InputStreamReader(is);
                          BufferedReader reader = new BufferedReader(isr)) {
-                         driverClassName = reader.readLine();
+                        do {
+                            driverClassName = reader.readLine();
+                            if (driverClassName != null) {
+                                // All characters after '#' should be ignored, whitespaces around the qualified name are also ignored
+                                driverClassName = driver.split("#", 2)[0].trim();
+                            }
+                        } while (driverClassName != null && driverClassName.isEmpty());
                     }
                     if (driverClassName == null) {
                         throw new RuntimeException("Database driver JAR does not contain JDBC 4 compatible driver");
