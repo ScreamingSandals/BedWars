@@ -26,15 +26,25 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
+import org.spongepowered.configurate.ConfigurationNode;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
 public class DatabaseManager {
     private final MainConfig mainConfig;
+    @DataFolder
+    private final Path dataFolder;
 
     private String tablePrefix;
     private String database;
@@ -43,9 +53,9 @@ public class DatabaseManager {
     private String password;
     private int port;
     private String user;
-    private boolean useSSL;
-    private boolean addTimezone;
-    private String timezoneID;
+    private ConfigurationNode params;
+    private String type;
+    private String driver;
 
     public static DatabaseManager getInstance() {
         return ServiceManager.get(DatabaseManager.class);
@@ -59,22 +69,74 @@ public class DatabaseManager {
         this.password = mainConfig.node("database", "password").getString();
         this.database = mainConfig.node("database", "db").getString();
         this.tablePrefix = mainConfig.node("database", "table-prefix").getString();
-        this.useSSL = mainConfig.node("database", "useSSL").getBoolean();
-        this.addTimezone = mainConfig.node("database", "add-timezone-to-connection-string").getBoolean();
-        this.timezoneID = mainConfig.node("database", "timezone-id").getString();
+        this.params = mainConfig.node("database", "params");
+        this.type = mainConfig.node("database", "type").getString();
+        this.driver = mainConfig.node("database", "driver").getString();
     }
 
     public void initialize() {
         var config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
-                + "?autoReconnect=true" + (addTimezone && timezoneID != null ? "&serverTimezone=" + timezoneID : "") + "&useSSL=" + useSSL);
+        config.setJdbcUrl("jdbc:" + this.type + "://" + this.host + ":" + this.port + "/" + this.database);
         config.setUsername(this.user);
         config.setPassword(this.password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        params.childrenMap().forEach((key, node) -> {
+            config.addDataSourceProperty(key.toString(), node.getString());
+        });
+
+        ClassLoader contextCl = null;
+        Class<?> driverClazz = null;
+
+        if (driver != null && !"default".equalsIgnoreCase(driver)) {
+            try {
+                var cl = new URLClassLoader(new URL[] {dataFolder.resolve(driver).toAbsolutePath().toUri().toURL()}, ClassLoader.getSystemClassLoader().getParent());
+                try (var is = cl.getResourceAsStream("META-INF/services/java.sql.Driver")) {
+                    if (is == null) {
+                        throw new RuntimeException("Database driver JAR does not contain JDBC 4 compatible driver");
+                    }
+                    String driverClassName = null;
+                    try (var isr = new InputStreamReader(is);
+                         var reader = new BufferedReader(isr)) {
+                        do {
+                            driverClassName = reader.readLine();
+                            if (driverClassName != null) {
+                                // All characters after '#' should be ignored, whitespaces around the qualified name are also ignored
+                                driverClassName = driver.split("#", 2)[0].trim();
+                            }
+                        } while (driverClassName != null && driverClassName.isEmpty());
+                    }
+                    if (driverClassName == null) {
+                        throw new RuntimeException("Database driver JAR does not contain JDBC 4 compatible driver");
+                    }
+                    driverClazz = cl.loadClass(driverClassName);
+                    contextCl = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(cl);
+                    config.setDriverClassName(driverClassName);
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         this.dataSource = new HikariDataSource(config);
+
+        if (contextCl != null) {
+            Thread.currentThread().setContextClassLoader(contextCl);
+        }
+
+        if (driverClazz != null) {
+            var drivers = DriverManager.getDrivers();
+            while (drivers.hasMoreElements()) {
+                var driver = drivers.nextElement();
+                if (driver.getClass().equals(driverClazz)) {
+                    try {
+                        DriverManager.deregisterDriver(driver);
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
     }
 
     public Connection getConnection() {

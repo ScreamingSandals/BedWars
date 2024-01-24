@@ -561,9 +561,33 @@ public class MainConfig {
                     .key("user").defValue("root")
                     .key("password").defValue("secret")
                     .key("table-prefix").defValue("bw_")
-                    .key("useSSL").defValue(false)
-                    .key("add-timezone-to-connection-string").defValue(true)
-                    .key("timezone-id").defValue(TimeZone.getDefault().getID())
+                    .key("type").defValue("mysql")
+                    .key("driver").defValue("default")
+                    .key("params").defValue(() -> {
+                        var map = new HashMap<String, Object>();
+                        map.put("useSSL", configurationNode.node("database", "useSSL").getBoolean(true));
+                        if (configurationNode.node("database", "add-timezone-to-connection-string").getBoolean(true)) {
+                            map.put("serverTimezone", configurationNode.node("database", "timezone-id").getString(TimeZone.getDefault().getID()));
+                        }
+                        map.put("autoReconnect", true);
+                        map.put("cachePrepStmts", true);
+                        map.put("prepStmtCacheSize", 250);
+                        map.put("prepStmtCacheSqlLimit", 2048);
+
+                        if (!configurationNode.node("database", "useSSL").virtual()) {
+                            configurationNode.node("database").removeChild("useSSL");
+                        }
+
+                        if (!configurationNode.node("database", "add-timezone-to-connection-string").virtual()) {
+                            configurationNode.node("database").removeChild("add-timezone-to-connection-string");
+                        }
+
+                        if (!configurationNode.node("database", "timezone-id").virtual()) {
+                            configurationNode.node("database").removeChild("timezone-id");
+                        }
+
+                        return map;
+                    })
                     .back()
                 .section("bossbar")
                     .key("use-xp-bar").defValue(false)
