@@ -29,6 +29,8 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 
+import java.util.Locale;
+
 public class BedwarsExpansion extends PlaceholderExpansion {
 
     @Override
@@ -86,6 +88,16 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "teamchests":
                         return Integer.toString(game.countTeamChests());
                 }
+            }
+        }
+
+        if (identifier.startsWith("all_games_")) {
+            String operation = identifier.substring(10).toLowerCase(Locale.ROOT);
+            switch (operation) {
+                case "players":
+                    return Integer.toString(Main.getGameNames().stream().map(Main::getGame).mapToInt(Game::countConnectedPlayers).sum());
+                case "maxplayers":
+                    return Integer.toString(Main.getGameNames().stream().map(Main::getGame).mapToInt(Game::getMaxPlayers).sum());
             }
         }
 
