@@ -415,17 +415,27 @@ public class ShopInventory implements Listener {
 
         if (mapReader.containsKey("currency-changer")) {
             String changeItemToName = mapReader.getString("currency-changer");
-            ItemSpawnerType changeItemType;
             if (changeItemToName == null) {
                 return;
             }
 
-            changeItemType = Main.getSpawnerType(changeItemToName);
+            String[] split = changeItemToName.trim().split(" ", 2);
+            if (split.length == 2) {
+                try {
+                    amount = Integer.parseInt(split[0]);
+                    changeItemToName = split[1].trim();
+                    if (changeItemToName.startsWith("of ")) {
+                        changeItemToName = changeItemToName.substring(3).trim();
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+            ItemSpawnerType changeItemType = Main.getSpawnerType(changeItemToName);
             if (changeItemType == null) {
                 return;
             }
 
-            newItem = changeItemType.getStack();
+            newItem = changeItemType.getStack(amount);
         }
 
         if (clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
