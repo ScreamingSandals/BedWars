@@ -55,9 +55,9 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
 
         if (Main.autoColoredMaterials.contains(materialName)) {
             return Material.getMaterial(teamMaterialColor + "_" + materialName);
-        } else if (material.toString().contains("GLASS_PANE")) {
+        } else if ("GLASS_PANE".equals(material.toString())) {
             return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS_PANE");
-        } else if (material.toString().contains("GLASS")) {
+        } else if ("GLASS".equals(material.toString())) {
             return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS");
         }
         return material;
