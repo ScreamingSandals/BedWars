@@ -348,13 +348,14 @@ public class DumpCommand extends BaseCommand {
                                                             "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
                                                             "files", files.stream()
                                                                     .map(aFile -> nullValuesAllowingMap(
-                                                                            "name", aFile.getContent(),
+                                                                            "name", aFile.getName(),
                                                                             "content", nullValuesAllowingMap(
                                                                                     "format", "text",
                                                                                     "highlight_language", aFile.getLanguage(),
                                                                                     "value", aFile.getContent()
                                                                             )
                                                                     ))
+                                                                    .collect(Collectors.toList())
                                                     ))))).build(), HttpResponse.BodyHandlers.ofString())
                                             .thenAccept(stringHttpResponse -> {
                                                 if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
@@ -373,7 +374,9 @@ public class DumpCommand extends BaseCommand {
                                                         throw new RuntimeException(e);
                                                     }
                                                 } else {
-                                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
+                                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix()
+                                                            .joinPlainText(" " + stringHttpResponse.statusCode() + " - " + stringHttpResponse.body())
+                                                            .send(sender);
                                                 }
                                             });
                                     }
