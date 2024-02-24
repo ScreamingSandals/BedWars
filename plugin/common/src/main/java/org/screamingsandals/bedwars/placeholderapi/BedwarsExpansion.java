@@ -33,6 +33,8 @@ import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.Locale;
+
 @Service
 public class BedwarsExpansion extends PlaceholderExpansion {
 
@@ -78,6 +80,16 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "teamchests":
                         return Component.text(game.countTeamChests());
                 }
+            }
+        }
+
+        if (identifier.startsWith("all_games_")) {
+            var operation = identifier.substring(10).toLowerCase(Locale.ROOT);
+            switch (operation) {
+                case "players":
+                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
+                case "maxplayers":
+                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
             }
         }
 

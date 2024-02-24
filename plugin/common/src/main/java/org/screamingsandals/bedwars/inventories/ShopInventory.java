@@ -448,12 +448,23 @@ public class ShopInventory {
                 return;
             }
 
+            var split = changeItemToName.trim().split(" ", 2);
+            if (split.length == 2) {
+                try {
+                    amount = Integer.parseInt(split[0]);
+                    changeItemToName = split[1].trim();
+                    if (changeItemToName.startsWith("of ")) {
+                        changeItemToName = changeItemToName.substring(3).trim();
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
             var changeItemType = game.getGameVariant().getItemSpawnerType(changeItemToName);
             if (changeItemType == null) {
                 return;
             }
 
-            newItem = changeItemType.getItem();
+            newItem = changeItemType.getItem(amount);
         }
 
         var originalMaxStackSize = newItem.getMaterial().maxStackSize();
