@@ -24,36 +24,32 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.sender.permissions.Permission;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 public enum BedWarsPermission {
-    ADMIN_PERMISSION("bw.admin", List.of()),
-    OTHER_STATS_PERMISSION("bw.otherstats", List.of()),
-    JOIN_PERMISSION("bw.cmd.join", List.of("default-permissions", "join")),
-    JOIN_GROUP_PERMISSION("bw.cmd.join-group", List.of("default-permissions", "join-group")),
-    LEAVE_PERMISSION("bw.cmd.leave", List.of("default-permissions", "leave")),
-    GAMES_INVENTORY_PERMISSION("bw.cmd.gamesinv", List.of("default-permissions", "gamesinv")),
-    AUTOJOIN_PERMISSION("bw.cmd.autojoin", List.of("default-permissions", "autojoin")),
-    LIST_PERMISSION("bw.cmd.list", List.of("default-permissions", "list")),
-    REJOIN_PERMISSION("bw.cmd.rejoin", List.of("default-permissions", "rejoin")),
-    STATS_PERMISSION("bw.cmd.stats", List.of("default-permissions", "stats")),
-    LEADERBOARD_PERMISSION("bw.cmd.leaderboard", List.of("default-permissions", "leaderboard")),
-    PARTY_PERMISSION("bw.cmd.party", List.of("default-permissions", "party")),
-    ALL_JOIN_PERMISSION("bw.admin.alljoin", List.of()),
-    DISABLE_ALL_JOIN_PERMISSION("bw.disable.joinall", List.of()),
-    START_ITEM_PERMISSION("bw.vip.startitem", List.of()),
-    FORCE_JOIN_PERMISSION("bw.vip.forcejoin", List.of()),
-    BYPASS_FLIGHT_PERMISSION("bw.bypass.flight", List.of());
+    ADMIN_PERMISSION("admin"),
+    OTHER_STATS_PERMISSION("other-stats"),
+    JOIN_PERMISSION("join"),
+    JOIN_GROUP_PERMISSION("join-group"),
+    LEAVE_PERMISSION("leave"),
+    GAMES_INVENTORY_PERMISSION("gamesinv"),
+    AUTOJOIN_PERMISSION("autojoin"),
+    LIST_PERMISSION("list"),
+    REJOIN_PERMISSION("rejoin"),
+    STATS_PERMISSION("stats"),
+    LEADERBOARD_PERMISSION("leaderboard"),
+    PARTY_PERMISSION("party"),
+    ALL_JOIN_PERMISSION("all-join"),
+    DISABLE_ALL_JOIN_PERMISSION("disable-all-join"),
+    START_ITEM_PERMISSION("start-item"),
+    FORCE_JOIN_PERMISSION("force-join"),
+    BYPASS_FLIGHT_PERMISSION("bypass-flight");
 
-    private final String permission;
-    private final List<String> defaultAllowedConfigurationKeys;
+    private final String permissionNodeKey;
 
     public Permission asPermission() {
-        var defaultAllowed = false;
-        if (!defaultAllowedConfigurationKeys.isEmpty()) {
-            defaultAllowed = MainConfig.getInstance().node(defaultAllowedConfigurationKeys.toArray()).getBoolean();
-        }
+        var node = MainConfig.getInstance().node("permissions", permissionNodeKey);
+        var permission = node.node("key").getString("bw.unknown-permission");
+        var defaultAllowed = node.node("default").getBoolean(false);
 
         return SimplePermission.of(permission, defaultAllowed);
     }
