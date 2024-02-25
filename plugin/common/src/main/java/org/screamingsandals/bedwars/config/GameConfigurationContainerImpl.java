@@ -134,6 +134,8 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(STATISTICS_SCORES_RECORD, "statistics", "scores", "record");
         register(KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, "kick-players-upon-final-death", "enabled");
         register(KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, "kick-players-upon-final-death", "delay");
+        register(DESTROY_PLACED_BLOCKS_BY_EXPLOSION_ENABLED, "destroy-placed-blocks-by-explosion", "enabled");
+        register(DESTROY_PLACED_BLOCKS_BY_EXPLOSION_BLACKLIST, "destroy-placed-blocks-by-explosion", "blacklist");
     }
 
     protected void migrateOld(ConfigurationNode configurationNode) {

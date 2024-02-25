@@ -46,6 +46,7 @@ import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -147,13 +148,13 @@ public class WorldListener {
     }
 
     public void onExplode(Location location, Collection<BlockPlacement> blockList, org.screamingsandals.lib.event.Cancellable cancellable, boolean originatedInArena) {
-        final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").childrenList().stream().map(ConfigurationNode::getString).toArray();
-        final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
         final var breakableExplosions = MainConfig.getInstance().node("breakable", "explosions").getBoolean(true);
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                    final var destroyPlacedBlocksByExplosion = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DESTROY_PLACED_BLOCKS_BY_EXPLOSION_ENABLED, true);
+                    final var explosionExceptionTypeName = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DESTROY_PLACED_BLOCKS_BY_EXPLOSION_BLACKLIST, List.of()).toArray();
                     blockList.removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.location())) {
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, false)) {

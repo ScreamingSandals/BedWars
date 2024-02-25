@@ -135,4 +135,7 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
 
     ConfigurationKey<Boolean> KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED = ConfigurationKey.of(Boolean.class, "kick-players-upon-final-death", "enabled");
     ConfigurationKey<Integer> KICK_PLAYERS_UPON_FINAL_DEATH_DELAY = ConfigurationKey.of(Integer.class, "kick-players-upon-final-death", "delay");
+
+    ConfigurationKey<Boolean> DESTROY_PLACED_BLOCKS_BY_EXPLOSION_ENABLED = ConfigurationKey.of(Boolean.class, "destroy-placed-blocks-by-explosion", "enabled");
+    ConfigurationListKey<String> DESTROY_PLACED_BLOCKS_BY_EXPLOSION_BLACKLIST = ConfigurationListKey.of(String.class, "destroy-placed-blocks-by-explosion", "blacklist"); // Block predicates (block state, #tag or type[*])
 }

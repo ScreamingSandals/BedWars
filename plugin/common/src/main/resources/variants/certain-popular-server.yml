@@ -81,14 +81,17 @@ config:
   game-start-items:
     enabled: true
     items:
-      - WOODEN_SWORD
-      - LEATHER_HELMET
-      - LEATHER_CHESTPLATE
-      - LEATHER_LEGGINGS
-      - LEATHER_BOOTS
+      - wooden_sword
+      - leather_helmet
+      - leather_chestplate
+      - leather_leggings
+      - leather_boots
+  destroy-placed-blocks-by-explosion:
+    enabled: true
+    blacklist:
+      - glass
 
 
-# TODO: custom destroy-placed-blocks-by-explosion-except > GLASS
 # TODO: breakable blocks (GRASS, LONG_GRASS, SNOW)
 # TODO: just add every missing configuration
 
@@ -96,28 +99,28 @@ default-spawner-types-included: false
 custom-spawner-types:
   emerald:
     spread: 0.1
-    material: EMERALD
+    material: emerald
     translate: resource_emerald
     interval: 60
     color: GREEN
     name: Emerald
   diamond:
     spread: 0.1
-    material: DIAMOND
+    material: diamond
     translate: resource_diamond
     interval: 30
     color: BLUE
     name: Diamond
   iron:
     spread: 0.1
-    material: IRON_INGOT
+    material: iron_ingot
     translate: resource_iron
     interval: 2 # interval is currently still int btw, default value in SBA: 2.5
     color: WHITE
     name: Iron
   gold:
     spread: 0.1
-    material: GOLD_INGOT
+    material: gold_ingot
     translate: resource_gold
     interval: 8
     color: GOLD
