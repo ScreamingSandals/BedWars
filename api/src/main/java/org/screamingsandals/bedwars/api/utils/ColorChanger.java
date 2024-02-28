@@ -21,13 +21,12 @@ package org.screamingsandals.bedwars.api.utils;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.TeamColor;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
 
 /**
  * Utility class used for coloring items
  *
  * @author ScreamingSandals
- * @param <I> Item
  */
 @ApiStatus.NonExtendable
 public interface ColorChanger {
@@ -39,5 +38,5 @@ public interface ColorChanger {
      * @param stack ItemStack that should be colored
      * @return colored ItemStack or normal ItemStack if ItemStack can't be colored
      */
-    Wrapper applyColor(TeamColor color, Object stack);
+    ItemStackHolder applyColor(TeamColor color, ItemStackHolder stack);
 }

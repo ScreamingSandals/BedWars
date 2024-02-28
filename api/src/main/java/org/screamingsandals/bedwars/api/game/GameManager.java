@@ -32,18 +32,18 @@ public interface GameManager {
      * @return Optional with game or empty if game does not exist
      * @see #getGame(UUID)
      */
-    Optional<? extends Game> getGame(String name);
+    Optional<? extends LocalGame> getGame(String name);
 
     /**
      * @param uuid Unique id of the game
      * @return Optional with the game or empty if the game does not exist
      */
-    Optional<? extends Game> getGame(UUID uuid);
+    Optional<? extends LocalGame> getGame(UUID uuid);
 
     /**
      * @return List of available games
      */
-    List<? extends Game> getGames();
+    List<? extends LocalGame> getGames();
 
     /**
      * @return List of names of all game
@@ -65,28 +65,28 @@ public interface GameManager {
     /**
      * @return Free game that has the highest players in it or empty optional
      */
-    Optional<? extends Game> getGameWithHighestPlayers(boolean fee);
+    Optional<? extends LocalGame> getGameWithHighestPlayers(boolean fee);
 
     /**
      * @return Free game that has the lowest players in it or empty optional
      */
-    Optional<? extends Game> getGameWithLowestPlayers(boolean fee);
+    Optional<? extends LocalGame> getGameWithLowestPlayers(boolean fee);
 
     /**
      * @return Game in waiting state or empty optional
      */
-    Optional<? extends Game> getFirstWaitingGame(boolean fee);
+    Optional<? extends LocalGame> getFirstWaitingGame(boolean fee);
 
     /**
      * @return Game in running state or empty optional
      */
-    Optional<? extends Game> getFirstRunningGame(boolean fee);
+    Optional<? extends LocalGame> getFirstRunningGame(boolean fee);
 
-    Optional<? extends Game> getGameWithHighestPlayers();
+    Optional<? extends LocalGame> getGameWithHighestPlayers();
 
-    Optional<? extends Game> getGameWithLowestPlayers();
+    Optional<? extends LocalGame> getGameWithLowestPlayers();
 
-    Optional<? extends Game> getFirstWaitingGame();
+    Optional<? extends LocalGame> getFirstWaitingGame();
 
-    Optional<? extends Game> getFirstRunningGame();
+    Optional<? extends LocalGame> getFirstRunningGame();
 }

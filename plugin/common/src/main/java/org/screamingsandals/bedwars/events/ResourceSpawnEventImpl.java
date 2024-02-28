@@ -25,12 +25,10 @@ import org.screamingsandals.bedwars.api.events.ResourceSpawnEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
 import org.screamingsandals.lib.event.CancellableEvent;
 import org.screamingsandals.lib.item.ItemStack;
-import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.world.Location;
-
-import java.util.Objects;
 
 @Data
 public class ResourceSpawnEventImpl implements ResourceSpawnEvent, CancellableEvent {
@@ -47,12 +45,8 @@ public class ResourceSpawnEventImpl implements ResourceSpawnEvent, CancellableEv
     }
 
     @Override
-    public void setResource(Object resource) {
-        if (resource instanceof ItemStack) {
-            this.resource = (ItemStack) resource;
-        } else {
-            this.resource = Objects.requireNonNull(ItemStackFactory.build(resource));
-        }
+    public void setResource(ItemStackHolder resource) {
+        this.resource = resource.as(ItemStack.class);
     }
 
     @Override

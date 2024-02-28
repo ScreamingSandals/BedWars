@@ -20,7 +20,8 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public interface ProtectionWall extends SpecialItem {
     /**
      * @return
      */
-    Wrapper getMaterial();
+    BlockHolder getMaterial();
 
     /**
      *
@@ -67,5 +68,5 @@ public interface ProtectionWall extends SpecialItem {
     /**
      * @return
      */
-    List<? extends Wrapper> getWallBlocks();
+    List<? extends BlockPlacementHolder> getWallBlocks();
 }

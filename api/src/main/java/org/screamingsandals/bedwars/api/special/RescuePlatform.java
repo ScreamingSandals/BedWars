@@ -20,7 +20,9 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
 
 import java.util.List;
 
@@ -42,12 +44,12 @@ public interface RescuePlatform extends SpecialItem {
     /**
      * @return
      */
-    Wrapper getMaterial();
+    BlockHolder getMaterial();
 
     /**
      * @return
      */
-    Wrapper getItem();
+    ItemStackHolder getItem();
 
     /**
      *
@@ -57,5 +59,5 @@ public interface RescuePlatform extends SpecialItem {
     /**
      * @return
      */
-    List<? extends Wrapper> getPlatformBlocks();
+    List<? extends BlockPlacementHolder> getPlatformBlocks();
 }

@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.player;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,5 +33,5 @@ public interface PlayerManager {
 
     boolean isPlayerRegistered(UUID uuid);
 
-    Optional<? extends Game> getGameOfPlayer(UUID uuid);
+    Optional<? extends LocalGame> getGameOfPlayer(UUID uuid);
 }

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.api.types.ComponentHolder;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.ComponentLike;
 import org.screamingsandals.lib.spectator.bossbar.BossBar;
@@ -49,12 +50,8 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
         return boss.title();
     }
 
-    public void setMessage(@Nullable Object s) {
-        if (s instanceof ComponentLike) {
-            boss.title(((ComponentLike) s).asComponent());
-        } else {
-            boss.title(Component.fromLegacy(String.valueOf(s)));
-        }
+    public void setMessage(@Nullable ComponentHolder s) {
+        boss.title(s == null ? Component.empty() : s.as(Component.class));
     }
 
     @Override

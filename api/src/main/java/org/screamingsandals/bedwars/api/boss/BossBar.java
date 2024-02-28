@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.ComponentHolder;
 
 /**
  * @author ScreamingSandals
@@ -32,12 +33,12 @@ public interface BossBar extends StatusBar {
     /**
      * @return current message
      */
-	Wrapper getMessage();
+	ComponentHolder getMessage();
 
     /**
      * @param message
      */
-	void setMessage(@Nullable Object message);
+	void setMessage(@Nullable ComponentHolder message);
 
     /**
      * @return color

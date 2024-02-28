@@ -21,11 +21,11 @@ package org.screamingsandals.bedwars.api.statistics;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.OfflinePlayerHolder;
 
 @ApiStatus.NonExtendable
 public interface LeaderboardEntry {
-    Wrapper getPlayer();
+    OfflinePlayerHolder getPlayer();
 
     int getTotalScore();
 

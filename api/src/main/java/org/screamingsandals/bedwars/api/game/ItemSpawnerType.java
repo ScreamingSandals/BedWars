@@ -20,7 +20,9 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.ComponentHolder;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
+import org.screamingsandals.lib.api.types.server.ItemTypeHolder;
 
 /**
  * @author ScreamingSandals
@@ -50,31 +52,31 @@ public interface ItemSpawnerType {
     /**
      * @return
      */
-    Wrapper getItemType();
+    ItemTypeHolder getItemType();
 
     /**
      * @return
      */
-    Wrapper getTranslatableKey();
+    ComponentHolder getTranslatableKey();
 
     /**
      * @return
      */
-    Wrapper getItemName();
+    ComponentHolder getItemName();
 
     /**
      * @return
      */
-    Wrapper getItemBoldName();
+    ComponentHolder getItemBoldName();
 
     /**
      * @return
      */
-    Wrapper getItem();
+    ItemStackHolder getItem();
 
     /**
      * @param amount
      * @return
      */
-    Wrapper getItem(int amount);
+    ItemStackHolder getItem(int amount);
 }

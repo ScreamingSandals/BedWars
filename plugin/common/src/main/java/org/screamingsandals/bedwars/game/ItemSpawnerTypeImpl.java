@@ -55,18 +55,18 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
     }
 
     public Component getTranslatableKey() {
-        if (translatableKey != null && !translatableKey.equals("")) {
+        if (translatableKey != null && !translatableKey.isEmpty()) {
             return Message.of(Translation.of(Arrays.asList(translatableKey.split("_")), Component.fromLegacy(name))).asComponent();
         }
         return Component.text(name);
     }
 
     public Component getItemName() {
-        return getTranslatableKey().asComponent().withColor(color);
+        return getTranslatableKey().withColor(color);
     }
 
     public Component getItemBoldName() {
-        return getTranslatableKey().asComponent().withColor(color).withBold(true);
+        return getTranslatableKey().withColor(color).withBold(true);
     }
 
     public ItemStack getItem() {
@@ -74,7 +74,7 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
     }
 
     public ItemStack getItem(int amount) {
-        return Objects.requireNonNull(ItemStackFactory.build(itemType, builder -> builder.name(getItemName().asComponent()).amount(amount)));
+        return Objects.requireNonNull(ItemStackFactory.build(itemType, builder -> builder.name(getItemName()).amount(amount)));
     }
 
     public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {

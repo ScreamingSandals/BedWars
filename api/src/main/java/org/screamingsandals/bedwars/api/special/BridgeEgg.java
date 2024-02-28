@@ -20,7 +20,8 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
 
 @ApiStatus.NonExtendable
 public interface BridgeEgg extends SpecialItem {
@@ -29,14 +30,14 @@ public interface BridgeEgg extends SpecialItem {
      *
      * @return the bridge egg projectile
      */
-    Wrapper getProjectile();
+    EntityHolder getProjectile();
 
     /**
      * <p>Gets the bridge material.</p>
      *
      * @return the bridge material
      */
-    Wrapper getMaterial();
+    BlockHolder getMaterial();
 
     /**
      * <p>Gets the bridge's max distance.</p>

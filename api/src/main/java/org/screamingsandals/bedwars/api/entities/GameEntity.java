@@ -20,12 +20,12 @@
 package org.screamingsandals.bedwars.api.entities;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.bedwars.api.game.LocalGame;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
 
 @ApiStatus.NonExtendable
 public interface GameEntity {
-    Game getGame();
+    LocalGame getGame();
 
-    Wrapper getEntity();
+    EntityHolder getEntity();
 }

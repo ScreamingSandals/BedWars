@@ -20,7 +20,8 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 @ApiStatus.NonExtendable
 public interface PopUpTower extends SpecialItem {
@@ -30,9 +31,9 @@ public interface PopUpTower extends SpecialItem {
      *
      * @return the bridge material
      */
-    Wrapper getMaterial();
+    BlockHolder getMaterial();
 
-    Wrapper getCenterPoint();
+    LocationHolder getCenterPoint();
 
     /**
      * <p>Runs the placing task.</p>

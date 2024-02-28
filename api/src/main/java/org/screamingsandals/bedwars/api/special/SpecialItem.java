@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 
 /**
@@ -30,7 +30,7 @@ public interface SpecialItem {
     /**
      * @return game where this special item is used
      */
-    Game getGame();
+    LocalGame getGame();
 
     /**
      * @return the player who activated this special item

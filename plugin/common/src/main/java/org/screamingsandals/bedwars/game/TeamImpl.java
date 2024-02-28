@@ -30,7 +30,7 @@ import org.screamingsandals.bedwars.game.target.ATargetCountdown;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.block.BlockPlacements;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.ContainerFactory;
 import org.screamingsandals.lib.container.type.InventoryType;
@@ -44,7 +44,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.world.Location;
-import org.screamingsandals.lib.impl.world.Locations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,33 +194,18 @@ public class TeamImpl implements Team {
     }
 
     @Override
-    public void addTeamChest(Object location) {
-        try {
-            addTeamChest(Locations.wrapLocation(location));
-        } catch (Exception ex) {
-            // probably a block
-            addTeamChest(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
-        }
+    public void addTeamChest(LocationHolder location) {
+        addTeamChest(location.as(Location.class));
     }
 
     @Override
-    public void removeTeamChest(Object location) {
-        try {
-            removeTeamChest(Locations.wrapLocation(location));
-        } catch (Exception ex) {
-            // probably a block
-            removeTeamChest(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
-        }
+    public void removeTeamChest(LocationHolder location) {
+        removeTeamChest(location.as(Location.class));
     }
 
     @Override
-    public boolean isTeamChestRegistered(Object location) {
-        try {
-            return isTeamChestRegistered(Locations.wrapLocation(location));
-        } catch (Exception ex) {
-            // probably a block
-            return isTeamChestRegistered(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
-        }
+    public boolean isTeamChestRegistered(LocationHolder location) {
+        return isTeamChestRegistered(location.as(Location.class));
     }
 
     @Override

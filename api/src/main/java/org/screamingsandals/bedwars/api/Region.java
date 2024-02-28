@@ -20,7 +20,11 @@
 package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
+import org.screamingsandals.lib.api.types.server.BlockSnapshotHolder;
+import org.screamingsandals.lib.api.types.server.ChunkHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 /**
  * <p>Abstract region API.</p>
@@ -36,49 +40,24 @@ public interface Region {
      * @return was the supplied location modified?
      * @since 0.3.0
      */
-    boolean isLocationModifiedDuringGame(Object loc);
-
-    /**
-     * <p>Determines if the supplied location was modified during a BedWars game.</p>
-     *
-     * @param loc the location
-     * @return was the supplied location modified?
-     * @deprecated in favor of {@link Region#isLocationModifiedDuringGame(Object)}
-     */
-    @Deprecated
-    default boolean isBlockAddedDuringGame(Object loc) {
-        return isLocationModifiedDuringGame(loc);
-    }
+    boolean isLocationModifiedDuringGame(LocationHolder loc);
 
     /**
      * <p>Marks a location for rollback.</p>
      * <p>This should be used for restoring a broken block that was a part of the original world.</p>
      *
      * @param loc the location
-     * @param blockState old block state (BlockStateHolder or the platform impl)
+     * @param blockSnapshot old block state
      * @since 0.3.0
      */
-    void markForRollback(Object loc, Object blockState);
-
-    /**
-     * <p>Marks a location for rollback.</p>
-     * <p>This should be used for restoring a broken block that was a part of the original world.</p>
-     *
-     * @param loc the location
-     * @param blockState old block state (BlockStateHolder or the platform impl)
-     * @deprecated in favor of {@link Region#markForRollback(Object, Object)}
-     */
-    @Deprecated
-    default void putOriginalBlock(Object loc, Object blockState) {
-        markForRollback(loc, blockState);
-    }
+    void markForRollback(LocationHolder loc, BlockSnapshotHolder blockSnapshot);
 
     /**
      * <p>Schedules a location for removal (set to AIR) while rolling back.</p>
      *
      * @param loc the location
      */
-    void addBuiltDuringGame(Object loc);
+    void addBuiltDuringGame(LocationHolder loc);
 
     /**
      * <p>Schedules a location for removal (set to AIR) while rolling back.</p>
@@ -86,42 +65,31 @@ public interface Region {
      * @param loc the location
      * @since 0.3.0
      */
-    void removeBuiltDuringGame(Object loc);
-
-    /**
-     * <p>Schedules a location for removal (set to AIR) while rolling back.</p>
-     *
-     * @param loc the location
-     * @deprecated in favor of {@link Region#removeBuiltDuringGame(Object)}
-     */
-    @Deprecated
-    default void removeBlockBuiltDuringGame(Object loc) {
-        removeBuiltDuringGame(loc);
-    }
+    void removeBuiltDuringGame(LocationHolder loc);
 
     /**
      * <p>Checks if a material is a liquid.</p>
      *
-     * @param material the material (BlockTypeHolder or the platform impl)
+     * @param blockHolder the material
      * @return is the material a liquid?
      */
-    boolean isLiquid(Object material);
+    boolean isLiquid(BlockHolder blockHolder);
 
     /**
      * <p>Checks if a block state matches a bed block.</p>
      *
-     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @param blockSnapshot the block state
      * @return does the block state match a bed block?
      */
-    boolean isBedBlock(Object blockState);
+    boolean isBedBlock(BlockSnapshotHolder blockSnapshot);
 
     /**
      * <p>Checks if a block state matches a bed head block.</p>
      *
-     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @param blockSnapshot the block state (BlockStateHolder or the platform impl)
      * @return does the block state match a bed head block?
      */
-    boolean isBedHead(Object blockState);
+    boolean isBedHead(BlockSnapshotHolder blockSnapshot);
 
     /**
      * <p>Gets the bed's neighbor block (the second part of the bed) from the bed head block.</p>
@@ -129,7 +97,7 @@ public interface Region {
      * @param blockHead the bed head block
      * @return the bed neighbor block
      */
-    Wrapper getBedNeighbor(Object blockHead);
+    BlockPlacementHolder getBedNeighbor(BlockPlacementHolder blockHead);
 
     /**
      * <p>Determines if anything was modified in the supplied chunk.</p>
@@ -137,21 +105,21 @@ public interface Region {
      * @param chunk the chunk
      * @return was anything in the chunk modified?
      */
-    boolean isChunkUsed(Object chunk);
+    boolean isChunkUsed(ChunkHolder chunk);
 
     /**
      * <p>Checks if a block state matches a door block.</p>
      *
-     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @param blockSnapshot the block state
      * @return does the block state match a door block?
      */
-    boolean isDoorBlock(Object blockState);
+    boolean isDoorBlock(BlockSnapshotHolder blockSnapshot);
 
     /**
      * <p>Checks if a block state matches a bottom door block.</p>
      *
-     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @param blockSnapshot the block state
      * @return does the block state match a bottom door block?
      */
-    boolean isDoorBottomBlock(Object blockState);
+    boolean isDoorBottomBlock(BlockSnapshotHolder blockSnapshot);
 }

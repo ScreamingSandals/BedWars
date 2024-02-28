@@ -24,12 +24,11 @@ import lombok.Data;
 import org.screamingsandals.bedwars.api.events.ApplyPropertyToItemEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
 import org.screamingsandals.lib.event.Event;
 import org.screamingsandals.lib.item.ItemStack;
-import org.screamingsandals.lib.item.builder.ItemStackFactory;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -41,11 +40,7 @@ public class ApplyPropertyToItemEventImpl implements ApplyPropertyToItemEvent, E
     private ItemStack stack;
 
     @Override
-    public void setStack(Object stack) {
-        if (stack instanceof ItemStack) {
-            this.stack = (ItemStack) stack;
-        } else {
-            this.stack = Objects.requireNonNull(ItemStackFactory.build(stack));
-        }
+    public void setStack(ItemStackHolder stack) {
+        this.stack = stack.as(ItemStack.class);
     }
 }

@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.api.upgrades;
 
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 
 import java.util.HashMap;
@@ -83,7 +83,7 @@ public final class UpgradeRegistry {
      *
      * @param game that is ending
      */
-    public static void clearAll(Game game) {
+    public static void clearAll(LocalGame game) {
         for (UpgradeStorage storage : registeredUpgrades.values()) {
             storage.resetUpgradesForGame(game);
         }

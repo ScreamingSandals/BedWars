@@ -26,13 +26,13 @@ import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.world.Location;
-import org.screamingsandals.lib.impl.world.Locations;
 
 import java.util.Map;
 import java.util.Objects;
@@ -57,8 +57,8 @@ public class AutoIgniteableTNTImpl extends SpecialItemImpl implements AutoIgnite
     }
 
     @Override
-    public void spawn(Object location) {
-        spawn(Locations.wrapLocation(location));
+    public void spawn(LocationHolder location) {
+        spawn(location.as(Location.class));
     }
 
     public void spawn(Location location) {

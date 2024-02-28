@@ -21,10 +21,11 @@ package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnknownNullability;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.ContainerHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public interface Team {
      *
      * @return the game
      */
-    Game getGame();
+    LocalGame getGame();
 
     /**
      * <p>Gets the team's name.</p>
@@ -61,14 +62,14 @@ public interface Team {
      *
      * @return the spawn locations
      */
-    List<? extends Wrapper> getTeamSpawns();
+    List<? extends LocationHolder> getTeamSpawns();
 
     /**
      * <p>Gets one of the team's spawn locations.</p>
      *
      * @return the spawn location
      */
-    Wrapper getRandomSpawn();
+    LocationHolder getRandomSpawn();
 
     /**
      * Gets the team's target (e.g. block, countdown).
@@ -92,7 +93,7 @@ public interface Team {
      *
      * @return the team chest inventory
      */
-    Wrapper getTeamChestInventory();
+    ContainerHolder getTeamChestInventory();
 
     /**
      * <p>Adds a new team chest at the specified location.</p>
@@ -100,7 +101,7 @@ public interface Team {
      *
      * @param location the team chest location or block
      */
-    void addTeamChest(Object location);
+    void addTeamChest(LocationHolder location);
 
     /**
      * <p>Removes a team chest at the specified location.</p>
@@ -108,7 +109,7 @@ public interface Team {
      *
      * @param location the team chest location or block
      */
-    void removeTeamChest(Object location);
+    void removeTeamChest(LocationHolder location);
 
     /**
      * <p>Determines if a team chest is present at the specified location.</p>
@@ -116,7 +117,7 @@ public interface Team {
      * @param location the team chest location
      * @return is a team chest present at the specified location?
      */
-    boolean isTeamChestRegistered(Object location);
+    boolean isTeamChestRegistered(LocationHolder location);
 
     /**
      * <p>Gets the amount of chests bound to this team.</p>

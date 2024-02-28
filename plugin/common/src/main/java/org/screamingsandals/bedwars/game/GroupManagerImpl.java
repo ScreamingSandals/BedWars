@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.GroupManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -85,7 +85,7 @@ public class GroupManagerImpl implements GroupManager {
         groupMap.clear();
     }
 
-    public boolean addToGroup(@org.intellij.lang.annotations.Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game) {
+    public boolean addToGroup(@org.intellij.lang.annotations.Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull LocalGame game) {
         if (!GROUP_PATTERN.matcher(group).matches()) {
             return false;
         }
@@ -96,7 +96,7 @@ public class GroupManagerImpl implements GroupManager {
     }
 
     @Override
-    public boolean removeFromGroup(@org.intellij.lang.annotations.Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game) {
+    public boolean removeFromGroup(@org.intellij.lang.annotations.Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull LocalGame game) {
         var g = groupMap.get(group);
         if (g != null) {
             g.remove(game.getUuid());

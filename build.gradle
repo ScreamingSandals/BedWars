@@ -26,7 +26,8 @@ subprojects {
 
         multiModulePlatforms('BedWars-%s', 'bukkit')
         multiModuleUniversalSubproject('BedWars') // custom name
-        multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.types')
+        // This also means we cannot create class Wrapper and package types in package org.screamingsandals.bedwars.api
+        multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api')
         useApiConfigurationInsteadOfImplementation(true)
 
         additionalContent {

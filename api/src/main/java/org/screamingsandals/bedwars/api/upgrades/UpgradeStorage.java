@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.upgrades;
 
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
@@ -37,7 +37,7 @@ public final class UpgradeStorage {
     private final String upgradeName;
     private final Class<? extends Upgrade> upgradeClass;
 
-    private final Map<Game, List<Upgrade>> upgradeRegistry = new HashMap<>();
+    private final Map<LocalGame, List<Upgrade>> upgradeRegistry = new HashMap<>();
 
     /**
      * @param upgradeName  Upgrade Name
@@ -68,7 +68,7 @@ public final class UpgradeStorage {
      * @param game    Game
      * @param upgrade Upgrade
      */
-    public void addUpgrade(Game game, Upgrade upgrade) {
+    public void addUpgrade(LocalGame game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return;
         }
@@ -89,7 +89,7 @@ public final class UpgradeStorage {
      * @param game    Game
      * @param upgrade Upgrade
      */
-    public void removeUpgrade(Game game, Upgrade upgrade) {
+    public void removeUpgrade(LocalGame game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return;
         }
@@ -108,7 +108,7 @@ public final class UpgradeStorage {
      * @param upgrade Upgrade
      * @return true if upgrade is registered
      */
-    public boolean isUpgradeRegistered(Game game, Upgrade upgrade) {
+    public boolean isUpgradeRegistered(LocalGame game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return false;
         }
@@ -121,7 +121,7 @@ public final class UpgradeStorage {
      *
      * @param game Game
      */
-    public void resetUpgradesForGame(Game game) {
+    public void resetUpgradesForGame(LocalGame game) {
         if (upgradeRegistry.containsKey(game)) {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 upgrade.onUpgradeUnregistered(game);
@@ -138,7 +138,7 @@ public final class UpgradeStorage {
      * @param game Game
      * @return ĺist of registered upgrades of game
      */
-    public List<Upgrade> getAllUpgradesOfGame(Game game) {
+    public List<Upgrade> getAllUpgradesOfGame(LocalGame game) {
         List<Upgrade> upgrade = new ArrayList<>();
         if (upgradeRegistry.containsKey(game)) {
             upgrade.addAll(upgradeRegistry.get(game));
@@ -154,7 +154,7 @@ public final class UpgradeStorage {
      * @return list of upgrades with same name
      */
     @Deprecated
-    public List<Upgrade> findUpgradeByName(Game game, String instanceName) {
+    public List<Upgrade> findUpgradeByName(LocalGame game, String instanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -168,7 +168,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, String spawnerInstanceName) {
+    public List<Upgrade> findItemSpawnerUpgrades(LocalGame game, String spawnerInstanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -185,7 +185,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team) {
+    public List<Upgrade> findItemSpawnerUpgrades(LocalGame game, Team team) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -206,7 +206,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team, ItemSpawnerType itemSpawnerType) {
+    public List<Upgrade> findItemSpawnerUpgrades(LocalGame game, Team team, ItemSpawnerType itemSpawnerType) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {

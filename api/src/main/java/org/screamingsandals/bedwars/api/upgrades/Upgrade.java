@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.api.upgrades;
 
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 
 /**
  * @author ScreamingSandals
@@ -70,7 +70,7 @@ public interface Upgrade {
 	 * 
 	 * @param game Game when upgrade is activated
 	 */
-	default void onUpgradeRegistered(Game game) {
+	default void onUpgradeRegistered(LocalGame game) {
 		
 	}
 	
@@ -79,7 +79,7 @@ public interface Upgrade {
 	 * 
 	 * @param game Game when upgrade is deactivated
 	 */
-	default void onUpgradeUnregistered(Game game) {
+	default void onUpgradeUnregistered(LocalGame game) {
 		
 	}
 }

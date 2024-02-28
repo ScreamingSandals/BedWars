@@ -20,17 +20,16 @@
 package org.screamingsandals.bedwars.region;
 
 import org.screamingsandals.bedwars.api.Region;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
+import org.screamingsandals.lib.api.types.server.BlockSnapshotHolder;
+import org.screamingsandals.lib.api.types.server.ChunkHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.block.BlockPlacement;
-import org.screamingsandals.lib.block.BlockPlacements;
-import org.screamingsandals.lib.impl.block.snapshot.BlockSnapshots;
-import org.screamingsandals.lib.impl.world.chunk.Chunks;
 import org.screamingsandals.lib.world.Location;
-import org.screamingsandals.lib.impl.world.Locations;
 import org.screamingsandals.lib.world.chunk.Chunk;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
-
-import java.util.Objects;
 
 public interface BWRegion extends Region {
 
@@ -61,67 +60,67 @@ public interface BWRegion extends Region {
 
     @Override
     @Deprecated
-    default boolean isLocationModifiedDuringGame(Object loc) {
-        return isLocationModifiedDuringGame(Locations.wrapLocation(loc));
+    default boolean isLocationModifiedDuringGame(LocationHolder loc) {
+        return isLocationModifiedDuringGame(loc.as(Location.class));
     }
 
     @Override
     @Deprecated
-    default void markForRollback(Object loc, Object blockState) {
-        putOriginalBlock(Locations.wrapLocation(loc), Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
+    default void markForRollback(LocationHolder loc, BlockSnapshotHolder blockSnapshot) {
+        putOriginalBlock(loc.as(Location.class), blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
     @Deprecated
-    default void addBuiltDuringGame(Object loc) {
-        addBuiltDuringGame(Locations.wrapLocation(loc));
+    default void addBuiltDuringGame(LocationHolder loc) {
+        addBuiltDuringGame(loc.as(Location.class));
     }
 
     @Override
     @Deprecated
-    default void removeBuiltDuringGame(Object loc) {
-        removeBlockBuiltDuringGame(Locations.wrapLocation(loc));
+    default void removeBuiltDuringGame(LocationHolder loc) {
+        removeBlockBuiltDuringGame(loc.as(Location.class));
     }
 
     @Override
     @Deprecated
-    default boolean isLiquid(Object material) {
-        return isLiquid(Block.of(material));
+    default boolean isLiquid(BlockHolder blockHolder) {
+        return isLiquid(blockHolder.as(Block.class));
     }
 
     @Override
     @Deprecated
-    default boolean isBedBlock(Object blockState) {
-        return isBedBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
+    default boolean isBedBlock(BlockSnapshotHolder blockSnapshot) {
+        return isBedBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
     @Deprecated
-    default boolean isBedHead(Object blockState) {
-        return isBedHead(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
+    default boolean isBedHead(BlockSnapshotHolder blockSnapshot) {
+        return isBedHead(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
     @Deprecated
-    default BlockPlacement getBedNeighbor(Object blockHead) {
-        return getBedNeighbor(BlockPlacements.resolve(blockHead));
+    default BlockPlacement getBedNeighbor(BlockPlacementHolder blockHead) {
+        return getBedNeighbor(blockHead.as(BlockPlacement.class));
     }
 
     @Override
     @Deprecated
-    default boolean isChunkUsed(Object chunk) {
-        return isChunkUsed(Objects.requireNonNull(Chunks.wrapChunk(chunk)));
+    default boolean isChunkUsed(ChunkHolder chunk) {
+        return isChunkUsed(chunk.as(Chunk.class));
     }
 
     @Override
     @Deprecated
-    default boolean isDoorBlock(Object blockState) {
-        return isDoorBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
+    default boolean isDoorBlock(BlockSnapshotHolder blockSnapshot) {
+        return isDoorBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
     @Deprecated
-    default boolean isDoorBottomBlock(Object blockState) {
-        return isDoorBottomBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
+    default boolean isDoorBottomBlock(BlockSnapshotHolder blockSnapshot) {
+        return isDoorBottomBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 }

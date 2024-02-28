@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.api.utils;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.events.UpgradeRegisteredEvent;
 import org.screamingsandals.bedwars.api.events.UpgradeUnregisteredEvent;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 
@@ -33,8 +33,8 @@ public interface EventUtils {
     <T> void handle(Object pluginObject, Class<T> event, Consumer<T> consumer);
 
     @ApiStatus.Internal
-    UpgradeRegisteredEvent fireUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade);
+    UpgradeRegisteredEvent fireUpgradeRegisteredEvent(LocalGame game, UpgradeStorage storage, Upgrade upgrade);
 
     @ApiStatus.Internal
-    UpgradeUnregisteredEvent fireUpgradeUnregisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade);
+    UpgradeUnregisteredEvent fireUpgradeUnregisteredEvent(LocalGame game, UpgradeStorage storage, Upgrade upgrade);
 }

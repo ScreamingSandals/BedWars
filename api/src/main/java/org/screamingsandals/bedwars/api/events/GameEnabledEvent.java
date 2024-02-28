@@ -21,13 +21,13 @@ package org.screamingsandals.bedwars.api.events;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
 public interface GameEnabledEvent {
-    Game getGame();
+    LocalGame getGame();
 
     static void handle(Object plugin, Consumer<GameEnabledEvent> consumer) {
         BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameEnabledEvent.class, consumer);

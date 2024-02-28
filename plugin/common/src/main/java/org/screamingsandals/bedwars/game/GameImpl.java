@@ -31,7 +31,7 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
@@ -66,6 +66,8 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
@@ -76,7 +78,6 @@ import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.entity.ItemEntity;
 import org.screamingsandals.lib.entity.LivingEntity;
-import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
@@ -103,7 +104,6 @@ import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.Location;
-import org.screamingsandals.lib.impl.world.Locations;
 import org.screamingsandals.lib.world.World;
 import org.screamingsandals.lib.world.Worlds;
 import org.screamingsandals.lib.world.chunk.Chunk;
@@ -122,7 +122,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameImpl implements Game {
+public class GameImpl implements LocalGame {
     public boolean gameStartItem;
     public boolean forceGameToStart;
     @Getter
@@ -697,8 +697,8 @@ public class GameImpl implements Game {
     }
 
     @Deprecated
-    public boolean isBlockAddedDuringGame(Object loc) {
-        return status == GameStatus.RUNNING && region.isLocationModifiedDuringGame(loc);
+    public boolean isBlockAddedDuringGame(LocationHolder loc) {
+        return isBlockAddedDuringGame(loc.as(Location.class));
     }
 
     public boolean blockPlace(BedWarsPlayer player, BlockPlacement block, BlockSnapshot replaced, ItemStack itemInHand) {
@@ -1892,7 +1892,7 @@ public class GameImpl implements Game {
                     for (GameStoreImpl store : gameStore) {
                         var villager = store.spawn();
                         if (villager instanceof LivingEntity) {
-                            EntitiesManagerImpl.getInstance().addEntityToGame(villager, this);
+                            EntitiesManagerImpl.getInstance().addEntityToGame((LivingEntity) villager, this);
                             ((LivingEntity) villager).setAI(false);
                             ((LivingEntity) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
                                 if (entity.getEntityType().equals(((LivingEntity) villager).getEntityType()) && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
@@ -2530,11 +2530,11 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public boolean isLocationInArena(Object location) {
+    public boolean isLocationInArena(LocationHolder location) {
         if (location == null) {
             return false;
         }
-        return ArenaUtils.isInArea(Locations.wrapLocation(location), pos1, pos2);
+        return ArenaUtils.isInArea(location.as(Location.class), pos1, pos2);
     }
 
     public boolean isLocationInArena(Location location) {
@@ -2553,11 +2553,11 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public TeamImpl getTeamOfChest(Object location) {
+    public TeamImpl getTeamOfChest(LocationHolder location) {
         if (location == null) {
             return null;
         }
-        return getTeamOfChest(Locations.wrapLocation(location));
+        return getTeamOfChest(location.as(Location.class));
     }
 
     public TeamImpl getTeamOfChest(Location location) {
@@ -2866,11 +2866,11 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public boolean isEntityShop(Object entity) {
-        var entityObj = Entities.wrapEntity(entity);
-        if (entityObj == null) {
-            return false; // not an entity :)
+    public boolean isEntityShop(EntityHolder entity) {
+        if (entity == null) {
+            return false;
         }
+        var entityObj = entity.as(Entity.class);
 
         for (var store : gameStore) {
             if (entityObj.equals(store.getEntity())) {

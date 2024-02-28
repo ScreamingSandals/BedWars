@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.game.target;
 
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 /**
  * @author ScreamingSandals
@@ -34,8 +34,7 @@ public interface TargetBlock extends Target {
      * @return the target block location
      * @since 0.3.0
      */
-    @NotNull
-    Wrapper getTargetBlock();
+    @NotNull LocationHolder getTargetBlock();
 
     /**
      * Checks if the block is Respawn Anchor (or another chargeable block supported by the plugin) and if it's empty (not charged).

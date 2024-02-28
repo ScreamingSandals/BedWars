@@ -29,7 +29,6 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.bedwars.api.variants.VariantManager;
-import org.screamingsandals.lib.api.Wrapper;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ import java.util.List;
  * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface BedwarsAPI extends Wrapper {
+public interface BedwarsAPI {
     /**
      * <p>Retrieves the game manager instance.</p>
      *

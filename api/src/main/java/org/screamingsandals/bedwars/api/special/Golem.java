@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
 
 /**
  * @author ScreamingSandals
@@ -31,7 +31,7 @@ public interface Golem extends SpecialItem {
     /**
      * @return
      */
-    Wrapper getEntity();
+    EntityHolder getEntity();
 
     /**
      * @return

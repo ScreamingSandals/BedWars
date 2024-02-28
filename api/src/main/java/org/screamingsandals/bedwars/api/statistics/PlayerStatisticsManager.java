@@ -20,7 +20,6 @@
 package org.screamingsandals.bedwars.api.statistics;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
 
 import java.util.List;
 import java.util.UUID;

@@ -20,7 +20,8 @@
 package org.screamingsandals.bedwars.api.entities;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,17 +29,17 @@ import java.util.Optional;
 @ApiStatus.NonExtendable
 public interface EntitiesManager {
 
-    List<? extends GameEntity> getEntities(Game game);
+    List<? extends GameEntity> getEntities(LocalGame game);
 
-    default boolean isEntityInGame(Object entity) {
+    default boolean isEntityInGame(EntityHolder entity) {
         return getGameOfEntity(entity).isPresent();
     }
 
-    Optional<? extends Game> getGameOfEntity(Object entity);
+    Optional<? extends LocalGame> getGameOfEntity(EntityHolder entity);
 
-    GameEntity addEntityToGame(Object entity, Game game);
+    GameEntity addEntityToGame(EntityHolder entity, LocalGame game);
 
-    void removeEntityFromGame(Object entity);
+    void removeEntityFromGame(EntityHolder entity);
 
     void removeEntityFromGame(GameEntity entityObject);
 }

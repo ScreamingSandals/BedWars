@@ -20,7 +20,8 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 /**
  * @author ScreamingSandals
@@ -31,17 +32,17 @@ public interface TNTSheep extends SpecialItem {
 	/**
 	 * @return
 	 */
-	Wrapper getEntity();
+	EntityHolder getEntity();
 
 	/**
 	 * @return
 	 */
-	Wrapper getInitialLocation();
+	LocationHolder getInitialLocation();
 	
 	/**
 	 * @return
 	 */
-	Wrapper getTnt();
+	EntityHolder getTnt();
 	
 	/**
 	 * @return

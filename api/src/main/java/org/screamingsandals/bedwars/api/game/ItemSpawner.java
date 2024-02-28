@@ -23,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 /**
  * @author ScreamingSandals
@@ -40,7 +40,7 @@ public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    Wrapper getLocation();
+    LocationHolder getLocation();
 
     /**
      * @return

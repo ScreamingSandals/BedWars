@@ -22,21 +22,21 @@ package org.screamingsandals.bedwars.api.events;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
 
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
 public interface PlayerBreakBlockEvent extends BWCancellable {
-    Game getGame();
+    LocalGame getGame();
 
     BWPlayer getPlayer();
 
     Team getTeam();
 
-    Wrapper getBlock();
+    BlockPlacementHolder getBlock();
 
     boolean isDrops();
 

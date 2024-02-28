@@ -21,30 +21,27 @@ package org.screamingsandals.bedwars.api.events;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
 public interface ResourceSpawnEvent extends BWCancellable {
-    Game getGame();
+    LocalGame getGame();
 
     ItemSpawner getItemSpawner();
 
-    Wrapper getLocation();
+    LocationHolder getLocation();
 
-    Wrapper getResource();
+    ItemStackHolder getResource();
 
     ItemSpawnerType getType();
 
-    /**
-     *
-     * @param resource wrapper or platform ItemStack
-     */
-    void setResource(Object resource);
+    void setResource(ItemStackHolder resource);
 
     static void handle(Object plugin, Consumer<ResourceSpawnEvent> consumer) {
         BedwarsAPI.getInstance().getEventUtils().handle(plugin, ResourceSpawnEvent.class, consumer);

@@ -24,16 +24,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
 
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
 public interface PreTargetInvalidatedEvent extends BWCancellable {
-    @NotNull Game getGame();
+    @NotNull LocalGame getGame();
 
     @NotNull Team getTeam();
 
@@ -41,7 +41,7 @@ public interface PreTargetInvalidatedEvent extends BWCancellable {
 
     @NotNull TargetInvalidationReason getReason();
 
-    @Nullable Wrapper getBlockType();
+    @Nullable BlockHolder getBlockType();
 
     @Nullable BWPlayer getInitiator();
 

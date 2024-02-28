@@ -22,7 +22,9 @@ package org.screamingsandals.bedwars.api.game;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.api.types.server.EntityHolder;
+import org.screamingsandals.lib.api.types.server.EntityTypeHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 
 /**
  * @author ScreamingSandals
@@ -33,19 +35,19 @@ public interface GameStore {
      * @return shop entity
      */
     @Nullable
-    Wrapper getEntity();
+    EntityHolder getEntity();
 
     /**
      * @return entity type used for the shop
      */
     @NotNull
-    Wrapper getEntityType();
+    EntityTypeHolder getEntityType();
 
     /**
      * @return location of this store
      */
     @NotNull
-    Wrapper getStoreLocation();
+    LocationHolder getStoreLocation();
 
     /**
      * @return shop file

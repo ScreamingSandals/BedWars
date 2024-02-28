@@ -20,8 +20,7 @@
 package org.screamingsandals.bedwars.api.config;
 
 import org.screamingsandals.bedwars.api.ArenaTime;
-
-import java.util.List;
+import org.screamingsandals.lib.api.types.server.ItemStackHolder;
 
 /**
  * @author ScreamingSandals
@@ -93,9 +92,9 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationListKey<String> SIDEBAR_LOBBY_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "lobby", "content");
 
     ConfigurationKey<Boolean> GAME_START_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "game-start-items", "enabled");
-    ConfigurationListKey<Object> GAME_START_ITEMS_ITEMS = ConfigurationListKey.of(Object.class, "game-start-items", "items"); // Object in API, registered as Item
+    ConfigurationListKey<Object> GAME_START_ITEMS_ITEMS = ConfigurationListKey.of(Object.class, "game-start-items", "items"); // Object in API, registered as Item, TODO switch to ItemStackHolder
     ConfigurationKey<Boolean> PLAYER_RESPAWN_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "player-respawn-items", "enabled");
-    ConfigurationListKey<Object> PLAYER_RESPAWN_ITEMS_ITEMS = ConfigurationListKey.of(Object.class, "player-respawn-items", "items"); // Object in API, registered as Item
+    ConfigurationListKey<Object> PLAYER_RESPAWN_ITEMS_ITEMS = ConfigurationListKey.of(Object.class, "player-respawn-items", "items"); // Object in API, registered as Item, TODO switch to ItemStackHolder
 
     ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "fill-on-start");
     ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "enable-decrease");

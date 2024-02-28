@@ -412,9 +412,4 @@ public class BedWarsPlugin implements BedwarsAPI {
     public void saveResource(@NotNull String resourcePath, boolean replace) {
         PluginUtils.saveResource(pluginDescription, logger, resourcePath, replace);
     }
-
-    @Override
-    public <T> @NotNull T as(@NotNull Class<T> aClass) {
-        return pluginDescription.as(aClass);
-    }
 }
