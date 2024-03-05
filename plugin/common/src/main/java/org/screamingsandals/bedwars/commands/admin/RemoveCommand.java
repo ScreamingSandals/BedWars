@@ -42,7 +42,7 @@ public class RemoveCommand extends BaseAdminSubCommand {
                     String gameName = commandContext.get("game");
                     var sender = commandContext.getSender();
 
-                    GameManagerImpl.getInstance().getGame(gameName).ifPresentOrElse(game -> {
+                    GameManagerImpl.getInstance().getLocalGame(gameName).ifPresentOrElse(game -> {
                         if (!AdminCommand.gc.containsKey(gameName)) {
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_MUST_BE_IN_EDIT_MODE).defaultPrefix());
                         } else {

@@ -77,7 +77,7 @@ public class AdminCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "game")
                         .withSuggestionsProvider((c, s) ->
-                            Stream.concat(GameManagerImpl.getInstance().getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
+                            Stream.concat(GameManagerImpl.getInstance().getLocalGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
                         )
                 );
     }

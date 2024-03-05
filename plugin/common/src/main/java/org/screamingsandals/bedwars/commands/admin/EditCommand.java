@@ -42,7 +42,7 @@ public class EditCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            GameManagerImpl.getInstance().getGame(gameName).ifPresentOrElse(game -> {
+                            GameManagerImpl.getInstance().getLocalGame(gameName).ifPresentOrElse(game -> {
                                 game.stop();
                                 AdminCommand.gc.put(gameName, game);
                                 Message.of(LangKeys.ADMIN_ARENA_SUCCESS_EDIT_MODE)

@@ -96,9 +96,7 @@ public class BukkitPlatformService extends PlatformService {
     public void reloadPlugin(@NotNull CommandSender sender) {
         sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());
 
-        for (var game : GameManagerImpl.getInstance().getGameNames()) {
-            GameManagerImpl.getInstance().getGame(game).ifPresent(GameImpl::stop);
-        }
+        GameManagerImpl.getInstance().getLocalGames().forEach(GameImpl::stop);
 
         var logger = BedWarsPlugin.getInstance().getLogger();
         var plugin = BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
@@ -109,7 +107,7 @@ public class BukkitPlatformService extends PlatformService {
             @Override
             public void accept(@NotNull TaskBase taskBase) {
                 boolean gameRuns = false;
-                for (var game : GameManagerImpl.getInstance().getGames()) {
+                for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                     if (game.getStatus() != GameStatus.DISABLED) {
                         gameRuns = true;
                         break;

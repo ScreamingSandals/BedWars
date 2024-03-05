@@ -21,7 +21,9 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
+import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -29,8 +31,11 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,15 +51,17 @@ import java.util.stream.Collectors;
 public class GameManagerImpl implements GameManager {
     @DataFolder("arenas")
     private final Path arenasFolder;
+    @ConfigFile("database/remote_games.json")
+    private final GsonConfigurationLoader remoteGamesLoader;
     private final LoggerWrapper logger;
-    private final List<GameImpl> games = new LinkedList<>();
+    private final List<Game> games = new LinkedList<>();
 
     public static GameManagerImpl getInstance() {
         return ServiceManager.get(GameManagerImpl.class);
     }
 
     @Override
-    public Optional<GameImpl> getGame(String name) {
+    public Optional<Game> getGame(String name) {
         try {
             var uuid = UUID.fromString(name);
             return getGame(uuid);
@@ -63,24 +70,76 @@ public class GameManagerImpl implements GameManager {
         }
     }
 
-    @Override
-    public Optional<GameImpl> getGame(UUID uuid) {
-        return games.stream().filter(game -> game.getUuid().equals(uuid)).findFirst();
+    public Optional<GameImpl> getLocalGame(String name) {
+        return getGame(name)
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game);
+    }
+
+    public Optional<RemoteGameImpl> getRemoteGame(String name) {
+        return getGame(name)
+                .filter(game -> game instanceof RemoteGameImpl)
+                .map(game -> (RemoteGameImpl) game);
     }
 
     @Override
-    public List<GameImpl> getGames() {
+    public Optional<Game> getGame(UUID uuid) {
+        return games.stream().filter(game -> game.getUuid().equals(uuid)).findFirst();
+    }
+
+    public Optional<GameImpl> getLocalGame(UUID uuid) {
+        return getGame(uuid)
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game);
+    }
+
+    public Optional<RemoteGameImpl> getRemoteGame(UUID uuid) {
+        return getGame(uuid)
+                .filter(game -> game instanceof RemoteGameImpl)
+                .map(game -> (RemoteGameImpl) game);
+    }
+
+    @Override
+    public List<Game> getGames() {
         return List.copyOf(games);
     }
 
     @Override
+    public List<GameImpl> getLocalGames() {
+        return games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RemoteGameImpl> getRemoteGames() {
+        return games.stream()
+                .filter(game -> game instanceof RemoteGameImpl)
+                .map(game -> (RemoteGameImpl) game)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<String> getGameNames() {
-        return games.stream().map(GameImpl::getName).collect(Collectors.toList());
+        return games.stream().map(Game::getName).collect(Collectors.toList());
+    }
+
+    public List<String> getLocalGameNames() {
+        return games.stream().filter(game -> game instanceof GameImpl).map(Game::getName).collect(Collectors.toList());
+    }
+
+    public List<String> getRemoteGameNames() {
+        return games.stream().filter(game -> game instanceof RemoteGameImpl).map(Game::getName).collect(Collectors.toList());
     }
 
     @Override
     public boolean hasGame(String name) {
         return getGame(name).isPresent();
+    }
+
+    public boolean hasLocalGame(String name) {
+        return getLocalGame(name).isPresent();
     }
 
     @Override
@@ -89,37 +148,56 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {
+    public Optional<Game> getGameWithHighestPlayers(boolean fee) {
         return MiscUtils.getGameWithHighestPlayers(games, fee);
     }
 
     @Override
-    public Optional<GameImpl> getGameWithLowestPlayers(boolean fee) {
+    public Optional<Game> getGameWithLowestPlayers(boolean fee) {
         return MiscUtils.getGameWithLowestPlayers(games, fee);
     }
 
     @Override
-    public Optional<GameImpl> getFirstWaitingGame(boolean fee) {
+    public Optional<Game> getFirstWaitingGame(boolean fee) {
         return MiscUtils.getFirstWaitingGame(games, fee);
     }
 
     @Override
-    public Optional<GameImpl> getFirstRunningGame(boolean fee) {
+    public Optional<Game> getFirstRunningGame(boolean fee) {
         return MiscUtils.getFirstRunningGame(games, fee);
     }
 
-    public void addGame(@NotNull GameImpl game) {
+    public void addGame(@NotNull Game game) {
         if (!games.contains(game)) {
             games.add(game);
+            if (game instanceof RemoteGameImpl) {
+                triggerRemoteSaving();
+            }
         }
     }
 
-    public void removeGame(@NotNull GameImpl game) {
+    public void removeGame(@NotNull Game game) {
         games.remove(game);
+        if (game instanceof RemoteGameImpl) {
+            triggerRemoteSaving();
+        }
     }
 
     @OnPostEnable
     public void onPostEnable() {
+        try {
+            var remoteGames = remoteGamesLoader.load();
+
+            remoteGames.childrenList().forEach(node -> {
+                var game = RemoteGameImpl.load(node);
+                if (game != null) {
+                    games.add(game);
+                }
+            });
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
         if (Files.exists(arenasFolder)) {
             try (var stream = Files.walk(arenasFolder.toAbsolutePath())) {
                 final var results = stream.filter(Files::isRegularFile)
@@ -145,27 +223,47 @@ public class GameManagerImpl implements GameManager {
 
     @OnPreDisable
     public void onPreDisable() {
-        games.forEach(GameImpl::stop);
+        games.forEach(g -> {
+            if (g instanceof GameImpl) {
+                ((GameImpl) g).stop();
+            }
+        });
         games.clear();
     }
 
+    public void triggerRemoteSaving() {
+        var node = remoteGamesLoader.createNode();
+
+        try {
+            for (var game : games) {
+                if (game instanceof RemoteGameImpl) {
+                    ((RemoteGameImpl) game).serialize(node.appendListNode());
+                }
+            }
+
+            remoteGamesLoader.save(node);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public Optional<GameImpl> getGameWithHighestPlayers() {
+    public Optional<Game> getGameWithHighestPlayers() {
         return getGameWithHighestPlayers(false);
     }
 
     @Override
-    public Optional<GameImpl> getGameWithLowestPlayers() {
+    public Optional<Game> getGameWithLowestPlayers() {
         return getGameWithLowestPlayers(false);
     }
 
     @Override
-    public Optional<GameImpl> getFirstWaitingGame() {
+    public Optional<Game> getFirstWaitingGame() {
         return getFirstWaitingGame(false);
     }
 
     @Override
-    public Optional<GameImpl> getFirstRunningGame() {
+    public Optional<Game> getFirstRunningGame() {
         return getFirstRunningGame(false);
     }
 }

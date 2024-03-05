@@ -28,6 +28,8 @@ import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.remote.protocol.JoinGamePacket;
+import org.screamingsandals.bedwars.game.remote.protocol.PacketReceivedEvent;
 import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
 import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;
 import org.screamingsandals.bedwars.utils.EconomyUtils;
@@ -61,6 +63,7 @@ import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.player.gamemode.GameMode;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
@@ -70,7 +73,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +81,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlayerListener {
     private final List<Player> explosionAffectedPlayers = new ArrayList<>();
+    private final Map<UUID, JoinGamePacket> joinGamePackets = Collections.synchronizedMap(new HashMap<>());
 
     @OnEvent(order = EventExecutionOrder.LAST)
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -333,11 +336,63 @@ public class PlayerListener {
     }
 
     @OnEvent
+    public void onJoinGamePacketReceived(PacketReceivedEvent event) {
+        if (event.getPacket() instanceof JoinGamePacket) {
+            var jgp = (JoinGamePacket) event.getPacket();
+
+            joinGamePackets.put(jgp.getPlayerUuid(), jgp);
+        }
+    }
+
+    @OnEvent
     public void onPlayerJoin(PlayerJoinEvent event) {
         var player = event.player();
 
         if (GameImpl.isBungeeEnabled() && MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
-            Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled. Registering task...");
+            if (!MainConfig.getInstance().node("bungee", "legacy-mode").getBoolean(true)) {
+                Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in modern mode. Registering task...");
+                var countdown = new int[] {200};
+                Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
+                    if (countdown[0] == 200) {
+                        player.setGameMode(GameMode.of("spectator")); // put waiting players to spectator mode
+                    }
+                    countdown[0]--;
+
+                    var jgp = joinGamePackets.get(player.getUniqueId());
+                    if (jgp != null) {
+                        Debug.info("Selecting game for " + event.player().getName());
+                        var game = GameManagerImpl.getInstance().getGame(jgp.getGameIdentifier());
+                        if (game.isEmpty()) {
+                            if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                                Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
+                                BungeeUtils.sendPlayerBungeeMessage(player, Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix().asComponent(player).toLegacy());
+                                BungeeUtils.movePlayerToBungeeServer(player, false);
+                            }
+                            task.cancel();
+                            return;
+                        }
+                        joinGamePackets.remove(player.getUniqueId());
+
+                        try {
+                            game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        task.cancel();
+                        return;
+                    }
+
+                    if (countdown[0] <= 0) {
+                        if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                            Debug.info("Kicking " + event.player().getName() + " for not receiving the JoinGamePacket from the hub server");
+                            BungeeUtils.sendPlayerBungeeMessage(player, Message.of(LangKeys.ADMIN_REMOTE_HUB_DID_NOT_SEND_PACKET).defaultPrefix().asComponent(player).toLegacy());
+                            BungeeUtils.movePlayerToBungeeServer(player, false);
+                        }
+                        task.cancel();
+                    }
+                }, 1, TaskerTime.TICKS, 1, TaskerTime.TICKS);
+            }
+            Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in legacy mode. Registering task...");
             Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                         try {
                             Debug.info("Selecting game for " + event.player().getName());
@@ -476,7 +531,7 @@ public class PlayerListener {
                 Debug.info(event.player().getName() + " attempted to place a block, allowed");
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
-            for (var game : GameManagerImpl.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " attempted to place a block in protected area while not playing BedWars game, canceled");
@@ -521,7 +576,7 @@ public class PlayerListener {
                 }
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
-            for (var game : GameManagerImpl.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " attempted to break a block in protected area while not in BedWars game, canceled");
@@ -1065,7 +1120,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             event.cancelled(true);
         } else {
-            for (var game : GameManagerImpl.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                 if (ArenaUtils.isInArea(event.bed().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " tried to sleep");
@@ -1328,7 +1383,7 @@ public class PlayerListener {
                 Debug.info(player.getName() + " placed liquid, cancelling");
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
-            for (var game : GameManagerImpl.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.blockClicked().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(player.getName() + " is doing prohibited actions in protected area while not playing BedWars");
@@ -1344,7 +1399,7 @@ public class PlayerListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.entity().getLocation(), game.getPos1(), game.getPos2())) {
                     EntitiesManagerImpl.getInstance().addEntityToGame(event.entity(), game);
@@ -1393,7 +1448,7 @@ public class PlayerListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING
                     && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_DISABLE_MERGE, false)) {
 

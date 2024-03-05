@@ -19,47 +19,49 @@
 
 package org.screamingsandals.bedwars.api.game;
 
-import org.intellij.lang.annotations.Pattern;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
+ * A remote game the players can connect to. Can be either identified only by the server or also by the specific arena
+ * if the server supports arena selecting.
+ *
  * @author ScreamingSandals
  * @since 0.3.0
  */
-public interface GroupManager {
+@ApiStatus.NonExtendable
+public interface RemoteGame extends Game {
     /**
+     * Gets a name of the remote bungeecord or velocity server
      *
-     * @param group name of the group
-     * @param game the game that should be added to the group
-     * @return true if successful
+     * @return a name of the server
      * @since 0.3.0
      */
-    boolean addToGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game);
+    @NotNull String getRemoteServer();
 
     /**
+     * Sets a new name of the remote bungeecord or velocity server
      *
-     * @param group name of the group
-     * @param game the game that should be removed from the group
-     * @return true if successful
+     * @param remoteServer a name of the server
      * @since 0.3.0
      */
-    boolean removeFromGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game);
+    void setRemoteServer(@NotNull String remoteServer);
 
     /**
+     * Gets unique identifier of the remote game
      *
-     * @param group name of the group
-     * @return list of all games inside the group
+     * @return a name of the remote game or its uuid
      * @since 0.3.0
      */
-    @NotNull
-    List<? extends @NotNull Game> getGamesInGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group);
+    @Nullable String getRemoteGameIdentifier();
+
 
     /**
+     * Sets a unique identifier of the remote game
      *
-     * @return all groups that have at least one game
+     * @param remoteGameIdentifier a name of the remote game or its uuid or null
      * @since 0.3.0
      */
-    List<String> getExistingGroups();
+    void setRemoteGameIdentifier(@Nullable String remoteGameIdentifier);
 }

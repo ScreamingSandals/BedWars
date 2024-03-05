@@ -233,7 +233,7 @@ public class GameImpl implements LocalGame {
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
                 Server.getConsoleSender().sendMessage(
                         MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
+                                Component.text("Arena " + uuid + " has the same unique id as another arena or remote game that is already loaded. Skipping!", Color.RED)
                         )
                 );
                 return null;
@@ -1325,7 +1325,6 @@ public class GameImpl implements LocalGame {
 
         if (status == GameStatus.REBUILDING) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player, Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
                                 .prefixOrDefault(getCustomPrefixComponent())
@@ -1333,6 +1332,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                         );
+                BungeeUtils.movePlayerToBungeeServer(player, false);
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
@@ -1346,7 +1346,6 @@ public class GameImpl implements LocalGame {
         if ((status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING)
                 && !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_SPECTATOR_JOIN, false)) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player,
                         Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -1355,6 +1354,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                 );
+                BungeeUtils.movePlayerToBungeeServer(player, false);
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -1369,11 +1369,22 @@ public class GameImpl implements LocalGame {
             if (player.canJoinFullGame()) {
                 List<BedWarsPlayer> withoutVIP = getPlayersWithoutVIP();
 
-                if (withoutVIP.size() == 0) {
-                    Message
-                            .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
-                            .prefixOrDefault(getCustomPrefixComponent())
-                            .send(player);
+                if (withoutVIP.isEmpty()) {
+                    if (isBungeeEnabled()) {
+                        BungeeUtils.sendPlayerBungeeMessage(player,
+                            Message
+                                    .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
+                                    .prefixOrDefault(getCustomPrefixComponent())
+                                    .asComponent(player)
+                                    .toLegacy()
+                        );
+                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                    } else {
+                        Message
+                                .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
+                                .prefixOrDefault(getCustomPrefixComponent())
+                                .send(player);
+                    }
                     return;
                 }
 
@@ -1403,15 +1414,15 @@ public class GameImpl implements LocalGame {
                 kickPlayer.changeGame(null);
             } else {
                 if (isBungeeEnabled()) {
-                    BungeeUtils.movePlayerToBungeeServer(player, false);
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> BungeeUtils.sendPlayerBungeeMessage(player,
+                    BungeeUtils.sendPlayerBungeeMessage(player,
                             Message
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                                     .placeholder("arena", GameImpl.this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
                                     .asComponent(player)
                                     .toLegacy()
-                    ), 5, TaskerTime.TICKS);
+                    );
+                    BungeeUtils.movePlayerToBungeeServer(player, false);
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -1426,10 +1437,22 @@ public class GameImpl implements LocalGame {
         if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && EconomyManager.isAvailable()) {
             if (fee > 0) {
                 if (!EconomyManager.withdrawPlayer(player, fee).isSuccessful()) {
-                    Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
-                            .placeholder("coins", fee)
-                            .placeholder("currency", EconomyManager.getCurrencyNameSingular())
-                            .send(player);
+                    if (isBungeeEnabled()) {
+                        BungeeUtils.sendPlayerBungeeMessage(player,
+                            Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
+                                    .placeholder("coins", fee)
+                                    .placeholder("currency", EconomyManager.getCurrencyNameSingular())
+                                    .send(player)
+                                    .asComponent(player)
+                                    .toLegacy()
+                        );
+                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                    } else {
+                        Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
+                                .placeholder("coins", fee)
+                                .placeholder("currency", EconomyManager.getCurrencyNameSingular())
+                                .send(player);
+                    }
                     return;
                 }
             }
@@ -2226,6 +2249,8 @@ public class GameImpl implements LocalGame {
                         Server.getConsoleSender().tryToDispatchCommand("restart");
                     } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
                         Server.shutdown();
+                    } else {
+                        preServerRestart = false;
                     }
                 }, 30, TaskerTime.TICKS);
             }

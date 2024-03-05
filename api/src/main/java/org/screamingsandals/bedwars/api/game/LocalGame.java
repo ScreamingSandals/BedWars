@@ -53,11 +53,6 @@ public interface LocalGame extends Game {
     String getDisplayName();
 
     /**
-     * @return GameStatus of the arena
-     */
-	GameStatus getStatus();
-
-    /**
      *
      */
 	void start();
@@ -404,13 +399,6 @@ public interface LocalGame extends Game {
      * @since 0.3.0
      */
     boolean isInEditMode();
-
-    /**
-     * This methods allows you to save the arena to config (useful when using custom config options)
-     *
-     * @since 0.3.0
-     */
-    void saveToConfig();
 
     /**
      * Gets file with this game

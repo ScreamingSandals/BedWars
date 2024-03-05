@@ -70,10 +70,9 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
             this.game = null;
             this.setSpectator(false);
             this.clean();
+            this.restoreInv();
             if (GameImpl.isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(this, BedWarsPlugin.isDisabling());
-            } else {
-                this.restoreInv();
             }
         } else if (this.game == null && game != null) {
             this.storeInv();

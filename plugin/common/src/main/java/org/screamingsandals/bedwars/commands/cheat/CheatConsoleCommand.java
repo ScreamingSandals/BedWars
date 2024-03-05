@@ -50,14 +50,14 @@ public class CheatConsoleCommand extends CheatCommand {
         super.construct(commandSenderWrapperBuilder
                 .argument(
                         manager.argumentBuilder(String.class, "game")
-                            .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())),
+                            .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getLocalGameNames())),
                         manager
         );
     }
 
     @Override
     protected @Nullable GameImpl getGame(@NotNull CommandContext<@NotNull CommandSender> ctx) {
-        var game = gameManager.getGame(ctx.<String>get("game"));
+        var game = gameManager.getLocalGame(ctx.<String>get("game"));
         if (game.isEmpty()) {
             ctx.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
             return null;
@@ -67,7 +67,7 @@ public class CheatConsoleCommand extends CheatCommand {
 
     @Override
     protected @Nullable GameImpl getGameForSuggestionProvider(@NotNull CommandContext<@NotNull CommandSender> ctx) {
-        return gameManager.getGame(ctx.<String>get("game")).orElse(null);
+        return gameManager.getLocalGame(ctx.<String>get("game")).orElse(null);
     }
 
     @Override

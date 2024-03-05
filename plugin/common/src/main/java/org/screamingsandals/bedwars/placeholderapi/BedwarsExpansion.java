@@ -58,38 +58,49 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
             if (gameOpt.isPresent()) {
                 var game = gameOpt.get();
-                switch (operation) {
-                    case "name":
-                        return Component.text(game.getName());
-                    case "displayName":
-                        return game.getDisplayNameComponent().asComponent();
-                    case "players":
-                        return Component.text(game.countConnectedPlayers());
-                    case "maxplayers":
-                        return Component.text(game.getMaxPlayers());
-                    case "minplayers":
-                        return Component.text(game.getMinPlayers());
-                    case "world":
-                        return Component.text(game.getWorld().getName());
-                    case "state":
-                        return Component.text(game.getStatus().name().toLowerCase());
-                    case "available_teams":
-                        return Component.text(game.countAvailableTeams());
-                    case "connected_teams":
-                        return Component.text(game.countActiveTeams());
-                    case "teamchests":
-                        return Component.text(game.countTeamChests());
+                // TODO: make all placeholders work for remote games
+                if (game instanceof GameImpl) {
+                    switch (operation) {
+                        case "name":
+                            return Component.text(game.getName());
+                        case "displayName":
+                            return ((GameImpl) game).getDisplayNameComponent().asComponent();
+                        case "players":
+                            return Component.text(((GameImpl) game).countConnectedPlayers());
+                        case "maxplayers":
+                            return Component.text(((GameImpl) game).getMaxPlayers());
+                        case "minplayers":
+                            return Component.text(((GameImpl) game).getMinPlayers());
+                        case "world":
+                            return Component.text(((GameImpl) game).getWorld().getName());
+                        case "state":
+                            return Component.text(game.getStatus().name().toLowerCase());
+                        case "available_teams":
+                            return Component.text(((GameImpl) game).countAvailableTeams());
+                        case "connected_teams":
+                            return Component.text(((GameImpl) game).countActiveTeams());
+                        case "teamchests":
+                            return Component.text(((GameImpl) game).countTeamChests());
+                    }
+                } else {
+                    switch (operation) {
+                        case "name":
+                            return Component.text(game.getName());
+                        case "state":
+                            return Component.text(game.getStatus().name().toLowerCase());
+                    }
                 }
             }
         }
 
         if (identifier.startsWith("all_games_")) {
             var operation = identifier.substring(10).toLowerCase(Locale.ROOT);
+            // TODO: count remote games
             switch (operation) {
                 case "players":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
                 case "maxplayers":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
             }
         }
 

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -87,7 +88,8 @@ public class BedWarsSignService extends AbstractSignManager {
     @Override
     protected void updateSign(@NotNull ClickableSign sign) {
         var name = sign.getKey();
-        gameManager.getGame(name).ifPresentOrElse(game -> Tasker.run(DefaultThreads.GLOBAL_THREAD, game::updateSigns),
+        // TODO: update signs for remote games
+        gameManager.getLocalGame(name).ifPresentOrElse(game -> Tasker.run(DefaultThreads.GLOBAL_THREAD, game::updateSigns),
                 () -> {
                     if ("leave".equalsIgnoreCase(name)) {
                         Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> updateLeave(sign));

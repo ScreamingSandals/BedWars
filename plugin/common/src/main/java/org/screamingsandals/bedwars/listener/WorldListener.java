@@ -93,7 +93,7 @@ public class WorldListener {
     }
 
     public void onBlockChange(BlockPlacement block, Cancellable cancellable) {
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(block.location(), game.getPos1(), game.getPos2())) {
                     if (!BedWarsPlugin.isFarmBlock(block.block()) && !game.isBlockAddedDuringGame(block.location())) {
@@ -112,7 +112,7 @@ public class WorldListener {
         }
 
         event.changedBlockStates().removeIf(blockState -> {
-            for (var game : GameManagerImpl.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (ArenaUtils.isInArea(blockState.location(), game.getPos1(), game.getPos2())) {
                         return !game.isBlockAddedDuringGame(blockState.location());
@@ -150,7 +150,7 @@ public class WorldListener {
     public void onExplode(Location location, Collection<BlockPlacement> blockList, org.screamingsandals.lib.event.Cancellable cancellable, boolean originatedInArena) {
         final var breakableExplosions = MainConfig.getInstance().node("breakable", "explosions").getBoolean(true);
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     final var destroyPlacedBlocksByExplosion = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DESTROY_PLACED_BLOCKS_BY_EXPLOSION_ENABLED, true);
@@ -192,7 +192,7 @@ public class WorldListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                     game.getRegion().addBuiltDuringGame(event.block().location());
@@ -208,7 +208,7 @@ public class WorldListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
@@ -224,7 +224,7 @@ public class WorldListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() != GameStatus.DISABLED)
                 // prevent creature spawn everytime, not just in game
                 if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.PREVENT_SPAWNING_MOBS, false)) {
@@ -250,7 +250,7 @@ public class WorldListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (ArenaUtils.isInArea(event.sourceBlock().location(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     var block = event.facedBlock();
@@ -273,7 +273,7 @@ public class WorldListener {
             return;
         }
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (event.entity().getEntityType().is("FALLING_BLOCK")
@@ -312,7 +312,7 @@ public class WorldListener {
     public void onChunkUnload(ChunkUnloadEvent unload) {
         var chunk = unload.chunk();
 
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
                 unload.cancelled(true);
                 return;

@@ -63,7 +63,7 @@ public class CheatAdminCommand extends CheatCommand {
                 .literal("buildPopUpTower")
                 .argument(manager
                         .argumentBuilder(String.class, "game")
-                        .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
+                        .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getLocalGameNames())
                         .asOptional())
                 .handler(commandContext -> {
                     var player = commandContext.getSender().as(Player.class);
@@ -73,7 +73,7 @@ public class CheatAdminCommand extends CheatCommand {
 
                     if (game.isPresent()) {
                         var arenaN = game.get();
-                        GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
+                        GameManagerImpl.getInstance().getLocalGame(arenaN).ifPresentOrElse(
                                 game1 -> {
                                     var popupT = new PopUpTowerImpl(game1, playerManager.getPlayerOrCreate(player), null, Block.of("minecraft:white_wool"), player.getLocation().getBlock().location().add(playerFace).add(BlockFace.DOWN), playerFace);
                                     popupT.runTask();

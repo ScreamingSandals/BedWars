@@ -27,6 +27,8 @@ import java.util.UUID;
 /**
  * @author ScreamingSandals
  * @since 0.3.0
+ * @see LocalGame for locally configured games
+ * @see RemoteGame for registered games on another bungeecord servers
  */
 @ApiStatus.NonExtendable
 public interface Game {
@@ -40,6 +42,18 @@ public interface Game {
      * @return Arena name
      */
     String getName();
+
+    /**
+     * @return GameStatus of the arena
+     */
+    GameStatus getStatus();
+
+    /**
+     * This methods allows you to save the arena to config (useful when using custom config options)
+     *
+     * @since 0.3.0
+     */
+    void saveToConfig();
 
     // PLAYER MANAGEMENT
 

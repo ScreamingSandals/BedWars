@@ -29,6 +29,7 @@ import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 
+import javax.imageio.IIOException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -61,6 +62,23 @@ public class BungeeUtils {
         }, 30, TaskerTime.TICKS);
     }
 
+    public ByteArrayOutputStream constructDataOutput(DataOutputFiller consumer) throws IOException {
+        var out = new ByteArrayOutputStream();
+        var dout = new DataOutputStream(out);
+
+        consumer.fill(dout);
+
+        return out;
+    }
+
+    public void sendBungeeMessage(Player player, DataOutputFiller consumer) {
+        try (var out = constructDataOutput(consumer)) {
+            CustomPayload.send(player, "BungeeCord", out.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void internalMove(Player player, boolean restart) {
         var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
         var out = new ByteArrayOutputStream();
@@ -82,5 +100,9 @@ public class BungeeUtils {
                 }
             }, 20, TaskerTime.TICKS);
         }
+    }
+
+    public interface DataOutputFiller {
+        void fill(DataOutputStream dataOutputStream) throws IOException;
     }
 }

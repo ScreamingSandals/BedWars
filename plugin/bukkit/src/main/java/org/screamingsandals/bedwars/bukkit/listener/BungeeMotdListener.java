@@ -46,7 +46,7 @@ public class BungeeMotdListener implements Listener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent slpe) {
-        var games = GameManagerImpl.getInstance().getGames();
+        var games = GameManagerImpl.getInstance().getLocalGames();
         if (games.isEmpty()) {
             return;
         }

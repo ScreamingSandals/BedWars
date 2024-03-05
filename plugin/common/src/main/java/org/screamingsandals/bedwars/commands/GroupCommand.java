@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -89,7 +89,7 @@ public class GroupCommand extends BaseCommand {
                         )
                         .argument(StringArgument.<CommandSender>newBuilder("game")
                                 .withSuggestionsProvider((c, s) ->
-                                    groupManager.getGamesInGroup(c.get("group")).stream().map(GameImpl::getName).collect(Collectors.toList())
+                                    groupManager.getGamesInGroup(c.get("group")).stream().map(Game::getName).collect(Collectors.toList())
                                 )
                         )
                         .handler(commandContext -> {

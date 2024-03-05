@@ -178,6 +178,7 @@ public class MainConfig {
                     .back()
                 .section("bungee")
                     .key("enabled").defValue(false)
+                    .key("legacy-mode").defValue(true)
                     .key("serverRestart").defValue(true)
                     .key("serverStop").defValue(false)
                     .key("server").defValue("hub")
