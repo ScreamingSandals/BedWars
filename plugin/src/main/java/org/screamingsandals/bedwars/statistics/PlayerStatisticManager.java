@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.statistics;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsSavePlayerStatisticEvent;
 import org.bukkit.OfflinePlayer;
@@ -32,7 +33,6 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import java.io.File;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PlayerStatisticManager implements PlayerStatisticsManager {
     private File databaseFile = null;
@@ -199,15 +199,22 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return playerStatistic;
         }
 
-        if (!this.fileDatabase.isConfigurationSection("data." + uuid.toString())) {
-            Main.getInstance().getLogger().warning("Statistics of player with UUID " + uuid + " are not properly saved and the plugin cannot load them!");
+        Object confSection = this.fileDatabase.get("data." + uuid.toString());
+
+        if (!(confSection instanceof ConfigurationSection) && !(confSection instanceof Map)) {
+            Main.getInstance().getLogger().warning("Statistics of player with UUID " + uuid + " are not properly saved and the plugin cannot load them! Expected " + ConfigurationSection.class.getName() + ", got " + (confSection != null ? confSection.getClass().getName() : "null"));
             PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
             this.playerStatistic.put(uuid, playerStatistic);
             return playerStatistic;
         }
 
-        HashMap<String, Object> deserialize = new HashMap<>();
-        deserialize.putAll(this.fileDatabase.getConfigurationSection("data." + uuid.toString()).getValues(false));
+        Map<String, Object> deserialize;
+        if (confSection instanceof ConfigurationSection) {
+            deserialize = new HashMap<>(((ConfigurationSection) confSection).getValues(false));
+        } else {
+            //noinspection unchecked
+            deserialize = (Map<String, Object>) confSection;
+        }
         PlayerStatistic playerStatistic = new PlayerStatistic(deserialize);
         playerStatistic.setId(uuid);
         Player player = Main.getInstance().getServer().getPlayer(uuid);
@@ -285,11 +292,13 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     private synchronized void storeYamlStatistic(PlayerStatistic statistic) {
-        this.fileDatabase.set("data." + statistic.getId().toString(), statistic.serialize());
+        this.fileDatabase.set("data." + statistic.getId().toString(), null);
+        this.fileDatabase.createSection("data." + statistic.getId().toString(), statistic.serialize());
         try {
             this.fileDatabase.save(this.databaseFile);
         } catch (Exception ex) {
             Main.getInstance().getLogger().warning("Couldn't store statistic data for player with uuid: " + statistic.getId().toString());
+            ex.printStackTrace();
         }
     }
 
