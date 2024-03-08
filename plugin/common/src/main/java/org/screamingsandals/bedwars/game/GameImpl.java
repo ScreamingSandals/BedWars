@@ -1332,7 +1332,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                         );
-                BungeeUtils.movePlayerToBungeeServer(player, false);
+                BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
@@ -1354,7 +1354,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                 );
-                BungeeUtils.movePlayerToBungeeServer(player, false);
+                BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -1378,7 +1378,7 @@ public class GameImpl implements LocalGame {
                                     .asComponent(player)
                                     .toLegacy()
                         );
-                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                        BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
                     } else {
                         Message
                                 .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
@@ -1422,7 +1422,7 @@ public class GameImpl implements LocalGame {
                                     .asComponent(player)
                                     .toLegacy()
                     );
-                    BungeeUtils.movePlayerToBungeeServer(player, false);
+                    BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -1446,7 +1446,7 @@ public class GameImpl implements LocalGame {
                                     .asComponent(player)
                                     .toLegacy()
                         );
-                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                        BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
                     } else {
                         Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
                                 .placeholder("coins", fee)

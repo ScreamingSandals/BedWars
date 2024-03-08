@@ -23,8 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.game.remote.Constants;
 import org.screamingsandals.lib.CustomPayload;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.ProxyType;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
@@ -57,23 +59,30 @@ public class ProtocolManager {
 
     @OnPostEnable
     public void onPostEnable() {
-        registration = CustomPayload.registerIncomingChannel(Constants.MESSAGING_CHANNEL, (player, bytes) -> {
-            try {
-                var inputStream = new ByteArrayInputStream(bytes);
-                var dataInputStream = new DataInputStream(inputStream);
-                int packetId = dataInputStream.readInt();
-                var clazz = int2PacketMap.get(packetId);
-                if (clazz == null) {
-                    throw new RuntimeException("Unknown BedWars packet ID " + packetId);
-                }
-                var packet = clazz.getConstructor().newInstance();
-                packet.read(dataInputStream);
+        if (Server.getProxyType() != ProxyType.NONE) {
+            registration = CustomPayload.registerIncomingChannel("BungeeCord", (player, bytes) -> {
+                try {
+                    var outerIn = new DataInputStream(new ByteArrayInputStream(bytes));
+                    if (!Constants.MESSAGING_CHANNEL.equals(outerIn.readUTF())) {
+                        return;
+                    }
 
-                EventManager.fire(new PacketReceivedEvent(packet));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+                    var in = new DataInputStream(new ByteArrayInputStream(outerIn.readNBytes(outerIn.readShort())));
+
+                    int packetId = in.readInt();
+                    var clazz = int2PacketMap.get(packetId);
+                    if (clazz == null) {
+                        throw new RuntimeException("Unknown BedWars packet ID " + packetId);
+                    }
+                    var packet = clazz.getConstructor().newInstance();
+                    packet.read(in);
+
+                    EventManager.fire(new PacketReceivedEvent(packet));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @OnPreDisable

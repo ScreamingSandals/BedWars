@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.player;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
@@ -56,6 +57,9 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
     @Getter
     @Setter
     private boolean spectator;
+    @Getter
+    @Setter
+    private @Nullable String hubServerName;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
     public boolean forceSynchronousTeleportation = false;
@@ -72,7 +76,7 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
             this.clean();
             this.restoreInv();
             if (GameImpl.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(this, BedWarsPlugin.isDisabling());
+                BungeeUtils.movePlayerToBungeeServer(this, BedWarsPlugin.isDisabling(), hubServerName);
             }
         } else if (this.game == null && game != null) {
             this.storeInv();

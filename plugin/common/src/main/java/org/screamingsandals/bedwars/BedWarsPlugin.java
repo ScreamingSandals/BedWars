@@ -21,7 +21,9 @@ package org.screamingsandals.bedwars;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -61,6 +63,7 @@ import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.PlatformType;
+import org.screamingsandals.lib.utils.ProxyType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
@@ -70,6 +73,8 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -150,6 +155,8 @@ public class BedWarsPlugin implements BedwarsAPI {
     private boolean isDisabling = false;
     @Getter
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
+    @Getter
+    private @Nullable String serverName;
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -284,7 +291,20 @@ public class BedWarsPlugin implements BedwarsAPI {
             }
         });
 
-        CustomPayload.registerOutgoingChannel("BungeeCord");
+        if (Server.getProxyType() != ProxyType.NONE) {
+            CustomPayload.registerOutgoingChannel("BungeeCord");
+            CustomPayload.registerIncomingChannel("BungeeCord", (player, bytes) -> {
+                var in = new DataInputStream(new ByteArrayInputStream(bytes));
+
+                try {
+                    if ("GetServer".equals(in.readUTF())) {
+                        serverName = in.readUTF();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
 
         if (!VersionInfo.VERSION.equals(pluginDescription.version())) {
             Server.getConsoleSender().sendMessage(Component.text()

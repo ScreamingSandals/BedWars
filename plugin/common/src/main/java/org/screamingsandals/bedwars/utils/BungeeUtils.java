@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
@@ -29,7 +30,6 @@ import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 
-import javax.imageio.IIOException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,12 +37,17 @@ import java.io.IOException;
 @UtilityClass
 public class BungeeUtils {
     public void movePlayerToBungeeServer(Player player, boolean serverRestart) {
+        movePlayerToBungeeServer(player, serverRestart, null);
+    }
+
+    public void movePlayerToBungeeServer(Player player, boolean serverRestart, @Nullable String serverName) {
+        var server = serverName != null ? serverName : MainConfig.getInstance().node("bungee", "server").getString("hub");
         if (serverRestart) {
-            internalMove(player, true);
+            internalMove(player, true, server);
             return;
         }
 
-        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> internalMove(player, false));
+        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> internalMove(player, false, server));
     }
 
     public void sendPlayerBungeeMessage(Player player, String string) {
@@ -79,8 +84,7 @@ public class BungeeUtils {
         }
     }
 
-    private void internalMove(Player player, boolean restart) {
-        var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
+    private void internalMove(Player player, boolean restart, String server) {
         var out = new ByteArrayOutputStream();
         var dout = new DataOutputStream(out);
 

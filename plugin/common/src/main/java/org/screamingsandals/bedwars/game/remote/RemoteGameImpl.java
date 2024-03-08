@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
@@ -150,7 +151,7 @@ public class RemoteGameImpl implements RemoteGame {
             try {
                 ProtocolManager.getInstance().sendPacket(
                         remoteServer,
-                        new JoinGamePacket(player.getUniqueId(), remoteGameIdentifier, null) // TODO: pass sending hub
+                        new JoinGamePacket(player.getUniqueId(), remoteGameIdentifier, BedWarsPlugin.getInstance().getServerName())
                 );
             } catch (IOException e) {
                 e.printStackTrace();
