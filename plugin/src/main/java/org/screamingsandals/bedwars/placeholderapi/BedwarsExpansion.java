@@ -28,6 +28,8 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 
 import java.util.Locale;
 
@@ -59,14 +61,72 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         if (identifier.startsWith("game_")) {
             String gameName = identifier.substring(5);
             int index = gameName.lastIndexOf("_");
-            String operation = gameName.substring(index + 1).toLowerCase();
+            String operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
             if (operation.equals("teams")) {
                 index = gameName.lastIndexOf("_", index - 1);
-                operation = gameName.substring(index + 1).toLowerCase();
+                operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
+            } else if (gameName.contains("_team_")) {
+                index = gameName.indexOf("_team_");
+                operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
             }
             gameName = gameName.substring(0, index);
             Game game = Main.getGame(gameName);
             if (game != null) {
+                if (operation.startsWith("team_")) {
+                    index = operation.lastIndexOf("_");
+                    if (index != -1) {
+                        String teamName = operation.substring(5, index);
+                        String teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
+
+                        Team team = (Team) game.getTeamFromName(teamName);
+
+                        if (team != null) {
+                            switch (teamOperation) {
+                                case "colored":
+                                    return team.color.chatColor + team.getName();
+                                case "color":
+                                    return team.color.chatColor.toString();
+                                case "ingame":
+                                    return game.getCurrentTeamByTeam(team) != null ? "yes" : "no";
+                                case "players": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return Integer.toString(ct.countConnectedPlayers());
+                                    } else {
+                                        return "0";
+                                    }
+                                }
+                                case "maxplayers":
+                                    return Integer.toString(team.getMaxPlayers());
+                                case "bed": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return ct.isBed ? "yes" : "no";
+                                    } else {
+                                        return "no";
+                                    }
+                                }
+                                case "bedsymbol": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        boolean empty = ct.isBed && "RESPAWN_ANCHOR".equals(team.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.bed.getBlock());
+                                        return !ct.isBed ? Game.bedLostString() : (empty ? Game.anchorEmptyString() : Game.bedExistString());
+                                    } else {
+                                        return Game.bedLostString();
+                                    }
+                                }
+                                case "teamchests": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return Integer.toString(ct.countTeamChests());
+                                    } else {
+                                        return "0";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 switch (operation) {
                     case "name":
                         return game.getName();
@@ -76,6 +136,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Integer.toString(game.getMaxPlayers());
                     case "minplayers":
                         return Integer.toString(game.getMinPlayers());
+                    case "time":
+                        return Integer.toString(game.getCountdown());
                     case "world":
                         return game.getWorld().getName();
                     case "state":
@@ -109,10 +171,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             }
             String playerName = identifier.substring(11);
             int index = playerName.lastIndexOf("_");
-            String operation = playerName.substring(index + 1).toLowerCase();
+            String operation = playerName.substring(index + 1).toLowerCase(Locale.ROOT);
             if (operation.equals("beds")) {
                 index = playerName.lastIndexOf("_", index - 1);
-                operation = playerName.substring(index + 1).toLowerCase();
+                operation = playerName.substring(index + 1).toLowerCase(Locale.ROOT);
             }
             playerName = playerName.substring(0, index);
 
@@ -149,7 +211,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
         if (identifier.startsWith("current_")) {
             // current game
-            switch (identifier.toLowerCase().substring(8)) {
+            switch (identifier.toLowerCase(Locale.ROOT).substring(8)) {
                 case "game":
                     return Main.isPlayerInGame(player) ? Main.getPlayerGameProfile(player).getGame().getName() : "none";
                 case "game_players":
@@ -167,6 +229,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 case "game_minplayers":
                     if (Main.isPlayerInGame(player)) {
                         return Integer.toString(Main.getPlayerGameProfile(player).getGame().getMinPlayers());
+                    } else {
+                        return "0";
+                    }
+                case "game_time":
+                    if (Main.isPlayerInGame(player)) {
+                        return Integer.toString(Main.getPlayerGameProfile(player).getGame().getCountdown());
                     } else {
                         return "0";
                     }
@@ -283,6 +351,20 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     } else {
                         return "no";
                     }
+                case "team_bedsymbol":
+                    if (Main.isPlayerInGame(player)) {
+                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+                        Game game = gPlayer.getGame();
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            boolean empty = team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock());
+                            return !team.isBed ? Game.bedLostString() : (empty ? Game.anchorEmptyString() : Game.bedExistString());
+                        } else {
+                            return Game.bedLostString();
+                        }
+                    } else {
+                        return Game.bedLostString();
+                    }
                 case "team_teamchests":
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
@@ -312,7 +394,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            switch (identifier.toLowerCase().substring(6)) {
+            switch (identifier.toLowerCase(Locale.ROOT).substring(6)) {
                 case "deaths":
                     return Integer.toString(stats.getDeaths());
                 case "destroyed_beds":

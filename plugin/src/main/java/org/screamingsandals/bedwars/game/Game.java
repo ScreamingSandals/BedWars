@@ -3693,4 +3693,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public void setCustomPrefix(String customPrefix) {
         this.customPrefix = customPrefix;
     }
+
+    public int getCountdown() {
+        return countdown;
+    }
 }
