@@ -138,6 +138,32 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Integer.toString(game.getMinPlayers());
                     case "time":
                         return Integer.toString(game.getCountdown());
+                    case "timeformat":
+                        return Game.getFormattedTimeLeft(game.getCountdown());
+                    case "elapsedtime":
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Integer.toString(game.getLobbyCountdown() - game.getCountdown());
+                            case RUNNING:
+                                return Integer.toString(game.getGameTime() - game.getCountdown());
+                            case GAME_END_CELEBRATING:
+                                return Integer.toString(game.getPostGameWaiting() - game.getCountdown());
+                            case REBUILDING:
+                            case DISABLED:
+                                return "0";
+                        }
+                    case "elapsedtimeformat":
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getCountdown());
+                            case RUNNING:
+                                return Game.getFormattedTimeLeft(game.getGameTime() - game.getCountdown());
+                            case GAME_END_CELEBRATING:
+                                return Game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getCountdown());
+                            case REBUILDING:
+                            case DISABLED:
+                                return Game.getFormattedTimeLeft(0);
+                        }
                     case "world":
                         return game.getWorld().getName();
                     case "state":
@@ -210,6 +236,66 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         }
 
         if (identifier.startsWith("current_")) {
+            if (identifier.toLowerCase(Locale.ROOT).startsWith("current_game_team_")) {
+                String operation = identifier.substring(18);
+                int index = operation.lastIndexOf("_");
+                if (index != -1) {
+                    String teamName = operation.substring(0, index);
+                    String teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
+
+                    Game game = Main.isPlayerInGame(player) ? Main.getPlayerGameProfile(player).getGame() : null;
+                    if (game != null) {
+                        Team team = (Team) game.getTeamFromName(teamName);
+
+                        if (team != null) {
+                            switch (teamOperation) {
+                                case "colored":
+                                    return team.color.chatColor + team.getName();
+                                case "color":
+                                    return team.color.chatColor.toString();
+                                case "ingame":
+                                    return game.getCurrentTeamByTeam(team) != null ? "yes" : "no";
+                                case "players": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return Integer.toString(ct.countConnectedPlayers());
+                                    } else {
+                                        return "0";
+                                    }
+                                }
+                                case "maxplayers":
+                                    return Integer.toString(team.getMaxPlayers());
+                                case "bed": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return ct.isBed ? "yes" : "no";
+                                    } else {
+                                        return "no";
+                                    }
+                                }
+                                case "bedsymbol": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        boolean empty = ct.isBed && "RESPAWN_ANCHOR".equals(team.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.bed.getBlock());
+                                        return !ct.isBed ? Game.bedLostString() : (empty ? Game.anchorEmptyString() : Game.bedExistString());
+                                    } else {
+                                        return Game.bedLostString();
+                                    }
+                                }
+                                case "teamchests": {
+                                    CurrentTeam ct = game.getCurrentTeamByTeam(team);
+                                    if (ct != null) {
+                                        return Integer.toString(ct.countTeamChests());
+                                    } else {
+                                        return "0";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // current game
             switch (identifier.toLowerCase(Locale.ROOT).substring(8)) {
                 case "game":
@@ -237,6 +323,46 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Integer.toString(Main.getPlayerGameProfile(player).getGame().getCountdown());
                     } else {
                         return "0";
+                    }
+                case "game_timeformat":
+                    if (Main.isPlayerInGame(player)) {
+                        return Game.getFormattedTimeLeft(Main.getPlayerGameProfile(player).getGame().getCountdown());
+                    } else {
+                        return "0";
+                    }
+                case "game_elapsedtime":
+                    if (Main.isPlayerInGame(player)) {
+                        Game game = Main.getPlayerGameProfile(player).getGame();
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Integer.toString(game.getLobbyCountdown() - game.getCountdown());
+                            case RUNNING:
+                                return Integer.toString(game.getGameTime() - game.getCountdown());
+                            case GAME_END_CELEBRATING:
+                                return Integer.toString(game.getPostGameWaiting() - game.getCountdown());
+                            case REBUILDING:
+                            case DISABLED:
+                                return "0";
+                        }
+                    } else {
+                        return "0";
+                    }
+                case "game_elapsedtimeformat":
+                    if (Main.isPlayerInGame(player)) {
+                        Game game = Main.getPlayerGameProfile(player).getGame();
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getCountdown());
+                            case RUNNING:
+                                return Game.getFormattedTimeLeft(game.getGameTime() - game.getCountdown());
+                            case GAME_END_CELEBRATING:
+                                return Game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getCountdown());
+                            case REBUILDING:
+                            case DISABLED:
+                                return Game.getFormattedTimeLeft(0);
+                        }
+                    } else {
+                        return Game.getFormattedTimeLeft(0);
                     }
                 case "game_world":
                     if (Main.isPlayerInGame(player)) {

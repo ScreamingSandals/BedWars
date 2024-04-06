@@ -2631,7 +2631,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return getFormattedTimeLeft(this.countdown);
     }
 
-    public String getFormattedTimeLeft(int countdown) {
+    public static String getFormattedTimeLeft(int countdown) {
         int min;
         int sec;
         String minStr;
