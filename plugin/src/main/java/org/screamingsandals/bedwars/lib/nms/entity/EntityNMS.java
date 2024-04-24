@@ -100,8 +100,7 @@ public class EntityNMS implements EntityAccessor {
 	public void setCustomName(String name) {
 		InstanceMethod method = ClassStorage.getMethod(handler, METHOD_SET_CUSTOM_NAME.get());
 		if (method.getReflectedMethod() != null) {
-			method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod())
-				.invokeStatic("{\"text\": \"" + name + "\"}"));
+			method.invoke(TabManager.serialize("{\"text\": \"" + name + "\"}"));
 		} else {
 			ClassStorage.getMethod(handler, METHOD_SET_CUSTOM_NAME_1.get()).invoke(name);
 		}

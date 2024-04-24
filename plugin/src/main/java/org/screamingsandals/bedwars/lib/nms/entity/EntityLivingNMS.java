@@ -56,8 +56,14 @@ public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 	
 	public boolean hasAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
-				.invoke(attr);
+			Object attr0;
+			if (METHOD_GET_ATTRIBUTE.get() != null) {
+				attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
+						.invoke(attr);
+			} else {
+				attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE_1.get())
+						.invoke(attr);
+			}
 			return attr0 != null;
 		} catch (Throwable t) {
 		}
@@ -70,8 +76,14 @@ public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 	
 	public double getAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
-				.invoke(attr);
+			Object attr0;
+			if (METHOD_GET_ATTRIBUTE.get() != null) {
+				attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
+						.invoke(attr);
+			} else {
+				attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE_1.get())
+						.invoke(attr);
+			}
 			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GET_VALUE.get()).invoke();
 		} catch (Throwable t) {
 		}
@@ -85,8 +97,14 @@ public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 	public void setAttribute(Object attr, double value) {
 		try {
 			if (value >= 0) {
-				Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
-					.invoke(attr);
+				Object attr0;
+				if (METHOD_GET_ATTRIBUTE.get() != null) {
+					attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
+							.invoke(attr);
+				} else {
+					attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE_1.get())
+							.invoke(attr);
+				}
 				if (attr0 == null) {
 					Object attrMap = getMethod(handler, METHOD_GET_ATTRIBUTES.get()).invoke();
 					// Pre 1.16
@@ -96,9 +114,15 @@ public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 						Object provider = getField(attrMap, AttributeMapAccessor.FIELD_SUPPLIER.get());
 						Map<Object, Object> all = Maps
 								.newHashMap((Map<?, ?>) getField(provider, AttributeSupplierAccessor.FIELD_INSTANCES.get()));
-						attr0 = AttributeInstanceAccessor.CONSTRUCTOR_0.get().newInstance(attr, (Consumer) o -> {
-							// do nothing
-						});
+						if (AttributeInstanceAccessor.CONSTRUCTOR_0.get() != null) {
+							attr0 = AttributeInstanceAccessor.CONSTRUCTOR_0.get().newInstance(attr, (Consumer) o -> {
+								// do nothing
+							});
+						} else {
+							attr0 = AttributeInstanceAccessor.CONSTRUCTOR_1.get().newInstance(attr, (Consumer) o -> {
+								// do nothing
+							});
+						}
 						all.put(attr, attr0);
 						setField(provider, AttributeSupplierAccessor.FIELD_INSTANCES.get(), ImmutableMap.copyOf(all));
 					}

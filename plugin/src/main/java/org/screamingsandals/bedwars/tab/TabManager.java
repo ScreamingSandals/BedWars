@@ -25,6 +25,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundTabListPacketAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.RegistryAccessAccessor;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,20 +56,16 @@ public class TabManager {
             try {
                 Object headerComponent;
                 if (header != null) {
-                    headerComponent = getMethod(getCorrectSerializingMethod())
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}");
+                    headerComponent = serialize("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}");
                 } else {
-                    headerComponent = getMethod(getCorrectSerializingMethod())
-                            .invokeStatic("{\"text\": \"\"}");
+                    headerComponent = serialize("{\"text\": \"\"}");
                 }
 
                 Object footerComponent;
                 if (footer != null) {
-                    footerComponent = getMethod(getCorrectSerializingMethod())
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}");
+                    footerComponent = serialize("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}");
                 } else {
-                    footerComponent = getMethod(getCorrectSerializingMethod())
-                            .invokeStatic("{\"text\": \"\"}");
+                    footerComponent = serialize("{\"text\": \"\"}");
                 }
 
                 Object packet;
@@ -94,8 +92,7 @@ public class TabManager {
                 } else {
                     clearString = "{\"translate\": \"\"}";
                 }
-                Object blankComponent = getMethod(getCorrectSerializingMethod())
-                        .invokeStatic(clearString);
+                Object blankComponent = serialize(clearString);
                 Object packet;
                 if (ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get() != null) {
                     packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get().newInstance(blankComponent, blankComponent);
@@ -122,10 +119,13 @@ public class TabManager {
         return list;
     }
 
-    public static Method getCorrectSerializingMethod() {
+    public static Object serialize(String text) {
         if (Component$SerializerAccessor.METHOD_FROM_JSON.get() != null) {
-            return Component$SerializerAccessor.METHOD_FROM_JSON.get();
+            return ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON.get()).invokeStatic(text);
         }
-        return Component$SerializerAccessor.METHOD_FROM_JSON_1.get();
+        if (Component$SerializerAccessor.METHOD_FROM_JSON_1.get() != null) {
+            return ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON_1.get()).invokeStatic(text);
+        }
+        return ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON_LENIENT.get()).invokeStatic(text, RegistryAccessAccessor.FIELD_EMPTY.get());
     }
 }

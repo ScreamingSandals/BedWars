@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.4"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.5"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -15,7 +15,7 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.20.4') {
+    /*versionRange('1.8.8', '1.20.5') {
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
         // exclude 1.9.1 and 1.9.3 - no mappings at all
@@ -38,9 +38,13 @@ accessors {
         getter String, 'string'
     }
     var Attribute = mapClass 'net.minecraft.world.entity.ai.attributes.Attribute'
+    mapClass('net.minecraft.core.RegistryAccess') {
+        field 'net.minecraft.core.RegistryAccess$Frozen', 'EMPTY'
+    }
     mapClass('net.minecraft.network.chat.Component$Serializer') {
         method Component, 'fromJson', String // 1.16 and below
         method 'net.minecraft.network.chat.MutableComponent', 'fromJson', String // 1.16.1 and higher
+        method 'net.minecraft.network.chat.MutableComponent', 'fromJsonLenient', String, 'net.minecraft.core.HolderLookup$Provider' // 1.20.5+
     }
     var SynchedEntityData = mapClass('net.minecraft.network.syncher.SynchedEntityData') {
         method void, 'watch', int, Object
@@ -100,6 +104,7 @@ accessors {
     }
     var AttributeInstance = mapClass('net.minecraft.world.entity.ai.attributes.AttributeInstance') {
         constructor Attribute, Consumer
+        constructor 'net.minecraft.core.Holder', Consumer // 1.20.5+
         getter double, 'value'
         setter double, 'baseValue'
     }
@@ -109,6 +114,7 @@ accessors {
     }
     var LivingEntity = mapClass('net.minecraft.world.entity.LivingEntity') {
         method AttributeInstance, 'getAttribute', Attribute
+        method AttributeInstance, 'getAttribute', 'net.minecraft.core.Holder'
         getter AttributeMap, 'attributes'
         getter 'net.minecraft.world.damagesource.CombatTracker', 'combatTracker'
     }
@@ -142,17 +148,50 @@ accessors {
         setter Entity, 'camera'
     }
     mapClass('net.minecraft.world.entity.ai.attributes.Attributes') {
-        field Attribute, 'MAX_HEALTH'
-        field Attribute, 'FOLLOW_RANGE'
-        field Attribute, 'KNOCKBACK_RESISTANCE'
-        field Attribute, 'MOVEMENT_SPEED'
-        field Attribute, 'FLYING_SPEED'
-        field Attribute, 'ATTACK_DAMAGE'
-        field Attribute, 'ATTACK_KNOCKBACK'
-        field Attribute, 'ATTACK_SPEED'
-        field Attribute, 'ARMOR'
-        field Attribute, 'ARMOR_TOUGHNESS'
-        field Attribute, 'LUCK'
+        fieldChain {
+            it.item Attribute, 'MAX_HEALTH'
+            it.item 'net.minecraft.core.Holder', 'MAX_HEALTH'
+        }
+        fieldChain {
+            it.item Attribute, 'FOLLOW_RANGE'
+            it.item 'net.minecraft.core.Holder', 'FOLLOW_RANGE'
+        }
+        fieldChain {
+            it.item Attribute, 'KNOCKBACK_RESISTANCE'
+            it.item 'net.minecraft.core.Holder', 'KNOCKBACK_RESISTANCE'
+        }
+        fieldChain {
+            it.item Attribute, 'MOVEMENT_SPEED'
+            it.item 'net.minecraft.core.Holder', 'MOVEMENT_SPEED'
+        }
+        fieldChain {
+            it.item Attribute, 'FLYING_SPEED'
+            it.item 'net.minecraft.core.Holder', 'FLYING_SPEED'
+        }
+        fieldChain {
+            it.item Attribute, 'ATTACK_DAMAGE'
+            it.item 'net.minecraft.core.Holder', 'ATTACK_DAMAGE'
+        }
+        fieldChain {
+            it.item Attribute, 'ATTACK_KNOCKBACK'
+            it.item 'net.minecraft.core.Holder', 'ATTACK_KNOCKBACK'
+        }
+        fieldChain {
+            it.item Attribute, 'ATTACK_SPEED'
+            it.item 'net.minecraft.core.Holder', 'ATTACK_SPEED'
+        }
+        fieldChain {
+            it.item Attribute, 'ARMOR'
+            it.item 'net.minecraft.core.Holder', 'ARMOR'
+        }
+        fieldChain {
+            it.item Attribute, 'ARMOR_TOUGHNESS'
+            it.item 'net.minecraft.core.Holder', 'ARMOR_TOUGHNESS'
+        }
+        fieldChain {
+            it.item Attribute, 'LUCK'
+            it.item 'net.minecraft.core.Holder', 'LUCK'
+        }
     }
     mapClass('net.minecraft.network.protocol.game.ServerboundInteractPacket') {
         field int, 'entityId'
