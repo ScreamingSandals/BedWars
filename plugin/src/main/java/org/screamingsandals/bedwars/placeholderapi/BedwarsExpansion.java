@@ -139,7 +139,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "time":
                         return Integer.toString(game.getCountdown());
                     case "timeformat":
-                        return Game.getFormattedTimeLeft(game.getCountdown());
+                        return Game.getFormattedTimeLeftS(game.getCountdown());
                     case "elapsedtime":
                         switch (game.getStatus()) {
                             case WAITING:
@@ -155,14 +155,14 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "elapsedtimeformat":
                         switch (game.getStatus()) {
                             case WAITING:
-                                return Game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getLobbyCountdown() - game.getCountdown());
                             case RUNNING:
-                                return Game.getFormattedTimeLeft(game.getGameTime() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getGameTime() - game.getCountdown());
                             case GAME_END_CELEBRATING:
-                                return Game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getPostGameWaiting() - game.getCountdown());
                             case REBUILDING:
                             case DISABLED:
-                                return Game.getFormattedTimeLeft(0);
+                                return Game.getFormattedTimeLeftS(0);
                         }
                     case "world":
                         return game.getWorld().getName();
@@ -326,7 +326,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "game_timeformat":
                     if (Main.isPlayerInGame(player)) {
-                        return Game.getFormattedTimeLeft(Main.getPlayerGameProfile(player).getGame().getCountdown());
+                        return Game.getFormattedTimeLeftS(Main.getPlayerGameProfile(player).getGame().getCountdown());
                     } else {
                         return "0";
                     }
@@ -352,17 +352,17 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         Game game = Main.getPlayerGameProfile(player).getGame();
                         switch (game.getStatus()) {
                             case WAITING:
-                                return Game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getLobbyCountdown() - game.getCountdown());
                             case RUNNING:
-                                return Game.getFormattedTimeLeft(game.getGameTime() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getGameTime() - game.getCountdown());
                             case GAME_END_CELEBRATING:
-                                return Game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getCountdown());
+                                return Game.getFormattedTimeLeftS(game.getPostGameWaiting() - game.getCountdown());
                             case REBUILDING:
                             case DISABLED:
-                                return Game.getFormattedTimeLeft(0);
+                                return Game.getFormattedTimeLeftS(0);
                         }
                     } else {
-                        return Game.getFormattedTimeLeft(0);
+                        return Game.getFormattedTimeLeftS(0);
                     }
                 case "game_world":
                     if (Main.isPlayerInGame(player)) {

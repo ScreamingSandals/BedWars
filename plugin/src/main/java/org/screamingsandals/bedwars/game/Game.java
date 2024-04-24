@@ -2139,7 +2139,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             for (CurrentTeam t : teamsInGame) {
                                 if (t.isAlive()) {
                                     winner = t;
-                                    String time = getFormattedTimeLeft(gameTime - countdown);
+                                    String time = getFormattedTimeLeftS(gameTime - countdown);
                                     String message = i18nc("team_win", customPrefix)
                                             .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
                                             .replace("%time%", time);
@@ -2628,10 +2628,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public String getFormattedTimeLeft() {
-        return getFormattedTimeLeft(this.countdown);
+        return getFormattedTimeLeftS(this.countdown);
     }
 
-    public static String getFormattedTimeLeft(int countdown) {
+    /**
+     * This method exists to maintain binary compatibility with SBA
+     */
+    public String getFormattedTimeLeft(int countdown) {
+        return getFormattedTimeLeftS(countdown);
+    }
+
+    public static String getFormattedTimeLeftS(int countdown) {
         int min;
         int sec;
         String minStr;
