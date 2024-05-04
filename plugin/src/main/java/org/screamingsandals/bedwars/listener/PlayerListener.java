@@ -889,7 +889,19 @@ public class PlayerListener implements Listener {
                                                 originalState.update(true, false);
                                             } else {
                                                 if (player.getGameMode() != GameMode.CREATIVE) {
-                                                    stack.setAmount(stack.getAmount() - 1);
+                                                    if (stack.getAmount() > 1) {
+                                                        stack.setAmount(stack.getAmount() - 1);
+                                                    } else {
+                                                        try {
+                                                            if (player.getInventory().getItemInOffHand().equals(stack)) {
+                                                                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                                                            } else {
+                                                                player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                                                            }
+                                                        } catch (Throwable e) {
+                                                            player.getInventory().setItemInHand(new ItemStack(Material.AIR));
+                                                        }
+                                                    }
                                                 }
                                                 if (!player.isSneaking()) {
                                                     // TODO get right block place sound
