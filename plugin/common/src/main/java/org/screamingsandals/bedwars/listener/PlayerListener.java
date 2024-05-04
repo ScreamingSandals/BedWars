@@ -58,6 +58,7 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.Player;
@@ -1005,7 +1006,15 @@ public class PlayerListener {
                                         originalState.updateBlock(true, false);
                                     } else {
                                         if (!player.getGameMode().is("creative")) {
-                                            stack.changeAmount(stack.getAmount() - 1);
+                                            if (stack.getAmount() > 1) {
+                                                stack.changeAmount(stack.getAmount() - 1);
+                                            } else {
+                                                if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                                                    player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
+                                                } else {
+                                                    player.getPlayerInventory().setItemInMainHand(ItemStackFactory.getAir());
+                                                }
+                                            }
                                         }
                                         if (!player.isSneaking()) {
                                             // TODO get right block place sound
