@@ -32,6 +32,14 @@ processResources {
     ]
 }
 
+jar {
+    manifest {
+        attributes([
+                'paperweight-mappings-namespace': 'mojang'
+        ])
+    }
+}
+
 buildConfig {
     className('VersionInfo')
     packageName('org.screamingsandals.bedwars')
