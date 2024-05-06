@@ -1220,6 +1220,23 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onItemMerge(ItemMergeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        for (String s : Main.getGameNames()) {
+            Game game = Main.getGame(s);
+            if (game.getStatus() == GameStatus.RUNNING && game.getOriginalOrInheritedSpawnerDisableMerge()) {
+                if (GameCreator.isInArea(event.getEntity().getLocation(), game.getPos1(), game.getPos2()) || GameCreator.isInArea(event.getTarget().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
     /* This event was replaced on 1.12 with newer (event handling is devided between Player112Listener and PlayerBefore112Listener) */
     public static void onItemPickup(Player player, Item item, Cancellable cancel) {
         if (cancel.isCancelled()) {
