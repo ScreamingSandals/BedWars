@@ -33,7 +33,14 @@ public class BungeeMotdListener implements Listener {
             return;
         }
 
-        Game game = Main.getGame(Main.getGameNames().get(0));
+        Game game;
+        if (Main.getInstance().isPreSelectGames()) {
+            game = Main.getInstance().getSelectedGame();
+        } else if (Main.getConfigurator().config.getBoolean("bungee.random-game-selection.enabled")) {
+            game = (Game) Main.getInstance().getRandomWaitingGameForBungeeMode();
+        } else {
+            game = Main.getGame(Main.getGameNames().get(0));
+        }
 
         if (game == null) {
             return;

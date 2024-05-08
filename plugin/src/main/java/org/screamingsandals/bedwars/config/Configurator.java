@@ -177,13 +177,19 @@ public class Configurator {
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
         checkOrSetConfig(modify, "bungee.kick-when-proxy-too-slow", true);
-        checkOrSetConfig(modify, "bungee.select-random-game", true);
+        checkOrSetConfig(modify, "bungee.random-game-selection.enabled", config.getBoolean("bungee.select-random-game", true));
+        checkOrSetConfig(modify, "bungee.random-game-selection.preselect-games", false);
         checkOrSetConfig(modify, "bungee.motd.enabled", false);
         checkOrSetConfig(modify, "bungee.motd.waiting", "%name%: Waiting for players [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.waiting_full", "%name%: Game is full [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.running", "%name%: Game is running [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.rebuilding", "%name%: Rebuilding...");
         checkOrSetConfig(modify, "bungee.motd.disabled", "%name%: Game is disabled");
+
+        if (config.isSet("bungee.select-random-game")) {
+            modify.set(true);
+            config.set("bungee.select-random-game", null);
+        }
 
         checkOrSetConfig(modify, "farmBlocks.enable", false);
         checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());

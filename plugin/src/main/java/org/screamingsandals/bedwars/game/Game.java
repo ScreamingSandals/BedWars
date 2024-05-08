@@ -2363,6 +2363,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
 
             if (isBungeeEnabled()) {
+                Main.getInstance().reselectGame();
+
                 preServerRestart = true;
 
                 if (!getConnectedPlayers().isEmpty()) {
@@ -2380,6 +2382,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     .dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
                         } else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
                             Bukkit.shutdown();
+                        } else {
+                            preServerRestart = false;
                         }
                     }
 

@@ -102,6 +102,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
+    private Game selectedGame;
+    private boolean preSelectGames;
 
     static {
         // ColorChanger list of materials
@@ -183,6 +185,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static void removeGame(Game game) {
         instance.games.remove(game.getName());
+        if (instance.selectedGame == game) {
+            instance.selectedGame = null;
+            instance.reselectGame();
+        }
     }
 
     public static Game getInGameEntity(Entity entity) {
@@ -597,6 +603,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         metrics.addCustomChart(new SimplePie("edition", () -> "Free"));
         metrics.addCustomChart(new SimplePie("build_number", () -> VersionInfo.BUILD_NUMBER));
 
+        if (
+                configurator.config.getBoolean("bungee.enabled")
+                && configurator.config.getBoolean("bungee.random-game-selection.enabled")
+                && configurator.config.getBoolean("bungee.random-game-selection.preselect-games")
+        ) {
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                selectedGame = (Game) getRandomWaitingGameForBungeeMode();
+                preSelectGames = true;
+            }, 2L);
+        }
+
         Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
         Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");
     }
@@ -617,6 +634,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         metrics = null;
+        selectedGame = null;
+        preSelectGames = false;
     }
 
     private boolean setupEconomy() {
@@ -819,5 +838,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public void se(boolean bool) {
         setEnabled(bool);
+    }
+
+    public boolean isPreSelectGames() {
+        return preSelectGames;
+    }
+
+    public Game getSelectedGame() {
+        return selectedGame;
+    }
+
+    public void reselectGame() {
+        if (preSelectGames) {
+            selectedGame = (Game) getRandomWaitingGameForBungeeMode();
+        }
     }
 }
