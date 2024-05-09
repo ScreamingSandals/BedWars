@@ -691,7 +691,7 @@ public class PlayerListener implements Listener {
 
                 if (Main.getConfigurator().config.getBoolean("allow-fake-death") && !event.isCancelled() && (player.getHealth() - event.getFinalDamage()) <= 0) {
                     event.setCancelled(true);
-                    FakeDeath.die(gPlayer);
+                    FakeDeath.die(gPlayer, event);
                 }
             }
         }

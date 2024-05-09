@@ -23,20 +23,23 @@ import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FakeDeath {
-    public static void die(GamePlayer gamePlayer) {
+    public static void die(GamePlayer gamePlayer, @Nullable EntityDamageEvent ede) {
         Player player = gamePlayer.player;
         if (player.isDead()) {
             return;
@@ -55,7 +58,31 @@ public class FakeDeath {
             message = (String) ClassStorage.getMethod(component, ComponentAccessor.METHOD_GET_STRING.get()).invoke();
         } catch (Throwable ignored) {}
 
-        PlayerDeathEvent event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
+        PlayerDeathEvent event;
+        try {
+            event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
+        } catch (Throwable ignored) {
+            // Spigot 1.20.6: DamageSource is now required in constructor (we still depend on 1.16.5, so we use reflection)
+            try {
+                Class<?> dmgSourceClass = Class.forName("org.bukkit.damage.DamageSource");
+
+                Object damageSource;
+                if (ede != null) {
+                    damageSource = ClassStorage.getMethod(ede, "getDamageSource").invoke();
+                } else {
+                    Class<?> dmgType = Class.forName("org.bukkit.damage.DamageType");
+                    damageSource = ClassStorage.getMethod(ClassStorage.getMethod(dmgSourceClass, "builder", dmgType).invokeStatic(
+                            ClassStorage.getField(dmgType, "GENERIC_KILL")
+                    ), "build").invoke();
+                }
+
+                event = PlayerDeathEvent.class
+                        .getConstructor(Player.class, dmgSourceClass, List.class, int.class, int.class, String.class)
+                        .newInstance(player, damageSource, loot, player.getTotalExperience(), 0, message);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {

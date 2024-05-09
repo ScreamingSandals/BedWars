@@ -163,7 +163,7 @@ public class CheatCommand extends BaseCommand {
                             return true;
                         }
                         if (Main.getConfigurator().config.getBoolean("allow-fake-death")) {
-                            FakeDeath.die(gamePlayer);
+                            FakeDeath.die(gamePlayer, null);
                         } else {
                             player1.setHealth(0);
                         }
