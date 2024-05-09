@@ -441,3 +441,29 @@ help_bw_cheat_kill: /bw cheat kill [hráč] - &cZabije konkrétního hráče
 "party_command_not_party_leader": '&cNejsi vedoucí této party!'
 protect_your_door: '%teamcolor%&lOchraňte si svoje dveře!'
 kicking_in: '&cOpuštění arény za &7%time%'
+help_bw_cheatin_give: /bw cheatIn <hra> give <surovina> <množství> <hráč> - &cDá hráči
+  konkrétní počet suroviny
+help_bw_cheatin_destroybed: /bw cheatIn <hra> destroybed <tým> - &cZničí postel konkrétního
+  týmu
+help_bw_cheatin_destroyallbeds: /bw cheatIn <hra> destroyallbeds - &cZničí všechny
+  postele ve hře
+door_is_destroyed: Dveře týmu %team%&r byly zničeny!
+destroy_this_door: '%teamcolor%&lZničte tyto dveře!'
+team_not_in_game: '&cTým &7%name%&c není ve hře!'
+team_bed_is_already_destroyed: '&cPostel týmu &7%name%&c již je zničena!'
+cheat_received_target_block_destroy: '&aPostel týmu &7%name%&a byla zničena!'
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cZapočne hru s pouze jedním
+  týmem
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cZničí všechny postele ve
+  hře
+cheat_received_target_blocks_destroy: '&aPostele všech týmů byly zničeny!'
+protect_your_door_destroyed: '&7&lDveře byly zničeny.'
+cheat_not_waiting: '&cHra není ve stavu čekání!'
+game_forced: '&aHra začne s prázdnými týmy. Znič jejich bloky k vítězství!'
+help_bw_cheat_destroybed: /bw cheat destroybed <tým> - &cZničí postel konkrétního
+  týmu
+help_bw_cheat_jointeam: /bw cheat jointeam [tým] - &cPřipojí admina do konkrétního
+  týmu nebo náhodného týmu, ignoruje jeho velikost (může být použito i během hry,
+  ale tým musí mít nějaké hráče)
+game_ended_too_early: '&cHra skončila příliš brzy. Nikdo nevyhrál.'
+help_bw_cheatin_kill: /bw cheatIn <hra> kill <hráč> - &cZabije konkrétního hráče
