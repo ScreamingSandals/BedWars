@@ -214,6 +214,7 @@ public class Configurator {
         checkOrSetConfig(modify, "shop.items-on-row", 9);
         checkOrSetConfig(modify, "shop.show-page-numbers", true);
         checkOrSetConfig(modify, "shop.inventory-type", "CHEST");
+        checkOrSetConfig(modify, "shop.allow-execution-of-console-commands", true);
         checkOrSetConfig(modify, "shop.citizens-enabled", false);
         
         checkOrSetConfig(modify, "items.jointeam", "COMPASS");
@@ -572,7 +573,7 @@ public class Configurator {
         checkOrSetConfig(modify, "removeUpgradeMessages", config.getBoolean("removePurchaseMessages"));
         checkOrSetConfig(modify, "disableCakeEating", true);
         checkOrSetConfig(modify, "disableDragonEggTeleport", true);
-        checkOrSetConfig(modify, "preventArenaFromGriefing", false);
+        checkOrSetConfig(modify, "preventArenaFromGriefing", true);
 
         checkOrSetConfig(modify, "update-checker.zero.console", true);
         checkOrSetConfig(modify, "update-checker.zero.admins", true);

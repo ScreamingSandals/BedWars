@@ -104,6 +104,7 @@ public class ShopInventory implements Listener {
         options.setGenericShop(true);
         options.setGenericShopPriceTypeRequired(true);
         options.setAnimationsEnabled(true);
+        options.setAllowAccessToConsole(Main.getConfigurator().config.getBoolean("shop.allow-execution-of-console-commands"));
 
         options.registerPlaceholder("team", (key, player, arguments) -> {
             GamePlayer gPlayer = Main.getPlayerGameProfile(player);
@@ -438,7 +439,7 @@ public class ShopInventory implements Listener {
             newItem = changeItemType.getStack(amount);
         }
 
-        if (clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
+        if (!event.isHasExecutions() && clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
             double priceOfOne = (double) price / amount;
             double maxStackSize;
             int finalStackSize;
@@ -486,9 +487,13 @@ public class ShopInventory implements Listener {
             }
 
             event.sellStack(materialItem);
-            Map<Integer, ItemStack> notFit = event.buyStack(newItem);
-            if (!notFit.isEmpty()) {
-                notFit.forEach((i, stack) -> player.getLocation().getWorld().dropItem(player.getLocation(), stack));
+            if (event.isHasExecutions()) {
+                event.setRunExecutions(true); // SIv1 will handle that when this is set to true
+            } else {
+                Map<Integer, ItemStack> notFit = event.buyStack(newItem);
+                if (!notFit.isEmpty()) {
+                    notFit.forEach((i, stack) -> player.getLocation().getWorld().dropItem(player.getLocation(), stack));
+                }
             }
 
             if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
