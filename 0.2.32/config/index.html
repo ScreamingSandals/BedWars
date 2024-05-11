@@ -1609,18 +1609,19 @@ In that case, we would recommend you checking out <a href="https://www.spigotmc.
 <h2 id="database-connection">Database connection<a class="headerlink" href="#database-connection" title="Permanent link">&para;</a></h2>
 <p>In config.yml you can find a section called <code>database</code>. Under this section, you can configure the database connection. Currently only MySQL and MariaDB are officially supported, yet the configuration allows you to provide a custom driver for a newer version of the database system or a driver for a different SQL-like database system like PostgreSQL. Pull requests fixing support with different database systems are welcome :)</p>
 <p>To enable the database connection, you have to set something to be saved in database. Currently only statistics can be saved to the database. To enable that, locate the <code>statistics</code> section and switch <code>type</code> from <code>yaml</code> to <code>database</code>.</p>
-<p>There are following fields in the database section:
-* <code>host</code> is the hostname or IP address of the database server, defaults to <code>localhost</code>.
-* <code>port</code> is the port of the database server, defaults to <code>3306</code> which is the default port for MySQL/MariaDB.
-* <code>db</code> is the name of the database, defaults to <code>database</code>
-* <code>user</code> is the user of the database system with access to database specified <code>db</code>. The user needs to be able to change the structure of the database. Defaults to <code>root</code>, though applications should not have root access.
-* <code>password</code> is the password of the database user. Defaults to <code>secret</code>, though you should choose better password (possibly generated).
-* <code>table-prefix</code> is a string which is prepended to table names, defaults to <code>bw_</code>.
-* <code>type</code> is type of the database system, defaults to <code>mysql</code> (valid for both MySQL and MariaDB when the MySQL driver is used).
-* <code>driver</code> is the driver, which is going to be used. There are two possible options:
-  * You can set it to <code>default</code>. The driver will be chosen based on the type. Both Spigot and Paper servers provide driver for type <code>mysql</code>. Other plugins may provide other drivers to the classpath.
-  * To use a third-party driver, specify the path, for example <code>mysql-connector-j-8.0.0.jar</code>. The path is always relative to the <code>plugins/BedWars</code> folder, so we recommend putting the jar to this folder. The driver needs to be JDBC 4-compatible. The driver is not available to other plugins, and does not affect them in any way.
-* <code>params</code> is a map containing specific options for the driver. You should check documentation of the chosen database system before modifying it. By default, following parameters are set:
+<p>There are following fields in the database section:</p>
+<ul>
+<li><code>host</code> is the hostname or IP address of the database server, defaults to <code>localhost</code>.</li>
+<li><code>port</code> is the port of the database server, defaults to <code>3306</code> which is the default port for MySQL/MariaDB.</li>
+<li><code>db</code> is the name of the database, defaults to <code>database</code></li>
+<li><code>user</code> is the user of the database system with access to database specified <code>db</code>. The user needs to be able to change the structure of the database. Defaults to <code>root</code>, though applications should not have root access.</li>
+<li><code>password</code> is the password of the database user. Defaults to <code>secret</code>, though you should choose better password (possibly generated).</li>
+<li><code>table-prefix</code> is a string which is prepended to table names, defaults to <code>bw_</code>.</li>
+<li><code>type</code> is type of the database system, defaults to <code>mysql</code> (valid for both MySQL and MariaDB when the MySQL driver is used).</li>
+<li><code>driver</code> is the driver, which is going to be used. There are two possible options:</li>
+<li>You can set it to <code>default</code>. The driver will be chosen based on the type. Both Spigot and Paper servers provide driver for type <code>mysql</code>. Other plugins may provide other drivers to the classpath.</li>
+<li>To use a third-party driver, specify the path, for example <code>mysql-connector-j-8.0.0.jar</code>. The path is always relative to the <code>plugins/BedWars</code> folder, so we recommend putting the jar to this folder. The driver needs to be JDBC 4-compatible. The driver is not available to other plugins, and does not affect them in any way.</li>
+<li><code>params</code> is a map containing specific options for the driver. You should check documentation of the chosen database system before modifying it. By default, following parameters are set:
   <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1634,7 +1635,8 @@ In that case, we would recommend you checking out <a href="https://www.spigotmc.
 <span class="w">  </span><span class="nt">cachePrepStmts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">prepStmtCacheSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">250</span>
 <span class="w">  </span><span class="nt">prepStmtCacheSqlLimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
-</code></pre></div></td></tr></table></div></p>
+</code></pre></div></td></tr></table></div></li>
+</ul>
 <div class="admonition warning">
 <p class="admonition-title">Driver version</p>
 <p>If you use an ancient Minecraft version like 1.8.8, but you have new version of MySQL/MariaDB, the driver bundled in Spigot 1.8.8 may be incompatible. Get a new version of MySQL Connector J <a href="https://dev.mysql.com/downloads/connector/j/">here</a>: select Platform Independent, download the archive and extract the mysql-connector-j-8.x.x.jar file from it (other files from the archive are not relevant). Put the JAR file in <code>plugins/BedWars</code> folder, and change <code>driver</code> from <code>default</code> to the name of the file, eg. <code>mysql-connector-j-8.4.0.jar</code>.</p>
