@@ -513,6 +513,7 @@ In config.yml you can find a section called `database`. Under this section, you 
 To enable the database connection, you have to set something to be saved in database. Currently only statistics can be saved to the database. To enable that, locate the `statistics` section and switch `type` from `yaml` to `database`.
 
 There are following fields in the database section:
+
 * `host` is the hostname or IP address of the database server, defaults to `localhost`.
 * `port` is the port of the database server, defaults to `3306` which is the default port for MySQL/MariaDB.
 * `db` is the name of the database, defaults to `database`
