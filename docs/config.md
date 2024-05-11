@@ -84,7 +84,9 @@ bungee:
   server: hub
   auto-game-connect: false
   kick-when-proxy-too-slow: true
-  select-random-game: true
+  random-game-selection:
+    enabled: true
+    preselect-games: false
   motd:
     enabled: false
     waiting: '%name%: Waiting for players [%current%/%max%]'
@@ -117,6 +119,7 @@ shop:
   show-page-numbers: true
   inventory-type: CHEST
   citizens-enabled: false
+  allow-execution-of-console-commands: true
 items:
   jointeam: COMPASS
   leavegame: SLIME_BALL
@@ -305,7 +308,15 @@ database:
   user: root
   password: secret
   table-prefix: bw_
-  useSSL: false
+  type: mysql
+  driver: default
+  params:
+    useSSL: false
+    serverTimezone: Europe/Prague
+    autoReconnect: true
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
 bossbar:
   use-xp-bar: false
   lobby:
@@ -398,7 +409,7 @@ removePurchaseFailedMessages: false
 removeUpgradeMessages: false
 disableCakeEating: true
 disableDragonEggTeleport: true
-preventArenaFromGriefing: false
+preventArenaFromGriefing: true
 update-checker:
   zero:
     console: true
@@ -495,9 +506,59 @@ resources:
     spread: 1.0
 ```
 
+## Database connection
+
+In config.yml you can find a section called `database`. Under this section, you can configure the database connection. Currently only MySQL and MariaDB are officially supported, yet the configuration allows you to provide a custom driver for a newer version of the database system or a driver for a different SQL-like database system like PostgreSQL. Pull requests fixing support with different database systems are welcome :)
+
+To enable the database connection, you have to set something to be saved in database. Currently only statistics can be saved to the database. To enable that, locate the `statistics` section and switch `type` from `yaml` to `database`.
+
+There are following fields in the database section:
+* `host` is the hostname or IP address of the database server, defaults to `localhost`.
+* `port` is the port of the database server, defaults to `3306` which is the default port for MySQL/MariaDB.
+* `db` is the name of the database, defaults to `database`
+* `user` is the user of the database system with access to database specified `db`. The user needs to be able to change the structure of the database. Defaults to `root`, though applications should not have root access.
+* `password` is the password of the database user. Defaults to `secret`, though you should choose better password (possibly generated).
+* `table-prefix` is a string which is prepended to table names, defaults to `bw_`.
+* `type` is type of the database system, defaults to `mysql` (valid for both MySQL and MariaDB when the MySQL driver is used).
+* `driver` is the driver, which is going to be used. There are two possible options:
+  * You can set it to `default`. The driver will be chosen based on the type. Both Spigot and Paper servers provide driver for type `mysql`. Other plugins may provide other drivers to the classpath.
+  * To use a third-party driver, specify the path, for example `mysql-connector-j-8.0.0.jar`. The path is always relative to the `plugins/BedWars` folder, so we recommend putting the jar to this folder. The driver needs to be JDBC 4-compatible. The driver is not available to other plugins, and does not affect them in any way.
+* `params` is a map containing specific options for the driver. You should check documentation of the chosen database system before modifying it. By default, following parameters are set:
+  ```yaml
+  params:
+    useSSL: false  # change this to true if your database server requires SSL or runs on a different machine and has SSL enabled
+    serverTimezone: Europe/Prague  # default value is based on your system
+    autoReconnect: true
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+  ```
+
+!!! warning "Driver version"
+    
+    If you use an ancient Minecraft version like 1.8.8, but you have new version of MySQL/MariaDB, the driver bundled in Spigot 1.8.8 may be incompatible. Get a new version of MySQL Connector J [here](https://dev.mysql.com/downloads/connector/j/): select Platform Independent, download the archive and extract the mysql-connector-j-8.x.x.jar file from it (other files from the archive are not relevant). Put the JAR file in `plugins/BedWars` folder, and change `driver` from `default` to the name of the file, eg. `mysql-connector-j-8.4.0.jar`.
+
+!!! info "stats_players table structure"
+    
+    In specific cases, the automatic creation of the database table may fail. In that case you may need to create it manually, using the following code or its variation.
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS `bw_stats_players` (
+      `kills` int(11) NOT NULL DEFAULT '0',
+      `wins` int(11) NOT NULL DEFAULT '0',
+      `score` int(11) NOT NULL DEFAULT '0',
+      `loses` int(11) NOT NULL DEFAULT '0',
+      `name` varchar(255) NOT NULL,
+      `destroyedBeds` int(11) NOT NULL DEFAULT '0',
+      `uuid` varchar(255) NOT NULL,
+      `deaths` int(11) NOT NULL DEFAULT '0',
+      PRIMARY KEY (`uuid`)
+    );
+    ```
+
 ## Game effects
 
-In config.yml you can find section called `game-effects`. Here you can set some visual effects that will enhance your game experiences.
+In config.yml you can find a section called `game-effects`. Here you can set some visual effects that will enhance your game experiences.
 
 ### Events
 * `end` - This effect is called when game ends.
