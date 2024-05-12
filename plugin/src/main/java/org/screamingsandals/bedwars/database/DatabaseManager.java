@@ -87,7 +87,7 @@ public class DatabaseManager {
                             driverClassName = reader.readLine();
                             if (driverClassName != null) {
                                 // All characters after '#' should be ignored, whitespaces around the qualified name are also ignored
-                                driverClassName = driver.split("#", 2)[0].trim();
+                                driverClassName = driverClassName.split("#", 2)[0].trim();
                             }
                         } while (driverClassName != null && driverClassName.isEmpty());
                     }
