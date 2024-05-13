@@ -23,6 +23,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
@@ -343,21 +344,29 @@ public class PlayerListener {
                         try {
                             Debug.info("Selecting game for " + event.player().getName());
                             var gameManager = GameManagerImpl.getInstance();
-                            var game = (
-                                    MainConfig.getInstance().node("bungee", "select-random-game").getBoolean()
-                                            ? gameManager.getGameWithHighestPlayers()
-                                            : gameManager.getFirstWaitingGame()
-                            ).or(gameManager::getFirstRunningGame);
-                            if (game.isEmpty()) { // still nothing?
+                            Game game = null;
+                            if (MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()) {
+                                if (gameManager.isDoGamePreselection()) {
+                                    game = gameManager.getPreselectedGame();
+                                }
+                            }
+                            if (game == null) {
+                                game = (
+                                        MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()
+                                                ? gameManager.getGameWithHighestPlayers()
+                                                : gameManager.getFirstWaitingGame()
+                                ).or(gameManager::getFirstRunningGame).orElse(null);
+                            }
+                            if (game == null) { // still nothing?
                                 if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                     Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
                                     BungeeUtils.movePlayerToBungeeServer(player, false);
                                 }
                                 return;
                             }
-                            Debug.info(event.player().getName() + " is connecting to " + game.get().getName());
+                            Debug.info(event.player().getName() + " is connecting to " + game.getName());
 
-                            game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                            game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
                         } catch (NullPointerException ignored) {
                             if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                 Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");

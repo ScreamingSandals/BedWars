@@ -2213,6 +2213,8 @@ public class GameImpl implements LocalGame {
             }
 
             if (isBungeeEnabled()) {
+                GameManagerImpl.getInstance().reselectGame();
+
                 preServerRestart = true;
 
                 if (!getConnectedPlayers().isEmpty()) {
@@ -2226,6 +2228,8 @@ public class GameImpl implements LocalGame {
                         Server.getConsoleSender().tryToDispatchCommand("restart");
                     } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
                         Server.shutdown();
+                    } else {
+                        preServerRestart = false;
                     }
                 }, 30, TaskerTime.TICKS);
             }
@@ -2248,7 +2252,7 @@ public class GameImpl implements LocalGame {
         });
         otherVisuals.clear();
         Debug.info(name + ": rebuilding starts");
-        teamsInGame.forEach(TeamImpl::destroy);
+        teams.forEach(TeamImpl::destroy); // Not destroyed teams may not be in teamsInGame
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();

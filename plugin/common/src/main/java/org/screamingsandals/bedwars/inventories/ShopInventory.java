@@ -277,6 +277,7 @@ public class ShopInventory {
                 .genericShop(true)
                 .genericShopPriceTypeRequired(true)
                 .animationsEnabled(true)
+                .allowAccessToConsole(MainConfig.getInstance().node("shop", "allow-execution-of-console-commands").getBoolean())
                 .categoryOptions(localOptionsBuilder ->
                     localOptionsBuilder
                             .backItem(mainConfig.readDefinedItem("shopback", "BARRIER"), itemBuilder ->
@@ -468,7 +469,7 @@ public class ShopInventory {
         }
 
         var originalMaxStackSize = newItem.getMaterial().maxStackSize();
-        if (clickType.isShiftClick() && originalMaxStackSize > 1) {
+        if (!event.isHasAnyExecutions() && clickType.isShiftClick() && originalMaxStackSize > 1) {
             double priceOfOne = (double) priceAmount / amount;
             double maxStackSize;
             int finalStackSize;
@@ -528,9 +529,13 @@ public class ShopInventory {
             }
 
             event.sellStack(materialItem);
-            var notFit = event.buyStack(newItem);
-            if (!notFit.isEmpty()) {
-                notFit.forEach(stack -> Entities.dropItem(stack, player.getLocation()));
+            if (event.isHasAnyExecutions()) {
+                event.setRunExecutions(true); // SIv2 will handle that when this is set to true
+            } else {
+                var notFit = event.buyStack(newItem);
+                if (!notFit.isEmpty()) {
+                    notFit.forEach(stack -> Entities.dropItem(stack, player.getLocation()));
+                }
             }
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {

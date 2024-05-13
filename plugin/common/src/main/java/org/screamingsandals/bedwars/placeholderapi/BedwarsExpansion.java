@@ -21,11 +21,17 @@ package org.screamingsandals.bedwars.placeholderapi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.target.ATargetCountdown;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderExpansion;
 import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.sender.MultiPlatformOfflinePlayer;
@@ -49,19 +55,67 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         if (identifier.startsWith("game_")) {
             var gameName = identifier.substring(5);
             var index = gameName.lastIndexOf("_");
-            var operation = gameName.substring(index + 1).toLowerCase();
+            var operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
             if (operation.equals("teams")) {
                 index = gameName.lastIndexOf("_", index - 1);
-                operation = gameName.substring(index + 1).toLowerCase();
+                operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
+            } else if (gameName.contains("_team_")) {
+                index = gameName.indexOf("_team_");
+                operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
             }
             gameName = gameName.substring(0, index);
             var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
             if (gameOpt.isPresent()) {
                 var game = gameOpt.get();
+                if (operation.startsWith("team_")) {
+                    index = operation.lastIndexOf("_");
+                    if (index != -1) {
+                        var teamName = operation.substring(5, index);
+                        var teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
+
+                        TeamImpl team = game.getTeamFromName(teamName);
+
+                        if (team != null) {
+                            switch (teamOperation) {
+                                case "colored":
+                                    return Component.text(team.getName(), team.getColor().getTextColor());
+                                case "color":
+                                    return Component.text("", team.getColor().getTextColor());
+                                case "ingame":
+                                    return Component.text(team.isStarted() ? "yes" : "no");
+                                case "players":
+                                    return Component.text(team.countConnectedPlayers());
+                                case "maxplayers":
+                                    return Component.text(team.getMaxPlayers());
+                                case "bed": // 0.2.x
+                                case "targetvalid":
+                                    return Component.text(team.isStarted() && team.getTarget().isValid() ? "yes" : "no");
+                                case "bedsymbol": // 0.2.x
+                                case "targetvalidsymbol": {
+                                    if (team.isStarted() && team.getTarget().isValid()) {
+                                        if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent();
+                                        } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                                    .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                                    .asComponent();
+                                        } else {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent();
+                                        }
+                                    } else {
+                                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent();
+                                    }
+                                }
+                                case "teamchests":
+                                    return Component.text(team.countTeamChests());
+                            }
+                        }
+                    }
+                }
                 switch (operation) {
                     case "name":
                         return Component.text(game.getName());
-                    case "displayName":
+                    case "displayname":
                         return game.getDisplayNameComponent().asComponent();
                     case "players":
                         return Component.text(game.countConnectedPlayers());
@@ -69,6 +123,34 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text(game.getMaxPlayers());
                     case "minplayers":
                         return Component.text(game.getMinPlayers());
+                    case "time":
+                        return Component.text(game.getTimeLeft());
+                    case "timeformat":
+                        return Component.text(game.getFormattedTimeLeft());
+                    case "elapsedtime":
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Component.text(game.getLobbyCountdown() - game.getTimeLeft());
+                            case RUNNING:
+                                return Component.text(game.getGameTime() - game.getTimeLeft());
+                            case GAME_END_CELEBRATING:
+                                return Component.text(game.getPostGameWaiting() - game.getTimeLeft());
+                            case REBUILDING:
+                            case DISABLED:
+                                return Component.text("0");
+                        }
+                    case "elapsedtimeformat":
+                        switch (game.getStatus()) {
+                            case WAITING:
+                                return Component.text(game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getTimeLeft()));
+                            case RUNNING:
+                                return Component.text(game.getFormattedTimeLeft(game.getGameTime() - game.getTimeLeft()));
+                            case GAME_END_CELEBRATING:
+                                return Component.text(game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getTimeLeft()));
+                            case REBUILDING:
+                            case DISABLED:
+                                return Component.text(game.getFormattedTimeLeft(0));
+                        }
                     case "world":
                         return Component.text(game.getWorld().getName());
                     case "state":
@@ -101,10 +183,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             }
             var playerName = identifier.substring(11);
             var index = playerName.lastIndexOf("_");
-            var operation = playerName.substring(index + 1).toLowerCase();
+            var operation = playerName.substring(index + 1).toLowerCase(Locale.ROOT);
             if (operation.equals("beds")) {
                 index = playerName.lastIndexOf("_", index - 1);
-                operation = playerName.substring(index + 1).toLowerCase();
+                operation = playerName.substring(index + 1).toLowerCase(Locale.ROOT);
             }
             playerName = playerName.substring(0, index);
 
@@ -142,17 +224,111 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         }
 
         if (identifier.startsWith("current_")) {
+            if (identifier.toLowerCase(Locale.ROOT).startsWith("current_game_team_")) {
+                String operation = identifier.substring(18);
+                int index = operation.lastIndexOf("_");
+                if (index != -1) {
+                    String teamName = operation.substring(0, index);
+                    String teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
+
+                    var game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).orElse(null);
+                    if (game != null) {
+                        TeamImpl team = game.getTeamFromName(teamName);
+
+                        if (team != null) {
+                            switch (teamOperation) {
+                                case "colored":
+                                    return Component.text(team.getName(), team.getColor().getTextColor());
+                                case "color":
+                                    return Component.text("", team.getColor().getTextColor());
+                                case "ingame":
+                                    return Component.text(team.isStarted() ? "yes" : "no");
+                                case "players":
+                                    return Component.text(team.countConnectedPlayers());
+                                case "maxplayers":
+                                    return Component.text(team.getMaxPlayers());
+                                case "bed": // 0.2.x
+                                case "targetvalid":
+                                    return Component.text(team.isStarted() && team.getTarget().isValid() ? "yes" : "no");
+                                case "bedsymbol": // 0.2.x
+                                case "targetvalidsymbol": {
+                                    if (team.isStarted() && team.getTarget().isValid()) {
+                                        if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent();
+                                        } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                                    .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                                    .asComponent();
+                                        } else {
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent();
+                                        }
+                                    } else {
+                                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent();
+                                    }
+                                }
+                                case "teamchests":
+                                    return Component.text(team.countTeamChests());
+                            }
+                        }
+                    }
+                }
+            }
             // current game
-            switch (identifier.toLowerCase().substring(8)) {
+            switch (identifier.toLowerCase(Locale.ROOT).substring(8)) {
                 case "game":
                     return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(GameImpl::getName).orElse("none"));
+                case "game_displayname":
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(GameImpl::getDisplayNameComponent).orElseGet(() -> Component.text("none"));
                 case "game_players":
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
-                case "game_time":
+                case "game_time": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING)
+                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
                         return Component.text("0");
+                    }
+                    return Component.text(m_Game.get().getTimeLeft());
+                }
+                case "game_timeformat": {
+                    var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
+                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                        return Component.text("0");
+                    }
                     return Component.text(m_Game.get().getFormattedTimeLeft());
+                }
+                case "game_elapsedtime": {
+                    var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
+                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                        return Component.text("0");
+                    }
+                    switch (m_Game.get().getStatus()) {
+                        case WAITING:
+                            return Component.text(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft());
+                        case RUNNING:
+                            return Component.text(m_Game.get().getGameTime() - m_Game.get().getTimeLeft());
+                        case GAME_END_CELEBRATING:
+                            return Component.text(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft());
+                        case REBUILDING:
+                        case DISABLED:
+                            return Component.text("0");
+                    }
+                }
+                case "game_elapsedtimeformat": {
+                    var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
+                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                        return Component.text("0");
+                    }
+                    switch (m_Game.get().getStatus()) {
+                        case WAITING:
+                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft()));
+                        case RUNNING:
+                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getGameTime() - m_Game.get().getTimeLeft()));
+                        case GAME_END_CELEBRATING:
+                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft()));
+                        case REBUILDING:
+                        case DISABLED:
+                            return Component.text("0");
+                    }
+                }
                 case "game_maxplayers":
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMaxPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_minplayers":
@@ -224,7 +400,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         }
                     }
                     return Component.text("0");
-                case "team_bed":
+                case "team_bed": // 0.2.x
+                case "team_targetvalid":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
@@ -234,6 +411,28 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         }
                     }
                     return Component.text("no");
+                case "team_bedsymbol": // 0.2.x
+                case "team_targetvalidsymbol": {
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
+                        var game = gPlayer.getGame();
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null && team.getTarget().isValid()) {
+                            if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
+                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent();
+                            } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                        .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                        .asComponent();
+                            } else {
+                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent();
+                            }
+                        } else {
+                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent();
+                        }
+                    }
+                    return Message.ofRichText(MainConfig.getInstance().node("sidebar", "game", "team-prefixes", "target-block-lost").getString("no")).asComponent();
+                }
                 case "team_teamchests":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
@@ -260,7 +459,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            switch (identifier.toLowerCase().substring(6)) {
+            switch (identifier.toLowerCase(Locale.ROOT).substring(6)) {
                 case "deaths":
                     return Component.text(stats.getDeaths());
                 case "destroyed_beds":
