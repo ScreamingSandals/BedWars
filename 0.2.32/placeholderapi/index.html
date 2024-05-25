@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -433,20 +433,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#current-information-about-player" class="md-nav__link">
+  <a href="#global-placeholders" class="md-nav__link">
     <span class="md-ellipsis">
-      Current information about player
+      Global placeholders
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#player-stats-placeholders" class="md-nav__link">
+  <a href="#current-information-about-players" class="md-nav__link">
     <span class="md-ellipsis">
-      Player stats placeholders
+      Current information about players
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Current information about players">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#information-about-the-current-game" class="md-nav__link">
+    <span class="md-ellipsis">
+      Information about the current game
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#information-about-the-players-team" class="md-nav__link">
+    <span class="md-ellipsis">
+      Information about the player's team
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -460,11 +484,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#statistics-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Statistics placeholders
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Statistics placeholders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#player-stats-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Player stats placeholders
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#any-player-stats-placeholders" class="md-nav__link">
     <span class="md-ellipsis">
       Any player stats placeholders
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -552,59 +600,104 @@
 
 
 <h1 id="placeholderapi">PlaceholderAPI<a class="headerlink" href="#placeholderapi" title="Permanent link">&para;</a></h1>
-<p>This plugin adds new placeholders to PlaceholderAPI! All placeholders are player placeholders.</p>
-<h3 id="current-information-about-player">Current information about player<a class="headerlink" href="#current-information-about-player" title="Permanent link">&para;</a></h3>
+<p>This plugin registers placeholders to <a href="https://www.spigotmc.org/resources/placeholderapi.6245/">PlaceholderAPI</a>.</p>
+<p>These placeholders are intended for use in other plugins and may not function if used in the BedWars configuration. However, they can be utilized in <code>shop.yml</code> and other shop-related files if PlaceholderAPI is installed. Use the slightly modified syntax: <code>%papi.&lt;placeholder_name&gt;%</code> (e.g., <code>%papi.bedwars_all_games_players%</code>).</p>
+<h2 id="global-placeholders">Global placeholders<a class="headerlink" href="#global-placeholders" title="Permanent link">&para;</a></h2>
 <ul>
-<li>%bedwars_current_game%</li>
-<li>%bedwars_current_game_players%</li>
-<li>%bedwars_current_game_minplayers%</li>
-<li>%bedwars_current_game_time%</li>
-<li>%bedwars_current_game_world%</li>
-<li>%bedwars_current_game_state%</li>
-<li>%bedwars_current_available_teams%</li>
-<li>%bedwars_current_connected_teams%</li>
-<li>%bedwars_current_teamchests%</li>
-<li>%bedwars_current_team%</li>
-<li>%bedwars_current_team_color%</li>
-<li>%bedwars_current_team_colored%</li>
-<li>%bedwars_current_team_players%</li>
-<li>%bedwars_current_team_maxplayers%</li>
-<li>%bedwars_current_team_bed%</li>
-<li>%bedwars_current_team_teamchests%</li>
+<li><code>%bedwars_all_games_players%</code> - Returns the total number of players across all games.</li>
+<li><code>%bedwars_all_games_maxplayers%</code> - Returns the total maximum number of players across all games.</li>
 </ul>
+<h2 id="current-information-about-players">Current information about players<a class="headerlink" href="#current-information-about-players" title="Permanent link">&para;</a></h2>
+<p>The placeholders in this section are specific to a player, based on the context in which they are used, most commonly the viewer of a message, hologram, etc.</p>
+<h3 id="information-about-the-current-game">Information about the current game<a class="headerlink" href="#information-about-the-current-game" title="Permanent link">&para;</a></h3>
+<p>Some of these placeholders contain a parameter <code>&lt;team_name&gt;</code>. Replace it with the name of the team. For example, if the team name is <code>red</code>, you would use <code>%bedwars_current_game_team_red_bed%</code>.</p>
+<ul>
+<li><code>%bedwars_current_game%</code> - Returns the name of the current game.</li>
+<li><code>%bedwars_current_game_players%</code> - Returns the number of players in the game.</li>
+<li><code>%bedwars_current_game_minplayers%</code> - Returns the minimum number of players required for the game to start.</li>
+<li><code>%bedwars_current_game_maxplayers%</code> - Returns the maximum number of players that can join the game.</li>
+<li><code>%bedwars_current_game_world%</code> - Returns the name of the world where the arena is located.</li>
+<li><code>%bedwars_current_game_state%</code> - Returns the current state of the game. Possible values are: <code>waiting</code>, <code>running</code>, <code>game_end_celebrating</code>, <code>rebuilding</code>, and <code>disabled</code>.</li>
+<li><code>%bedwars_current_game_time%</code> - Returns the remaining time in seconds.</li>
+<li><code>%bedwars_current_game_timeformat%</code> - Returns the remaining time formatted as <code>MM:SS</code>.</li>
+<li><code>%bedwars_current_game_elapsedtime%</code> - Returns the elapsed time in seconds.</li>
+<li><code>%bedwars_current_game_elapsedtimeformat%</code> - Returns the elapsed time formatted as <code>MM:SS</code>.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_colored%</code> - Returns the team name in color.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_color%</code> - Returns the team color code as <code>&amp;&lt;legacy color code&gt;</code>.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_ingame%</code> - Returns whether the team is currently playing, as a string: <code>yes</code> or <code>no</code>.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_players%</code> - Returns the number of players in the team.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_maxplayers%</code> - Returns the maximum number of players in the team.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_bed%</code> - Returns whether the team currently has a valid target block, as a string: <code>yes</code> or <code>no</code>.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_bedsymbol%</code> - Returns the colored target block symbol used in SBW's in-game scoreboard.</li>
+<li><code>%bedwars_current_game_team_&lt;team_name&gt;_teamchests%</code> - Returns the number of team chests.</li>
+<li><code>%bedwars_current_available_teams%</code> - Returns the number of existing teams.</li>
+<li><code>%bedwars_current_connected_teams%</code> - Returns the number of teams currently playing.</li>
+<li><code>%bedwars_current_teamchests%</code> - Returns the number of team chests across all teams.</li>
+</ul>
+<h3 id="information-about-the-players-team">Information about the player's team<a class="headerlink" href="#information-about-the-players-team" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>%bedwars_current_team%</code> - Returns the name of the player's team.</li>
+<li><code>%bedwars_current_team_color%</code> - Returns the color of the player's team as <code>&amp;&lt;legacy color code&gt;</code>.</li>
+<li><code>%bedwars_current_team_colored%</code> - Returns the team name in color.</li>
+<li><code>%bedwars_current_team_players%</code> - Returns the number of players in the team.</li>
+<li><code>%bedwars_current_team_maxplayers%</code> - Returns the maximum number of players in the team.</li>
+<li><code>%bedwars_current_team_bed%</code> - Returns whether the team currently has a valid target block, as a string: <code>yes</code> or <code>no</code>.</li>
+<li><code>%bedwars_current_team_teamchests%</code> - Returns the number of team chests.</li>
+<li><code>%bedwars_current_team_bedsymbol%</code> - Returns the colored target block symbol used in SBW's in-game scoreboard.</li>
+</ul>
+<h2 id="game-information-placeholders">Game information placeholders<a class="headerlink" href="#game-information-placeholders" title="Permanent link">&para;</a></h2>
+<p>When using these placeholders, replace <code>&lt;game&gt;</code> with the specific game identifier and <code>&lt;team_name&gt;</code> with the name of the team. For example, if the game identifier is <code>game1</code> and the team name is <code>red</code>, you would use <code>%bedwars_game_game1_team_red_colored%</code>.</p>
+<ul>
+<li><code>%bedwars_game_&lt;game&gt;_name%</code> - Returns the name of the game.</li>
+<li><code>%bedwars_game_&lt;game&gt;_players%</code> - Returns the number of players in the game.</li>
+<li><code>%bedwars_game_&lt;game&gt;_minplayers%</code> - Returns the minimum number of players required for the game to start.</li>
+<li><code>%bedwars_game_&lt;game&gt;_maxplayers%</code> - Returns the maximum number of players that can join the game.</li>
+<li><code>%bedwars_game_&lt;game&gt;_world%</code> - Returns the name of the world where the arena is located.</li>
+<li><code>%bedwars_game_&lt;game&gt;_state%</code> - Returns the current state of the game. Possible values are: <code>waiting</code>, <code>running</code>, <code>game_end_celebrating</code>, <code>rebuilding</code>, and <code>disabled</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_available_teams%</code> - Returns the number of existing teams.</li>
+<li><code>%bedwars_game_&lt;game&gt;_connected_teams%</code> - Returns the number of teams currently playing.</li>
+<li><code>%bedwars_game_&lt;game&gt;_teamchests%</code> - Returns the number of team chests in the game.</li>
+<li><code>%bedwars_game_&lt;game&gt;_time%</code> - Returns the remaining time in seconds.</li>
+<li><code>%bedwars_game_&lt;game&gt;_timeformat%</code> - Returns the remaining time formatted as <code>MM:SS</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_elapsedtime%</code> - Returns the elapsed time in seconds.</li>
+<li><code>%bedwars_game_&lt;game&gt;_elapsedtimeformat%</code> - Returns the elapsed time formatted as <code>MM:SS</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_colored%</code> - Returns the team name in color.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_color%</code> - Returns the team color code as <code>&amp;&lt;legacy color code&gt;</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_ingame%</code> - Returns whether the team is currently playing, as a string: <code>yes</code> or <code>no</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_players%</code> - Returns the number of players in the team.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_maxplayers%</code> - Returns the maximum number of players in the team.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_bed%</code> - Returns whether the team currently has a valid target block, as a string: <code>yes</code> or <code>no</code>.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_bedsymbol%</code> - Returns the colored target block symbol used in SBW's in-game scoreboard.</li>
+<li><code>%bedwars_game_&lt;game&gt;_team_&lt;team_name&gt;_teamchests%</code> - Returns the number of team chests.</li>
+</ul>
+<h2 id="statistics-placeholders">Statistics placeholders<a class="headerlink" href="#statistics-placeholders" title="Permanent link">&para;</a></h2>
 <h3 id="player-stats-placeholders">Player stats placeholders<a class="headerlink" href="#player-stats-placeholders" title="Permanent link">&para;</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Custom leaderboards</p>
+<p>You can create custom leaderboards using placeholders to display player statistics in various ways. To achieve this, consider using the <a href="https://www.spigotmc.org/resources/ajleaderboards.85548/">ajLeaderboards</a> plugin with the placeholders listed below. This allows for greater flexibility beyond what the BedWars plugin offers.</p>
+</div>
+<p>The placeholders in this section are specific to a player, based on the context in which they are used, most commonly the viewer of a message, hologram, etc.</p>
 <ul>
-<li>%bedwars_stats_deaths%</li>
-<li>%bedwars_stats_destroyed_beds%</li>
-<li>%bedwars_stats_kills%</li>
-<li>%bedwars_stats_loses%</li>
-<li>%bedwars_stats_score%</li>
-<li>%bedwars_stats_wins%</li>
-<li>%bedwars_stats_games%</li>
-<li>%bedwars_stats_kd%</li>
-</ul>
-<h3 id="game-information-placeholders">Game information placeholders<a class="headerlink" href="#game-information-placeholders" title="Permanent link">&para;</a></h3>
-<ul>
-<li>%bedwars_game_&lt;game&gt;_name%</li>
-<li>%bedwars_game_&lt;game&gt;_players%</li>
-<li>%bedwars_game_&lt;game&gt;_maxplayers%</li>
-<li>%bedwars_game_&lt;game&gt;_minplayers%</li>
-<li>%bedwars_game_&lt;game&gt;_world%</li>
-<li>%bedwars_game_&lt;game&gt;_state%</li>
-<li>%bedwars_game_&lt;game&gt;_available_teams%</li>
-<li>%bedwars_game_&lt;game&gt;_connected_teams%</li>
-<li>%bedwars_game_&lt;game&gt;_teamchests%</li>
+<li><code>%bedwars_stats_deaths%</code> - Returns the number of deaths.</li>
+<li><code>%bedwars_stats_destroyed_beds%</code> - Returns the number of destroyed beds.</li>
+<li><code>%bedwars_stats_kills%</code> - Returns the number of kills.</li>
+<li><code>%bedwars_stats_loses%</code> - Returns the number of losses.</li>
+<li><code>%bedwars_stats_score%</code> - Returns the total score.</li>
+<li><code>%bedwars_stats_wins%</code> - Returns the number of wins.</li>
+<li><code>%bedwars_stats_games%</code> - Returns the total number of games played.</li>
+<li><code>%bedwars_stats_kd%</code> - Returns the kill/death ratio.</li>
 </ul>
 <h3 id="any-player-stats-placeholders">Any player stats placeholders<a class="headerlink" href="#any-player-stats-placeholders" title="Permanent link">&para;</a></h3>
+<p>When using these placeholders, replace <code>&lt;player&gt;</code> with the specific player's name. For example, if the player's name is <code>Misat11</code>, you would use <code>%bedwars_otherstats_Misat11_deaths%</code>.</p>
 <ul>
-<li>%bedwars_otherstats_&lt;player&gt;_deaths%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_destroyed_beds%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_kills%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_loses%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_score%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_wins%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_games%</li>
-<li>%bedwars_otherstats_&lt;player&gt;_kd%</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_deaths%</code> - Returns the number of deaths.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_destroyed_beds%</code> - Returns the number of destroyed beds.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_kills%</code> - Returns the number of kills.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_loses%</code> - Returns the number of losses.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_score%</code> - Returns the total score.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_wins%</code> - Returns the number of wins.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_games%</code> - Returns the total number of games played.</li>
+<li><code>%bedwars_otherstats_&lt;player&gt;_kd%</code> - Returns the kill/death ratio.</li>
 </ul>
 
 
@@ -626,7 +719,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2024-05-11
+    2024-05-25
   </span>
 
     
@@ -712,7 +805,7 @@
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
       
     
   </body>
