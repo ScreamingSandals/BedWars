@@ -516,24 +516,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#magnet-shoes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Magnet Shoes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tnt-sheep" class="md-nav__link">
-    <span class="md-ellipsis">
-      TNT Sheep
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#team-chest" class="md-nav__link">
     <span class="md-ellipsis">
       Team Chest
@@ -546,6 +528,15 @@
   <a href="#throwable-fireball" class="md-nav__link">
     <span class="md-ellipsis">
       Throwable Fireball
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tnt-sheep" class="md-nav__link">
+    <span class="md-ellipsis">
+      TNT Sheep
     </span>
   </a>
   
@@ -642,15 +633,17 @@
 
 
 <h1 id="specials">Specials<a class="headerlink" href="#specials" title="Permanent link">&para;</a></h1>
-<p>Special items can be sold in the shop and they have some special behaviour when used. For example, they spawn entity, reduce knockback, gives someone potion effects etc.</p>
-<p>Addons can also add new special items.</p>
-<p>Every special item in shop is configured using <code>properties</code>.</p>
+<p>Special items can be sold in the shop and have unique behaviors when used. For example, they can spawn entities, reduce knockback, gives potion effects, etc.</p>
+<p>Addons can also introduce new special items.</p>
+<p>Every special item in the shop is configured using <code>properties</code>.</p>
 <h2 id="arrow-blocker">Arrow Blocker<a class="headerlink" href="#arrow-blocker" title="Permanent link">&para;</a></h2>
-<p>Arrow Blocker is an item which allows you to block arrows when used for a certain period of time.</p>
-<p>There are two options for an arrow blocker:
-* <code>protection-time</code> - A period of time (in seconds) for which a player cannot be damaged using projectiles.
-* <code>delay</code> - The delay (in seconds) after usage for which the player cannot use another arrow blocker.  </p>
-<p>Here is an example of the arrow blocker configured in shop:</p>
+<p>The Arrow Blocker is an item that allows you to block arrows for a certain period of time when used.</p>
+<p>There are two configurable options for an Arrow Blocker:</p>
+<ul>
+<li><code>protection-time</code> - The duration (in seconds) during which a player cannot be damaged by projectiles.</li>
+<li><code>delay</code> - The cooldown period (in seconds) after usage during which the player cannot use another Arrow Blocker.</li>
+</ul>
+<p>Here is an example of the Arrow Blocker configured in the shop:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -675,16 +668,20 @@
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;for</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">black</span><span class="nv"> </span><span class="s">magic.&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;I</span><span class="nv"> </span><span class="s">mean,</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">item.&quot;</span>
 </code></pre></div></td></tr></table></div>
-<p>Global configuration in <code>config.yml</code> can also be used instead of local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
 <span class="w">  </span><span class="nt">arrow-blocker</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">protection-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">  </span><span class="c1"># ...</span>
 </code></pre></div></td></tr></table></div>
-<p>If you want to use the global configuration, you simply do not specify the options in the shop:</p>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -704,23 +701,156 @@
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;I</span><span class="nv"> </span><span class="s">mean,</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">item.&quot;</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="auto-ignitable-tnt">Auto Ignitable TNT<a class="headerlink" href="#auto-ignitable-tnt" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
+<p>The Auto Ignitable TNT is a special item that spawns ignited TNT when placed.</p>
+<p>There are three configurable options for the Auto Ignitable TNT:</p>
+<ul>
+<li><code>explosion-time</code> - The time (in seconds) after which the spawned TNT explodes.</li>
+<li><code>damage-placer</code> - Whether or not the player who placed the TNT should also take damage.</li>
+<li><code>damage</code> - The damage dealt by the TNT.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">TNT jumping</p>
+<p>Addons like SBA provide additional customization to this item related to jumping. Please refer to their documentation for more details.</p>
+</div>
+<p>Here is an example of the Auto Ignitable TNT configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AutoIgniteableTnt&quot;</span>
+<span class="w">    </span><span class="nt">explosion-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">damage-placer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4.0</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Autoigniteable</span><span class="nv"> </span><span class="s">TNT&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">auto-igniteable-tnt</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">explosion-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">damage-placer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4.0</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AutoIgniteableTnt&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Autoigniteable</span><span class="nv"> </span><span class="s">TNT&quot;</span>
+</code></pre></div></td></tr></table></div>
 <h2 id="golem">Golem<a class="headerlink" href="#golem" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
+<p>The Golem is a special item that spawns a golem to attack enemy teams.</p>
+<p>There are multiple configurable options for this special item:</p>
+<ul>
+<li><code>speed</code> - The golem's speed.</li>
+<li><code>follow-range</code> - The range within which the golem will follow enemies.</li>
+<li><code>health</code> - The golem's health.</li>
+<li><code>show-name</code> - Whether the golem's name should be displayed above its head.</li>
+<li><code>delay</code> - The cooldown period before another golem can be spawned.</li>
+<li><code>collidable</code> - Whether players collide with the golem.</li>
+<li><code>name-format</code> - The format of the name shown above the golem's head. There are two placeholders: <code>%teamcolor%</code> for the team's color and <code>%team%</code> for the team's name.</li>
+</ul>
+<p>Here is an example of the Golem configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Golem&quot;</span>
+<span class="w">    </span><span class="nt">speed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">    </span><span class="nt">follow-range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16.0</span>
+<span class="w">    </span><span class="nt">health</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">    </span><span class="nt">show-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">collidable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">name-format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%teamcolor%%team%</span><span class="nv"> </span><span class="s">Golem&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghast_spawn_egg</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Golem&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;An</span><span class="nv"> </span><span class="s">iron</span><span class="nv"> </span><span class="s">golem</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">protect&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;your</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">enemies.&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">golem</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">speed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">    </span><span class="nt">follow-range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16.0</span>
+<span class="w">    </span><span class="nt">health</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">    </span><span class="nt">show-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">collidable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">name-format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%teamcolor%%team%</span><span class="nv"> </span><span class="s">Golem&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Golem&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghast_spawn_egg</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Golem&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;An</span><span class="nv"> </span><span class="s">iron</span><span class="nv"> </span><span class="s">golem</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">protect&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;your</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">enemies.&quot;</span>
+</code></pre></div></td></tr></table></div>
 <h2 id="lucky-block">Lucky Block<a class="headerlink" href="#lucky-block" title="Permanent link">&para;</a></h2>
-<p>Lucky Block is a special item inspired by <a href="https://www.spigotmc.org/resources/bedwarsrel-luckyblock-addon.8268/">LuckyBlock Addon for BedWarsRel</a>.
-This block can be placed anywhere and when broken, a random configured event will occur. Lucky blocks are not in the shop by default; therefore, 
-you have to add them to the shop by yourself.</p>
-<p>Like other special items, lucky blocks use <code>properties</code> for their configuration. The property for these blocks is simply called <code>LuckyBlock</code> and have <code>data</code> section. This section is a list of events that may occur. </p>
+<p>The Lucky Block is a special item inspired by the <a href="https://www.spigotmc.org/resources/bedwarsrel-luckyblock-addon.8268/">LuckyBlock Addon for BedWarsRel</a>.
+This block can be placed anywhere, and when broken, a random configured event will occur. Lucky Blocks are not available in the shop by default; therefore, you must add them to the shop manually.</p>
+<p>Like other special items, Lucky Blocks use <code>properties</code> for their configuration. The property for these blocks is called <code>LuckyBlock</code> and includes a <code>data</code> section. This section is a list of events that may occur.</p>
 <p>There are 5 event types:  </p>
 <ul>
 <li><code>nothing</code> - As the name implies, it does nothing.</li>
-<li><code>teleport</code> - This event teleports the player relatively on Y-axis and a variable <code>height</code> is used to configure this relative teleportation. For example, if player is in height 60 and the configured height is 50, he will be teleported to Y 110.</li>
-<li><code>tnt</code>- A primed TNT entity is spawned when this event is chosen. This TNT explodes immediately.</li>
-<li><code>potion</code> - This event gives player a potion effect. The effect is configured using a variable <code>effect</code>.</li>
-<li><code>item</code> - This event gives player an item. This item is configured using a variable <code>stack</code>.</li>
+<li><code>teleport</code> - This event teleports the player along the Y-axis. The variable <code>height</code> is used to configure this relative teleportation. For example, if a player is at height 60 and the configured height is 50, they will be teleported to Y 110.</li>
+<li><code>tnt</code>- A primed TNT entity is spawned when this event occurs, which explodes immediately.</li>
+<li><code>potion</code> - This event gives the player a potion effect. The effect is configured using the variable <code>effect</code>.</li>
+<li><code>item</code> - This event gives the player an item. This item is configured using the variable <code>stack</code>.</li>
 </ul>
-<p>Below is an example of fully-configured lucky block with all these events used. Additionally, each event can have a variable <code>message</code>. This message will then be send to the player who broke the block. </p>
+<p>Below is an example of a fully configured Lucky Block with all these events included. Additionally, each event can have a variable <code>message</code>. This message will be sent to the player who broke the block.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -740,7 +870,10 @@ you have to add them to the shop by yourself.</p>
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7 of iron</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7 of iron</span>
 <span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LuckyBlock&quot;</span>
 <span class="w">    </span><span class="nt">data</span><span class="p">:</span>
@@ -750,7 +883,7 @@ you have to add them to the shop by yourself.</p>
 <span class="w">      </span><span class="nt">height</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item</span>
 <span class="w">      </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt</span>
-<span class="w">      </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This</span><span class="nv"> </span><span class="s">sends</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">message,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">these</span><span class="nv"> </span><span class="s">types.&quot;</span>
+<span class="w">      </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This</span><span class="nv"> </span><span class="s">sends</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">message.</span><span class="nv"> </span><span class="s">You</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">event</span><span class="nv"> </span><span class="s">type.&quot;</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">potion</span>
 <span class="w">      </span><span class="nt">effect</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blindness</span>
@@ -759,34 +892,495 @@ you have to add them to the shop by yourself.</p>
 <span class="w">        </span><span class="nt">ambient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">particles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">icon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sponge;1;Lucky Block</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sponge</span>
+<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Lucky</span><span class="nv"> </span><span class="s">Block&quot;</span>
 </code></pre></div></td></tr></table></div>
+<p>Unlike other special items, there is no global configuration for Lucky Blocks.</p>
 <h2 id="magnet-shoes">Magnet Shoes<a class="headerlink" href="#magnet-shoes" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="protection-wall">Protection Wall<a class="headerlink" href="#protection-wall" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="rescue-platform">Rescue Platform<a class="headerlink" href="#rescue-platform" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="magnet-shoes_1">Magnet Shoes<a class="headerlink" href="#magnet-shoes_1" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="tnt-sheep">TNT Sheep<a class="headerlink" href="#tnt-sheep" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="team-chest">Team Chest<a class="headerlink" href="#team-chest" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="throwable-fireball">Throwable Fireball<a class="headerlink" href="#throwable-fireball" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="tracker">Tracker<a class="headerlink" href="#tracker" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="trap">Trap<a class="headerlink" href="#trap" title="Permanent link">&para;</a></h2>
-<p>TODO: docs</p>
-<h2 id="warp-powder">Warp Powder<a class="headerlink" href="#warp-powder" title="Permanent link">&para;</a></h2>
-<p>This special item teleports you to the team spawn when used. You have to wait few seconds and you must not move, otherwise you would cancel the teleportation.</p>
-<p>There are two options for warp powder:</p>
+<p>Wearing this special item randomly absorbs all received knockback, giving you an advantage in PvP.</p>
+<p>There is a single configurable option for this special item:</p>
 <ul>
-<li><code>teleport-time</code> - Cooldown (in seconds) before the player gets teleported.</li>
-<li><code>delay</code>- The delay (in seconds) after usage for which the player cannot use another warp powder. </li>
+<li><code>probability</code> - A number (0-100) representing the percentage chance that the shoes will absorb the knockback.</li>
 </ul>
-<p>Here is an example of warp powder configured in shop:</p>
+<p>Here is an example of Magnet Shoes configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MagnetShoes&quot;</span>
+<span class="w">    </span><span class="nt">probability</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">75</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iron_boots</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Magnet-Shoes&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Wear</span><span class="nv"> </span><span class="s">those</span><span class="nv"> </span><span class="s">shoes</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">75%&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;chance</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">getting</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">knockback!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">magnet-shoes</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">probability</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">75</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MagnetShoes&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iron_boots</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Magnet-Shoes&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Wear</span><span class="nv"> </span><span class="s">those</span><span class="nv"> </span><span class="s">shoes</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">75%&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;chance</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">getting</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">knockback!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="protection-wall">Protection Wall<a class="headerlink" href="#protection-wall" title="Permanent link">&para;</a></h2>
+<p>The Protection Wall is a special item that builds a wall when used.</p>
+<p>There are several configurable options for this item:</p>
+<ul>
+<li><code>is-breakable</code> - Whether it is possible to break the blocks of the wall.</li>
+<li><code>delay</code> - The cooldown period before another protection wall can be built.</li>
+<li><code>break-time</code> - The time (in seconds) after which the wall disappears. Can be set to <code>0</code> to disable the automatic breaking of the wall.</li>
+<li><code>width</code> - The width (in blocks) of the wall. This must be an odd number; the plugin will print a warning and add an extra block if the number is even.</li>
+<li><code>height</code> - The height (in blocks) of the wall.</li>
+<li><code>distance</code> - The distance (in blocks) from the player activating the item to where the wall appears, in the direction the player is facing.</li>
+<li><code>material</code> - The material used to build the wall. If the material is colorable, it will automatically be converted to the team's color.</li>
+</ul>
+<p>Here is an example of a Protection Wall configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64 of bronze</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;protectionwall&quot;</span>
+<span class="w">    </span><span class="nt">is-breakable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">    </span><span class="nt">break-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">height</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">    </span><span class="nt">distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">material</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cut_sandstone</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bricks</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Protection</span><span class="nv"> </span><span class="s">Wall&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Instantly</span><span class="nv"> </span><span class="s">builds</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">wall</span><span class="nv"> </span><span class="s">that&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;can</span><span class="nv"> </span><span class="s">save</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">life!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">protection-wall</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">is-breakable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">    </span><span class="nt">break-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">height</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">    </span><span class="nt">distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">material</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cut_sandstone</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64 of bronze</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;protectionwall&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bricks</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Protection</span><span class="nv"> </span><span class="s">Wall&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Instantly</span><span class="nv"> </span><span class="s">builds</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">wall</span><span class="nv"> </span><span class="s">that&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;can</span><span class="nv"> </span><span class="s">save</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">life!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="rescue-platform">Rescue Platform<a class="headerlink" href="#rescue-platform" title="Permanent link">&para;</a></h2>
+<p>The Rescue Platform is similar to the Protection Wall, but instead of wall it builds a platform that the player can use when falling to prevent fall damage or falling off the map.</p>
+<p>There are several configurable options for this item:</p>
+<ul>
+<li><code>is-breakable</code> - Determines whether it is possible to break blocks of the platform.</li>
+<li><code>delay</code> - The cooldown period before another rescue platform can be built.</li>
+<li><code>break-time</code> - The time (in seconds) after which the platform disappears. Can be set to <code>0</code> to disable the automatic breaking of the platform.</li>
+<li><code>distance</code> - The distance (in blocks) below the player activating the item where the platform appears.</li>
+<li><code>material</code> - The name of the material used to build the platform. If the material is colorable, it will automatically be converted to the team's color.</li>
+</ul>
+<p>Here is an example of a Rescue Platform configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64 of bronze</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rescueplatform&quot;</span>
+<span class="w">    </span><span class="nt">is-breakable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">break-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">    </span><span class="nt">distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">material</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glass</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blaze_rod</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Rescue</span><span class="nv"> </span><span class="s">Platform&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Protect</span><span class="nv"> </span><span class="s">yourself</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">falling</span><span class="nv"> </span><span class="s">into&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;the</span><span class="nv"> </span><span class="s">void</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Rescue</span><span class="nv"> </span><span class="s">Platform.&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;This</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">hope!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">rescue-platform</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">is-breakable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">break-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">    </span><span class="nt">distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">material</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glass</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64 of bronze</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rescueplatform&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blaze_rod</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Rescue</span><span class="nv"> </span><span class="s">Platform&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Protect</span><span class="nv"> </span><span class="s">yourself</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">falling</span><span class="nv"> </span><span class="s">into&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;void</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Rescue</span><span class="nv"> </span><span class="s">Platform.&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;This</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">hope!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="team-chest">Team Chest<a class="headerlink" href="#team-chest" title="Permanent link">&para;</a></h2>
+<p>Placing this item creates a chest accessible only by the placing team. All of these chests share the same inventory, similarly to an ender chest.</p>
+<p>For legacy reasons, any ender chest in the shop is turned into a team chest regardless of the given properties. To disable this behavior, you have to set <code>specials.teamchest.turn-all-enderchests-to-teamchests</code> to <code>false</code> in <code>config.yml</code>.</p>
+<p>Explicitly created team chests in the shop look like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 of gold</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;teamchest&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ender_chest</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition warn">
+<p class="admonition-title">Warn</p>
+<p>The type needs to be <code>ender_chest</code> for the item to work!</p>
+</div>
+<h2 id="throwable-fireball">Throwable Fireball<a class="headerlink" href="#throwable-fireball" title="Permanent link">&para;</a></h2>
+<p>The Throwable Fireball represents a fireball that can be thrown from the hand of a player.</p>
+<p>There are several configurable options for this item:</p>
+<ul>
+<li><code>damage</code> - The amount of damage dealt by the fireball.</li>
+<li><code>incendiary</code> - Determines whether the explosion causes fire.</li>
+<li><code>damage-thrower</code> - Determines whether the fireball should damage its thrower if it explodes near them.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Fireball jumping</p>
+<p>Addons like SBA provide additional customization to this item related to jumping. Please refer to their documentation for more details.</p>
+</div>
+<p>Here is an example of a Throwable Fireball configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ThrowableFireball&quot;</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+<span class="w">    </span><span class="nt">incendiary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">damage-thrower</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fire_charge</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Fireball&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Is</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">bird?</span><span class="nv"> </span><span class="s">Is</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">plane?&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;By</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">time</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">know&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;you</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">dead!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">throwable-fireball</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+<span class="w">    </span><span class="nt">incendiary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">damage-thrower</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">40 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ThrowableFireball&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fire_charge</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Fireball&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Is</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">bird?</span><span class="nv"> </span><span class="s">Is</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">plane?&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;By</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">time</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">know&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;you</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">dead!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="tnt-sheep">TNT Sheep<a class="headerlink" href="#tnt-sheep" title="Permanent link">&para;</a></h2>
+<p>The TNT Sheep is a special item that summons an explosive sheep, following enemy players. Upon summoning, it targets the closest enemy.</p>
+<p>There are several configurable options for this special item:</p>
+<ul>
+<li><code>speed</code> - The sheep's speed.</li>
+<li><code>follow-range</code> - The range within which the sheep will follow enemies.</li>
+<li><code>max-target-distance</code> - The maximum distance (in blocks) from which the initial target can be. The sheep does not spawn if there is no target within this distance.</li>
+<li><code>explosion-time</code> - The time (in seconds) after which the TNT explodes and the sheep disappears.</li>
+</ul>
+<p>Here is an example of the TNT Sheep configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10 of gold</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TNTSheep&quot;</span>
+<span class="w">    </span><span class="nt">speed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">    </span><span class="nt">follow-range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
+<span class="w">    </span><span class="nt">max-target-distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">    </span><span class="nt">explosion-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sheep_spawn_egg</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TNT</span><span class="nv"> </span><span class="s">Sheep&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Use</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">TNT-Sheep!</span><span class="nv"> </span><span class="s">It</span><span class="nv"> </span><span class="s">will&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;walk</span><span class="nv"> </span><span class="s">towards</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">closest</span><span class="nv"> </span><span class="s">enemy&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;and</span><span class="nv"> </span><span class="s">explode</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">seconds!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">tnt-sheep</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">speed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">    </span><span class="nt">follow-range</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
+<span class="w">    </span><span class="nt">max-target-distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">    </span><span class="nt">explosion-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></td></tr></table></div>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10 of gold</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TNTSheep&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sheep_spawn_egg</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TNT</span><span class="nv"> </span><span class="s">Sheep&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Use</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">TNT-Sheep!</span><span class="nv"> </span><span class="s">It</span><span class="nv"> </span><span class="s">will&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;walk</span><span class="nv"> </span><span class="s">towards</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">closest</span><span class="nv"> </span><span class="s">enemy&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;and</span><span class="nv"> </span><span class="s">explode</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">seconds!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="tracker">Tracker<a class="headerlink" href="#tracker" title="Permanent link">&para;</a></h2>
+<p>The Tracker is a simple special item that displays the distance and direction of the nearest enemy. It is recommended for the Tracker to be a compass since the item sets the compass target of its user. Unlike other special items, this item is permanent, and you can use it repeatedly.</p>
+<p>Here is an example of the Tracker configured in the shop:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Tracker&quot;</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compass</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Tracker&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Wanna</span><span class="nv"> </span><span class="s">know</span><span class="nv"> </span><span class="s">where</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">closest</span><span class="nv"> </span><span class="s">target</span><span class="nv"> </span><span class="s">is?&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Let&#39;s</span><span class="nv"> </span><span class="s">try</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">out!&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="trap">Trap<a class="headerlink" href="#trap" title="Permanent link">&para;</a></h2>
+<p>A Trap is a placeable special item. When an enemy steps on a trap, all configured events will occur. Additionally, the team will be notified that someone has triggered their trap.</p>
+<p>Unlike other special items, there is no global configuration for traps. The only option here is <code>data</code>, which is a list containing all the events.</p>
+<p>There are 3 event types:</p>
+<ul>
+<li><code>sound</code> - Plays a specified sound.</li>
+<li><code>effect</code> - Applies a potion effect to the victim. The effect is configured using the variable <code>effect</code>.</li>
+<li><code>damage</code> - Deals a specified amount of damage to the player.</li>
+</ul>
+<p>Here is an example of a fully configured trap:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 of iron</span>
+<span class="w">  </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Trap&quot;</span>
+<span class="w">     </span><span class="nt">data</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">sound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ENTITY_SHEEP_AMBIENT</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">effect</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blindness</span>
+<span class="w">          </span><span class="nt">amplifier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">          </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">          </span><span class="nt">ambient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">particles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">icon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">effect</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weakness</span>
+<span class="w">          </span><span class="nt">amplifier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">          </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">          </span><span class="nt">ambient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">particles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">icon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">effect</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">effect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slowness</span>
+<span class="w">          </span><span class="nt">amplifier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">          </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">          </span><span class="nt">ambient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">particles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">icon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Trap&quot;</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Get</span><span class="nv"> </span><span class="s">informed</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">enemy</span><span class="nv"> </span><span class="s">steps</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">trap&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;and</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">enemy</span><span class="nv"> </span><span class="s">won&#39;t</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">able</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">move</span><span class="nv"> </span><span class="s">properly.&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="warp-powder">Warp Powder<a class="headerlink" href="#warp-powder" title="Permanent link">&para;</a></h2>
+<p>The Warp Powder is a special item that teleports you to the team spawn when used. However, you must wait a few seconds without moving, otherwise, the teleportation will be canceled.</p>
+<p>There are two configurable options for Warp Powder:</p>
+<ul>
+<li><code>teleport-time</code> - The cooldown (in seconds) before the player gets teleported.</li>
+<li><code>delay</code>- The cooldown period (in seconds) after usage during which the player cannot use another Warp Powder.</li>
+</ul>
+<p>Here is an example of Warp Powder configured in the shop:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -811,16 +1405,20 @@ you have to add them to the shop by yourself.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;teleported</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">spawn</span><span class="nv"> </span><span class="s">point</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">6</span><span class="nv"> </span><span class="s">seconds&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Warning:</span><span class="nv"> </span><span class="s">Any</span><span class="nv"> </span><span class="s">movement</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">stop</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">process&quot;</span>
 </code></pre></div></td></tr></table></div>
-<p>Global configuration in <code>config.yml</code> can also be used instead of local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
+<p>A global configuration in <code>config.yml</code> can also be used instead of a local configuration. The global configuration in <code>config.yml</code> looks like this:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">specials</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
 <span class="w">  </span><span class="nt">warp-powder</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">teleport-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
 <span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="c1"># ...</span>
 </code></pre></div></td></tr></table></div>
-<p>If you want to use the global configuration, you simply do not specify the options in the shop:</p>
+<p>To use the global configuration, simply omit the options you do not wish to override in the shop configuration. If there is a single property with only a name and no overrides, you can use the following syntax:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -859,7 +1457,7 @@ you have to add them to the shop by yourself.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    2024-05-25
+    2024-05-26
   </span>
 
     
