@@ -398,7 +398,7 @@ Explicitly created team chests in the shop look like this:
   stack: ender_chest
 ```
 
-!!! warn
+!!! warning
 
     The type needs to be `ender_chest` for the item to work!
 
