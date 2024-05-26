@@ -37,7 +37,7 @@ public class MagnetShoesListener implements Listener {
     public void onMagnetShoesRegistered(BedwarsApplyPropertyToBoughtItem event) {
         if (event.getPropertyName().equalsIgnoreCase("magnetshoes")) {
             ItemStack stack = event.getStack();
-            int probability = MiscUtils.getIntFromProperty("probability", "magnet-shoes.probability", event);
+            int probability = MiscUtils.getIntFromProperty("probability", "specials.magnet-shoes.probability", event);
 
             APIUtils.hashIntoInvisibleString(stack, MAGNET_SHOES_PREFIX + probability);
         }

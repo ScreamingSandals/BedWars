@@ -309,7 +309,7 @@ data:
      properties:
       - name: "Golem"
         speed: 0.25
-        follow: 16.0
+        follow-range: 16.0
      stack:
       type: ghast_spawn_egg
       display-name: "Golem"
