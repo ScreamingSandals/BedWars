@@ -109,7 +109,7 @@ public class GameCycleImpl implements GameCycle {
 
         // Phase 5: Process tick
         // Phase 5.1: If status changed
-        if (game.hasGameStatusChanged()) {
+        if (game.getStatus() != tick.getNextStatus()) {
             // Phase 5.1.1: Prepare game if next status is RUNNING
             if (tick.getNextStatus() == GameStatus.RUNNING) {
                 prepareGame(statusE, tick);
