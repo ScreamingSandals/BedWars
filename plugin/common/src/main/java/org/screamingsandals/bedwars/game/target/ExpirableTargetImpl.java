@@ -19,63 +19,43 @@
 
 package org.screamingsandals.bedwars.game.target;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.target.TargetBlockCountdown;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.SerializableGameComponent;
 import org.screamingsandals.bedwars.game.SerializableGameComponentLoader;
-import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.Objects;
 import java.util.Optional;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class TargetBlockCountdownImpl extends TargetBlockImpl implements TargetBlockCountdown, ATargetCountdown, SerializableGameComponent {
+@Data
+public final class ExpirableTargetImpl implements AExpirableTarget, SerializableGameComponent {
     private final int countdown;
     private volatile int remainingTime;
 
-    public TargetBlockCountdownImpl(@NotNull Location targetBlock, int countdown) {
-        super(targetBlock);
-        this.countdown = countdown;
-    }
-
     @Override
     public boolean isValid() {
-        return super.isValid() && remainingTime > 0;
+        return remainingTime > 0;
     }
 
     @Override
     public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
-        super.saveTo(node);
-        node.node("type").set("block-countdown");
+        node.node("type").set("countdown");
         node.node("countdown").set(countdown);
     }
 
-    public static class Loader implements SerializableGameComponentLoader<TargetBlockCountdownImpl> {
+    public final static class Loader implements SerializableGameComponentLoader<ExpirableTargetImpl> {
         public static final Loader INSTANCE = new Loader();
 
         @Override
         @NotNull
-        public Optional<TargetBlockCountdownImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) throws ConfigurateException {
-            if (!node.node("type").getString("").equals("block-countdown")) {
-                return Optional.empty();
+        public Optional<ExpirableTargetImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) throws ConfigurateException {
+            if (node.node("type").getString("").equals("countdown")) {
+                return Optional.of(new ExpirableTargetImpl(node.node("countdown").getInt()));
             }
-
-            return Optional.of(new TargetBlockCountdownImpl(
-                    MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("loc").getString())),
-                    node.node("countdown").getInt()
-            ));
+            return Optional.empty();
         }
     }
 }

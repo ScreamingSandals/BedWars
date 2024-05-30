@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.game;
 
-import com.onarandombox.MultiverseCore.api.Core;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,19 +30,18 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
+import org.screamingsandals.bedwars.api.game.GameCycle;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
-import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarImpl;
 import org.screamingsandals.bedwars.boss.XPBarImpl;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
-import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
@@ -51,7 +49,6 @@ import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.target.*;
-import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -77,68 +74,56 @@ import org.screamingsandals.lib.container.type.InventoryType;
 import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.entity.ItemEntity;
-import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.player.Sender;
 import org.screamingsandals.lib.player.gamemode.GameMode;
-import org.screamingsandals.lib.plugin.Plugins;
-import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
-import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
-import org.screamingsandals.lib.spectator.sound.SoundSource;
-import org.screamingsandals.lib.spectator.sound.SoundStart;
-import org.screamingsandals.lib.spectator.title.Title;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
-import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.Location;
 import org.screamingsandals.lib.world.World;
 import org.screamingsandals.lib.world.Worlds;
 import org.screamingsandals.lib.world.chunk.Chunk;
-import org.screamingsandals.lib.world.gamerule.GameRuleType;
 import org.screamingsandals.lib.world.weather.WeatherType;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
-import org.spongepowered.configurate.loader.ConfigurationLoader;
-import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Setter
 public class GameImpl implements LocalGame {
+    private final UUID uuid;
+
+    @NotNull
+    private GameCycle gameCycle = new GameCycleImpl(this);
     public boolean gameStartItem;
     public boolean forceGameToStart;
-    @Getter
-    private final UUID uuid;
     private String name;
     private Location pos1;
     private Location pos2;
     private Location lobbySpawn;
+    @Getter(onMethod_ = {@Nullable})
     private Location lobbyPos1;
+    @Getter(onMethod_ = {@Nullable})
     private Location lobbyPos2;
     private Location specSpawn;
     private final List<TeamImpl> teams = new ArrayList<>();
     private final List<ItemSpawnerImpl> spawners = new ArrayList<>();
     private final Map<BedWarsPlayer, RespawnProtection> respawnProtectionMap = new HashMap<>();
-    @Getter
-    @Setter
     private double fee;
     private int pauseCountdown;
     private int gameTime;
@@ -148,10 +133,8 @@ public class GameImpl implements LocalGame {
     private final List<GameStoreImpl> gameStore = new ArrayList<>();
     private WeatherType arenaWeather = null;
     private boolean preServerRestart = false;
-    @Getter
+    @Setter(AccessLevel.PROTECTED)
     private File file;
-    @Getter
-    @Setter
     @Nullable
     private String displayName;
     @Getter
@@ -176,13 +159,14 @@ public class GameImpl implements LocalGame {
     private int postGameWaiting = 3;
     private GameSidebar experimentalBoard = null;
     private HealthIndicator healthIndicator = null;
-    @Getter
     private final List<Visual<?>> otherVisuals = new ArrayList<>();
+
+    @Getter(AccessLevel.PROTECTED)
     private final @NotNull List<@NotNull Chunk> chunksWithTickets = new ArrayList<>();
 
-    @Getter
     private final GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
 
+    @Setter(AccessLevel.PROTECTED)
     private boolean preparing = false;
 
     public static GameImpl loadGame(File file) {
@@ -190,334 +174,7 @@ public class GameImpl implements LocalGame {
     }
 
     public static GameImpl loadGame(File file, boolean firstAttempt) {
-        try {
-            if (!file.exists()) {
-                return null;
-            }
-
-            final ConfigurationLoader<? extends ConfigurationNode> loader;
-            if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
-                loader = YamlConfigurationLoader.builder()
-                        .file(file)
-                        .build();
-            } else {
-                loader = GsonConfigurationLoader.builder()
-                        .file(file)
-                        .build();
-            }
-
-            final ConfigurationNode configMap;
-            try {
-                configMap = loader.load();
-            } catch (ConfigurateException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            var uid = configMap.node("uuid");
-            UUID uuid;
-            if (uid.empty()) {
-                var indexOf = file.getName().indexOf(".");
-                var uuidStr = indexOf == -1 ? file.getName() : file.getName().substring(0, indexOf);
-                try {
-                    uuid = UUID.fromString(uuidStr);
-                } catch (Throwable t) {
-                    do {
-                        uuid = UUID.randomUUID();
-                    } while (GameManagerImpl.getInstance().getGame(uuid).isPresent());
-                }
-            } else {
-                uuid = uid.get(UUID.class);
-            }
-
-            if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
-                        )
-                );
-                return null;
-            }
-
-            final var game = new GameImpl(uuid);
-            game.file = file;
-            game.name = configMap.node("name").getString();
-            game.fee = configMap.node("fee").getDouble(0D);
-            game.pauseCountdown = configMap.node("pauseCountdown").getInt();
-            game.gameTime = configMap.node("gameTime").getInt();
-
-            var worldName = Objects.requireNonNull(configMap.node("world").getString());
-            game.world = Worlds.getWorld(worldName);
-
-            var multiverse = Plugins.getPlugin("Multiverse-Core");
-            if (game.world == null) {
-                if (multiverse != null) {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
-                            )
-                    );
-
-                    if (((Core) multiverse).getMVWorldManager().loadWorld(worldName)) {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
-                                )
-                        );
-
-                        game.world = Objects.requireNonNull(Worlds.getWorld(worldName));
-                    } else {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
-                                )
-                        );
-                        return null;
-                    }
-                } else if (firstAttempt) {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
-                            )
-                    );
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
-                    return null;
-                } else {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
-                            )
-                    );
-                    return null;
-                }
-            }
-
-            if (Server.isVersion(1, 15)) {
-                game.world.setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
-            }
-
-            game.pos1 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos1").getString()));
-            game.pos2 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos2").getString()));
-
-
-            if (MainConfig.getInstance().node("prevent-spawning-mobs").getBoolean(true)) {
-                for (LivingEntity e : game.world.getEntitiesByClass(LivingEntity.class)) {
-                    if (!e.getEntityType().is("minecraft:player") && !e.getEntityType().is("minecraft:armor_stand")) {
-                        if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
-                            final Chunk chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
-                            if (chunk != null && !chunk.isLoaded()) {
-                                chunk.load();
-                            }
-                            e.remove();
-                        }
-                    }
-                }
-            }
-
-            game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
-            var spawnWorld = configMap.node("lobbySpawnWorld").getString();
-            var lobbySpawnWorld = Worlds.getWorld(Objects.requireNonNull(spawnWorld));
-            if (lobbySpawnWorld == null) {
-                if (multiverse != null) {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
-                            )
-                    );
-
-                    if (((Core) multiverse).getMVWorldManager().loadWorld(spawnWorld)) {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
-                                )
-                        );
-
-                        lobbySpawnWorld = Objects.requireNonNull(Worlds.getWorld(Objects.requireNonNull(spawnWorld)));
-                    } else {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
-                                )
-                        );
-                        return null;
-                    }
-                } else if (firstAttempt) {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
-                            )
-                    );
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
-                    return null;
-                } else {
-                    Server.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.withAppendix(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
-                            )
-                    );
-                    return null;
-                }
-            }
-
-            var lobbyPos1 = configMap.node("lobbyPos1").getString();
-            var lobbyPos2 = configMap.node("lobbyPos2").getString();
-            if (lobbyPos1 != null && lobbyPos2 != null) {
-                game.lobbyPos1 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos1);
-                game.lobbyPos2 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos2);
-            }
-
-            var variant = configMap.node("variant");
-            if (!variant.empty()) {
-                var gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
-                if (gameVariant != null) {
-                    game.setGameVariant(gameVariant);
-                }
-            }
-            if (game.gameVariant == null) {
-                game.setGameVariant(VariantManagerImpl.getInstance().getDefaultVariant());
-            }
-
-            game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
-            game.minPlayers = configMap.node("minPlayers").getInt(2);
-            for (var entry : configMap.node("teams").childrenMap().entrySet()) {
-                var teamN = entry.getKey();
-                var team = entry.getValue();
-                var t = new TeamImpl();
-                t.setColor(TeamColorImpl.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean())));
-                t.setName(teamN.toString());
-                var targetNode = team.node("target");
-                if (!targetNode.empty() && targetNode.isMap()) {
-                    var type = targetNode.node("type").getString("");
-                    Target target;
-                    switch (type) {
-                        case "block":
-                            target = TargetBlockImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
-                            break;
-                        case "countdown":
-                            target = TargetCountdownImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
-                            break;
-                        case "block-countdown":
-                            target = TargetBlockCountdownImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
-                            break;
-                        case "none":
-                            target = NoTargetImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
-                            break;
-                        default:
-                            target = null;
-                    }
-                    t.setTarget(target);
-                } else {
-                    var bed = team.node("bed");
-                    if (!bed.empty()) {
-                        t.setTarget(new TargetBlockImpl(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(bed.getString()))));
-                    }
-                }
-                t.setMaxPlayers(team.node("maxPlayers").getInt());
-                var spawns = team.node("spawns");
-                if (!spawns.virtual() && spawns.isList()) {
-                    try {
-                        Objects.requireNonNull(spawns.getList(String.class)).stream()
-                                .map(s -> MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(s)))
-                                .forEach(t.getTeamSpawns()::add);
-                    } catch (SerializationException e) {
-                        e.printStackTrace();
-                        // maybe we still have the old single spawn? probably not, but let's try it anyway
-                        t.getTeamSpawns().add(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString())));
-                    }
-                } else {
-                    t.getTeamSpawns().add(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString())));
-                }
-                t.setGame(game);
-
-                game.teams.add(t);
-            }
-            for (var spawner : configMap.node("spawners").childrenList()) {
-                game.spawners.add(ItemSpawnerImpl.Loader.INSTANCE.load(game, spawner).orElseThrow());
-            }
-            for (var store : configMap.node("stores").childrenList()) {
-                game.gameStore.add(GameStoreImpl.Loader.INSTANCE.load(game, store).orElseThrow());
-            }
-
-            var oldCustomPrefix = configMap.node("customPrefix");
-            var newCustomPrefix = configMap.node("constant", "prefix");
-            if (!oldCustomPrefix.empty() && newCustomPrefix.empty()) {
-                var str = oldCustomPrefix.getString();
-                if (str != null) {
-                    newCustomPrefix.set(MiscUtils.toMiniMessage(str));
-                    oldCustomPrefix.set(null);
-                }
-            }
-
-            // migration of arenaTime to configuration container
-            {
-                var oldArenaTime = configMap.node("arenaTime");
-                var newArenaTime = configMap.node("constant", "arena-time");
-                if (!oldArenaTime.empty() && newArenaTime.empty()) {
-                    newArenaTime.from(oldArenaTime);
-                    oldArenaTime.set(null);
-                }
-            }
-
-            // migration of lobbyBossBarColor to configuration container
-            {
-                var oldLobbyBossBarColor = configMap.node("lobbyBossBarColor");
-                var newLobbyBossBarColor = configMap.node("constant", "bossbar", "lobby", "color");
-                if (!oldLobbyBossBarColor.empty() && newLobbyBossBarColor.empty()) {
-                    newLobbyBossBarColor.set(loadBossBarColor(oldLobbyBossBarColor.getString("default").toUpperCase()));
-                    oldLobbyBossBarColor.set(null);
-                }
-            }
-
-            // migration of gameBossBarColor to configuration container
-            {
-                var oldGameBossBarColor = configMap.node("gameBossBarColor");
-                var newGameBossBarColor = configMap.node("constant", "bossbar", "game", "color");
-                if (!newGameBossBarColor.empty() && oldGameBossBarColor.empty()) {
-                    newGameBossBarColor.set(loadBossBarColor(oldGameBossBarColor.getString("default").toUpperCase()));
-                    oldGameBossBarColor.set(null);
-                }
-            }
-
-            game.configurationContainer.applyNode(configMap.node("constant"));
-
-            game.arenaWeather = loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase());
-
-            game.postGameWaiting = configMap.node("postGameWaiting").getInt(3);
-
-            // migration of displayName (legacy) to game-display-name (MiniMessage)
-            {
-                var oldDisplayName = configMap.node("displayName");
-                var newDisplayName = configMap.node("game-display-name");
-                if (!oldDisplayName.empty() && newDisplayName.empty()) {
-                    newDisplayName.set(MiscUtils.toMiniMessage(oldDisplayName.getString("")));
-                    oldDisplayName.set(null);
-                }
-            }
-
-            game.displayName = configMap.node("game-display-name").getString();
-
-            game.start();
-            Server.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.withAppendix(
-                            Component.text("Arena ", Color.GREEN),
-                            Component.text(game.uuid + "/" + game.name + " (" + file.getName() + ")", Color.WHITE),
-                            Component.text(" loaded!", Color.GREEN)
-                    )
-            );
-            if (uid.empty()) {
-                try {
-                    // because we didn't have uuid in the arena config file, we need to save the arena again
-                    game.saveToConfig();
-                } catch (Throwable ignored) {
-                }
-            }
-
-            return game;
-        } catch (Throwable throwable) {
-            Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
-            throwable.printStackTrace();
-            return null;
-        }
+        return LocalGameLoaderImpl.getInstance().loadGame(file, firstAttempt);
     }
 
     public void removeEntity(Entity e) {
@@ -564,66 +221,15 @@ public class GameImpl implements LocalGame {
 
         return game;
     }
+
     public static boolean isBungeeEnabled() {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public void setWorld(World world) {
         if (this.world == null) {
             this.world = world;
         }
-    }
-
-    public Location getPos1() {
-        return pos1;
-    }
-
-    public void setPos1(Location pos1) {
-        this.pos1 = pos1;
-    }
-
-    public Location getPos2() {
-        return pos2;
-    }
-
-    public void setPos2(Location pos2) {
-        this.pos2 = pos2;
-    }
-
-    public Location getLobbySpawn() {
-        return lobbySpawn;
-    }
-
-    public void setLobbySpawn(Location lobbySpawn) {
-        this.lobbySpawn = lobbySpawn;
-    }
-
-    public int getPauseCountdown() {
-        return pauseCountdown;
-    }
-
-    public void setPauseCountdown(int pauseCountdown) {
-        this.pauseCountdown = pauseCountdown;
-    }
-
-    public int getMinPlayers() {
-        return minPlayers;
-    }
-
-    public void setMinPlayers(int minPlayers) {
-        this.minPlayers = minPlayers;
     }
 
     public boolean checkMinPlayers() {
@@ -659,37 +265,9 @@ public class GameImpl implements LocalGame {
         return gameStore;
     }
 
-    public Location getSpecSpawn() {
-        return specSpawn;
-    }
-
-    public void setSpecSpawn(Location specSpawn) {
-        this.specSpawn = specSpawn;
-    }
-
-    public int getGameTime() {
-        return gameTime;
-    }
-
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
-    }
-
     @Override
     public TeamImpl getTeamFromName(String name) {
         return teams.stream().filter(team1 -> team1.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-    }
-
-    public List<TeamImpl> getTeams() {
-        return teams;
-    }
-
-    public List<ItemSpawnerImpl> getSpawners() {
-        return spawners;
-    }
-
-    public TeamSelectorInventory getTeamSelectorInventory() {
-        return teamSelectorInventory;
     }
 
     public boolean isBlockAddedDuringGame(Location loc) {
@@ -834,10 +412,6 @@ public class GameImpl implements LocalGame {
         return null;
     }
 
-    public BWRegion getRegion() {
-        return region;
-    }
-
     public TeamImpl getPlayerTeam(BedWarsPlayer player) {
         return teamsInGame.stream()
                 .filter(team -> team.getPlayers().contains(player))
@@ -891,6 +465,7 @@ public class GameImpl implements LocalGame {
                         region.putOriginalBlock(loc, region.getBedNeighbor(block).blockSnapshot());
                     }
                 }
+
                 region.getBedNeighbor(block).alterBlockWithoutPhysics(Block.air());
                 block.block(Block.air());
             } else if (type.is("#doors", "#tall_flowers")) {
@@ -914,8 +489,8 @@ public class GameImpl implements LocalGame {
             }
 
             ((TargetBlockImpl) target).setValid(false);
-        } else if (target instanceof ATargetCountdown) {
-            ((ATargetCountdown) target).setRemainingTime(0);
+        } else if (target instanceof AExpirableTarget) {
+            ((AExpirableTarget) target).setRemainingTime(0);
         }
 
         var postTargetInvalidatedEvent = PostTargetInvalidatedEventImpl.fromPre(preTargetInvalidatedEvent);
@@ -1180,93 +755,7 @@ public class GameImpl implements LocalGame {
 
     @SneakyThrows
     public void saveToConfig() {
-        var dir = BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve("arenas").toFile();
-        if (!dir.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            dir.mkdirs();
-        }
-        if (file == null) {
-            do {
-                file = new File(dir, UUID.randomUUID() + ".json");
-            } while (file.exists());
-        }
-        if (!file.exists()) {
-            try {
-                //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        final ConfigurationLoader<? extends ConfigurationNode> loader;
-        if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
-            loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        } else {
-            loader = GsonConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        }
-
-        var configMap = loader.createNode();
-        configMap.node("uuid").set(uuid);
-        configMap.node("name").set(name);
-        configMap.node("pauseCountdown").set(pauseCountdown);
-        configMap.node("gameTime").set(gameTime);
-        configMap.node("world").set(world.getName());
-        configMap.node("pos1").set(MiscUtils.writeLocationToString(pos1));
-        configMap.node("pos2").set(MiscUtils.writeLocationToString(pos2));
-        configMap.node("specSpawn").set(MiscUtils.writeLocationToString(specSpawn));
-        configMap.node("lobbySpawn").set(MiscUtils.writeLocationToString(lobbySpawn));
-        if (lobbyPos1 != null) {
-            configMap.node("lobbyPos1", MiscUtils.writeLocationToString(lobbyPos1));
-        }
-        if (lobbyPos2 != null) {
-            configMap.node("lobbyPos2", MiscUtils.writeLocationToString(lobbyPos2));
-        }
-        configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
-        configMap.node("minPlayers").set(minPlayers);
-        configMap.node("postGameWaiting").set(postGameWaiting);
-        configMap.node("game-display-name").set(displayName);
-        if (!teams.isEmpty()) {
-            for (var t : teams) {
-                var teamNode = configMap.node("teams", t.getName());
-                teamNode.node("isNewColor").set(true);
-                teamNode.node("color").set(t.getColor().name());
-                teamNode.node("maxPlayers").set(t.getMaxPlayers());
-                if (t.getTarget() instanceof SerializableGameComponent) {
-                    ((SerializableGameComponent) t.getTarget()).saveTo(teamNode.node("target"));
-                }
-                var spawns = teamNode.node("spawns");
-                for (var spawn : t.getTeamSpawns()) {
-                   spawns.appendListNode().set(MiscUtils.writeLocationToString(spawn));
-                }
-            }
-        }
-        for (var spawner : spawners) {
-            spawner.saveTo(configMap.node("spawners").appendListNode());
-        }
-        for (var store : gameStore) {
-            store.saveTo(configMap.node("stores").appendListNode());
-        }
-
-        configMap.node("constant").from(configurationContainer.getSaved());
-
-        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.location().asString());
-
-        if (gameVariant != null) {
-            configMap.node("variant").set(gameVariant.getName());
-        }
-
-        configMap.node("fee").set(fee);
-
-        try {
-            loader.save(configMap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        LocalGameLoaderImpl.getInstance().saveGame(this);
     }
 
     public void start() {
@@ -1701,541 +1190,6 @@ public class GameImpl implements LocalGame {
         }
     }
 
-    public void run() {
-        // Phase 1: Check if game is running
-        if (status == GameStatus.DISABLED) { // Game is not running, why cycle is still running?
-            cancelTask();
-            return;
-        }
-        var statusE = new GameChangedStatusEventImpl(this);
-        // Phase 2: If this is first tick, prepare waiting lobby
-        if (countdown == -1 && status == GameStatus.WAITING) {
-            Debug.info(name + ": preparing lobby");
-            previousCountdown = countdown = pauseCountdown;
-            previousStatus = GameStatus.WAITING;
-            var title = Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent();
-            statusbar.setProgress(0);
-            statusbar.setVisible(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_LOBBY_ENABLED, false));
-            for (BedWarsPlayer p : players) {
-                statusbar.addPlayer(p);
-            }
-            if (statusbar instanceof BossBarImpl) {
-                var bossbar = (BossBarImpl) statusbar;
-                bossbar.setMessage(title);
-                bossbar.setColor(configurationContainer.getOrDefault(GameConfigurationContainerImpl.BOSSBAR_LOBBY_COLOR, BossBarColor.PURPLE));
-                bossbar.setStyle(configurationContainer.getOrDefault(GameConfigurationContainerImpl.BOSSBAR_LOBBY_DIVISION, BossBarDivision.NO_DIVISION));
-            }
-            if (teamSelectorInventory == null) {
-                teamSelectorInventory = new TeamSelectorInventory(this);
-            }
-
-            if (experimentalBoard == null) {
-                experimentalBoard = new GameSidebar(this);
-            }
-            updateSigns();
-            Debug.info(name + ": lobby prepared");
-        }
-
-        // Phase 3: Prepare information about next tick for tick event and update
-        // bossbar with scoreboard
-        int nextCountdown = countdown;
-        GameStatus nextStatus = status;
-
-        if (status == GameStatus.WAITING) {
-            // Game start item
-            if (gameStartItem) {
-                if (players.size() >= getMinPlayers()) {
-                    for (BedWarsPlayer player : players) {
-                        if (getPlayerTeam(player) == null) {
-                            joinRandomTeam(player);
-                        }
-                    }
-                }
-                if (players.size() > 1) {
-                    countdown = 0;
-                    gameStartItem = false;
-                }
-            }
-            if (forceGameToStart) {
-                nextCountdown = gameTime;
-                nextStatus = GameStatus.RUNNING;
-                forceGameToStart = false;
-
-                for (BedWarsPlayer player : players) {
-                    if (getPlayerTeam(player) == null) {
-                        joinRandomTeam(player);
-                    }
-                }
-                if (teamsInGame.size() == 1) { // I don't think zero can happen as at least one player will be there
-                    for (var team : teams) {
-                        if (!teamsInGame.contains(team)) {
-                            team.setForced(true);
-                            teamsInGame.add(team);
-                            break;
-                        }
-                    }
-                }
-            } else if (
-                    players.size() >= getMinPlayers()
-                    && (
-                            teamsInGame.size() > 1
-                            || (configurationContainer.getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) && countRespawnable() < players.size())
-                    )
-            ) {
-                if (countdown == 0) {
-                    nextCountdown = gameTime;
-                    nextStatus = GameStatus.RUNNING;
-                } else {
-                    nextCountdown--;
-
-                    if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
-
-                        for (BedWarsPlayer player : players) {
-                            player.showTitle(Title.title(Component.text(Integer.toString(countdown), Color.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
-                            player.playSound(
-                                    SoundStart.sound(
-                                            ResourceLocation.of(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
-                                            SoundSource.AMBIENT,
-                                            (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
-                                            (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
-                                    )
-                            );
-                        }
-                    }
-                }
-            } else {
-                nextCountdown = countdown = pauseCountdown;
-            }
-            setBossbarProgress(countdown, pauseCountdown);
-        } else if (status == GameStatus.RUNNING) {
-            if (countdown == 0) {
-                nextCountdown = postGameWaiting;
-                nextStatus = GameStatus.GAME_END_CELEBRATING;
-            } else {
-                nextCountdown--;
-            }
-            setBossbarProgress(countdown, gameTime);
-        } else if (status == GameStatus.GAME_END_CELEBRATING) {
-            if (countdown == 0) {
-                nextCountdown = 0;
-                nextStatus = GameStatus.REBUILDING;
-            } else {
-                nextCountdown--;
-            }
-            setBossbarProgress(countdown, postGameWaiting);
-        }
-
-        // Phase 4: Call Tick Event
-        var tick = new GameTickEventImpl(this, previousCountdown, previousStatus, countdown, status,
-                nextCountdown, nextStatus, nextCountdown, nextStatus);
-        EventManager.fire(tick);
-        Debug.info(name + ": tick passed: " + tick.getPreviousCountdown() + "," + tick.getCountdown() + "," + tick.getNextCountdown() + " (" + tick.getPreviousStatus() + "," + tick.getStatus() + "," + tick.getNextStatus() + ")");
-
-        // Phase 5: Update Previous information
-        previousCountdown = countdown;
-        previousStatus = status;
-
-        // Phase 6: Process tick
-        // Phase 6.1: If status changed
-        if (status != tick.getNextStatus()) {
-            // Phase 6.1.1: Prepare game if next status is RUNNING
-            if (tick.getNextStatus() == GameStatus.RUNNING) {
-                Debug.info(name + ": preparing game");
-                preparing = true;
-                var startE = new GameStartEventImpl(this);
-                EventManager.fire(startE);
-                EventManager.fire(statusE);
-
-                if (startE.isCancelled()) {
-                    tick.setNextCountdown(pauseCountdown);
-                    tick.setNextStatus(GameStatus.WAITING);
-                    preparing = false;
-                } else {
-
-                    if (configurationContainer.getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false)) {
-                        for (BedWarsPlayer player : players) {
-                            if (getPlayerTeam(player) == null) {
-                                joinRandomTeam(player);
-                            }
-                        }
-                    }
-
-                    statusbar.setProgress(0);
-                    statusbar.setVisible(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_GAME_ENABLED, false));
-                    if (statusbar instanceof BossBarImpl) {
-                        var bossbar = (BossBarImpl) statusbar;
-                        bossbar.setMessage(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent());
-                        bossbar.setColor(configurationContainer.getOrDefault(GameConfigurationContainerImpl.BOSSBAR_GAME_COLOR, BossBarColor.PURPLE));
-                        bossbar.setStyle(configurationContainer.getOrDefault(GameConfigurationContainerImpl.BOSSBAR_GAME_DIVISION, BossBarDivision.NO_DIVISION));
-                    }
-                    if (teamSelectorInventory != null)
-                        teamSelectorInventory.destroy();
-                    teamSelectorInventory = null;
-
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, this::updateSigns, 3, TaskerTime.TICKS);
-                    if (MainConfig.getInstance().node("use-chunk-tickets-if-available").getBoolean()) {
-                        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX()) >> 4;
-                        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX()) >> 4;
-
-                        int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
-                        int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
-
-                        for (int x = minX; x <= maxX; x++) {
-                            for (int z = minZ; z <= maxZ; z++) {
-                                var chunk = world.getChunkAt(x, z);
-                                if (chunk != null && chunk.addPluginChunkTicket()) {
-                                    chunksWithTickets.add(chunk);
-                                }
-                            }
-                        }
-                    }
-                    for (GameStoreImpl store : gameStore) {
-                        var villager = store.spawn();
-                        if (villager instanceof LivingEntity) {
-                            EntitiesManagerImpl.getInstance().addEntityToGame((LivingEntity) villager, this);
-                            ((LivingEntity) villager).setAI(false);
-                            ((LivingEntity) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
-                                if (entity.getEntityType().equals(((LivingEntity) villager).getEntityType()) && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
-                                    entity.remove();
-                                }
-                            });
-                        } else if (villager instanceof NPC) {
-                            otherVisuals.add((NPC) villager);
-                            players.forEach(((NPC) villager)::addViewer);
-                        }
-                    }
-
-                    for (ItemSpawnerImpl spawner : spawners) {
-                        spawner.start(this);
-
-                        UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
-                        if (storage != null) {
-                            storage.addUpgrade(this, spawner);
-                        }
-                    }
-
-                    var title = Message
-                                    .of(LangKeys.IN_GAME_GAME_START_TITLE)
-                                    .join(LangKeys.IN_GAME_GAME_START_SUBTITLE)
-                                    .placeholder("arena", this.name)
-                                    .times(TitleUtils.defaultTimes());
-                    if (configurationContainer.getOrDefault(GameConfigurationContainer.SHOW_GAME_INFO_ON_START, false)) {
-                        Message
-                                .of(LangKeys.IN_GAME_MESSAGES_GAME_START)
-                                .placeholderRaw("resources", MiscUtils.center(gameVariant.getItemSpawnerTypes().stream().map(ItemSpawnerTypeImpl::getName).collect(Collectors.joining(", ")), 49))
-                                .send(players);
-                    }
-                    for (BedWarsPlayer player : this.players) {
-                        Debug.info(name + ": moving " + player.getName() + " into game");
-                        var team = getPlayerTeam(player);
-                        player.getPlayerInventory().clear();
-                        // Player still had armor on legacy versions
-                        player.getPlayerInventory().setHelmet(null);
-                        player.getPlayerInventory().setChestplate(null);
-                        player.getPlayerInventory().setLeggings(null);
-                        player.getPlayerInventory().setBoots(null);
-                        player.showTitle(title);
-                        if (team == null) {
-                            var loc = makeSpectator(player, true);
-                                player.playSound(
-                                        SoundStart.sound(
-                                                ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
-                                                SoundSource.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
-                                        ),
-                                        loc.getX(),
-                                        loc.getY(),
-                                        loc.getZ()
-                                );
-                        } else {
-                            player.teleport(team.getRandomSpawn(), () -> {
-                                player.setGameMode(GameMode.of("survival"));
-                                if (configurationContainer.getOrDefault(GameConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
-                                    var givenGameStartItems = configurationContainer.getOrDefault(GameConfigurationContainerImpl.GAME_START_ITEMS_ITEMS, List.of());
-                                    if (!givenGameStartItems.isEmpty()) {
-                                        MiscUtils.giveItemsToPlayer(givenGameStartItems, player, team.getColor());
-                                    } else {
-                                        Debug.warn("You have wrongly configured game-start-items.items!", true);
-                                    }
-                                }
-                                SpawnEffects.spawnEffect(this, player, "game-effects.start");
-                                player.playSound(
-                                        SoundStart.sound(
-                                                ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
-                                                SoundSource.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
-                                        )
-                                );
-                            });
-                        }
-                    }
-
-                    if (configurationContainer.getOrDefault(GameConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, false)) {
-                        for (TeamImpl team : teams) {
-                            if (!teamsInGame.contains(team) && team.getTarget() instanceof TargetBlockImpl) {
-                                Location loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
-                                BlockPlacement block = loc.getBlock();
-                                if (region.isBedBlock(block.blockSnapshot())) {
-                                    region.putOriginalBlock(block.location(), block.blockSnapshot());
-                                    var neighbor = region.getBedNeighbor(block);
-                                    region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
-                                    neighbor.alterBlockWithoutPhysics(Block.air());
-                                } else {
-                                    region.putOriginalBlock(loc, block.blockSnapshot());
-                                }
-                                block.block(Block.air());
-                            }
-                        }
-                    }
-
-                    for (var team : teamsInGame) {
-                        team.start();
-                    }
-
-                    if (Server.isVersion(1, 15) && (!configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
-                        world.setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
-                    }
-                    preparing = false;
-
-                    var startedEvent = new GameStartedEventImpl(this);
-                    EventManager.fire(startedEvent);
-                    EventManager.fire(statusE);
-                    Debug.info(name + ": game prepared");
-
-                    if (configurationContainer.getOrDefault(GameConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, false)) {
-                        healthIndicator = HealthIndicator.of()
-                                .symbol(Component.text("\u2665", Color.RED))
-                                .show()
-                                .startUpdateTask(4, TaskerTime.TICKS);
-                        players.forEach(healthIndicator::addViewer);
-                        players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator()).forEach(healthIndicator::addTrackedPlayer);
-                    }
-                }
-
-                // show records
-                RecordSave.getInstance().getRecord(this.getName()).ifPresentOrElse(record ->
-                        Message.of(LangKeys.IN_GAME_RECORD_CURRENT)
-                                .prefixOrDefault(getCustomPrefixComponent())
-                                .placeholder("time", getFormattedTimeLeft(record.getTime()))
-                                .placeholderRaw("team-members", String.join(", ", record.getWinners()))
-                                .send(players), () ->
-                        Message.of(LangKeys.IN_GAME_RECORD_NO)
-                                        .prefixOrDefault(getCustomPrefixComponent())
-                                        .send(players)
-                );
-
-            }
-            // Phase 6.2: If status is same as before
-        } else {
-            // Phase 6.2.1: On game tick (if not interrupted by a change of status)
-            if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
-                int runningTeams = 0;
-                var invalidated = new ArrayList<TargetBlockDestroyedInfo>();
-                for (var t : teamsInGame) {
-                    runningTeams += t.isAlive() ? 1 : 0;
-                    if (t.isAlive() && t.getTarget() instanceof ATargetCountdown && t.getTarget().isValid()) {
-                        ((ATargetCountdown) t.getTarget()).setRemainingTime(((ATargetCountdown) t.getTarget()).getRemainingTime() - 1);
-                        if (!t.getTarget().isValid()) {
-                            var info = new TargetBlockDestroyedInfo(this, t);
-                            if (t.getTarget() instanceof TargetBlockCountdownImpl && configurationContainer.getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_TITLES, false)) {
-                                invalidated.add(info);
-                            }
-
-                            internalProcessInvalidation(t, t.getTarget(), null, TargetInvalidationReason.TIMEOUT, true, true);
-                        }
-                    }
-                }
-                if (!invalidated.isEmpty()) {
-                    if (teamsInGame.stream().anyMatch(team -> team.getTarget().isValid())) {
-                        for (var t : invalidated) {
-                            Message
-                                    .of(t.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (t.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (t.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER)))
-                                    .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
-                                    .times(TitleUtils.defaultTimes())
-                                    .title(t.getTeam().getPlayers());
-                        }
-                    } else {
-                        var allBeds = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItBedBlock);
-                        var allAnchors = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItAnchor);
-                        var allCakes = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItCake);
-                        for (var t : invalidated) {
-                            Message
-                                    .of(t.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (t.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (t.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER)))
-                                    .join(allBeds ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_BEDS : (allAnchors ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_ANCHORS : (allCakes ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_CAKES : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_TARGET_BLOCKS)))
-                                    .times(TitleUtils.defaultTimes())
-                                    .title(t.getTeam().getPlayers());
-                        }
-                    }
-                }
-                if (runningTeams <= 1) {
-                    if (runningTeams == 1) {
-                        if (gameTime - countdown < configurationContainer.getOrDefault(GameConfigurationContainer.PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, 0)) {
-                            Message.of(LangKeys.IN_GAME_END_YOU_LOST)
-                                    .join(LangKeys.IN_GAME_END_GAME_ENDED_TOO_EARLY)
-                                    .title(players);
-                        } else {
-                            TeamImpl winner = null;
-                            for (var t : teamsInGame) {
-                                if (t.isAlive()) {
-                                    winner = t;
-                                    String time = getFormattedTimeLeft(gameTime - countdown);
-                                    var message = Message
-                                            .of(LangKeys.IN_GAME_END_TEAM_WIN)
-                                            .prefixOrDefault(getCustomPrefixComponent())
-                                            .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                            .placeholder("time", time);
-                                    boolean madeRecord = processRecord(t, gameTime - countdown);
-                                    for (BedWarsPlayer player : players) {
-                                        player.sendMessage(message);
-                                        if (getPlayerTeam(player) == t) {
-                                            Message.of(LangKeys.IN_GAME_END_YOU_WON)
-                                                    .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                                    .placeholder("time", time)
-                                                    .times(TitleUtils.defaultTimes())
-                                                    .title(player);
-                                            EconomyUtils.deposit(player, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_WIN, 0.0));
-
-                                            SpawnEffects.spawnEffect(this, player, "game-effects.end");
-
-                                            if (PlayerStatisticManager.isEnabled()) {
-                                                var statistic = PlayerStatisticManager.getInstance()
-                                                        .getStatistic(player);
-                                                statistic.addWins(1);
-                                                statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_WIN, 50));
-
-                                                if (madeRecord) {
-                                                    statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_RECORD, 100));
-                                                }
-
-                                                if (StatisticsHolograms.isEnabled()) {
-                                                    StatisticsHolograms.getInstance().updateHolograms(player);
-                                                }
-
-                                                if (MainConfig.getInstance().node("statistics", "show-on-game-end")
-                                                        .getBoolean()) {
-                                                    StatsCommand.sendStats(player, PlayerStatisticManager.getInstance().getStatistic(player));
-                                                }
-
-                                            }
-
-                                            if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                                                if (PlayerStatisticManager.isEnabled()) {
-                                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                                                    GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
-                                                } else {
-                                                    GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, 0);
-                                                }
-                                                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                                                    if (PlayerStatisticManager.isEnabled()) {
-                                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                                                        GameImpl.this.dispatchRewardCommands("player-win", player, statistic.getScore());
-                                                    } else {
-                                                        GameImpl.this.dispatchRewardCommands("player-win", player, 0);
-                                                    }
-                                                }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
-                                            }
-                                        } else {
-                                            Message.of(LangKeys.IN_GAME_END_YOU_LOST)
-                                                    .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                                    .placeholder("time", time)
-                                                    .times(TitleUtils.defaultTimes())
-                                                    .title(player);
-
-                                            if (StatisticsHolograms.isEnabled()) {
-                                                StatisticsHolograms.getInstance().updateHolograms(player);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-
-                            var endingEvent = new GameEndingEventImpl(this, winner);
-                            EventManager.fire(endingEvent);
-                        }
-                        EventManager.fire(statusE);
-                        Debug.info(name + ": game is ending");
-
-                        tick.setNextCountdown(postGameWaiting);
-                        tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
-                    } else {
-                        tick.setNextStatus(GameStatus.REBUILDING);
-                        tick.setNextCountdown(0);
-                    }
-                }
-            }
-        }
-
-        // Phase 7: Update status and countdown for next tick
-        countdown = tick.getNextCountdown();
-        status = tick.getNextStatus();
-
-        // Phase 8: Check if game end celebrating started and remove title on bossbar
-        if (status == GameStatus.GAME_END_CELEBRATING && previousStatus != status) {
-            if (statusbar instanceof BossBarImpl) {
-                var bossbar = (BossBarImpl) statusbar;
-                bossbar.setMessage(Component.empty());
-            }
-        }
-
-        // Phase 9: Check if status is rebuilding and rebuild game
-        if (status == GameStatus.REBUILDING) {
-            var event = new GameEndEventImpl(this);
-            EventManager.fire(event);
-            EventManager.fire(statusE);
-
-            var message = Message
-                    .of(LangKeys.IN_GAME_END_GAME_END)
-                    .prefixOrDefault(getCustomPrefixComponent());
-            for (BedWarsPlayer player : List.copyOf(players)) {
-                player.sendMessage(message);
-                player.changeGame(null);
-
-                if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                        if (PlayerStatisticManager.isEnabled()) {
-                            var statistic = PlayerStatisticManager.getInstance()
-                                    .getStatistic(player);
-                            GameImpl.this.dispatchRewardCommands("player-end-game", player, statistic.getScore());
-                        } else {
-                            GameImpl.this.dispatchRewardCommands("player-end-game", player, 0);
-                        }
-                    }, 40, TaskerTime.TICKS);
-                }
-            }
-
-            if (status == GameStatus.REBUILDING) { // If status is still rebuilding
-                rebuild();
-            }
-
-            if (isBungeeEnabled()) {
-                GameManagerImpl.getInstance().reselectGame();
-
-                preServerRestart = true;
-
-                if (!getConnectedPlayers().isEmpty()) {
-                    kickAllPlayers();
-                }
-
-                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                    if (MainConfig.getInstance().node("bungee", "serverRestart").getBoolean()) {
-                        EventManager.fire(new ServerRestartEventImpl());
-
-                        Server.getConsoleSender().tryToDispatchCommand("restart");
-                    } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
-                        Server.shutdown();
-                    } else {
-                        preServerRestart = false;
-                    }
-                }, 30, TaskerTime.TICKS);
-            }
-        }
-    }
-
     public void rebuild() {
         if (healthIndicator != null) {
             healthIndicator.destroy();
@@ -2346,22 +1300,12 @@ public class GameImpl implements LocalGame {
         return false;
     }
 
-    public GameStatus getStatus() {
-        return status;
-    }
-
     public void runTask() {
-        cancelTask();
-        task = Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, GameImpl.this::run, 1, TaskerTime.SECONDS);
+        gameCycle.startGameCycle();
     }
 
     private void cancelTask() {
-        if (task != null) {
-            if (task.isScheduledOrRunning()) {
-                task.cancel();
-            }
-            task = null;
-        }
+        gameCycle.endGameCycle();
     }
 
     public void selectTeam(BedWarsPlayer playerGameProfile, String displayName) {
@@ -2819,10 +1763,6 @@ public class GameImpl implements LocalGame {
         return arenaWeather;
     }
 
-    public void setArenaWeather(WeatherType arenaWeather) {
-        this.arenaWeather = arenaWeather;
-    }
-
     @Override
     public List<ItemSpawnerImpl> getItemSpawners() {
         return List.copyOf(spawners);
@@ -2934,10 +1874,6 @@ public class GameImpl implements LocalGame {
         return this.postGameWaiting;
     }
 
-    public void setPostGameWaiting(int time) {
-        this.postGameWaiting = time;
-    }
-
     @Override
     public Component getCustomPrefixComponent() {
         return Component.fromMiniMessage(configurationContainer.getOrDefault(GameConfigurationContainer.PREFIX, "[BW]"));
@@ -2953,29 +1889,11 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public @Nullable Location getLobbyPos1() {
-        return lobbyPos1;
-    }
-
-    @Override
-    public @Nullable Location getLobbyPos2() {
-        return lobbyPos2;
-    }
-
-    @Override
     public boolean invalidateTarget(Team team) {
         if (!(team instanceof TeamImpl)) {
             throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
         }
         return internalProcessInvalidation((TeamImpl) team, team.getTarget(), null, TargetInvalidationReason.PLUGIN);
-    }
-
-    public void setLobbyPos1(Location pos1) {
-        lobbyPos1 = pos1;
-    }
-
-    public void setLobbyPos2(Location pos2) {
-        lobbyPos2 = pos2;
     }
 
     @Override
@@ -2996,5 +1914,52 @@ public class GameImpl implements LocalGame {
     public void setGameVariant(@NotNull VariantImpl gameVariant) {
         this.gameVariant = gameVariant;
         this.configurationContainer.setParentContainer(this.gameVariant.getConfigurationContainer());
+    }
+
+    public void ensurePlayersAreTeamed() {
+        if (players.size() >= getMinPlayers()) {
+            makePlayersJoinRandomTeams();
+        }
+    }
+
+    public void makePlayersJoinRandomTeams() {
+        for (BedWarsPlayer player : players) {
+            if (getPlayerTeam(player) == null) {
+                joinRandomTeam(player);
+            }
+        }
+    }
+
+    public boolean isAllowedToStart() {
+        return players.size() >= getMinPlayers()
+                && (
+                teamsInGame.size() > 1
+                        || (getConfigurationContainer().getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) && countRespawnable() < players.size())
+        );
+    }
+
+    public void configureChunkTickets() {
+        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+
+        int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+        int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                var chunk = world.getChunkAt(x, z);
+                if (chunk != null && chunk.addPluginChunkTicket()) {
+                    chunksWithTickets.add(chunk);
+                }
+            }
+        }
+    }
+
+    public List<TeamImpl> getTeamsAlive() {
+        return teamsInGame.stream().filter(Team::isAlive).collect(Collectors.toList());
+    }
+
+    public boolean hasGameStatusChanged() {
+        return previousStatus != status;
     }
 }

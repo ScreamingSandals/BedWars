@@ -24,7 +24,7 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.bedwars.game.target.ATargetCountdown;
+import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -256,9 +256,9 @@ public class GameSidebar {
                     if (team.getTarget().isValid()) {
                         if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
-                        } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                        } else if (team.getTarget() instanceof AExpirableTarget && ((AExpirableTarget) team.getTarget()).getRemainingTime() < 30) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
-                                    .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                    .placeholder("count", Component.text(((AExpirableTarget) team.getTarget()).getRemainingTime() + " "))
                                     .asComponent(sender);
                         } else {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);

@@ -17,27 +17,17 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.api.game.target;
+package org.screamingsandals.bedwars.api.game;
 
 /**
+ * <p>Abstract GameCycle API.</p>
+ *
  * @author ScreamingSandals
  * @since 0.3.0
  */
-public interface TargetCountdown extends Target {
+public interface GameCycle {
 
-    /**
-     * Gets the set countdown to the target invalidation.
-     *
-     * @return the countdown in seconds
-     * @since 0.3.0
-     */
-    int getCountdown();
+    void startGameCycle();
 
-    /**
-     * Gets the current remaining time until the target is invalidated.
-     *
-     * @return the current remaining time in seconds
-     * @since 0.3.0
-     */
-    int getRemainingTime();
+    void endGameCycle();
 }
