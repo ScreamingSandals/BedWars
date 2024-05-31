@@ -37,7 +37,7 @@ public interface LocalGameLoader {
      * @return a game instance populated from the given file, null otherwise
      */
     @Nullable
-    default Game loadGame(File file) {
+    default LocalGame loadGame(File file) {
         return loadGame(file, true);
     }
 
@@ -48,11 +48,11 @@ public interface LocalGameLoader {
      * @return a loaded game instance from the provided file, null otherwise
      */
     @Nullable
-    Game loadGame(File file, boolean firstAttempt);
+    LocalGame loadGame(File file, boolean firstAttempt);
 
     /**
      *
      * @param game the game instance to be serialized into a file
      */
-    void saveGame(@NotNull Game game);
+    void saveGame(@NotNull LocalGame game);
 }

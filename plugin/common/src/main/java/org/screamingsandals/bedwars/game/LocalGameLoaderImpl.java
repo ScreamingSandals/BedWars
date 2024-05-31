@@ -23,7 +23,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.LocalGameLoader;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -384,7 +384,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
 
     @SneakyThrows
     @Override
-     public void saveGame(@NotNull Game apiGame) {
+     public void saveGame(@NotNull LocalGame apiGame) {
         final GameImpl game = (GameImpl) apiGame;
         var dir = BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve("arenas").toFile();
         if (!dir.exists()) {
