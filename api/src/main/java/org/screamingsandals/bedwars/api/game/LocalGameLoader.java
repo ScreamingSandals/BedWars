@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 
 /**
- * LocalGameLoader API to load a given Game instance from a file
+ * LocalGameLoader API to load or save a game to or from a file.
  * @author ScreamingSandals
  * @since 0.3.0
  */

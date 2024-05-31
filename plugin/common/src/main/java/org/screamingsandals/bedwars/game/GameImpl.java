@@ -37,6 +37,7 @@ import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
+import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarImpl;
 import org.screamingsandals.bedwars.boss.XPBarImpl;
@@ -74,22 +75,29 @@ import org.screamingsandals.lib.container.type.InventoryType;
 import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.entity.ItemEntity;
+import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.player.Sender;
 import org.screamingsandals.lib.player.gamemode.GameMode;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.spectator.title.Title;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.Location;
 import org.screamingsandals.lib.world.World;
@@ -1282,7 +1290,6 @@ public class GameImpl implements LocalGame {
         updateSigns();
         cancelTask();
         Debug.info(name + ": rebuilding ends");
-
     }
 
     public boolean processRecord(TeamImpl t, int wonTime) {
@@ -1922,6 +1929,16 @@ public class GameImpl implements LocalGame {
         }
     }
 
+    public void forceTeamExistence() {
+        for (var team : teams) {
+            if (!teamsInGame.contains(team)) {
+                team.setForced(true);
+                teamsInGame.add(team);
+                break;
+            }
+        }
+    }
+
     public void makePlayersJoinRandomTeams() {
         for (BedWarsPlayer player : players) {
             if (getPlayerTeam(player) == null) {
@@ -1961,5 +1978,196 @@ public class GameImpl implements LocalGame {
 
     public boolean hasGameStatusChanged() {
         return previousStatus != status;
+    }
+
+    public void useGameStartItem() {
+        if (players.size() > 1) {
+            ensurePlayersAreTeamed();
+            countdown = 0;
+            gameStartItem = false;
+        }
+    }
+
+    public void forceGameStart() {
+        makePlayersJoinRandomTeams();
+
+        if (teamsInGame.size() == 1) {
+            forceTeamExistence();
+        }
+
+        forceGameToStart = false;
+    }
+
+    public void showPlayerCountdown() {
+        showPlayerCountdown(countdown);
+    }
+
+    public void showPlayerCountdown(int countdown) {
+        for (BedWarsPlayer player : players) {
+            player.showTitle(Title.title(Component.text(Integer.toString(countdown), Color.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
+            player.playSound(
+                    SoundStart.sound(
+                            ResourceLocation.of(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
+                            SoundSource.AMBIENT,
+                            (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
+                            (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
+                    )
+            );
+        }
+    }
+
+    protected void dispatchPlayerWinReward(Player player) {
+        if (PlayerStatisticManager.isEnabled()) {
+            var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+            dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
+        } else {
+            dispatchRewardCommands("player-win-run-immediately", player, 0);
+        }
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+            if (PlayerStatisticManager.isEnabled()) {
+                var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+                dispatchRewardCommands("player-win", player, statistic.getScore());
+            } else {
+                dispatchRewardCommands("player-win", player, 0);
+            }
+        }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
+    }
+
+    protected void dispatchEndGameReward(Player player) {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+            if (PlayerStatisticManager.isEnabled()) {
+                var statistic = PlayerStatisticManager.getInstance()
+                        .getStatistic(player);
+                dispatchRewardCommands("player-end-game", player, statistic.getScore());
+            } else {
+                dispatchRewardCommands("player-end-game", player, 0);
+            }
+        }, 40, TaskerTime.TICKS);
+    }
+
+    protected void handleBungeePostGame() {
+        GameManagerImpl.getInstance().reselectGame();
+        preServerRestart = false;
+
+        if (!players.isEmpty()) {
+            kickAllPlayers();
+        }
+
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+            if (MainConfig.getInstance().node("bungee", "serverRestart").getBoolean()) {
+                EventManager.fire(new ServerRestartEventImpl());
+
+                Server.getConsoleSender().tryToDispatchCommand("restart");
+            } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
+                Server.shutdown();
+            } else {
+                preServerRestart = false;
+            }
+        }, 30, TaskerTime.TICKS);
+    }
+
+    public void spawnGameStores() {
+        for (GameStoreImpl store : gameStore) {
+            if (store.getEntity() != null) {
+                continue;
+            }
+
+            var villager = store.spawn();
+            if (villager instanceof LivingEntity) {
+                EntitiesManagerImpl.getInstance().addEntityToGame((LivingEntity) villager, this);
+                ((LivingEntity) villager).setAI(false);
+                ((LivingEntity) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
+                    if (entity.getEntityType().equals(((LivingEntity) villager).getEntityType()) && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
+                        entity.remove();
+                    }
+                });
+            } else if (villager instanceof NPC) {
+                otherVisuals.add((NPC) villager);
+                players.forEach(((NPC) villager)::addViewer);
+            }
+        }
+    }
+
+    public void startGameSpawners() {
+        for (ItemSpawnerImpl spawner : getSpawners()) {
+            if (spawner.isStarted()) {
+                continue;
+            }
+
+            spawner.start(this);
+
+            UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
+            if (storage != null) {
+                storage.addUpgrade(this, spawner);
+            }
+        }
+    }
+
+    protected void removeUnusedTargetBlocks() {
+        for (TeamImpl team : teams) {
+            if (!teamsInGame.contains(team) && team.getTarget() instanceof TargetBlockImpl) {
+                Location loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
+                BlockPlacement block = loc.getBlock();
+                if (region.isBedBlock(block.blockSnapshot())) {
+                    region.putOriginalBlock(block.location(), block.blockSnapshot());
+                    var neighbor = region.getBedNeighbor(block);
+                    region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
+                    neighbor.alterBlockWithoutPhysics(Block.air());
+                } else {
+                    region.putOriginalBlock(loc, block.blockSnapshot());
+                }
+                block.block(Block.air());
+            }
+        }
+    }
+
+    protected void spawnTeamPlayerOnGameStart(BedWarsPlayer player, TeamImpl team) {
+        player.teleport(team.getRandomSpawn(), () -> {
+            player.setGameMode(GameMode.of("survival"));
+            if (configurationContainer.getOrDefault(GameConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
+                var givenGameStartItems = configurationContainer.getOrDefault(GameConfigurationContainerImpl.GAME_START_ITEMS_ITEMS, List.of());
+                if (!givenGameStartItems.isEmpty()) {
+                    MiscUtils.giveItemsToPlayer(givenGameStartItems, player, team.getColor());
+                } else {
+                    Debug.warn("You have wrongly configured game-start-items.items!", true);
+                }
+            }
+            SpawnEffects.spawnEffect(this, player, "game-effects.start");
+            player.playSound(
+                    SoundStart.sound(
+                            ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
+                            SoundSource.AMBIENT,
+                            (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
+                            (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
+                    )
+            );
+        });
+    }
+
+    protected void spawnSpectatorOnGameStart(BedWarsPlayer player) {
+        var loc = makeSpectator(player, true);
+        player.playSound(
+                SoundStart.sound(
+                        ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
+                        SoundSource.AMBIENT,
+                        (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
+                        (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
+                ),
+                loc.getX(),
+                loc.getY(),
+                loc.getZ()
+        );
+    }
+
+    protected void startHealthIndicator() {
+        if (healthIndicator != null) {
+            var healthIndicator = HealthIndicator.of()
+                    .symbol(Component.text("\u2665", Color.RED))
+                    .show()
+                    .startUpdateTask(4, TaskerTime.TICKS);
+            players.forEach(healthIndicator::addViewer);
+            players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator()).forEach(healthIndicator::addTrackedPlayer);
+            setHealthIndicator(healthIndicator);
+        }
     }
 }

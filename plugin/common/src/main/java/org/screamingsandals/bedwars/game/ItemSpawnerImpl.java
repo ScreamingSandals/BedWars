@@ -41,8 +41,6 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
-import org.screamingsandals.lib.tasker.DefaultThreads;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.lib.utils.Pair;
@@ -106,6 +104,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     private boolean spawnerIsFullHologram = false;
     private boolean rerenderHologram = false;
     private double currentLevelOnHologram = -1;
+    @Getter
     private boolean started;
     private boolean disabled;
     private boolean certainPopularServerHolo;
