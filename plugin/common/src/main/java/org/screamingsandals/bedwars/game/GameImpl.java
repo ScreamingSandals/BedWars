@@ -124,9 +124,9 @@ public class GameImpl implements LocalGame {
     private Location pos1;
     private Location pos2;
     private Location lobbySpawn;
-    @Getter(onMethod_ = {@Nullable})
+    @Nullable
     private Location lobbyPos1;
-    @Getter(onMethod_ = {@Nullable})
+    @Nullable
     private Location lobbyPos2;
     private Location specSpawn;
     private final List<TeamImpl> teams = new ArrayList<>();

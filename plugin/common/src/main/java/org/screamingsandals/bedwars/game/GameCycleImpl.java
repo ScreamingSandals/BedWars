@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.game;
 
-import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
@@ -62,14 +61,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // TODO: Add configurable game phases and support for phase insertions.
-@RequiredArgsConstructor
 public class GameCycleImpl implements GameCycle {
     private final GameImpl game;
-    private final ConfigurationContainer configurationContainer = game.getConfigurationContainer();
+    private final ConfigurationContainer configurationContainer;
     /**
      * Game task instance that handles the updates towards phases in the Game cycle.
      */
     private Task task;
+
+    public GameCycleImpl(GameImpl game) {
+        this.game = game;
+        this.configurationContainer = game.getConfigurationContainer();
+    }
 
     private void runCycle() {
         // Phase 1: Check if game is running
