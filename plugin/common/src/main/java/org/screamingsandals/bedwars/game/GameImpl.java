@@ -1185,7 +1185,10 @@ public class GameImpl implements LocalGame {
                 if (TabManager.isEnabled()) {
                     players.forEach(TabManager.getInstance()::modifyForPlayer);
                 }
-                healthIndicator.addTrackedPlayer(gamePlayer);
+
+                if (healthIndicator != null) {
+                    healthIndicator.addTrackedPlayer(gamePlayer);
+                }
 
                 EventManager.fire(new PlayerRespawnedEventImpl(this, gamePlayer));
             });
