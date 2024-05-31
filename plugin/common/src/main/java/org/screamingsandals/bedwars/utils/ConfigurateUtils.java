@@ -37,7 +37,7 @@ public class ConfigurateUtils {
 
         final ConfigurationNode configMap;
         try {
-            configMap = getConfigurationLoaderBuilderForFile(file).load();
+            configMap = getConfigurationLoaderForFile(file).load();
         } catch (ConfigurateException e) {
             e.printStackTrace();
             return null;
@@ -47,7 +47,7 @@ public class ConfigurateUtils {
     }
 
 
-    public ConfigurationLoader<? extends ConfigurationNode> getConfigurationLoaderBuilderForFile(File file) throws ConfigurateException {
+    public ConfigurationLoader<? extends ConfigurationNode> getConfigurationLoaderForFile(File file) throws ConfigurateException {
         var fileName = file.getName();
         var fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 

@@ -405,7 +405,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
         }
         game.setFile(file);
 
-        final var loader = ConfigurateUtils.getConfigurationLoaderBuilderForFile(file);
+        final var loader = ConfigurateUtils.getConfigurationLoaderForFile(file);
         var configMap = loader.createNode();
 
         configMap.node("uuid").set(game.getUuid());
