@@ -1127,7 +1127,10 @@ public class GameImpl implements LocalGame {
             if (TabManager.isEnabled()) {
                 players.forEach(TabManager.getInstance()::modifyForPlayer);
             }
-            healthIndicator.removeTrackedPlayer(gamePlayer);
+
+            if (healthIndicator != null) {
+                healthIndicator.removeTrackedPlayer(gamePlayer);
+            }
 
             Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                         if (!gamePlayer.getGameMode().is("spectator")) { // Fix Multiverse overriding our gamemode

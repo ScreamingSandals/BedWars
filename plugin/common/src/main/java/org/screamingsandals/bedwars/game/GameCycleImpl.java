@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.game;
 
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.GameCycle;
@@ -60,19 +60,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 // TODO: Add configurable game phases and support for phase insertions.
 public class GameCycleImpl implements GameCycle {
     private final GameImpl game;
-    private final ConfigurationContainer configurationContainer;
     /**
      * Game task instance that handles the updates towards phases in the Game cycle.
      */
     private Task task;
 
-    public GameCycleImpl(GameImpl game) {
-        this.game = game;
-        this.configurationContainer = game.getConfigurationContainer();
-    }
 
     private void runCycle() {
         // Phase 1: Check if game is running
@@ -175,7 +171,7 @@ public class GameCycleImpl implements GameCycle {
         // if there's only one team remaining, the game has ended, let's start game end preparations.
         if (runningTeams.size() == 1) {
             var remainingGameTime = game.getGameTime() - game.getCountdown();
-            if (remainingGameTime < configurationContainer.getOrDefault(GameConfigurationContainer.PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, 0)) {
+            if (remainingGameTime < game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, 0)) {
                 Message.of(LangKeys.IN_GAME_END_YOU_LOST)
                         .join(LangKeys.IN_GAME_END_GAME_ENDED_TOO_EARLY)
                         .title(players);
@@ -235,6 +231,7 @@ public class GameCycleImpl implements GameCycle {
     }
 
     private void handlePlayerWin(BedWarsPlayer player, TeamImpl winner, String time, boolean madeRecord) {
+        var configurationContainer = game.getConfigurationContainer();
         Message.of(LangKeys.IN_GAME_END_YOU_WON)
                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
                 .placeholder("team", Component.text(winner.getName(), winner.getColor().getTextColor()))
@@ -328,6 +325,7 @@ public class GameCycleImpl implements GameCycle {
     }
 
     private void prepareGame(GameChangedStatusEventImpl statusE, GameTickEventImpl tick) {
+        var configurationContainer = game.getConfigurationContainer();
         Debug.info(game.getName() + ": preparing game");
         game.setPreparing(true);
 
