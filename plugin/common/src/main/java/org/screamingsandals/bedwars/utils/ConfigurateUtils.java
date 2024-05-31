@@ -20,11 +20,10 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.lib.utils.config.ConfigurationLoaderBuilderSupplier;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 
@@ -36,25 +35,30 @@ public class ConfigurateUtils {
             return null;
         }
 
-        final ConfigurationLoader<? extends ConfigurationNode> loader;
-        if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
-            loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        } else {
-            loader = GsonConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        }
-
         final ConfigurationNode configMap;
         try {
-            configMap = loader.load();
+            configMap = getConfigurationLoaderBuilderForFile(file).load();
         } catch (ConfigurateException e) {
             e.printStackTrace();
             return null;
         }
 
         return configMap;
+    }
+
+
+    public ConfigurationLoader<? extends ConfigurationNode> getConfigurationLoaderBuilderForFile(File file) throws ConfigurateException {
+        var fileName = file.getName();
+        var fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        var configurationLoaderBuilder = ConfigurationLoaderBuilderSupplier.getForExtension(fileExtension);
+        if (configurationLoaderBuilder == null) {
+            throw new ConfigurateException("No configuration loader found for ext:" + fileExtension);
+        }
+
+        return configurationLoaderBuilder
+                .get()
+                .file(file)
+                .build();
     }
 }

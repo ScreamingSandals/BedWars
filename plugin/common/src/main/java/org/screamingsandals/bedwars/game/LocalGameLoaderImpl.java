@@ -50,10 +50,7 @@ import org.screamingsandals.lib.world.Worlds;
 import org.screamingsandals.lib.world.chunk.Chunk;
 import org.screamingsandals.lib.world.gamerule.GameRuleType;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
-import org.spongepowered.configurate.loader.ConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -408,18 +405,9 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
         }
         game.setFile(file);
 
-        final ConfigurationLoader<? extends ConfigurationNode> loader;
-        if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
-            loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        } else {
-            loader = GsonConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-        }
-
+        final var loader = ConfigurateUtils.getConfigurationLoaderBuilderForFile(file);
         var configMap = loader.createNode();
+
         configMap.node("uuid").set(game.getUuid());
         configMap.node("name").set(game.getName());
         configMap.node("pauseCountdown").set(game.getPauseCountdown());
