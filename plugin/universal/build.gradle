@@ -6,6 +6,13 @@ prepareTestTask()
         .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
         .build()
 
+jar {
+    manifest {
+        attributes([
+                'paperweight-mappings-namespace': 'mojang'
+        ])
+    }
+}
 
 discord {
     title = "BedWars Master #${System.getenv('BUILD_NUMBER') ?: "custom"}"
