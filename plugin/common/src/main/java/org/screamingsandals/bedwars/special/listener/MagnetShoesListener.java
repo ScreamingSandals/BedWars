@@ -36,7 +36,7 @@ public class MagnetShoesListener {
     @OnEvent
     public void onMagnetShoesRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("magnetshoes")) {
-            int probability = MiscUtils.getIntFromProperty("probability", "magnet-shoes.probability", event);
+            int probability = MiscUtils.getIntFromProperty("probability", "specials.magnet-shoes.probability", event);
 
             event.setStack(ItemUtils.saveData(event.getStack(), MAGNET_SHOES_PREFIX + probability));
         }

@@ -285,7 +285,7 @@ inventory {
 
             property 'Golem', [
                     speed: 0.25,
-                    follow: 16.0
+                    'follow-range': 16.0
             ]
         }
         item('sheep_spawn_egg;1;TNT Sheep for 10 of gold') {
