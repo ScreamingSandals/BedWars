@@ -23,5 +23,5 @@ package org.screamingsandals.bedwars.api.game.target;
  * @author ScreamingSandals
  * @since 0.3.0
  */
-public interface TargetBlockCountdown extends TargetBlock, TargetCountdown {
+public interface ExpirableTargetBlock extends TargetBlock, ExpirableTarget {
 }

@@ -31,6 +31,7 @@ import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
+import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
@@ -131,6 +132,7 @@ import java.util.stream.Collectors;
                 GamesInventory.class,
                 GroupManagerImpl.class,
                 TargetInvalidatedListener.class,
+                LocalGameLoaderImpl.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",

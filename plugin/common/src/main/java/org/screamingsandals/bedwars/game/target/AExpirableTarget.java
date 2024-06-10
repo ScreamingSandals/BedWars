@@ -19,8 +19,8 @@
 
 package org.screamingsandals.bedwars.game.target;
 
-import org.screamingsandals.bedwars.api.game.target.TargetCountdown;
+import org.screamingsandals.bedwars.api.game.target.ExpirableTarget;
 
-public interface ATargetCountdown extends TargetCountdown {
+public interface AExpirableTarget extends ExpirableTarget {
     void setRemainingTime(int remainingTime);
 }
