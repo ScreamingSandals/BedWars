@@ -240,7 +240,23 @@ public class Hologram {
 						EntityTextDisplayNMS display = new EntityTextDisplayNMS(localLoc);
 						display.setText(line);
 
-						packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(display.getHandler()));
+						if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get() != null) {
+							packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(display.getHandler()));
+						} else {
+							packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_2.get().newInstance(
+									display.getId(),
+									display.getUUID(),
+									display.getX(),
+									display.getY(),
+									display.getZ(),
+									display.getXRot(),
+									display.getYRot(),
+									display.getType(),
+									0,
+									display.getDelta(),
+									display.getYHeadRot()
+							));
+						}
 
 						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 						if (watcherInList != null) {
@@ -270,9 +286,24 @@ public class Hologram {
 						} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get() != null) {
 							spawnLivingPacket = ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get()
 									.newInstance(stand.getHandler());
-						} else {
+						} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get() != null) {
 							spawnLivingPacket = ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(stand.getHandler());
+						} else {
+							spawnLivingPacket = ClientboundAddEntityPacketAccessor.CONSTRUCTOR_2.get()
+									.newInstance(
+											stand.getId(),
+											stand.getUUID(),
+											stand.getX(),
+											stand.getY(),
+											stand.getZ(),
+											stand.getXRot(),
+											stand.getYRot(),
+											stand.getType(),
+											0,
+											stand.getDelta(),
+											stand.getYHeadRot()
+									);
 						}
 						packets.add(spawnLivingPacket);
 						if (Version.isVersion(1, 15)) {
@@ -376,8 +407,22 @@ public class Hologram {
 				packets.add(ClientboundAddMobPacketAccessor.CONSTRUCTOR_0.get().newInstance(entity.getHandler()));
 			} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get() != null) {
 				packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get().newInstance(entity.getHandler()));
-			} else {
+			} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get() != null) {
 				packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(entity.getHandler()));
+			} else {
+				packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_2.get().newInstance(
+						entity.getId(),
+						entity.getUUID(),
+						entity.getX(),
+						entity.getY(),
+						entity.getZ(),
+						entity.getXRot(),
+						entity.getYRot(),
+						entity.getType(),
+						0,
+						entity.getDelta(),
+						entity.getYHeadRot()
+				));
 			}
 			if (Version.isVersion(1, 15)) {
 				if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {

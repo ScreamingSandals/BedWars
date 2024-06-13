@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.6"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -66,7 +66,10 @@ accessors {
         method void, 'load', CompoundTag
         method void, 'absMoveTo', double, double, double, float, float
         getter int, 'id'
+        getter UUID, 'UUID'
+        getter 'net.minecraft.world.entity.EntityType', 'type'
         getter SynchedEntityData, 'entityData'
+        getter 'net.minecraft.world.phys.Vec3', 'deltaMovement'
         getter Component, 'customName'
         setter Component, 'customName'
         getter double, 'x'
@@ -74,6 +77,7 @@ accessors {
         getter double, 'z'
         getter float, 'xRot'
         getter float, 'yRot'
+        getter float, 'yHeadRot'
         getter boolean, 'customNameVisible'
         setter boolean, 'customNameVisible'
         getter boolean, 'invisible'
@@ -213,7 +217,8 @@ accessors {
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundAddEntityPacket') {
         constructor LivingEntity // 1.19-1.19.2
-        constructor Entity // 1.19.3
+        constructor Entity // 1.19.3-1.20.6
+        constructor int, UUID, double, double, double, float, float, 'net.minecraft.world.entity.EntityType', int, 'net.minecraft.world.phys.Vec3', double // used 1.21+
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundAddMobPacket') {
         constructor LivingEntity

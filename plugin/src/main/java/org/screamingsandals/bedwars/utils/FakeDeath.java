@@ -118,7 +118,7 @@ public class FakeDeath {
             try {
                 Boolean b = deathWorld.getGameRuleValue(GameRule.FORGIVE_DEAD_PLAYERS);
                 if (b != null && b) {
-                    ClassStorage.getMethod(ClassStorage.getHandle(player), ServerPlayerAccessor.METHOD_TELL_NEUTRAL_MOBS_THAT_I_DIED.get()).invoke();
+                    ClassStorage.getMethod(ClassStorage.getHandle(player), ServerPlayerAccessor.METHOD_TELL_NEUTRAL_MOBS_THAT_IDIED.get()).invoke();
                 }
             } catch (Throwable ignored) {}
         }

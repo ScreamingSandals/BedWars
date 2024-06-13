@@ -29,6 +29,8 @@ import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.tab.TabManager;
 
+import java.util.UUID;
+
 public class EntityNMS implements EntityAccessor {
 	protected Object handler;
 
@@ -49,8 +51,8 @@ public class EntityNMS implements EntityAccessor {
 			double locZ = (double) ClassStorage.getMethod(handler, METHOD_GET_Z.get()).invoke();
 			float yaw, pitch;
 			if (Version.isVersion(1,17)) {
-				yaw = (float) ClassStorage.getMethod(handler, METHOD_GET_Y_ROT.get()).invoke();
-				pitch = (float) ClassStorage.getMethod(handler, METHOD_GET_X_ROT.get()).invoke();
+				yaw = (float) ClassStorage.getMethod(handler, METHOD_GET_YROT.get()).invoke();
+				pitch = (float) ClassStorage.getMethod(handler, METHOD_GET_XROT.get()).invoke();
 			} else {
 				yaw = (float) ClassStorage.getField(handler, FIELD_Y_ROT.get());
 				pitch = (float) ClassStorage.getField(handler, FIELD_X_ROT.get());
@@ -91,6 +93,49 @@ public class EntityNMS implements EntityAccessor {
 
 	public int getId() {
 		return (int) ClassStorage.getMethod(handler, METHOD_GET_ID.get()).invoke();
+	}
+
+	public UUID getUUID() {
+		return (UUID) ClassStorage.getMethod(handler, METHOD_GET_UUID.get()).invoke();
+	}
+
+	/** 1.21 */
+	public double getX() {
+		return (double) ClassStorage.getMethod(handler, METHOD_GET_X.get()).invoke();
+	}
+
+	/** 1.21 */
+	public double getY() {
+		return (double) ClassStorage.getMethod(handler, METHOD_GET_Y.get()).invoke();
+	}
+
+	/** 1.21 */
+	public double getZ() {
+		return (double) ClassStorage.getMethod(handler, METHOD_GET_Z.get()).invoke();
+	}
+
+	/** 1.21 */
+	public float getXRot() {
+		return (float) ClassStorage.getMethod(handler, METHOD_GET_XROT.get()).invoke();
+	}
+
+	/** 1.21 */
+	public float getYRot() {
+		return (float) ClassStorage.getMethod(handler, METHOD_GET_YROT.get()).invoke();
+	}
+
+	/** 1.21 */
+	public float getYHeadRot() {
+		return (float) ClassStorage.getMethod(handler, METHOD_GET_YHEAD_ROT.get()).invoke();
+	}
+
+	public Object getType() {
+		return ClassStorage.getMethod(handler, METHOD_GET_TYPE.get()).invoke();
+	}
+
+	/** 1.21 */
+	public Object getDelta() {
+		return ClassStorage.getMethod(handler, METHOD_GET_DELTA_MOVEMENT.get()).invoke();
 	}
 
 	public Object getDataWatcher() {
