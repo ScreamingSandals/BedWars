@@ -92,7 +92,7 @@ public class PlayerListener implements Listener {
                 if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
                     String deathMessage = event.getDeathMessage();
                     if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
-                        if (event.getEntity().getKiller() != null) {
+                        if (event.getEntity().getKiller() != null && game.isPlayerInAnyTeam(event.getEntity().getKiller())) {
                             Player killer = event.getEntity().getKiller();
                             GamePlayer gKiller = Main.getPlayerGameProfile(killer);
                             CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
