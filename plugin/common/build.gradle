@@ -11,7 +11,7 @@ dependencies {
 
     /* SHADED */
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (project.version =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
-    implementation "group.aelysium:rustyconnector-toolkit:0.8.0"
+//    implementation libs.rusty_connector
     implementation libs.hikari
 
     api(libs.configurate.gson) {

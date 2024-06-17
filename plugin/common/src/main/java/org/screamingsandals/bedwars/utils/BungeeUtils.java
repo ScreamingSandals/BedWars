@@ -24,6 +24,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.DefaultThreads;
@@ -63,10 +64,13 @@ public class BungeeUtils {
     }
 
     private void internalMove(Player player, boolean restart) {
-        var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
+        var server = MainConfig.getInstance().node("bungee", "server").getString("hub"); //
 
         if (GameImpl.isRustyConnectorEnabled()) {
-            MCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
+            var family = MainConfig.getInstance().node("bungee", "rustyConnector").getString("family");
+//            MCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
+            Server.getConsoleSender().tryToDispatchCommand("/rc send "+player.getName()+ " "+family);
+            return;
         }
 
         var out = new ByteArrayOutputStream();
