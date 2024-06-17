@@ -16,3 +16,6 @@
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
+
+# VS Code Gradle
+bin

@@ -95,7 +95,8 @@ import java.util.stream.Collectors;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Parties"
+        "Parties",
+        "rustyconnector-paper"
 })
 @Init(
         services = {
@@ -400,6 +401,11 @@ public class BedWarsPlugin implements BedwarsAPI {
     @Override
     public String getHubServerName() {
         return MainConfig.getInstance().node("bungee", "server").getString();
+    }
+
+    @Override
+    public String getHubRustyFamillyName() {
+        return MainConfig.getInstance().node("bungee", "rustyConnector", "familly").getString();
     }
 
     @Override
