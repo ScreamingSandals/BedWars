@@ -197,7 +197,7 @@ public class MainConfig {
                         .back()
                     .section("rustyConnector")
                         .key("enabled").defValue(false)
-                        .key("familly").defValue("hub")
+                        .key("family").defValue("hub")
                         .back()
                     .back()
                 .section("ignored-blocks")

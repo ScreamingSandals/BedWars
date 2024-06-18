@@ -19,6 +19,9 @@
 
 package org.screamingsandals.bedwars;
 
+import group.aelysium.rustyconnector.toolkit.RustyConnector;
+import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderFlame;
+import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -28,10 +31,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.bedwars.game.GroupManagerImpl;
-import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
-import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
+import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
@@ -151,6 +151,8 @@ public class BedWarsPlugin implements BedwarsAPI {
     private boolean isDisabling = false;
     @Getter
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
+
+    private IMCLoaderFlame<?> flame;
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -336,6 +338,11 @@ public class BedWarsPlugin implements BedwarsAPI {
         Server.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
 
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
+
+        if (GameImpl.isRustyConnectorEnabled()) {
+            IMCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
+            tinder.onStart(flame -> this.flame = flame);
+        }
     }
 
     @OnDisable
@@ -414,5 +421,9 @@ public class BedWarsPlugin implements BedwarsAPI {
 
     public void saveResource(@NotNull String resourcePath, boolean replace) {
         PluginUtils.saveResource(pluginDescription, logger, resourcePath, replace);
+    }
+
+    public IMCLoaderFlame<?> getFlame() {
+        return flame;
     }
 }

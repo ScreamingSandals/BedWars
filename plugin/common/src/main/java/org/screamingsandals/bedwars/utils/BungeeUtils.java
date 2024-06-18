@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.utils;
 
+import group.aelysium.rustyconnector.toolkit.RustyConnector;
+import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -64,11 +66,12 @@ public class BungeeUtils {
     }
 
     private void internalMove(Player player, boolean restart) {
-        var server = MainConfig.getInstance().node("bungee", "server").getString("hub"); //
+        var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
 
         if (GameImpl.isRustyConnectorEnabled()) {
-            var family = MainConfig.getInstance().node("bungee", "rustyConnector").getString("family");
-//            MCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
+            var family = MainConfig.getInstance().node("bungee", "rustyConnector", "family").getString("hub");
+            IMCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
+            System.err.println("/rc send "+player.getName()+ " "+family);
             Server.getConsoleSender().tryToDispatchCommand("/rc send "+player.getName()+ " "+family);
             return;
         }

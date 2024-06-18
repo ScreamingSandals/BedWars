@@ -64,6 +64,7 @@ subprojects {
         maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }
+        maven { url "https://maven.mrnavastar.rocks/releases" }
     }
 
     shadowJar {

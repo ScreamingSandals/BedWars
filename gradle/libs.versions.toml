@@ -5,7 +5,6 @@ simple-inventories = "2.0.3-SNAPSHOT"
 bstats = "2.2.1"
 commodore = "2.0"
 hikari = "5.0.0"
-rusty_connector = "0.8.0"
 
 # compileOnly libraries
 # version of paper does not matter, we barely use the api here, we only have to choose one compatible with Java 11
@@ -28,7 +27,6 @@ configurate-patched-gson = "4.1.2-sandals-patch"
 commodore = { group = "me.lucko", name = "commodore", version.ref = "commodore" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 bstats = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
-rusty_connector = { group = "group.aelysium", name = "rustyconnector-toolkit", version.ref = "rusty_connector" }
 
 # compileOnly libraries
 paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper"}
