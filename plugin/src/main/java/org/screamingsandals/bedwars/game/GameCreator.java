@@ -706,8 +706,9 @@ public class GameCreator {
     }
 
     private String addTeam(String name, String color, int maxPlayers) {
+        String saveName = name.replace('.', '_').replace(' ', '_');
         for (Team t : game.getTeams()) {
-            if (t.name.equals(name)) {
+            if (t.name.equals(name) || t.getSaveName().equals(saveName)) {
                 return i18n("admin_command_team_is_already_exists");
             }
         }
@@ -728,6 +729,7 @@ public class GameCreator {
         team.color = c;
         team.maxPlayers = maxPlayers;
         team.game = game;
+        team.saveName = saveName;
         game.getTeams().add(team);
 
         return i18n("admin_command_team_created").replace("%team%", team.name)

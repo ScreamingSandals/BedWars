@@ -1033,6 +1033,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     t.newColor = team.getBoolean("isNewColor", false);
                     t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
                     t.name = team.getString("actualName", teamN);
+                    t.saveName = teamN;
                     t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
                     t.maxPlayers = team.getInt("maxPlayers");
                     t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
@@ -1208,7 +1209,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("customPrefix", customPrefix);
         if (!teams.isEmpty()) {
             for (Team t : teams) {
-                String name = t.name.replace('.', '_').replace(' ', '_');
+                String name = t.getSaveName();
                 configMap.set("teams." + name + ".isNewColor", t.isNewColor());
                 configMap.set("teams." + name + ".color", t.color.name());
                 configMap.set("teams." + name + ".maxPlayers", t.maxPlayers);

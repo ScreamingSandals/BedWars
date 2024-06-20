@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.game;
 
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.bukkit.Location;
 
@@ -29,6 +30,7 @@ public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
     public Location bed;
     public Location spawn;
     public int maxPlayers;
+    public @Nullable String saveName;
     public Game game;
 
     public Team clone() {
@@ -40,6 +42,7 @@ public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
         t.spawn = this.spawn;
         t.maxPlayers = this.maxPlayers;
         t.game = this.game;
+        t.saveName = this.saveName;
         return t;
     }
 
@@ -76,5 +79,9 @@ public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
     @Override
     public Game getGame() {
         return game;
+    }
+
+    public String getSaveName() {
+        return saveName != null ? saveName : name.replace('.', '_').replace(' ', '_');
     }
 }
