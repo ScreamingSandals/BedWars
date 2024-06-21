@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
@@ -168,6 +169,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return game.getWorld().getName();
                     case "state":
                         return game.getStatus().name().toLowerCase();
+                    case "running":
+                        return game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false";
+                    case "waiting":
+                        return game.getStatus() == GameStatus.WAITING ? "true" : "false";
                     case "aviable_teams": // Wow, you found an easter egg
                     case "available_teams":
                         return Integer.toString(game.countAvailableTeams());
@@ -186,6 +191,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     return Integer.toString(Main.getGameNames().stream().map(Main::getGame).mapToInt(Game::countConnectedPlayers).sum());
                 case "maxplayers":
                     return Integer.toString(Main.getGameNames().stream().map(Main::getGame).mapToInt(Game::getMaxPlayers).sum());
+                case "anyrunning":
+                    return Main.getGameNames().stream().map(Main::getGame).anyMatch(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) ? "true" : "false";
+                case "anywaiting":
+                    return Main.getGameNames().stream().map(Main::getGame).anyMatch(game -> game.getStatus() == GameStatus.WAITING) ? "true" : "false";
             }
         }
 
@@ -375,6 +384,19 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Main.getPlayerGameProfile(player).getGame().getStatus().name().toLowerCase();
                     } else {
                         return "none";
+                    }
+                case "game_running":
+                    if (Main.isPlayerInGame(player)) {
+                        Game game = Main.getPlayerGameProfile(player).getGame();
+                        return game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false";
+                    } else {
+                        return "false";
+                    }
+                case "game_waiting":
+                    if (Main.isPlayerInGame(player)) {
+                        return Main.getPlayerGameProfile(player).getGame().getStatus() == GameStatus.WAITING ? "true" : "false";
+                    } else {
+                        return "false";
                     }
                 case "aviable_teams": // Wow, you found an easter egg
                 case "available_teams":
