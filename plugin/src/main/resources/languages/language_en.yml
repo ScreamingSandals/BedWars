@@ -372,3 +372,4 @@ help_bw_cheatin_give: "/bw cheatIn <game> give <resource> <amount> <player> - &c
 help_bw_cheatin_kill: "/bw cheatIn <game> kill <player> - &cKills specified player"
 help_bw_cheatin_destroybed: "/bw cheatIn <game> destroybed <team> - &cDestroys bed of the specific team"
 help_bw_cheatin_destroyallbeds: "/bw cheatIn <game> destroyallbeds - &cDestroys all beds in the game"
+admin_arena_overlaps: "&cThe chosen location causes the arena to overlap with another arena, which can lead to errors! Please choose a different location. If you insist on using this location, execute &7/bw admin %arena% %position% force"

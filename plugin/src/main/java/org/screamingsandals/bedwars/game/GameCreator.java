@@ -70,9 +70,9 @@ public class GameCreator {
         } else if (action.equalsIgnoreCase("spec")) {
             response = setSpecSpawn(player.getLocation());
         } else if (action.equalsIgnoreCase("pos1")) {
-            response = setPos1(player.getLocation());
+            response = setPos1(player.getLocation(), args.length > 0 && "force".equalsIgnoreCase(args[0]));
         } else if (action.equalsIgnoreCase("pos2")) {
-            response = setPos2(player.getLocation());
+            response = setPos2(player.getLocation(), args.length > 0 && "force".equalsIgnoreCase(args[0]));
         } else if (action.equalsIgnoreCase("pausecountdown")) {
             if (args.length >= 1) {
                 response = setPauseCountdown(Integer.parseInt(args[0]));
@@ -891,7 +891,7 @@ public class GameCreator {
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
     }
 
-    public String setPos1(Location loc) {
+    public String setPos1(Location loc, boolean force) {
         if (game.getWorld() == null) {
             game.setWorld(loc.getWorld());
         }
@@ -903,13 +903,27 @@ public class GameCreator {
                 return i18n("admin_command_pos1_pos2_difference_must_be_higher");
             }
         }
+
+        if (!force) {
+            for (String gameN : Main.getGameNames()) {
+                Game game1 = Main.getGame(gameN);
+                if (game1 == game) {
+                    continue;
+                }
+
+                if (game.getPos2() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), loc, game.getPos2()) || game.getPos2() == null && isInArea(game1.getPos1(), game1.getPos2(), loc)) {
+                    return i18n("admin_arena_overlaps").replace("%arena%", game.getName()).replace("%position%", "pos1");
+                }
+            }
+        }
+
         game.setPos1(loc);
         return i18n("admin_command_pos1_setted").replace("%arena%", game.getName())
                 .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
                 .replace("%z%", Integer.toString(loc.getBlockZ()));
     }
 
-    public String setPos2(Location loc) {
+    public String setPos2(Location loc, boolean force) {
         if (game.getWorld() == null) {
             game.setWorld(loc.getWorld());
         }
@@ -921,6 +935,20 @@ public class GameCreator {
                 return i18n("admin_command_pos1_pos2_difference_must_be_higher");
             }
         }
+
+        if (!force) {
+            for (String gameN : Main.getGameNames()) {
+                Game game1 = Main.getGame(gameN);
+                if (game1 == game) {
+                    continue;
+                }
+
+                if (game.getPos1() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), game.getPos1(), loc) || game.getPos1() == null && isInArea(game1.getPos1(), game1.getPos2(), loc)) {
+                    return i18n("admin_arena_overlaps").replace("%arena%", game.getName()).replace("%position%", "pos2");
+                }
+            }
+        }
+
         game.setPos2(loc);
         return i18n("admin_command_pos2_setted").replace("%arena%", game.getName())
                 .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
@@ -954,6 +982,32 @@ public class GameCreator {
                 Math.max(p1.getZ(), p2.getZ()));
         return (min.getX() <= l.getX() && min.getY() <= l.getY() && min.getZ() <= l.getZ() && max.getX() >= l.getX()
                 && max.getY() >= l.getY() && max.getZ() >= l.getZ());
+    }
+
+    public static boolean arenaOverlaps(Location l1, Location l2, Location p1, Location p2) {
+        if (!p1.getWorld().equals(l1.getWorld())) {
+            return false;
+        }
+
+        double minLX = Math.min(l1.getX(), l2.getX());
+        double minLY = Math.min(l1.getY(), l2.getY());
+        double minLZ = Math.min(l1.getZ(), l2.getZ());
+        double maxLX = Math.max(l1.getX(), l2.getX());
+        double maxLY = Math.max(l1.getY(), l2.getY());
+        double maxLZ = Math.max(l1.getZ(), l2.getZ());
+
+        double minPX = Math.min(p1.getX(), p2.getX());
+        double minPY = Math.min(p1.getY(), p2.getY());
+        double minPZ = Math.min(p1.getZ(), p2.getZ());
+        double maxPX = Math.max(p1.getX(), p2.getX());
+        double maxPY = Math.max(p1.getY(), p2.getY());
+        double maxPZ = Math.max(p1.getZ(), p2.getZ());
+
+        // From https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/util/BoundingBox.java#699
+        // The method in Bukkit is too new for us
+        return minLX < maxPX && maxLX > minPX
+                && minLY < maxPY && maxLY > minPY
+                && minLZ < maxPZ && maxLZ > minPZ;
     }
 
     public static boolean isChunkInArea(Chunk l, Location p1, Location p2) {
