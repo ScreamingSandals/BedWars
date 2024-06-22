@@ -2787,6 +2787,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         finalStr = finalStr.replace("%players%", String.valueOf(players.size()));
         finalStr = finalStr.replace("%maxplayers%", String.valueOf(calculatedMaxPlayers));
         finalStr = finalStr.replace("%countdown%", String.valueOf(countdown));
+        finalStr = finalStr.replace("%countdownwaiting%",
+                players.size() >= getMinPlayers() && (teamsInGame.size() > 1 || (getOriginalOrInheritedJoinRandomTeamAfterLobby() && countRespawnable() < players.size()))
+                        ? String.valueOf(countdown)
+                        : i18nonly("waiting_placeholder_lobby_scoreboard")
+        );
 
         return finalStr;
     }

@@ -911,7 +911,7 @@ public class GameCreator {
                     continue;
                 }
 
-                if (game.getPos2() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), loc, game.getPos2()) || game.getPos2() == null && isInArea(game1.getPos1(), game1.getPos2(), loc)) {
+                if (game.getPos2() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), loc, game.getPos2()) || game.getPos2() == null && isInArea(loc, game1.getPos1(), game1.getPos2())) {
                     return i18n("admin_arena_overlaps").replace("%arena%", game.getName()).replace("%position%", "pos1");
                 }
             }
@@ -943,7 +943,7 @@ public class GameCreator {
                     continue;
                 }
 
-                if (game.getPos1() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), game.getPos1(), loc) || game.getPos1() == null && isInArea(game1.getPos1(), game1.getPos2(), loc)) {
+                if (game.getPos1() != null && arenaOverlaps(game1.getPos1(), game1.getPos2(), game.getPos1(), loc) || game.getPos1() == null && isInArea(loc, game1.getPos1(), game1.getPos2())) {
                     return i18n("admin_arena_overlaps").replace("%arena%", game.getName()).replace("%position%", "pos2");
                 }
             }
