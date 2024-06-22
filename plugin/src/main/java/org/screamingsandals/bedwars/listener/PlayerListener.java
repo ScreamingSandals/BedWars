@@ -221,6 +221,11 @@ public class PlayerListener implements Listener {
 
                     @Override
                     public void run() {
+                        if (!gamePlayer.isInGame()) {
+                            this.cancel();
+                            return;
+                        }
+
                         if (livingTime > 0) {
                             Title.send(player,
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
