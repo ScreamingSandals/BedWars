@@ -72,10 +72,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Plugin(
@@ -95,7 +92,8 @@ import java.util.stream.Collectors;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Parties",
+        "Parties"
+}, dependencies = {
         "rustyconnector-paper"
 })
 @Init(
@@ -340,8 +338,16 @@ public class BedWarsPlugin implements BedwarsAPI {
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
 
         if (GameImpl.isRustyConnectorEnabled()) {
-            IMCLoaderTinder tinder = RustyConnector.Toolkit.mcLoader().orElseThrow();
-            tinder.onStart(flame -> this.flame = flame);
+            Optional<IMCLoaderTinder> tinderHolder = RustyConnector.Toolkit.mcLoader();
+            if (tinderHolder.isPresent()) {
+                IMCLoaderTinder tinder = tinderHolder.get();
+                tinder.onStart(flame -> {
+                    this.flame = flame;
+                    Server.getConsoleSender().sendMessage(Component.text("Rusty Connector's Tinder found!", Color.GREEN));
+                });
+            } else {
+                Server.getConsoleSender().sendMessage(Component.text("Rusty Connector's Tinder not found!", Color.RED));
+            }
         }
     }
 
