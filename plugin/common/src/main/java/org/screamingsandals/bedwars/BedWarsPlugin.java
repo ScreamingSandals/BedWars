@@ -92,8 +92,7 @@ import java.util.stream.Collectors;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Parties"
-}, dependencies = {
+        "Parties",
         "rustyconnector-paper"
 })
 @Init(
