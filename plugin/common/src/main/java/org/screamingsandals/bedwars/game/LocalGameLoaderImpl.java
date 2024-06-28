@@ -238,11 +238,10 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
             game.setLobbySpawn(MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString())));
             game.setMinPlayers(configMap.node("minPlayers").getInt(2));
             for (var entry : configMap.node("teams").childrenMap().entrySet()) {
-                var teamN = entry.getKey();
                 var team = entry.getValue();
                 var t = new TeamImpl();
                 t.setColor(TeamColorImpl.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean())));
-                t.setName(teamN.toString());
+                t.setName(team.node("actualName").getString(entry.getKey().toString()));
                 var targetNode = team.node("target");
                 if (!targetNode.empty() && targetNode.isMap()) {
                     var type = targetNode.node("type").getString("");

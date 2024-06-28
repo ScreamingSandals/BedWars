@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.lib.utils.math.BoundingBox;
 import org.screamingsandals.lib.world.Location;
 import org.screamingsandals.lib.world.chunk.Chunk;
 
@@ -49,4 +50,17 @@ public class ArenaUtils {
                 Math.max(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld()).getChunk();
         return (min.getX() <= l.getX() && min.getZ() <= l.getZ() && max.getX() >= l.getX() && max.getZ() >= l.getZ());
     }
+
+    public static boolean arenaOverlaps(Location l1, Location l2, Location p1, Location p2) {
+        if (!p1.getWorld().equals(l1.getWorld())) {
+            return false;
+        }
+
+        var box1 = BoundingBox.of(l1.asVector(), l2.asVector());
+        var box2 = BoundingBox.of(p1.asVector(), p2.asVector());
+
+        return box1.overlaps(box2);
+    }
+
+
 }
