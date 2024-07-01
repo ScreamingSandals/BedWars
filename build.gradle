@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.33'
+    version = '0.2.33.1'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
