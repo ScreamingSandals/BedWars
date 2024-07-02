@@ -62,6 +62,7 @@ plugins:
 nav:
   - Home: index.md
   - Arena creation: arena.md
+  - BungeeCord mode: bungee.md
   - Configuration: config.md
   - Commands and Permissions: commands.md
   - Shop: shop.md

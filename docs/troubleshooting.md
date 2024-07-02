@@ -95,13 +95,8 @@ It is located under specials, it is not that hard to find 😛
 Same goes for basically any other special item. 🙂
 
 ## Setting up the plugin with Bungeecord
-1. Install bedwars **on every game server**.
-2. Open the config.yml file on every game server and modify `bungee.enabled: true` , `bungee.server: yourBungeeLobbyServerName` and `bungee.auto-game-connect: true`
-3. Setup an arena on every game server.
-4. On your lobby server you should setup some plugin for joining the arena. There are some recommended:
-   * Get **BungeeSigns** on your lobby server to teleport players to your game servers with signs.
-   * Get **SimpleInventories** on your lobby server to teleport players to your game server using menus. (You can also use any inventory plugin which supports sending players to other servers)
-5. Configure every game server to your liking. 
+
+The plugin has a single-arena bungeecord mode. Check out [this page](bungee.md).
 
 ## PvP does not work
 Make sure:
