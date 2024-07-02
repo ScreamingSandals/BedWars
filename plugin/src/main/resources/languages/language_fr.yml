@@ -46,13 +46,13 @@ respawn_protection_remaining: "&aLa protection de réapparition sera supprimée 
 respawn_protection_end: "&cLa protection de réapparition a disparu !"
 there_is_no_empty_game: "&cIl n'y a pas de partie en attente. Toutes les parties sont
   déjà en cours !"
-respawn_cooldown_title: "&aRéapparition dans: &c%time%"
+respawn_cooldown_title: "&aRéapparition dans : &c%time%"
 respawn_cooldown_title_cancel: "&cL'équipe est morte :("
 vip_not_enough_players: "&cPas assez de joueurs dans l'arène !"
 vip_game_is_full: "&cLa partie &7%arena% &cest pleine de joueurs VIP. Veuillez attendre
   la fin du jeu !"
 buy_succes: "&7%item%&a acheté avec succès pour &7%material%&a !"
-buy_failed: "&cManque de matériaux pour acheter &7%item%&c! Nécessaire &7%material%&c!"
+buy_failed: "&cPas assez de matériaux pour acheter &7%item%&c ! Besoin de &7%material%&c !"
 compass_selector_team: "&aChoisir une équipe"
 leave_from_game_item: "&cquitté &rla partie"
 start_game_item: "&2Commencer la partie"
@@ -65,11 +65,11 @@ team_is_full_you_are_staying: "&cL'équipe %team%&c est pleine, vous restez dans
 team_select_item: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
 team_select_item_lore: "&f---------------------"
 team_select_item_lore_full: "&fL'équipe est pleine !"
-team_select_item_lore_join: "Cliquez pour rejoindre l'équipe!"
-you_won: "&aVotre équipe a gagné!"
+team_select_item_lore_join: "Cliquez pour rejoindre l'équipe !"
+you_won: "&aVotre équipe a gagné !"
 you_lost: "&cVotre équipe a perdu !"
 team_win: "&aL'équipe &r%team%&a a gagné la partie &aen &7%time%"
-game_end: "&cPartie terminée! Merci d''avoir joué !"
+game_end: "&cPartie terminée ! Merci d''avoir joué !"
 command_is_not_allowed: "&cCette commande est bloquée lorsque le jeu est en cours
   d'exécution !"
 price: "Prix :"
@@ -83,9 +83,9 @@ every_second_spawning: "&betré seconde"
 spawner_is_full: "§c§lSpawner est épuisé"
 spawner_not_enough_level: "§cLe spawner ne peut pas fonctionner ! Vous devez améliorer
   de %levels% niveaux."
-admin_command_mainlobby_info: "&cWARNING&f: Vous devez exécuter /bw reload pour faire
-  fonctionner le lobby principal !"
-admin_command_success: "Commande exécutée avec succès!"
+admin_command_mainlobby_info: "&cAVERTISSEMENT&f : Vous devez exécuter /bw reload
+  pour faire fonctionner le lobby principal (Mainlobby) !"
+admin_command_success: "Commande exécutée avec succès !"
 admin_command_must_be_in_same_world: "&cToutes les commandes doivent être appelées
   à partir d'un monde !"
 admin_command_invalid_countdown: "&cLa déduction doit être dans les 10 < x < 600 secondes
@@ -99,7 +99,7 @@ admin_command_set_pos1_pos2_first: "&cAvant de définir l'apparition, veuillez d
 admin_command_pos1_pos2_difference_must_be_higher: "&cLa différence de hauteur entre
   pos1 et pos2 est trop petite ! Le minimum est de 5 blocs !"
 admin_command_game_saved_and_started: "&aLe jeu a été sauvegardé avec succès et est
-  en cours ! Maintenant vous pouvez rejoindre et jouer dans l'arène!"
+  en cours ! Vous pouvez maintenant rejoindre et jouer dans l'arène !"
 admin_command_store_already_exists: "&cLa boutique existe déjà !"
 admin_command_store_not_exists: "&cLa boutique n'existe pas !"
 admin_command_invalid_spawner_type: "&cLe spawner doit être bronze, fer, or ou par
@@ -108,7 +108,8 @@ admin_command_invalid_spawner_level: "&fMauvais numéro de niveau, le niveau 1 a
   utilisé par défaut."
 admin_command_invalid_color: "&cCette couleur est invalide !"
 admin_command_block_is_not_bed: "&cLe bloc ciblé n'est pas un lit !"
-admin_command_max_players_fail: "&cLe nombre maximum de joueurs doit être >= 1!"
+admin_command_max_players_fail: "&cLe nombre maximum de joueurs doit être supérieur
+  ou égal à 1!"
 admin_command_need_min_2_teems: "&cLe jeu a besoin de 2 équipes ou plus !"
 admin_command_spawners_needed: "&cLa partie doit avoir >= 1 spawner d'objet !"
 admin_command_team_is_not_exists: "&cCette équipe n'existe pas !"
@@ -132,9 +133,9 @@ admin_command_store_added: "Sélectionner une équipe - %arena%"
 admin_command_store_removed: "&aLe villageois de la position XYZ : &7%x%/%y%/%z%&a
   a été supprimé avec succès !"
 admin_command_lobby_spawn_setted: "&aLe spawn du lobby a été positionné avec succès
-  sur la position XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&aLe spawn du spectateur a été réglé avec succès
-  sur la position XYZ : &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+  sur la position XYZ : &7%x%/%y%/%z% &aYAW : &7%yaw% &aPITCH : &7%pitch%"
+admin_command_spec_spawn_setted: "&aLe spawn des spectateurs a été réglé avec succès
+  sur les coordonnées XYZ : &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_pos1_setted: "&aLa position 1 de l'arène &7%arena%&a a été définie à
   XYZ : &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aLa position 2 de l'arène &7%arena%&a a été définie à
@@ -176,19 +177,18 @@ admin_command_invalid_arena_time: "&cMauvais type de temps du monde de l'arène 
 admin_command_arena_time_set: "L'heure du monde de &aL'arène a été définie à &7%time%&a
   !"
 admin_command_invalid_arena_weather: "&cMauvaise météo de l'arène !"
-admin_command_arena_weather_set: "La météo du monde de &aL'arène a été réglée sur
-  &7%weather%&a!"
+admin_command_arena_weather_set: "&aLa météo de l'arène a été réglée sur &7%weather%&a!"
 admin_command_invalid_bar_color: "&cCouleur incorrecte pour la barre de boss !"
 admin_command_bar_color_set: "&aCouleur définie à &7%color%&a pour bossbar &7%type%&a
   !"
 admin_command_wrong_living_entity_type: "&cMauvais type d'entité vivante !"
 admin_command_store_living_entity_type_set: "&aLe type d'entité vivante du magasin
   a été mis à &7%type%&a !"
-admin_command_upgrades: "&aLes mises à jour ont été configurées à &7%bool%&a!"
+admin_command_upgrades: "&aLes améliorations ont été paramétrées à &7%bool%&a!"
 safe_reload: "&aJ'attends un arrêt sûr de toutes les parties ou 60 secondes avant
-  de recharger !"
+  de recharger!"
 safe_reload_failed_to_stop_game: "&cCertaines parties ne se sont pas terminées dans
-  la limite de temps, donc leur arène peut avoir été endommagée !"
+  la limite de temps, leur arène peut donc avoir été endommagée!"
 holo_not_enabled: "&cHolographic est désactivé. Avez-vous des affichages Holographic
   installés ?"
 holo_added: "&aHolographic ajouté à votre position !"
@@ -210,7 +210,7 @@ sign_status_running: "&aExécution"
 sign_status_running_players: "&c%players%&8/&c%maxplayers%"
 sign_status_waiting: "&6En attente"
 sign_status_waiting_players: "&e%players%&8/&a%maxplayers%"
-list_header: "&aArènes disponibles :"
+list_header: "&aArènes disponibles:"
 team_chest: "&a&coffre de lTeam"
 team_chest_is_not_your: "&eCe coffre d'équipe n'est pas le vôtre !"
 team_chest_placed: "&aUn nouveau coffre d'équipe a été placé !"
@@ -234,8 +234,8 @@ arena_info_spec: "&7Position de spectateur : &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_lobby: "&7Position du lobby : &fMonde: &7%world% &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_teams: "&7Équipes :"
 arena_info_team: "- %team%&r (Nombre maximum de joueurs : &7%maxplayers%&r)"
-arena_info_team_spawn: "  &7Apparition de l'équipe : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-arena_info_team_target: "  &7Lit : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+arena_info_team_spawn: "  &7Point d'apparition de l'équipe: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+arena_info_team_target: "  &7Lit: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_spawners: "&7Spawners :"
 arena_info_spawner: "- %resource% &7- %team% &7- &eHolo : &f%holo% &7- XYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_min_players: "&7Nombre minimum de joueurs : &r%minplayers%"
@@ -250,7 +250,7 @@ arena_info_villager_shop_dealer_name: "  Nom personnalisé du donneur au-dessus 
 arena_info_villager_shop_dealer_has_no_name: "&cAucun nom n'est défini"
 arena_info_lobby_countdown: "&7Compte à rebours avant le début de la partie: &f%time%
   s"
-arena_info_game_time: "&7temps de jeu: &f%time% s"
+arena_info_game_time: "&7Durée de la partie: &f%time% s"
 arena_info_config: "&7Configuration des constantes :"
 arena_info_config_constant: "- &7%constant%&r : &7%value%"
 arena_info_config_true: "&aVrai"
@@ -277,7 +277,7 @@ statistics_deaths: "&7Morts: &e%deaths%"
 statistics_kd: "&7K/D: &a%kd%"
 statistics_wins: "&7Victoires: &a%wins%"
 statistics_loses: "&7Défaites : &c%loses%"
-statistics_games: "&7Partie joués: &b%games%"
+statistics_games: "&7Partie jouées: &b%games%"
 statistics_beds: "&7Lits détruits : &a%beds%"
 statistics_score: "&7Score total: &a%score%"
 specials_trap_caught: "&cVous avez été pris dans le piège de l'équipe &f%team%&c !"
@@ -325,7 +325,7 @@ protect_your_anchor_destroyed: "&7L'ancre a été est détruit."
 protect_your_cake_destroyed: "&7&lLe gâteau a été mangé."
 destroy_this_bed: "%teamcolor%&lDétruisez ce lit !"
 destroy_this_target: "%teamcolor%&lDétruisez ce bloc cible!"
-destroy_this_anchor: "%teamcolor%&lDétruisez cette Ancre!"
+destroy_this_anchor: "%teamcolor%&lDétruisez cette ancre!"
 destroy_this_cake: "%teamcolor%&lMangez ce gâteau!"
 help_title: "BedWars %version% - Aide"
 help_title_console: "BedWars %version% - Aide pour la console"
@@ -379,8 +379,8 @@ help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [ho
   à votre position"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eSupprimer tous les
   spawners"
-help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file
-  with shop] [use main shop] - &eAdd trading villager to your position"
+help_bw_admin_store_add: "/bw admin <arena> store add [nametag] [nom du magasin] [utiliser
+  magasin principal] - &eAjoute un villageois vendeur à votre position"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &eRetirer le villageois
   de votre position"
 help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eDéfinit
@@ -422,7 +422,7 @@ admin_command_store_child_state: "&aLa variable isBaby pour ce marchant a été 
 admin_command_invalid_time: "&cLe temps &7%number% §cest invalide !"
 admin_command_post_game_waiting: "&aLe temps d'attente après une partie a été défini
   sur &7%number% §aavec succès !"
-arena_info_postgamewaiting: "&7Temps d'attente: &f%time% s"
+arena_info_postgamewaiting: "&7Temps d'attente après la partie: &f%time% s"
 leaderboard_no_scores: "&7Il n'y a pas encore de scores !"
 leaderboard_holo_added: "&aL'hologramme du classement a été ajouté à votre position
   !"
@@ -434,8 +434,8 @@ admin_command_customprefix_disabled: "&aLe préfixe personnalisé a été retir�
   succès."
 admin_command_npc_must_have_skinname: "&cSi vous utilisez le type d'entité PLAYER,
   vous devez spécifier le nom du skin au format &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This
-  link can be useful for support"
+help_bw_dump: "/bw dump - &eDump le serveur et vous donne un lien vers ce dump. Ce
+  lien peut être utile pour le support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
 upgrade_success: '&a%name% a amélioré %spawner% au niveau %level% !'
@@ -464,3 +464,31 @@ cheat_received_kill: '&aLe joueur &7%player%&a a été tué par triche !'
 help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDonne au joueur
   la quantité spécifiée de ressource
 door_is_destroyed: La porte %team%&r est détruite !
+help_bw_cheatin_kill: /bw cheatIn <partie> kill <joueur> - &cTue le joueur spécifié
+help_bw_cheatin_destroybed: /bw cheatIn <partie> destroybed <equipe> - &cDétruits
+  le lit de lit de l'équipe spécifiée
+protect_your_door: '%teamcolor%&lProtégez votre porte!'
+protect_your_door_destroyed: '&7&lPorte détruite.'
+destroy_this_door: '%teamcolor%&lDétruisez cette porte!'
+team_not_in_game: "&cL'équipe &7%name%&c n'est pas dans la partie!"
+cheat_received_target_block_destroy: "&aLe lit de l'équipe &7%name%&a a été détruit!"
+help_bw_cheat_destroybed: /bw cheat destroybed <equipe> - &cDétruit le lit de l'équipe
+  spécifiée
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDétruits tous les lits
+  dans la partie
+cheat_received_target_blocks_destroy: '&aLes lits de toutes les équipes ont étés détruits!'
+kicking_in: "&cVous quitterez l'arène dans: &7%time%"
+cheat_not_waiting: "&cLa partie n'est pas en attente !"
+game_forced: '&aLa partie va commencer avec des équipes vides. Détruisez leurs blocs
+  cibles pour gagner!'
+team_bed_is_already_destroyed: "&cLe lit de l'équipe &7%name%&c est déjà détruit!"
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cCommence une partie avec
+  seulement une équipe
+help_bw_cheat_jointeam: /bw cheat jointeam [équipe] - &cFait rejoindre un administrateur
+  dans l'équipe spécifiée, quelle que soit sa taille (peut aussi être utilisé pendant
+  une partie, l'équipe doit cependant avoir quelques joueurs)
+game_ended_too_early: "&cLa partie c'est terminée trop tôt. Personne n'a gagné."
+help_bw_cheatin_give: /bw cheatIn <partie> give <resource> <quantite> <joueur> - &cDonne
+  au joueur le nombre de la ressource spécifiée
+help_bw_cheatin_destroyallbeds: /bw cheatIn <partie> destroyallbeds - &cDetruits tous
+  les lits de la partie spécifiée
