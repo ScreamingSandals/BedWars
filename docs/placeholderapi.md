@@ -8,6 +8,8 @@ These placeholders are intended for use in other plugins and may not function if
 
 * `%bedwars_all_games_players%` - Returns the total number of players across all games.
 * `%bedwars_all_games_maxplayers%` - Returns the total maximum number of players across all games.
+* `%bedwars_all_games_anyrunning%` - Returns `true` if any game is currently in `running` or `game_end_celebrating` state; otherwise `false`.
+* `%bedwars_all_games_anywaiting%` - Returns `true` if any game is currently in `waiting` state; otherwise `false`.
 
 ## Current information about players
 
@@ -35,6 +37,8 @@ Some of these placeholders contain a parameter `<team_name>`. Replace it with th
 * `%bedwars_current_game_team_<team_name>_bed%` - Returns whether the team currently has a valid target block, as a string: `yes` or `no`.
 * `%bedwars_current_game_team_<team_name>_bedsymbol%` - Returns the colored target block symbol used in SBW's in-game scoreboard.
 * `%bedwars_current_game_team_<team_name>_teamchests%` - Returns the number of team chests.
+* `%bedwars_current_game_running%` - Returns `true` if the game is currently in `running` or `game_end_celebrating` state; otherwise `false`.
+* `%bedwars_current_game_waiting%` - Returns `true` if the game is currently in `waiting` state; otherwise `false`.
 * `%bedwars_current_available_teams%` - Returns the number of existing teams.
 * `%bedwars_current_connected_teams%` - Returns the number of teams currently playing.
 * `%bedwars_current_teamchests%` - Returns the number of team chests across all teams.
@@ -75,6 +79,8 @@ When using these placeholders, replace `<game>` with the specific game identifie
 * `%bedwars_game_<game>_team_<team_name>_bed%` - Returns whether the team currently has a valid target block, as a string: `yes` or `no`.
 * `%bedwars_game_<game>_team_<team_name>_bedsymbol%` - Returns the colored target block symbol used in SBW's in-game scoreboard.
 * `%bedwars_game_<game>_team_<team_name>_teamchests%` - Returns the number of team chests.
+* `%bedwars_game_<game>_running%` - Returns `true` if the game is currently in `running` or `game_end_celebrating` state; otherwise `false`.
+* `%bedwars_game_<game>_waiting%` - Returns `true` if the game is currently in `waiting` state; otherwise `false`.
 
 ## Statistics placeholders
 
