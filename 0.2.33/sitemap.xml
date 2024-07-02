@@ -16,6 +16,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://localhost:8000/0.2.33/bungee/</loc>
+         <lastmod>2024-07-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://localhost:8000/0.2.33/commands/</loc>
          <lastmod>2024-07-02</lastmod>
          <changefreq>daily</changefreq>

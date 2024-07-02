@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.33/arena/">
+        <link rel="canonical" href="http://localhost:8000/0.2.33/bungee/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../arena/">
       
       
-        <link rel="next" href="../bungee/">
+        <link rel="next" href="../config/">
       
       
       <link rel="icon" href="../assets/icon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Arena creation - ScreamingBedWars</title>
+        <title>BungeeCord mode - ScreamingBedWars</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#making-an-arena" class="md-skip">
+        <a href="#bungeecord-mode" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Arena creation
+              BungeeCord mode
             
           </span>
         </div>
@@ -284,6 +284,26 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../arena/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Arena creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -300,7 +320,7 @@
           
   
   <span class="md-ellipsis">
-    Arena creation
+    BungeeCord mode
   </span>
   
 
@@ -311,7 +331,7 @@
         
   
   <span class="md-ellipsis">
-    Arena creation
+    BungeeCord mode
   </span>
   
 
@@ -333,116 +353,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-the-arena" class="md-nav__link">
+  <a href="#configuring-game-servers" class="md-nav__link">
     <span class="md-ellipsis">
-      Creating the arena
+      Configuring Game Servers
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-the-arena-positions" class="md-nav__link">
+  <a href="#configuring-hub-servers" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting the arena positions
+      Configuring Hub Servers
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-teams" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding teams
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-team-spawns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting team spawns
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-the-team-bed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting the team bed
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-resource-generators" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding resource generators
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-merchants" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding merchants
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#final-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Final steps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#join-signs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Join signs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#team-entities" class="md-nav__link">
-    <span class="md-ellipsis">
-      Team entities
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Team entities">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creation-by-jointeam-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creation by jointeam command
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#manual-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Manual creation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -450,26 +374,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../bungee/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    BungeeCord mode
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -649,75 +553,67 @@
                   
 
 
-<h1 id="making-an-arena">Making an arena<a class="headerlink" href="#making-an-arena" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">World</p>
-<p>This tutorial presumes that you already have a world with your desired BedWars map, loaded with a plugin like Multiverse or SlimeWorldManager and that you already are in the world with your BedWars map.</p>
-</div>
-<h2 id="creating-the-arena">Creating the arena<a class="headerlink" href="#creating-the-arena" title="Permanent link">&para;</a></h2>
-<p>Create the arena by executing this command: <code>/bw admin &lt;arena name&gt; add</code>.</p>
-<h2 id="setting-the-arena-positions">Setting the arena positions<a class="headerlink" href="#setting-the-arena-positions" title="Permanent link">&para;</a></h2>
-<p>To set the <strong>first</strong> position, go into the <strong>first</strong> corner of your map and execute this command: <code>/bw admin &lt;arena name&gt; pos1</code>.
-To set the <strong>second</strong> position, go into the <strong>second</strong> corner of your map and execute this command: <code>/bw admin &lt;arena name&gt; pos2</code>.</p>
+<h1 id="bungeecord-mode">BungeeCord mode<a class="headerlink" href="#bungeecord-mode" title="Permanent link">&para;</a></h1>
+<p>Screaming BedWars supports a BungeeCord mode, which allows for single-arena servers with arena autojoin. This document provides instructions on how to configure this mode.</p>
 <div class="admonition note">
-<p class="admonition-title">Positions</p>
-<p><code>pos1</code> is one corner of the arena and <code>pos2</code> is the corner of the arena, that is opposing to <code>pos1</code>!</p>
+<p class="admonition-title">Velocity Support</p>
+<p>This mode is also compatible with Velocity. Ensure <code>bungee-plugin-message-channel</code> is enabled in the <code>velocity.toml</code> file on your proxy.</p>
 </div>
-<p><img alt="Arena bounds" src="../assets/arena_bounds.png" width="400"/></p>
-<h2 id="adding-teams">Adding teams<a class="headerlink" href="#adding-teams" title="Permanent link">&para;</a></h2>
-<p>Now it's time to add the teams. To add a team, do <code>/bw admin &lt;arena&gt; team add &lt;team name&gt; &lt;team colour&gt; &lt;team size&gt;</code>.</p>
-<p>For the colors, you can use this <a href="https://jd.screamingsandals.org/sbw-0-2-x/BedWars-API/org/screamingsandals/bedwars/api/TeamColor.html">TeamColor</a> enum: <code>RED</code>, <code>BLUE</code>, <code>GREEN</code>, <code>YELLOW</code>, <code>MAGENTA</code>, <code>PINK</code>, <code>LIME</code>, <code>BLACK</code>, <code>WHITE</code>, <code>ORANGE</code>, <code>LIGHT_GRAY</code>, <code>GRAY</code>, <code>LIGHT_BLUE</code>, <code>CYAN</code> and <code>BROWN</code>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>You must create at least 2 teams.</p>
-</div>
-<h2 id="setting-team-spawns">Setting team spawns<a class="headerlink" href="#setting-team-spawns" title="Permanent link">&para;</a></h2>
-<p>Stand where you would like to have the team spawn, and look in the direction that you want your players to be oriented when they spawn, as the yaw will also be taken into account. Set the team's spawn with this command: <code>/bw admin &lt;arena&gt; team spawn &lt;team&gt;</code> and repeat until all teams have a spawn.</p>
-<h2 id="setting-the-team-bed">Setting the team bed<a class="headerlink" href="#setting-the-team-bed" title="Permanent link">&para;</a></h2>
-<p>Stand on top of the bed, look down on the <strong>head</strong> of the bed and execute this command to set the bed location: <code>/bw admin &lt;arena name&gt; team bed &lt;team name&gt;</code>. Repeat until all teams have a bed.</p>
+<h2 id="configuring-game-servers">Configuring Game Servers<a class="headerlink" href="#configuring-game-servers" title="Permanent link">&para;</a></h2>
+<p>To enable BungeeCord mode, locate the <code>bungee</code> section in <code>config.yml</code> and set <code>enabled</code> to <code>true</code>. Then, configure each option according to your requirements:</p>
+<ul>
+<li><code>serverRestart</code> - Determines whether the server should restart after the game ends. This is not mandatory for the plugin; adjust this setting as needed. To enable server restarts, an existing startup script (<code>.sh</code> or <code>.bat</code>) must be defined in <code>spigot.yml</code>.</li>
+<li><code>serverStop</code> - Similar to <code>serverRestart</code>, but only shuts down the server. Use this only if you have separate software managing automatic server startup.</li>
+<li><code>server</code> - Specifies the hub server to which players are moved after the game ends.</li>
+<li><code>auto-game-connect</code> - Determines whether users should automatically join the BedWars game upon server join. This should typically be enabled unless managed by an addon.</li>
+<li><code>kick-when-proxy-too-slow</code> - If the proxy fails to move the player to the hub server or is too slow, the server will kick players who are waiting for too long.</li>
+<li><code>random-game-selection</code> - Enables random selection of arenas if multiple arenas are on the same server. Set <code>enabled</code> to <code>true</code> to use this feature. The <code>preselect-games</code> option is useful for knowing the next selected game before any player joins (at server startup or after the previous game ends).</li>
+<li><code>motd</code> - Useful for server selection plugins utilizing MOTD text, such as <a href="https://www.spigotmc.org/resources/bungeesigns.6563/">BungeeSigns</a>. If enabled, the plugin will update the MOTD based on the current state and player count. There are five states: <code>waiting</code>, <code>waiting_full</code>, <code>running</code>, <code>rebuilding</code>, and <code>disabled</code>. Use the placeholders <code>%name%</code> for arena name, <code>%current%</code> for current player count, and <code>%max%</code> for maximum player count. Messages can be colored using legacy color codes (<code>§&lt;color code&gt;</code>).</li>
+</ul>
+<p>The configuration section might look like this:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">bungee</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">serverRestart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">serverStop</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hub</span>
+<span class="w">  </span><span class="nt">auto-game-connect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">kick-when-proxy-too-slow</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">random-game-selection</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">preselect-games</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">motd</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">waiting</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">players</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+<span class="w">    </span><span class="nt">waiting_full</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+<span class="w">    </span><span class="nt">running</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">running</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+<span class="w">    </span><span class="nt">rebuilding</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Rebuilding...&#39;</span>
+<span class="w">    </span><span class="nt">disabled</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">disabled&#39;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="configuring-hub-servers">Configuring Hub Servers<a class="headerlink" href="#configuring-hub-servers" title="Permanent link">&para;</a></h2>
+<p>While there is no lobby plugin for Screaming BedWars, any server selection plugin can be used, such as <a href="https://www.spigotmc.org/resources/bungeesigns.6563/">BungeeSigns</a>. Plugins that can read MOTD are preferred as they can relay the game state to your hub server.</p>
+<!-- TODO: list possible options with little tutorials -->
+
 <div class="admonition tip">
-<p class="admonition-title">Target blocks</p>
-<p>The team's target block isn't limited to a bed, in fact BedWars has support for any block (the Dragon Egg, cakes and the Respawn Anchor have special support to allow BedWars to operate as EggWars, AnchorWars or CakeWars out of the box).</p>
+<p class="admonition-title">Synchronizing Statistics</p>
+<p>For BungeeCord networks, it is common to synchronize statistics to a database. Configure the <code>database</code> section as described <a href="../config/#database-connection">here</a>. Ensure all servers are connected to the same database.</p>
+<p>To access statistics in the lobby, the simplest option is to install Screaming BedWars on your hub server as well. Ensure this instance is NOT in BungeeCord mode. Alternatively, you can create an addon to retrieve statistics. The database structure is detailed at the end of the <a href="../config/#database-connection">database configuration section</a>.</p>
 </div>
-<h2 id="adding-resource-generators">Adding resource generators<a class="headerlink" href="#adding-resource-generators" title="Permanent link">&para;</a></h2>
-<p>Stand at the block where you want the generator to be and execute this command: <code>/bw admin &lt;arena name&gt; spawner add &lt;resource&gt; &lt;true/false&gt;</code>.</p>
-<p>Valid default resources: <code>bronze</code>, <code>iron</code> and <code>gold</code> (diamond and emerald is not included out of the box, you will have to add it yourself in the <a href="../config/">configuration</a>).</p>
-<p>The <strong>true/false</strong> part of the command means if there should <strong>be</strong> a hologram (true) or if there should be <strong>no</strong> hologram (false).</p>
-<h2 id="adding-merchants">Adding merchants<a class="headerlink" href="#adding-merchants" title="Permanent link">&para;</a></h2>
-<p>Now it's time to add the shops. Stand where you would like your shop entity to be, look forward and execute this command: <code>/bw admin &lt;arena&gt; store add &lt;name of villager entity&gt; [file with shop] [use main shop]</code> (last two command parts can be omitted).</p>
-<p>Example: <code>/bw admin &lt;arena&gt; store add &amp;aStore shop.yml false</code>, <code>/bw admin &lt;arena&gt; store add &amp;aStore</code></p>
-<div class="admonition info">
-<p class="admonition-title">Store entity types</p>
-<p>If you would like to have a different entity as the store, do the following:<br />
-<code>/bw admin &lt;arena&gt; store type &lt;living entity&gt;</code>.
-This sets entity type of store (Villager, Horse, Cow, etc.).<br />
-If you would like to have a player with a skin as the shop keeper, use this command: <code>/bw admin &lt;arena&gt; store type Player:skinname</code>.</p>
-</div>
-<h2 id="final-steps">Final steps<a class="headerlink" href="#final-steps" title="Permanent link">&para;</a></h2>
-<p>Add the lobby location for the arena by executing this command: <code>/bw admin &lt;arena&gt; lobby</code>.</p>
-<p>Add the spectator location for the arena by executing this command: <code>/bw admin &lt;arena&gt; spec</code>.</p>
-<p>Last but not least, remember to save the arena with <code>/bw admin &lt;arena&gt; save</code>.</p>
-<h2 id="join-signs">Join signs<a class="headerlink" href="#join-signs" title="Permanent link">&para;</a></h2>
-<p>You can use signs to join the arena. Follow these steps to create such sign.</p>
-<ul>
-<li>On the first line write [BedWars] or [BWGame]</li>
-<li>On the second line write the name of arena for join.</li>
-<li>For the first sign update join to game.</li>
-</ul>
-<p>Alternatively, you can create a leave sign by writing word <code>leave</code> instead of arena name.</p>
-<h2 id="team-entities">Team entities<a class="headerlink" href="#team-entities" title="Permanent link">&para;</a></h2>
-<p>These entities allow players to select their team by right clicking at them. There are two ways how these entities can be created.</p>
-<h3 id="creation-by-jointeam-command">Creation by jointeam command<a class="headerlink" href="#creation-by-jointeam-command" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Go to your bedwars lobby and place the entity</li>
-<li>Switch your arena to edit mode</li>
-<li>Run command <code>/bw admin &lt;arena&gt; jointeam &lt;team&gt;</code></li>
-<li>Right click the entity that you want to change to team entity</li>
-<li>Now the entity gets name same as team and if the entity is Armor Stand it gets leather armor in team color. And it makes your entity persistent.</li>
-<li>Now save your arena and you can play</li>
-</ul>
-<h3 id="manual-creation">Manual creation<a class="headerlink" href="#manual-creation" title="Permanent link">&para;</a></h3>
-<p>Create any living entity with custom name same as team name and place it in your lobby. The plugin will use the name to determine the team.</p>
 
 
 
