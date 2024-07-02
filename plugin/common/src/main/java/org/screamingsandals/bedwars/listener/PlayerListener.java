@@ -120,7 +120,7 @@ public class PlayerListener {
                     Message deathMessageMsg = null;
                     final var killer = event.killer();
                     if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
-                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer)) {
+                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer) && game.isPlayerInAnyTeam(killer.as(BedWarsPlayer.class))) {
                             Debug.info(victim.getName() + " died because entity " + killer.getName() + " killed him");
                             final var gKiller = killer.as(BedWarsPlayer.class);
                             final var killerTeam = game.getPlayerTeam(gKiller);
