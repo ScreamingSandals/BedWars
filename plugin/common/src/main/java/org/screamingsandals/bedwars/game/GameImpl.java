@@ -234,6 +234,10 @@ public class GameImpl implements LocalGame {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean();
     }
 
+    public static boolean isRustyConnectorEnabled() {
+        return MainConfig.getInstance().node("bungee", "rustyConnector", "enabled").getBoolean();
+    }
+
     public void setWorld(World world) {
         if (this.world == null) {
             this.world = world;
