@@ -33,6 +33,7 @@ import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBar {
@@ -123,7 +124,7 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
         if (color instanceof BossBarColor) {
             boss.color((BossBarColor) color);
         } else {
-            boss.color(BossBarColor.valueOf(color.toString().toUpperCase()));
+            boss.color(BossBarColor.valueOf(color.toString().toUpperCase(Locale.ROOT)));
         }
     }
 
@@ -137,7 +138,7 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
         if (division instanceof BossBarDivision) {
             boss.division((BossBarDivision) division);
         } else {
-            var ov = division.toString().toUpperCase();
+            var ov = division.toString().toUpperCase(Locale.ROOT);
             if (ov.equals("SOLID") || ov.equals("PROGRESS")) {
                 ov = "NO_DIVISION";
             } else if (ov.startsWith("SEGMENTED_")) {

@@ -75,6 +75,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -272,7 +273,7 @@ public class BedWarsPlugin implements BedwarsAPI {
 
     @OnEnable
     public void enable() {
-        var snapshot = VersionInfo.VERSION.toLowerCase().contains("pre") || VersionInfo.VERSION.toLowerCase().contains("snapshot");
+        var snapshot = VersionInfo.VERSION.toLowerCase(Locale.ROOT).contains("pre") || VersionInfo.VERSION.toLowerCase(Locale.ROOT).contains("snapshot");
 
         Debug.init(pluginDescription.name());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());

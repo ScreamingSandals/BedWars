@@ -77,7 +77,7 @@ public class GamesInventory {
                     logger.debug("No games inventories have been found!");
                 } else {
                     results.forEach(file -> {
-                        if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
+                        if (file.exists() && file.isFile() && !file.getName().toLowerCase(Locale.ROOT).endsWith(".disabled")) {
                             final var dot = file.getName().indexOf(".");
                             final var name = dot == -1 ? file.getName() : file.getName().substring(0, dot);
                             final var siFormat = SimpleInventoriesCore.builder()
@@ -155,7 +155,7 @@ public class GamesInventory {
                 properties.stream()
                         .filter(Property::hasName)
                         .forEach(property -> {
-                            switch (property.getPropertyName().toLowerCase()) {
+                            switch (property.getPropertyName().toLowerCase(Locale.ROOT)) {
                                 case "randomly_join":
                                     final var randomlyJoin = item.getFirstPropertyByName("randomly_join").orElseThrow();
                                     final var games = randomlyJoin.getPropertyData().node("games");

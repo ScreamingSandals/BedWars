@@ -129,7 +129,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
 
         var xpToLevel = MainConfig.getInstance().node("statistics", "xp-to-level").childrenMap();
         for (var xpToL : xpToLevel.entrySet()) {
-            var key = xpToL.getKey().toString().toLowerCase().replace(" ", "");
+            var key = xpToL.getKey().toString().toLowerCase(Locale.ROOT).replace(" ", "");
             var value = xpToL.getValue().getInt();
             if (value <= 0) {
                 continue; // invalid
