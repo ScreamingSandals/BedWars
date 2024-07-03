@@ -467,3 +467,7 @@ help_bw_cheat_jointeam: /bw cheat jointeam [tým] - &cPřipojí admina do konkr�
   ale tým musí mít nějaké hráče)
 game_ended_too_early: '&cHra skončila příliš brzy. Nikdo nevyhrál.'
 help_bw_cheatin_kill: /bw cheatIn <hra> kill <hráč> - &cZabije konkrétního hráče
+waiting_placeholder_lobby_scoreboard: Čekání...
+admin_arena_overlaps: '&cVybraná lokalita způsobuje, že tato aréna se překrývá s jinou
+  arénou, což může vést k chybám! Vyberte jinou lokalitu. Pokud trváte na použití
+  tohoto umístění, zadejte &7/bw admin %arena% %position% force'
