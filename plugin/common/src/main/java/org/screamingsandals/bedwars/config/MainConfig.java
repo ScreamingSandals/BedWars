@@ -312,6 +312,7 @@ public class MainConfig {
                                                     .replace("%mode%", "<mode>")
                                                     .replace("%state%", "<state>")
                                                     .replace("%countdown%", "<time>")
+                                                    .replace("%countdownwaiting%", "<state>")
                                             );
                                         }
                                     }

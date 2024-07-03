@@ -49,14 +49,13 @@ public class BedwarsExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    @Nullable
-    public Component onRequest(@Nullable MultiPlatformOfflinePlayer player, @NotNull String identifier) {
+    public @Nullable Component onRequest(@Nullable MultiPlatformOfflinePlayer player, @NotNull String identifier) {
         // any game
         if (identifier.startsWith("game_")) {
             var gameName = identifier.substring(5);
             var index = gameName.lastIndexOf("_");
             var operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
-            if (operation.equals("teams")) {
+            if ("teams".equals(operation)) {
                 index = gameName.lastIndexOf("_", index - 1);
                 operation = gameName.substring(index + 1).toLowerCase(Locale.ROOT);
             } else if (gameName.contains("_team_")) {
@@ -154,7 +153,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "world":
                         return Component.text(game.getWorld().getName());
                     case "state":
-                        return Component.text(game.getStatus().name().toLowerCase());
+                        return Component.text(game.getStatus().name().toLowerCase(Locale.ROOT));
+                    case "running":
+                        return Component.text(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false");
+                    case "waiting":
+                        return Component.text(game.getStatus() == GameStatus.WAITING ? "true" : "false");
                     case "available_teams":
                         return Component.text(game.countAvailableTeams());
                     case "connected_teams":
@@ -172,6 +175,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
                 case "maxplayers":
                     return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
+                case "anyrunning":
+                    return Component.text(GameManagerImpl.getInstance().getGames().stream().anyMatch(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) ? "true" : "false");
+                case "anywaiting":
+                    return Component.text(GameManagerImpl.getInstance().getGames().stream().anyMatch(game -> game.getStatus() == GameStatus.WAITING) ? "true" : "false");
             }
         }
 
@@ -336,7 +343,15 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 case "game_world":
                     return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getWorld().getName()).orElse("none"));
                 case "game_state":
-                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getStatus().name().toLowerCase()).orElse("none"));
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getStatus().name().toLowerCase(Locale.ROOT)).orElse("none"));
+                case "game_running":
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid())
+                            .map(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false")
+                            .orElse("false"));
+                case "game_waiting":
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid())
+                            .map(game -> game.getStatus() == GameStatus.WAITING ? "true" : "false")
+                            .orElse("false"));
                 case "available_teams":
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countAvailableTeams())).orElseGet(() -> Component.text("0"));
                 case "connected_teams":

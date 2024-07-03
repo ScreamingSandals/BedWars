@@ -66,7 +66,7 @@ public class Pos1Command extends BaseAdminSubCommand {
 
                     if (
                             game.getPos2() != null && ArenaUtils.arenaOverlaps(otherGame.getPos1(), otherGame.getPos2(), loc, game.getPos2())
-                                    || game.getPos2() == null && ArenaUtils.isInArea(otherGame.getPos1(), otherGame.getPos2(), loc)
+                                    || game.getPos2() == null && ArenaUtils.isInArea(loc, otherGame.getPos1(), otherGame.getPos2())
                     ) {
                         sender.sendMessage(
                                 Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_OVERLAPPING_ARENAS)
