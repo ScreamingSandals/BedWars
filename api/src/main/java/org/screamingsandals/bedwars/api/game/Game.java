@@ -48,13 +48,6 @@ public interface Game {
      */
     GameStatus getStatus();
 
-    /**
-     * This methods allows you to save the arena to config (useful when using custom config options)
-     *
-     * @since 0.3.0
-     */
-    void saveToConfig();
-
     // PLAYER MANAGEMENT
 
     /**

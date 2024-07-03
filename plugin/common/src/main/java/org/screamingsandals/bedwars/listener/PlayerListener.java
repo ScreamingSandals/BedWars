@@ -417,39 +417,39 @@ public class PlayerListener {
             } else {
                 Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in legacy mode. Registering task...");
                 Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                        try {
-                            Debug.info("Selecting game for " + event.player().getName());
-                            var gameManager = GameManagerImpl.getInstance();
-                            Game game = null;
-                            if (MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()) {
-                                if (gameManager.isDoGamePreselection()) {
-                                    game = gameManager.getPreselectedGame();
-                                }
+                    try {
+                        Debug.info("Selecting game for " + event.player().getName());
+                        var gameManager = GameManagerImpl.getInstance();
+                        Game game = null;
+                        if (MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()) {
+                            if (gameManager.isDoGamePreselection()) {
+                                game = gameManager.getPreselectedGame();
                             }
-                            if (game == null) {
-                                game = (
-                                        MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()
-                                                ? gameManager.getGameWithHighestPlayers()
-                                                : gameManager.getFirstWaitingGame()
-                                ).or(gameManager::getFirstRunningGame).orElse(null);
-                            }
-                            if (game == null) { // still nothing?
-                                if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                                    Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
-                                    BungeeUtils.movePlayerToBungeeServer(player, false);
-                                }
-                                return;
-                            }
-                            Debug.info(event.player().getName() + " is connecting to " + game.getName());
-
-                            game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
-                        } catch (NullPointerException ignored) {
+                        }
+                        if (game == null) {
+                            game = (
+                                    MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()
+                                            ? gameManager.getGameWithHighestPlayers()
+                                            : gameManager.getFirstWaitingGame()
+                            ).or(gameManager::getFirstRunningGame).orElse(null);
+                        }
+                        if (game == null) { // still nothing?
                             if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                 Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
                                 BungeeUtils.movePlayerToBungeeServer(player, false);
                             }
+                            return;
                         }
-                    }, 1, TaskerTime.TICKS);
+                        Debug.info(event.player().getName() + " is connecting to " + game.getName());
+
+                        game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                    } catch (NullPointerException ignored) {
+                        if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                            Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
+                            BungeeUtils.movePlayerToBungeeServer(player, false);
+                        }
+                    }
+                }, 1, TaskerTime.TICKS);
             }
         }
 

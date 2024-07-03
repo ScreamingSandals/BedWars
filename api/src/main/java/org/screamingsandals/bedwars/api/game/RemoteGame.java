@@ -33,6 +33,13 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.NonExtendable
 public interface RemoteGame extends Game {
     /**
+     * This methods allows you to save the arena to config (useful when using custom config options)
+     *
+     * @since 0.3.0
+     */
+    void saveToConfig();
+
+    /**
      * Gets a name of the remote bungeecord or velocity server
      *
      * @return a name of the server
