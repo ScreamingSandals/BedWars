@@ -48,6 +48,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -74,7 +75,7 @@ public class ConfigCommandFactory {
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, true, ConfigurationContainerImpl::getJoinedRegisteredKeysForConfigCommand))
                         )
                         .handler(commandContext -> handleCommand(commandContext, true, (sender, container, configuredComponentName) -> { // Allow this without edit mode
-                            var keyString = commandContext.<String>get("key").toLowerCase();
+                            var keyString = commandContext.<String>get("key").toLowerCase(Locale.ROOT);
                             var keys = List.of(keyString.split("\\."));
 
                             var keyOpt = container.getRegisteredKeys()
@@ -200,7 +201,7 @@ public class ConfigCommandFactory {
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, ConfigurationContainerImpl::getJoinedRegisteredKeysForConfigCommand))
                         )
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            var keyString = commandContext.<String>get("key").toLowerCase();
+                            var keyString = commandContext.<String>get("key").toLowerCase(Locale.ROOT);
                             var keys = List.of(keyString.split("\\."));
 
                             var keyOpt = container.getRegisteredKeys()
@@ -244,7 +245,7 @@ public class ConfigCommandFactory {
                 argumentName -> StringArgument.<CommandSender>newBuilder(argumentName)
                         .greedy()
                         .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
-                            var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
+                            var keys = List.of(commandContext.<String>get("key").toLowerCase(Locale.ROOT).split("\\."));
 
                             var key = container.getRegisteredKeys()
                                     .stream()
@@ -348,7 +349,7 @@ public class ConfigCommandFactory {
                         )
                         .argument(StringArgument.<CommandSender>newBuilder("value")
                                 .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
-                                    var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
+                                    var keys = List.of(commandContext.<String>get("key").toLowerCase(Locale.ROOT).split("\\."));
 
                                     var key = container.getRegisteredKeys()
                                             .stream()
@@ -367,7 +368,7 @@ public class ConfigCommandFactory {
                         )
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            var keys = List.of(keyString.toLowerCase(Locale.ROOT).split("\\."));
                             String value = commandContext.get("value");
 
                             var keyOpt = container.getRegisteredKeys()
@@ -386,7 +387,7 @@ public class ConfigCommandFactory {
                                 } catch (Throwable ignored) {
                                     try {
                                         //noinspection unchecked
-                                        enumValue = Enum.valueOf((Class) key.getType(), value.toUpperCase());
+                                        enumValue = Enum.valueOf((Class) key.getType(), value.toUpperCase(Locale.ROOT));
                                     } catch (Throwable ignored2) {
                                         Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_ENUM_VALUE)
                                                 .placeholder("value", value)
@@ -434,7 +435,7 @@ public class ConfigCommandFactory {
                         )
                         .argument(argumentBuilder.apply("value"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            var keyString = commandContext.<String>get("key").toLowerCase();
+                            var keyString = commandContext.<String>get("key").toLowerCase(Locale.ROOT);
                             var keys = List.of(keyString.split("\\."));
                             var value = commandContext.get("value");
 
@@ -471,7 +472,7 @@ public class ConfigCommandFactory {
                         .argument(argumentListBuilder.apply("value"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            var keys = List.of(keyString.toLowerCase(Locale.ROOT).split("\\."));
                             var value = commandContext.get("value");
 
                             var keyOpt = container.getRegisteredListKeys()
@@ -512,7 +513,7 @@ public class ConfigCommandFactory {
                         .argument(argumentListBuilder.apply("value"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            var keys = List.of(keyString.toLowerCase(Locale.ROOT).split("\\."));
                             int position = commandContext.get("position");
                             var value = commandContext.get("value");
 
@@ -573,7 +574,7 @@ public class ConfigCommandFactory {
                         .argument(IntegerArgument.of("position"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            var keys = List.of(keyString.toLowerCase(Locale.ROOT).split("\\."));
                             int position = commandContext.get("position");
 
                             @SuppressWarnings("unchecked")
@@ -619,7 +620,7 @@ public class ConfigCommandFactory {
                         .literal("clear", "c")
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            var keys = List.of(keyString.toLowerCase(Locale.ROOT).split("\\."));
 
                             var keyOpt = container.getRegisteredListKeys()
                                     .stream()

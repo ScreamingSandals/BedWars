@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.game;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
@@ -41,8 +42,6 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
-import org.screamingsandals.lib.tasker.DefaultThreads;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.lib.utils.Pair;
@@ -58,64 +57,59 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+@Getter
+@Setter
 public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
-    @Getter
     private final Location location;
-    @Getter
-    @Setter
     private ItemSpawnerTypeImpl itemSpawnerType;
-    @Getter
-    @Setter
     private String customName = null;
-    @Getter
-    @Setter
     private boolean hologramEnabled = true;
-    @Getter
-    @Setter
     private double baseAmountPerSpawn = 1;
-    @Getter
-    @Setter
     private TeamImpl team = null;
-    @Getter
-    @Setter
     private int maxSpawnedResources = -1;
-    @Getter
-    @Setter
     private boolean floatingBlockEnabled = false;
-    @Getter
-    @Setter
     private Hologram.RotationMode rotationMode = Hologram.RotationMode.Y;
-    @Getter
-    @Setter
     private HologramType hologramType = HologramType.DEFAULT;
-    @Getter
-    @Setter
     private Pair<Long, TaskerTime> initialInterval = null;
-    @Getter
-    @Setter
     private @Nullable Double customSpread = null;
 
-    @Getter
-    @Setter
     private double amountPerSpawn;
-    @Getter
+    @Setter(AccessLevel.NONE)
     private Hologram hologram;
-    @Getter
+    @Setter(AccessLevel.NONE)
     private int tier;
+
     private final List<ItemEntity> spawnedItems = new ArrayList<>();
+
+    @Setter(AccessLevel.NONE)
     private boolean spawnerIsFullHologram = false;
+    @Setter(AccessLevel.NONE)
     private boolean rerenderHologram = false;
+    @Setter(AccessLevel.NONE)
     private double currentLevelOnHologram = -1;
+    @Setter(AccessLevel.NONE)
     private boolean started;
+    @Setter(AccessLevel.NONE)
     private boolean disabled;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private boolean certainPopularServerHolo;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private volatile boolean firstTick = true;
-    @Getter
+    @Setter(AccessLevel.NONE)
     private Pair<Long, TaskerTime> currentInterval;
+    @Setter(AccessLevel.NONE)
     private long elapsedTime;
+    @Setter(AccessLevel.NONE)
     private long countdownDelay;
+    @Setter(AccessLevel.NONE)
     private volatile long currentCycle;
+    @Setter(AccessLevel.NONE)
     private boolean spawnerLockedFull;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Task runningTask;
 
     public ItemSpawnerImpl(Location location, ItemSpawnerTypeImpl itemSpawnerType) {

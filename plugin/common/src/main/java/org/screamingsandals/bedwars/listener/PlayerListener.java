@@ -23,6 +23,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
@@ -60,6 +61,7 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.Player;
@@ -122,7 +124,7 @@ public class PlayerListener {
                     Message deathMessageMsg = null;
                     final var killer = event.killer();
                     if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
-                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer)) {
+                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer) && game.isPlayerInAnyTeam(killer.as(BedWarsPlayer.class))) {
                             Debug.info(victim.getName() + " died because entity " + killer.getName() + " killed him");
                             final var gKiller = killer.as(BedWarsPlayer.class);
                             final var killerTeam = game.getPlayerTeam(gKiller);
@@ -273,6 +275,11 @@ public class PlayerListener {
 
                 final var livingTime = new AtomicInteger(respawnTime);
                 Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
+                            if (!gVictim.isInGame()) {
+                                task.cancel();
+                                return;
+                            }
+
                             if (livingTime.get() > 0) {
                                 Message
                                         .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
@@ -410,31 +417,39 @@ public class PlayerListener {
             } else {
                 Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in legacy mode. Registering task...");
                 Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                    try {
-                        Debug.info("Selecting game for " + event.player().getName());
-                        var gameManager = GameManagerImpl.getInstance();
-                        var game = (
-                                MainConfig.getInstance().node("bungee", "select-random-game").getBoolean()
-                                        ? gameManager.getGameWithHighestPlayers()
-                                        : gameManager.getFirstWaitingGame()
-                        ).or(gameManager::getFirstRunningGame);
-                        if (game.isEmpty()) { // still nothing?
+                        try {
+                            Debug.info("Selecting game for " + event.player().getName());
+                            var gameManager = GameManagerImpl.getInstance();
+                            Game game = null;
+                            if (MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()) {
+                                if (gameManager.isDoGamePreselection()) {
+                                    game = gameManager.getPreselectedGame();
+                                }
+                            }
+                            if (game == null) {
+                                game = (
+                                        MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()
+                                                ? gameManager.getGameWithHighestPlayers()
+                                                : gameManager.getFirstWaitingGame()
+                                ).or(gameManager::getFirstRunningGame).orElse(null);
+                            }
+                            if (game == null) { // still nothing?
+                                if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                                    Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
+                                    BungeeUtils.movePlayerToBungeeServer(player, false);
+                                }
+                                return;
+                            }
+                            Debug.info(event.player().getName() + " is connecting to " + game.getName());
+
+                            game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                        } catch (NullPointerException ignored) {
                             if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                 Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
                                 BungeeUtils.movePlayerToBungeeServer(player, false);
                             }
-                            return;
                         }
-                        Debug.info(event.player().getName() + " is connecting to " + game.get().getName());
-
-                        game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
-                    } catch (NullPointerException ignored) {
-                        if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                            Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
-                            BungeeUtils.movePlayerToBungeeServer(player, false);
-                        }
-                    }
-                }, 1, TaskerTime.TICKS);
+                    }, 1, TaskerTime.TICKS);
             }
         }
 
@@ -1077,7 +1092,15 @@ public class PlayerListener {
                                         originalState.updateBlock(true, false);
                                     } else {
                                         if (!player.getGameMode().is("creative")) {
-                                            stack.changeAmount(stack.getAmount() - 1);
+                                            if (stack.getAmount() > 1) {
+                                                stack.changeAmount(stack.getAmount() - 1);
+                                            } else {
+                                                if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                                                    player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
+                                                } else {
+                                                    player.getPlayerInventory().setItemInMainHand(ItemStackFactory.getAir());
+                                                }
+                                            }
                                         }
                                         if (!player.isSneaking()) {
                                             // TODO get right block place sound

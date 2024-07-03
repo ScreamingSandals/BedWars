@@ -36,6 +36,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -78,7 +79,7 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
     }
 
     public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {
-        spawnerKey = spawnerKey.toLowerCase();
+        spawnerKey = spawnerKey.toLowerCase(Locale.ROOT);
 
         var name = node.node("name").getString();
         var translate = node.node("translate").getString();
@@ -94,7 +95,7 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
                     if (split.length == 2) {
                         try {
                             var longValue = Long.parseLong(split[0]);
-                            var unitName = split[1].toUpperCase().trim();
+                            var unitName = split[1].toUpperCase(Locale.ROOT).trim();
                             if (!unitName.endsWith("S")) {
                                 unitName += "S";
                             }

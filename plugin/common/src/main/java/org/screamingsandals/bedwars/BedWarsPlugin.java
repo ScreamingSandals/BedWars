@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
@@ -33,6 +32,7 @@ import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
+import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManager;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
@@ -80,6 +80,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -137,7 +138,8 @@ import java.util.stream.Collectors;
                 GamesInventory.class,
                 GroupManagerImpl.class,
                 TargetInvalidatedListener.class,
-                ProtocolManager.class,
+                LocalGameLoaderImpl.class,
+                ProtocolManager.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",
@@ -279,7 +281,7 @@ public class BedWarsPlugin implements BedwarsAPI {
 
     @OnEnable
     public void enable() {
-        var snapshot = VersionInfo.VERSION.toLowerCase().contains("pre") || VersionInfo.VERSION.toLowerCase().contains("snapshot");
+        var snapshot = VersionInfo.VERSION.toLowerCase(Locale.ROOT).contains("pre") || VersionInfo.VERSION.toLowerCase(Locale.ROOT).contains("snapshot");
 
         Debug.init(pluginDescription.name());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());

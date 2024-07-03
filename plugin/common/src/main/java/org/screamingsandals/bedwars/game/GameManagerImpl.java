@@ -19,14 +19,19 @@
 
 package org.screamingsandals.bedwars.game;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.tasker.DefaultThreads;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
@@ -55,6 +60,11 @@ public class GameManagerImpl implements GameManager {
     private final GsonConfigurationLoader remoteGamesLoader;
     private final LoggerWrapper logger;
     private final List<Game> games = new LinkedList<>();
+
+    @Getter
+    private @Nullable Game preselectedGame;
+    @Getter
+    private boolean doGamePreselection;
 
     public static GameManagerImpl getInstance() {
         return ServiceManager.get(GameManagerImpl.class);
@@ -207,11 +217,12 @@ public class GameManagerImpl implements GameManager {
                     logger.debug("No arenas have been found!");
                 } else {
                     results.forEach(file -> {
-                        if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
-                            var game = GameImpl.loadGame(file);
-                            if (game != null) {
-                                games.add(game);
-                            }
+                        if (file.exists() && file.isFile() && !file.getName().toLowerCase(Locale.ROOT).endsWith(".disabled")) {
+                            LocalGameLoaderImpl.getInstance().loadGame(file, true).thenAccept(game -> {
+                                if (game != null) {
+                                    games.add(game);
+                                }
+                            });
                         }
                     });
                 }
@@ -219,16 +230,35 @@ public class GameManagerImpl implements GameManager {
                 e.printStackTrace();
             }
         }
+
+        if (
+            MainConfig.getInstance().node("bungee", "enabled").getBoolean()
+            && MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()
+            && MainConfig.getInstance().node("bungee", "random-game-selection", "preselect-games").getBoolean()
+        ) {
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> {
+                preselectedGame = getGameWithHighestPlayers().orElse(null);
+                doGamePreselection = true;
+            });
+        }
     }
 
     @OnPreDisable
     public void onPreDisable() {
+        preselectedGame = null;
+        doGamePreselection = false;
         games.forEach(g -> {
             if (g instanceof GameImpl) {
                 ((GameImpl) g).stop();
             }
         });
         games.clear();
+    }
+
+    public void reselectGame() {
+        if (doGamePreselection) {
+            preselectedGame = getGameWithHighestPlayers().orElse(null);
+        }
     }
 
     public void triggerRemoteSaving() {

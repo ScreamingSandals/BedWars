@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,7 @@ import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.game.target.TargetBlock;
-import org.screamingsandals.bedwars.api.game.target.TargetCountdown;
+import org.screamingsandals.bedwars.api.game.target.ExpirableTarget;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -191,7 +190,7 @@ public class DumpCommand extends BaseCommand {
                                                                                             "target", nullValuesAllowingMap(
                                                                                                     "type", team.getTarget() != null ? team.getTarget().getClass().getName() : null,
                                                                                                     "loc", team.getTarget() instanceof TargetBlock ? locationToMap(((TargetBlockImpl) team.getTarget()).getTargetBlock()) : null,
-                                                                                                    "countdown", team.getTarget() instanceof TargetCountdown ? ((TargetCountdown) team.getTarget()).getCountdown() : null
+                                                                                                    "countdown", team.getTarget() instanceof ExpirableTarget ? ((ExpirableTarget) team.getTarget()).getCountdown() : null
                                                                                             ),
                                                                                             "maxPlayers", team.getMaxPlayers()
                                                                                     )).collect(Collectors.toList()),

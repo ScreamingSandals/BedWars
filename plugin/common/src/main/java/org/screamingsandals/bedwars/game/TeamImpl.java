@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.target.ATargetCountdown;
+import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -76,8 +76,8 @@ public class TeamImpl implements Team {
             return;
         }
 
-        if (target instanceof ATargetCountdown) {
-            ((ATargetCountdown) target).setRemainingTime(((ATargetCountdown) target).getCountdown());
+        if (target instanceof AExpirableTarget) {
+            ((AExpirableTarget) target).setRemainingTime(((AExpirableTarget) target).getCountdown());
         }
 
         if (target instanceof TargetBlockImpl) {

@@ -24,7 +24,7 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.bedwars.game.target.ATargetCountdown;
+import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -66,7 +66,8 @@ public class GameSidebar {
                             .placeholder("game", game.getDisplayNameComponent())
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
                             .placeholder("max-players", game.getMaxPlayers())
-                            .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                            .placeholder("time", () -> Component.text(game.getTimeLeft()))
+                            .placeholder("time-formatted", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
                             .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
@@ -219,7 +220,7 @@ public class GameSidebar {
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()) == null) {
                 var t = teamedSidebar.team(team.getName())
-                        .color(ClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
+                        .color(ClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase(Locale.ROOT))) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false));
                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
                     t.teamPrefix(Component.text().content(team.getName().charAt(0) + " ").color(team.getColor().getTextColor()).bold().build());
@@ -256,9 +257,9 @@ public class GameSidebar {
                     if (team.getTarget().isValid()) {
                         if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
-                        } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                        } else if (team.getTarget() instanceof AExpirableTarget && ((AExpirableTarget) team.getTarget()).getRemainingTime() < 30) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
-                                    .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                    .placeholder("count", Component.text(((AExpirableTarget) team.getTarget()).getRemainingTime() + " "))
                                     .asComponent(sender);
                         } else {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);

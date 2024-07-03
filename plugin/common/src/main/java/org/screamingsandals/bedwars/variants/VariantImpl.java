@@ -28,19 +28,17 @@ import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.utils.ConfigurateUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
-import org.spongepowered.configurate.loader.ConfigurationLoader;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -57,26 +55,8 @@ public class VariantImpl implements Variant {
 
     public static VariantImpl loadVariant(File file) {
         try {
-            if (!file.exists()) {
-                return null;
-            }
-
-            final ConfigurationLoader<? extends ConfigurationNode> loader;
-            if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
-                loader = YamlConfigurationLoader.builder()
-                        .file(file)
-                        .build();
-            } else {
-                loader = GsonConfigurationLoader.builder()
-                        .file(file)
-                        .build();
-            }
-
-            final ConfigurationNode configMap;
-            try {
-                configMap = loader.load();
-            } catch (ConfigurateException e) {
-                e.printStackTrace();
+            final ConfigurationNode configMap = ConfigurateUtils.loadFileAsNode(file);
+            if (configMap == null) {
                 return null;
             }
 
@@ -163,7 +143,7 @@ public class VariantImpl implements Variant {
     @Override
     @Nullable
     public ItemSpawnerTypeImpl getItemSpawnerType(@NotNull String name) {
-        var finalName = name.toLowerCase();
+        var finalName = name.toLowerCase(Locale.ROOT);
         var match = customSpawnerTypes.stream().filter(t -> t.getConfigKey().equals(finalName)).findFirst().orElse(null);
         if (match != null) {
             return match;

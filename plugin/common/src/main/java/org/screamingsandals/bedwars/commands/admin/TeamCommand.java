@@ -29,9 +29,9 @@ import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.game.target.NoTargetImpl;
-import org.screamingsandals.bedwars.game.target.TargetBlockCountdownImpl;
+import org.screamingsandals.bedwars.game.target.ExpirableTargetBlockImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
-import org.screamingsandals.bedwars.game.target.TargetCountdownImpl;
+import org.screamingsandals.bedwars.game.target.ExpirableTargetImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -548,7 +548,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("target")
-                        .literal("countdown")
+                        .literal("expirable")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -561,7 +561,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            team.setTarget(new TargetCountdownImpl(countdown));
+                            team.setTarget(new ExpirableTargetImpl(countdown));
 
                             sender.sendMessage(
                                     Message
@@ -571,7 +571,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("countdown", countdown)
                             );
 
-                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetCountdownImpl))) {
+                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof ExpirableTargetImpl))) {
                                 sender.sendMessage(
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)
@@ -584,7 +584,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("target")
-                        .literal("block-countdown")
+                        .literal("block-expirable")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
@@ -626,7 +626,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
                                 chosenLoc = loc.subtract(0, 1, 0);
                             }
-                            team.setTarget(new TargetBlockCountdownImpl(chosenLoc, countdown));
+                            team.setTarget(new ExpirableTargetBlockImpl(chosenLoc, countdown));
                             var particle = new Particle(
                                     ParticleType.of("minecraft:happy_villager")
                             );
@@ -651,7 +651,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("countdown", countdown)
                             );
 
-                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetBlockCountdownImpl))) {
+                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof ExpirableTargetBlockImpl))) {
                                 sender.sendMessage(
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)

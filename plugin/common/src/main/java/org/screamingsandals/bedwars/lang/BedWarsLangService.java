@@ -185,7 +185,7 @@ public class BedWarsLangService extends LangService {
                 stream.filter(Files::isRegularFile)
                         .forEach(file -> {
                             var name = file.getFileName().toString();
-                            if (Files.exists(file) && Files.isRegularFile(file) && name.toLowerCase().endsWith(".json")) {
+                            if (Files.exists(file) && Files.isRegularFile(file) && name.toLowerCase(Locale.ROOT).endsWith(".json")) {
                                 var matcher = LANGUAGE_PATTERN.matcher(name);
                                 if (matcher.find()) {
                                     try {
