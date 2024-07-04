@@ -4,6 +4,7 @@ dependencies {
     /* PROVIDED */
     compileOnly libs.multiverse
     compileOnly libs.parties.api
+    compileOnly libs.rustyconnector.toolkit
 
     /* SHADED */
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (project.version =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'

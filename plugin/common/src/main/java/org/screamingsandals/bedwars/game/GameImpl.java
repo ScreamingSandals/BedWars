@@ -87,6 +87,7 @@ import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.player.Sender;
 import org.screamingsandals.lib.player.gamemode.GameMode;
+import org.screamingsandals.lib.plugin.Plugins;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
@@ -224,6 +225,13 @@ public class GameImpl implements LocalGame {
 
     public static boolean isBungeeEnabled() {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean();
+    }
+
+    public static boolean isRustyConnectorEnabled() {
+        if (!Plugins.isEnabled("rustyconnector-paper")) {
+            return false;
+        }
+        return MainConfig.getInstance().node("bungee", "rustyConnector", "enabled").getBoolean();
     }
 
     public void setWorld(World world) {
