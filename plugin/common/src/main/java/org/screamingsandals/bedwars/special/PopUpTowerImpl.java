@@ -41,6 +41,7 @@ import org.screamingsandals.lib.world.Location;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -188,7 +189,7 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
             if (!isLocationSafe(lastLoc)) {
                 continue;
             }
-            var ladderType = Block.of("minecraft:ladder[facing=" + ladderFace.name().toLowerCase() + "]");
+            var ladderType = Block.of("minecraft:ladder[facing=" + ladderFace.name().toLowerCase(Locale.ROOT) + "]");
             ladder.block(ladderType);
             game.getRegion().removeBlockBuiltDuringGame(lastLoc);
             game.getRegion().addBuiltDuringGame(lastLoc);

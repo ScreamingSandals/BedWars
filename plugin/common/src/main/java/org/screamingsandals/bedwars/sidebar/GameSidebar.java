@@ -66,7 +66,8 @@ public class GameSidebar {
                             .placeholder("game", game.getDisplayNameComponent())
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
                             .placeholder("max-players", game.getMaxPlayers())
-                            .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                            .placeholder("time", () -> Component.text(game.getTimeLeft()))
+                            .placeholder("time-formatted", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
                             .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
@@ -219,7 +220,7 @@ public class GameSidebar {
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()) == null) {
                 var t = teamedSidebar.team(team.getName())
-                        .color(ClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
+                        .color(ClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase(Locale.ROOT))) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false));
                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
                     t.teamPrefix(Component.text().content(team.getName().charAt(0) + " ").color(team.getColor().getTextColor()).bold().build());

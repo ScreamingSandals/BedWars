@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.LocalGameLoader;
@@ -54,8 +55,10 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class LocalGameLoaderImpl implements LocalGameLoader {
@@ -65,11 +68,11 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
     }
 
     @Override
-    public GameImpl loadGame(File file, boolean firstAttempt) {
+    public @NotNull CompletableFuture<@Nullable GameImpl> loadGame(@NotNull File file, boolean firstAttempt) {
         try {
             final ConfigurationNode configMap = ConfigurateUtils.loadFileAsNode(file);
             if (configMap == null) {
-                return null;
+                return CompletableFuture.completedFuture(null);
             }
 
             var uid = configMap.node("uuid");
@@ -94,7 +97,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                                 Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
                         )
                 );
-                return null;
+                return CompletableFuture.completedFuture(null);
             }
 
             final var game = new GameImpl(uuid);
@@ -130,7 +133,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                                         Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                                 )
                         );
-                        return null;
+                        return CompletableFuture.completedFuture(null);
                     }
                 } else if (firstAttempt) {
                     Server.getConsoleSender().sendMessage(
@@ -138,15 +141,16 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                                     Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
-                    return null;
+                    var future = new CompletableFuture<GameImpl>();
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false).thenAccept(future::complete), 10L, TaskerTime.TICKS);
+                    return future;
                 } else {
                     Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                             )
                     );
-                    return null;
+                    return CompletableFuture.completedFuture(null);
                 }
             }
 
@@ -197,7 +201,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                                         Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                                 )
                         );
-                        return null;
+                        return CompletableFuture.completedFuture(null);
                     }
                 } else if (firstAttempt) {
                     Server.getConsoleSender().sendMessage(
@@ -205,15 +209,16 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                                     Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
-                    return null;
+                    var future = new CompletableFuture<GameImpl>();
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false).thenAccept(future::complete), 10L, TaskerTime.TICKS);
+                    return future;
                 } else {
                     Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                             )
                     );
-                    return null;
+                    return CompletableFuture.completedFuture(null);
                 }
             }
 
@@ -320,7 +325,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                 var oldLobbyBossBarColor = configMap.node("lobbyBossBarColor");
                 var newLobbyBossBarColor = configMap.node("constant", "bossbar", "lobby", "color");
                 if (!oldLobbyBossBarColor.empty() && newLobbyBossBarColor.empty()) {
-                    newLobbyBossBarColor.set(GameImpl.loadBossBarColor(oldLobbyBossBarColor.getString("default").toUpperCase()));
+                    newLobbyBossBarColor.set(GameImpl.loadBossBarColor(oldLobbyBossBarColor.getString("default").toUpperCase(Locale.ROOT)));
                     oldLobbyBossBarColor.set(null);
                 }
             }
@@ -330,14 +335,14 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                 var oldGameBossBarColor = configMap.node("gameBossBarColor");
                 var newGameBossBarColor = configMap.node("constant", "bossbar", "game", "color");
                 if (!newGameBossBarColor.empty() && oldGameBossBarColor.empty()) {
-                    newGameBossBarColor.set(GameImpl.loadBossBarColor(oldGameBossBarColor.getString("default").toUpperCase()));
+                    newGameBossBarColor.set(GameImpl.loadBossBarColor(oldGameBossBarColor.getString("default").toUpperCase(Locale.ROOT)));
                     oldGameBossBarColor.set(null);
                 }
             }
 
             game.getConfigurationContainer().applyNode(configMap.node("constant"));
 
-            game.setArenaWeather(GameImpl.loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase()));
+            game.setArenaWeather(GameImpl.loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase(Locale.ROOT)));
 
             game.setPostGameWaiting(configMap.node("postGameWaiting").getInt(3));
 
@@ -364,16 +369,16 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
             if (uid.empty()) {
                 try {
                     // because we didn't have uuid in the arena config file, we need to save the arena again
-                    game.saveToConfig();
+                    saveGame(game);
                 } catch (Throwable ignored) {
                 }
             }
 
-            return game;
+            return CompletableFuture.completedFuture(game);
         } catch (Throwable throwable) {
             Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
             throwable.printStackTrace();
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
     }

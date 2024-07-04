@@ -25,6 +25,7 @@ import cloud.commandframework.context.CommandContext;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSender;
@@ -94,7 +95,7 @@ public class SaveCommand extends BaseAdminSubCommand {
             }
 
             if (warnings.isEmpty()) {
-                game.saveToConfig();
+                LocalGameLoaderImpl.getInstance().saveGame(game);
                 GameManagerImpl.getInstance().addGame(game);
                 game.start();
                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED).placeholderRaw("game", game.getName()).defaultPrefix());

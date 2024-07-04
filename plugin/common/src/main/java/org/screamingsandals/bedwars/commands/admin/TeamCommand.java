@@ -548,7 +548,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("target")
-                        .literal("countdown")
+                        .literal("expirable")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -584,7 +584,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("target")
-                        .literal("block-countdown")
+                        .literal("block-expirable")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))

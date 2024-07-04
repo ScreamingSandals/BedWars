@@ -174,7 +174,7 @@ public class BukkitPlatformService extends PlatformService {
     // TODO: slib?
     @Override
     public void spawnEffect(@NotNull org.screamingsandals.lib.world.Location location, @NotNull String value) {
-        var particle = Effect.valueOf(value.toUpperCase());
+        var particle = Effect.valueOf(value.toUpperCase(Locale.ROOT));
         var bukkitLoc =  location.as(Location.class);
         bukkitLoc.getWorld().playEffect(bukkitLoc, particle, 1);
     }

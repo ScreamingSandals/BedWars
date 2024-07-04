@@ -140,11 +140,12 @@ public class GameManagerImpl implements GameManager {
                     logger.debug("No arenas have been found!");
                 } else {
                     results.forEach(file -> {
-                        if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
-                            var game = GameImpl.loadGame(file);
-                            if (game != null) {
-                                games.add(game);
-                            }
+                        if (file.exists() && file.isFile() && !file.getName().toLowerCase(Locale.ROOT).endsWith(".disabled")) {
+                            LocalGameLoaderImpl.getInstance().loadGame(file, true).thenAccept(game -> {
+                                if (game != null) {
+                                    games.add(game);
+                                }
+                            });
                         }
                     });
                 }

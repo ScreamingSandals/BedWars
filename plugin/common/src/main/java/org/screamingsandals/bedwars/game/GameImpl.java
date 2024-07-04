@@ -178,14 +178,6 @@ public class GameImpl implements LocalGame {
     @Setter(AccessLevel.PROTECTED)
     private boolean preparing = false;
 
-    public static GameImpl loadGame(File file) {
-        return loadGame(file, true);
-    }
-
-    public static GameImpl loadGame(File file, boolean firstAttempt) {
-        return LocalGameLoaderImpl.getInstance().loadGame(file, firstAttempt);
-    }
-
     public void removeEntity(Entity e) {
         if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
             final var chunk = e.getLocation().getChunk();
@@ -767,11 +759,6 @@ public class GameImpl implements LocalGame {
                 }
             }
         }
-    }
-
-    @SneakyThrows
-    public void saveToConfig() {
-        LocalGameLoaderImpl.getInstance().saveGame(this);
     }
 
     public void start() {

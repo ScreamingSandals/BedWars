@@ -271,6 +271,11 @@ public class PlayerListener {
 
                 final var livingTime = new AtomicInteger(respawnTime);
                 Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
+                            if (!gVictim.isInGame()) {
+                                task.cancel();
+                                return;
+                            }
+
                             if (livingTime.get() > 0) {
                                 Message
                                         .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)

@@ -38,6 +38,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -142,7 +143,7 @@ public class VariantImpl implements Variant {
     @Override
     @Nullable
     public ItemSpawnerTypeImpl getItemSpawnerType(@NotNull String name) {
-        var finalName = name.toLowerCase();
+        var finalName = name.toLowerCase(Locale.ROOT);
         var match = customSpawnerTypes.stream().filter(t -> t.getConfigKey().equals(finalName)).findFirst().orElse(null);
         if (match != null) {
             return match;

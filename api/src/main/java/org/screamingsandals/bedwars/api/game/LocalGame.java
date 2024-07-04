@@ -406,13 +406,6 @@ public interface LocalGame extends Game {
     boolean isInEditMode();
 
     /**
-     * This methods allows you to save the arena to config (useful when using custom config options)
-     *
-     * @since 0.3.0
-     */
-    void saveToConfig();
-
-    /**
      * Gets file with this game
      *
      * @since 0.3.0

@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -108,7 +109,7 @@ public class VariantManagerImpl implements VariantManager {
                 logger.debug("No variants have been found!");
             } else {
                 results.forEach(file -> {
-                    if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
+                    if (file.exists() && file.isFile() && !file.getName().toLowerCase(Locale.ROOT).endsWith(".disabled")) {
                         var variant = VariantImpl.loadVariant(file);
                         if (variant != null) {
                             variants.add(variant);
