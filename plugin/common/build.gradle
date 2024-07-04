@@ -1,14 +1,10 @@
 apply plugin: "com.github.gmazzo.buildconfig"
 
-repositories {
-    maven { url "https://maven.mrnavastar.rocks/releases" }
-}
-
 dependencies {
     /* PROVIDED */
     compileOnly libs.multiverse
     compileOnly libs.parties.api
-    compileOnly "group.aelysium:rustyconnector-toolkit:0.8.0"
+    compileOnly libs.rustyconnector.toolkit
 
     /* SHADED */
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (project.version =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'

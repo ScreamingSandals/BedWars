@@ -5,7 +5,6 @@ pluginManagement {
         maven {
             url = "https://repo.screamingsandals.org/public/"
         }
-        maven { url "https://maven.mrnavastar.rocks/releases" }
     }
 }
 
