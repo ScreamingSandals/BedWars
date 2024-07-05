@@ -44,11 +44,17 @@ import java.util.stream.Collectors;
 public class ProtocolManager {
     private CustomPayload.@Nullable Registration registration;
 
-    private final Map<Class<? extends Packet>, Integer> packet2IntMap = Map.ofEntries(
-            Map.entry(JoinGamePacket.class, Constants.JOIN_GAME_PACKET_ID)
+    private final @NotNull Map<@NotNull Class<? extends Packet>, Integer> packet2IntMap = Map.ofEntries(
+            Map.entry(JoinGamePacket.class, Constants.JOIN_GAME_PACKET_ID),
+            Map.entry(GameStatePacket.class, Constants.GAME_STATE_PACKET_ID),
+            Map.entry(GameListPacket.class, Constants.GAME_LIST_PACKET_ID),
+            Map.entry(GameStateRequestPacket.class, Constants.GAME_STATE_REQUEST_PACKET_ID),
+            Map.entry(GameListRequestPacket.class, Constants.GAME_LIST_REQUEST_PACKET_ID),
+            Map.entry(MinigameServerInfoPacket.class, Constants.MINIGAME_SERVER_INFO_PACKET_ID),
+            Map.entry(MinigameServerInfoRequestPacket.class, Constants.MINIGAME_SERVER_INFO_REQUEST_PACKET_ID)
     );
 
-    private final Map<Integer, Class<? extends Packet>> int2PacketMap = packet2IntMap
+    private final @NotNull Map<@NotNull Integer, Class<? extends Packet>> int2PacketMap = packet2IntMap
             .entrySet()
             .stream()
             .collect(Collectors.toUnmodifiableMap(Map.Entry::getValue, Map.Entry::getKey));
