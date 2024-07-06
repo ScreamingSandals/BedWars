@@ -13,6 +13,7 @@ dependencies {
         exclude(group: '*', module: '*')
     }
     api libs.configurate.yaml
+    api project(':BedWars-protocol')
 }
 
 buildConfig {

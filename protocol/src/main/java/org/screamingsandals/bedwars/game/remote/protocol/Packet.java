@@ -19,34 +19,11 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.game.remote.Constants;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class GameStateRequestPacket implements Packet {
-    private @NotNull String gameIdentifier;
-
-    @Override
-    public int packetId() {
-        return Constants.GAME_STATE_REQUEST_PACKET_ID;
-    }
-
-    @Override
-    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(gameIdentifier);
-    }
-
-    @Override
-    public void read(@NotNull DataInputStream dataInputStream) throws IOException {
-        gameIdentifier = dataInputStream.readUTF();
-    }
+public interface Packet {
+    void write(@NotNull DataOutputStream dataOutputStream) throws IOException;
 }

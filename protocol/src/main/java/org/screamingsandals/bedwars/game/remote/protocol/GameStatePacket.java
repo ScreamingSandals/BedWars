@@ -21,11 +21,8 @@ package org.screamingsandals.bedwars.game.remote.protocol;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.remote.Constants;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class GameStatePacket implements Packet {
@@ -47,62 +43,29 @@ public class GameStatePacket implements Packet {
     private int minPlayers;
     private int maxPlayers;
     private int teams;
-    private @NotNull GameStatus state;
+    private @NotNull String state;
     private @NotNull List<@NotNull PlayerEntry> players;
     private int elapsed;
     private @Nullable Integer maxTime;
     private @NotNull Instant generationTime;
 
-    @Override
-    public int packetId() {
-        return Constants.GAME_STATE_PACKET_ID;
-    }
-
-    @Override
-    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(server);
-        dataOutputStream.writeUTF(uuid.toString());
-        dataOutputStream.writeUTF(name);
-        dataOutputStream.writeBoolean(displayName != null);
-        if (displayName != null) {
-            dataOutputStream.writeUTF(displayName);
-        }
-        dataOutputStream.writeInt(onlinePlayers);
-        dataOutputStream.writeInt(minPlayers);
-        dataOutputStream.writeInt(maxPlayers);
-        dataOutputStream.writeInt(teams);
-        dataOutputStream.writeInt(players.size());
-        dataOutputStream.writeUTF(state.name());
-        for (var player : players) {
-            dataOutputStream.writeUTF(player.getUuid().toString());
-            dataOutputStream.writeUTF(player.getName());
-        }
-        dataOutputStream.writeInt(elapsed);
-        dataOutputStream.writeBoolean(maxTime != null);
-        if (maxTime != null) {
-            dataOutputStream.writeInt(maxTime);
-        }
-        dataOutputStream.writeLong(generationTime.getEpochSecond());
-    }
-
-    @Override
-    public void read(@NotNull DataInputStream dataInputStream) throws IOException {
-        server = dataInputStream.readUTF();
-        uuid = UUID.fromString(dataInputStream.readUTF());
-        name = dataInputStream.readUTF();
+    public GameStatePacket(@NotNull DataInputStream dataInputStream) throws IOException {
+        server = PacketUtils.readStandardUTF(dataInputStream);
+        uuid = PacketUtils.readUuid(dataInputStream);
+        name = PacketUtils.readStandardUTF(dataInputStream);
         if (dataInputStream.readBoolean()) {
-            displayName = dataInputStream.readUTF();
+            displayName = PacketUtils.readStandardUTF(dataInputStream);
         }
         onlinePlayers = dataInputStream.readInt();
         minPlayers = dataInputStream.readInt();
         maxPlayers = dataInputStream.readInt();
         teams = dataInputStream.readInt();
-        state = GameStatus.valueOf(dataInputStream.readUTF());
+        state = PacketUtils.readStandardUTF(dataInputStream);
         int playersSize = dataInputStream.readInt();
         players = new ArrayList<>();
         for (int i = 0; i < playersSize; i++) {
-            var uuid = UUID.fromString(dataInputStream.readUTF());
-            var name = dataInputStream.readUTF();
+            var uuid = PacketUtils.readUuid(dataInputStream);
+            var name = PacketUtils.readStandardUTF(dataInputStream);
             players.add(new PlayerEntry(uuid, name));
         }
         elapsed = dataInputStream.readInt();
@@ -110,6 +73,33 @@ public class GameStatePacket implements Packet {
             maxTime = dataInputStream.readInt();
         }
         generationTime = Instant.ofEpochSecond(dataInputStream.readLong());
+    }
+
+    @Override
+    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
+        PacketUtils.writeStandardUTF(dataOutputStream, server);
+        PacketUtils.writeUuid(dataOutputStream, uuid);
+        PacketUtils.writeStandardUTF(dataOutputStream, name);
+        dataOutputStream.writeBoolean(displayName != null);
+        if (displayName != null) {
+            PacketUtils.writeStandardUTF(dataOutputStream, displayName);
+        }
+        dataOutputStream.writeInt(onlinePlayers);
+        dataOutputStream.writeInt(minPlayers);
+        dataOutputStream.writeInt(maxPlayers);
+        dataOutputStream.writeInt(teams);
+        dataOutputStream.writeInt(players.size());
+        PacketUtils.writeStandardUTF(dataOutputStream, state);
+        for (var player : players) {
+            PacketUtils.writeUuid(dataOutputStream, player.getUuid());
+            PacketUtils.writeStandardUTF(dataOutputStream, player.getName());
+        }
+        dataOutputStream.writeInt(elapsed);
+        dataOutputStream.writeBoolean(maxTime != null);
+        if (maxTime != null) {
+            dataOutputStream.writeInt(maxTime);
+        }
+        dataOutputStream.writeLong(generationTime.getEpochSecond());
     }
 
     @Data

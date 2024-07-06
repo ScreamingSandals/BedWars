@@ -19,43 +19,25 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.game.remote.Constants;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-@NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Data
-public class MinigameServerInfoPacket implements Packet {
-    private @NotNull String server;
-    private @NotNull String plugin;
-    private @NotNull String version;
-    private int protocolVersion = Constants.PROTOCOL_VERSION;
+public class GameStateRequestPacket implements Packet {
+    private @NotNull String gameIdentifier;
 
-    @Override
-    public int packetId() {
-        return Constants.MINIGAME_SERVER_INFO_PACKET_ID;
+    public GameStateRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
+        gameIdentifier = PacketUtils.readStandardUTF(dataInputStream);
     }
 
     @Override
     public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(server);
-        dataOutputStream.writeUTF(plugin);
-        dataOutputStream.writeUTF(version);
-        dataOutputStream.writeInt(protocolVersion);
-    }
-
-    @Override
-    public void read(@NotNull DataInputStream dataInputStream) throws IOException {
-        server = dataInputStream.readUTF();
-        plugin = dataInputStream.readUTF();
-        version = dataInputStream.readUTF();
-        protocolVersion = dataInputStream.readInt();
+        PacketUtils.writeStandardUTF(dataOutputStream, gameIdentifier);
     }
 }

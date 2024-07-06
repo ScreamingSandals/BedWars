@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.JoinGamePacket;
-import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManager;
+import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
@@ -149,7 +149,7 @@ public class RemoteGameImpl implements RemoteGame {
 
         if (remoteGameIdentifier != null) {
             try {
-                ProtocolManager.getInstance().sendPacket(
+                ProtocolManagerImpl.getInstance().sendPacket(
                         remoteServer,
                         new JoinGamePacket(player.getUniqueId(), remoteGameIdentifier, BedWarsPlugin.getInstance().getServerName())
                 );

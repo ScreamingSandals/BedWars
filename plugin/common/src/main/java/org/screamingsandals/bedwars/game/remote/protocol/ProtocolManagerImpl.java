@@ -36,31 +36,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
-// TODO: custom sockets and redis
-public class ProtocolManager {
+public class ProtocolManagerImpl extends ProtocolManager {
     private CustomPayload.@Nullable Registration registration;
 
-    private final @NotNull Map<@NotNull Class<? extends Packet>, Integer> packet2IntMap = Map.ofEntries(
-            Map.entry(JoinGamePacket.class, Constants.JOIN_GAME_PACKET_ID),
-            Map.entry(GameStatePacket.class, Constants.GAME_STATE_PACKET_ID),
-            Map.entry(GameListPacket.class, Constants.GAME_LIST_PACKET_ID),
-            Map.entry(GameStateRequestPacket.class, Constants.GAME_STATE_REQUEST_PACKET_ID),
-            Map.entry(GameListRequestPacket.class, Constants.GAME_LIST_REQUEST_PACKET_ID),
-            Map.entry(MinigameServerInfoPacket.class, Constants.MINIGAME_SERVER_INFO_PACKET_ID),
-            Map.entry(MinigameServerInfoRequestPacket.class, Constants.MINIGAME_SERVER_INFO_REQUEST_PACKET_ID)
-    );
-
-    private final @NotNull Map<@NotNull Integer, Class<? extends Packet>> int2PacketMap = packet2IntMap
-            .entrySet()
-            .stream()
-            .collect(Collectors.toUnmodifiableMap(Map.Entry::getValue, Map.Entry::getKey));
-
-    public static @NotNull ProtocolManager getInstance() {
-        return ServiceManager.get(ProtocolManager.class);
+    public static @NotNull ProtocolManagerImpl getInstance() {
+        return ServiceManager.get(ProtocolManagerImpl.class);
     }
 
     @OnPostEnable
@@ -75,15 +57,8 @@ public class ProtocolManager {
 
                     var in = new DataInputStream(new ByteArrayInputStream(outerIn.readNBytes(outerIn.readShort())));
 
-                    int packetId = in.readInt();
-                    var clazz = int2PacketMap.get(packetId);
-                    if (clazz == null) {
-                        throw new RuntimeException("Unknown BedWars packet ID " + packetId);
-                    }
-                    var packet = clazz.getConstructor().newInstance();
-                    packet.read(in);
+                    processIncoming(in);
 
-                    EventManager.fire(new PacketReceivedEvent(packet));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -98,26 +73,21 @@ public class ProtocolManager {
         }
     }
 
-    public void sendPacket(@NotNull String server, @NotNull Packet packet) throws IOException {
-        var out = new ByteArrayOutputStream();
-        var dout = new DataOutputStream(out);
-
-        Integer id = packet2IntMap.get(packet.getClass());
-        if (id == null) {
-            throw new IllegalArgumentException("Unknown packet passed: " + packet.getClass().getName());
-        }
-        dout.writeInt(id);
-        packet.write(dout);
-
+    @Override
+    protected void sendPacket0(@NotNull String server, byte @NotNull [] payload) throws IOException {
         var bout = new ByteArrayOutputStream();
         var bungeeDout = new DataOutputStream(bout);
         bungeeDout.writeUTF("Forward");
         bungeeDout.writeUTF(server);
         bungeeDout.writeUTF(Constants.MESSAGING_CHANNEL);
-        var packetBytes = out.toByteArray();
-        bungeeDout.writeShort(packetBytes.length);
-        bungeeDout.write(packetBytes);
+        bungeeDout.writeShort(payload.length);
+        bungeeDout.write(payload);
 
         CustomPayload.send("BungeeCord", bout.toByteArray());
+    }
+
+    @Override
+    protected void receivePacket0(@NotNull Packet packet) {
+        EventManager.fire(new PacketReceivedEvent(packet));
     }
 }

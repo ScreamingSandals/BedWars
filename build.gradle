@@ -21,6 +21,18 @@ subprojects {
 
     apply plugin: 'org.screamingsandals.plugin-slib'
 
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
+        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
+        maven { url 'https://repo.alessiodp.com/releases/'  }
+    }
+
+    if (project.name == 'BedWars-protocol') {
+        return // not Slib project
+    }
+
     slib {
         version(libs.versions.screaming.lib)
 
@@ -56,14 +68,6 @@ subprojects {
     configurations.all {
         // Check for updates every build
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
-        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
-        maven { url 'https://repo.alessiodp.com/releases/'  }
     }
 
     shadowJar {

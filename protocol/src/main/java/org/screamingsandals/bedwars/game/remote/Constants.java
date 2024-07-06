@@ -17,32 +17,13 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol;
+package org.screamingsandals.bedwars.game.remote;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.game.remote.Constants;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-@NoArgsConstructor
-@RequiredArgsConstructor
-@Data
-public class MinigameServerInfoRequestPacket implements Packet {
-    @Override
-    public int packetId() {
-        return Constants.MINIGAME_SERVER_INFO_REQUEST_PACKET_ID;
-    }
-
-    @Override
-    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
-    }
-
-    @Override
-    public void read(@NotNull DataInputStream dataInputStream) throws IOException {
-    }
+@UtilityClass
+public class Constants {
+    public static final @NotNull String MESSAGING_CHANNEL = "ScreamingSandalsMinigameV1";
+    public static final int PROTOCOL_VERSION = 1;
 }

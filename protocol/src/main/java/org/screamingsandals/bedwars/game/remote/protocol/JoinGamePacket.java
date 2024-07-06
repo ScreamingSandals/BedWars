@@ -21,10 +21,8 @@ package org.screamingsandals.bedwars.game.remote.protocol;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.game.remote.Constants;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class JoinGamePacket implements Packet {
@@ -51,64 +48,58 @@ public class JoinGamePacket implements Packet {
         this(playerUuid, gameIdentifier, sendingHub, null, null, null, null);
     }
 
-    @Override
-    public int packetId() {
-        return Constants.JOIN_GAME_PACKET_ID;
-    }
-
-    @Override
-    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(playerUuid.toString());
-        dataOutputStream.writeUTF(gameIdentifier);
-        dataOutputStream.writeBoolean(sendingHub != null);
-        if (sendingHub != null) {
-            dataOutputStream.writeUTF(sendingHub);
-        }
-
-        dataOutputStream.writeBoolean(partyIdentifier != null);
-        if (partyIdentifier != null) {
-            dataOutputStream.writeUTF(partyIdentifier);
-        }
-        dataOutputStream.writeBoolean(partyMembers != null);
-        if (partyMembers != null) {
-            dataOutputStream.writeInt(partyMembers.size());
-            for (var uuid : partyMembers) {
-                dataOutputStream.writeUTF(uuid.toString());
-            }
-        }
-        dataOutputStream.writeBoolean(partyLeader != null);
-        if (partyLeader != null) {
-            dataOutputStream.writeUTF(partyLeader.toString());
-        }
-        dataOutputStream.writeBoolean(partyPlugin != null);
-        if (partyPlugin != null) {
-            dataOutputStream.writeUTF(partyPlugin);
-        }
-    }
-
-    @Override
-    public void read(@NotNull DataInputStream dataInputStream) throws IOException {
-        playerUuid = UUID.fromString(dataInputStream.readUTF());
-        gameIdentifier = dataInputStream.readUTF();
+    public JoinGamePacket(@NotNull DataInputStream dataInputStream) throws IOException {
+        playerUuid = PacketUtils.readUuid(dataInputStream);
+        gameIdentifier = PacketUtils.readStandardUTF(dataInputStream);
         if (dataInputStream.readBoolean()) {
-            sendingHub = dataInputStream.readUTF();
+            sendingHub = PacketUtils.readStandardUTF(dataInputStream);
         }
 
         if (dataInputStream.readBoolean()) {
-            partyIdentifier = dataInputStream.readUTF();
+            partyIdentifier = PacketUtils.readStandardUTF(dataInputStream);
         }
         if (dataInputStream.readBoolean()) {
             partyMembers = new ArrayList<>();
             var size = dataInputStream.readInt();
             for (int i = 0; i < size; i++) {
-                partyMembers.add(UUID.fromString(dataInputStream.readUTF()));
+                partyMembers.add(PacketUtils.readUuid(dataInputStream));
             }
         }
         if (dataInputStream.readBoolean()) {
-            partyLeader = UUID.fromString(dataInputStream.readUTF());
+            partyLeader = PacketUtils.readUuid(dataInputStream);
         }
         if (dataInputStream.readBoolean()) {
-            partyPlugin = dataInputStream.readUTF();
+            partyPlugin = PacketUtils.readStandardUTF(dataInputStream);
+        }
+    }
+
+    @Override
+    public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
+        PacketUtils.writeUuid(dataOutputStream, playerUuid);
+        PacketUtils.writeStandardUTF(dataOutputStream, gameIdentifier);
+        dataOutputStream.writeBoolean(sendingHub != null);
+        if (sendingHub != null) {
+            PacketUtils.writeStandardUTF(dataOutputStream, sendingHub);
+        }
+
+        dataOutputStream.writeBoolean(partyIdentifier != null);
+        if (partyIdentifier != null) {
+            PacketUtils.writeStandardUTF(dataOutputStream, partyIdentifier);
+        }
+        dataOutputStream.writeBoolean(partyMembers != null);
+        if (partyMembers != null) {
+            dataOutputStream.writeInt(partyMembers.size());
+            for (var uuid : partyMembers) {
+                PacketUtils.writeUuid(dataOutputStream, uuid);
+            }
+        }
+        dataOutputStream.writeBoolean(partyLeader != null);
+        if (partyLeader != null) {
+            PacketUtils.writeUuid(dataOutputStream, partyLeader);
+        }
+        dataOutputStream.writeBoolean(partyPlugin != null);
+        if (partyPlugin != null) {
+            PacketUtils.writeStandardUTF(dataOutputStream, partyPlugin);
         }
     }
 }
