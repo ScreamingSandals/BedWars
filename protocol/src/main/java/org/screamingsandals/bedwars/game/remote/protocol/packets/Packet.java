@@ -17,14 +17,13 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol;
+package org.screamingsandals.bedwars.game.remote.protocol.packets;
 
-import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.game.remote.protocol.packets.Packet;
-import org.screamingsandals.lib.event.Event;
 
-@Data
-public class PacketReceivedEvent implements Event {
-    private final @NotNull Packet packet;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+public interface Packet {
+    void write(@NotNull DataOutputStream dataOutputStream) throws IOException;
 }

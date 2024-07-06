@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.remote.protocol.JoinGamePacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketReceivedEvent;
 import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
 import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;

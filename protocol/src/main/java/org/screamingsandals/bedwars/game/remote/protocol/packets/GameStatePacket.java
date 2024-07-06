@@ -17,7 +17,7 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol;
+package org.screamingsandals.bedwars.game.remote.protocol.packets;
 
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

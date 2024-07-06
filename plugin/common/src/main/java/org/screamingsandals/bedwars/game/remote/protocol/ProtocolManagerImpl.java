@@ -19,9 +19,13 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.game.remote.Constants;
+import org.screamingsandals.bedwars.game.remote.protocol.messaging.BungeeCordMessenger;
+import org.screamingsandals.bedwars.game.remote.protocol.messaging.Messenger;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.Packet;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventManager;
@@ -31,15 +35,11 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 @Service
 public class ProtocolManagerImpl extends ProtocolManager {
     private CustomPayload.@Nullable Registration registration;
+    @Getter(AccessLevel.PROTECTED)
+    private @NotNull Messenger messenger = new BungeeCordMessenger(payload -> CustomPayload.send("BungeeCord", payload));
 
     public static @NotNull ProtocolManagerImpl getInstance() {
         return ServiceManager.get(ProtocolManagerImpl.class);
@@ -50,15 +50,12 @@ public class ProtocolManagerImpl extends ProtocolManager {
         if (Server.getProxyType() != ProxyType.NONE) {
             registration = CustomPayload.registerIncomingChannel("BungeeCord", (player, bytes) -> {
                 try {
-                    var outerIn = new DataInputStream(new ByteArrayInputStream(bytes));
-                    if (!Constants.MESSAGING_CHANNEL.equals(outerIn.readUTF())) {
+                    var transformedBytes = getMessenger().incomingPacketTransformer(bytes);
+                    if (transformedBytes == null) {
                         return;
                     }
 
-                    var in = new DataInputStream(new ByteArrayInputStream(outerIn.readNBytes(outerIn.readShort())));
-
-                    processIncoming(in);
-
+                    processIncoming(transformedBytes);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -70,33 +67,8 @@ public class ProtocolManagerImpl extends ProtocolManager {
     public void onPreDisable() {
         if (registration != null) {
             CustomPayload.unregisterIncomingChannel(registration);
+            registration = null;
         }
-    }
-
-    @Override
-    protected void sendPacket0(@NotNull String server, byte @NotNull [] payload) throws IOException {
-        var bout = new ByteArrayOutputStream();
-        var bungeeDout = new DataOutputStream(bout);
-        bungeeDout.writeUTF("Forward");
-        bungeeDout.writeUTF(server);
-        bungeeDout.writeUTF(Constants.MESSAGING_CHANNEL);
-        bungeeDout.writeShort(payload.length);
-        bungeeDout.write(payload);
-
-        CustomPayload.send("BungeeCord", bout.toByteArray());
-    }
-
-    @Override
-    protected void broadcastPacket0(byte @NotNull [] payload) throws IOException {
-        var bout = new ByteArrayOutputStream();
-        var bungeeDout = new DataOutputStream(bout);
-        bungeeDout.writeUTF("Forward");
-        bungeeDout.writeUTF("ONLINE");
-        bungeeDout.writeUTF(Constants.MESSAGING_CHANNEL);
-        bungeeDout.writeShort(payload.length);
-        bungeeDout.write(payload);
-
-        CustomPayload.send("BungeeCord", bout.toByteArray());
     }
 
     @Override

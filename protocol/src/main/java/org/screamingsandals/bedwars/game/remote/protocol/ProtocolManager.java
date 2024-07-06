@@ -20,7 +20,10 @@
 package org.screamingsandals.bedwars.game.remote.protocol;
 
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.game.remote.protocol.messaging.Messenger;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.Packet;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,7 +31,9 @@ import java.io.IOException;
 
 // TODO: custom sockets and redis
 public abstract class ProtocolManager {
-    protected void processIncoming(@NotNull DataInputStream input) throws Exception {
+    protected void processIncoming(byte @NotNull [] payload) throws Exception {
+        var input = new DataInputStream(new ByteArrayInputStream(payload));
+
         int packetIdInt = input.readUnsignedByte();
         var packetId = PacketId.byId(packetIdInt);
         if (packetId == null) {
@@ -40,11 +45,11 @@ public abstract class ProtocolManager {
     }
 
     public void sendPacket(@NotNull String server, @NotNull Packet packet) throws IOException {
-        sendPacket0(server, encodePacket(packet));
+        getMessenger().sendPacket(server, encodePacket(packet));
     }
 
     public void broadcastPacket(@NotNull Packet packet) throws IOException {
-        broadcastPacket0(encodePacket(packet));
+        getMessenger().broadcastPacket(encodePacket(packet));
     }
 
     private byte @NotNull [] encodePacket(@NotNull Packet packet) throws IOException {
@@ -61,9 +66,7 @@ public abstract class ProtocolManager {
         return out.toByteArray();
     }
 
-    protected abstract void sendPacket0(@NotNull String server, byte @NotNull [] payload) throws IOException;
-
-    protected abstract void broadcastPacket0(byte @NotNull [] payload) throws IOException;
-
     protected abstract void receivePacket0(@NotNull Packet packet);
+
+    protected abstract @NotNull Messenger getMessenger();
 }

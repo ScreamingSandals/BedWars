@@ -17,13 +17,19 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol;
+package org.screamingsandals.bedwars.game.remote.protocol.messaging;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-public interface Packet {
-    void write(@NotNull DataOutputStream dataOutputStream) throws IOException;
+public interface Messenger {
+    void sendPacket(@NotNull String server, byte @NotNull [] payload) throws IOException;
+
+    void broadcastPacket(byte @NotNull [] payload) throws IOException;
+
+    default byte @Nullable [] incomingPacketTransformer(byte @NotNull [] payload) throws IOException {
+        return payload;
+    }
 }

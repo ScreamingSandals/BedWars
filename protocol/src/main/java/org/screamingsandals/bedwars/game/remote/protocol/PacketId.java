@@ -21,6 +21,14 @@ package org.screamingsandals.bedwars.game.remote.protocol;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.Packet;
 
 import java.io.DataInputStream;
 import java.io.IOException;

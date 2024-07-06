@@ -17,12 +17,13 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol;
+package org.screamingsandals.bedwars.game.remote.protocol.packets;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,10 +31,10 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Getter
-public class MinigameServerInfoRequestPacket implements Packet {
+public class GameListRequestPacket implements Packet {
     private final @Nullable String requestingServer;
 
-    public MinigameServerInfoRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
+    public GameListRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         if (dataInputStream.readBoolean()) {
             this.requestingServer = PacketUtils.readStandardUTF(dataInputStream);
         } else {
