@@ -70,6 +70,7 @@ import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -77,6 +78,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +152,8 @@ import java.util.stream.Collectors;
 public class BedWarsPlugin implements BedwarsAPI {
     @Getter
     private final org.screamingsandals.lib.plugin.@NotNull Plugin pluginDescription;
+    @ConfigFile("serverName.txt")
+    private final Path serverNameFile;
     @Getter
     private final @NotNull LoggerWrapper logger;
     private static BedWarsPlugin instance;
@@ -293,6 +297,14 @@ public class BedWarsPlugin implements BedwarsAPI {
             }
         });
 
+        if (Files.exists(serverNameFile)) {
+            try {
+                serverName = Files.readString(serverNameFile);
+            } catch (IOException e) {
+                logger.error("An error occurred while reading serverName.txt file", e);
+            }
+        }
+
         if (Server.getProxyType() != ProxyType.NONE) {
             CustomPayload.registerOutgoingChannel("BungeeCord");
             CustomPayload.registerIncomingChannel("BungeeCord", (player, bytes) -> {
@@ -301,9 +313,11 @@ public class BedWarsPlugin implements BedwarsAPI {
                 try {
                     if ("GetServer".equals(in.readUTF())) {
                         serverName = in.readUTF();
+
+                        Files.writeString(serverNameFile, serverName);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("An error occurred while handling BungeeCord message", e);
                 }
             });
         }
