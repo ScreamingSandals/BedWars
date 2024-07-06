@@ -19,8 +19,7 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.game.remote.Constants;
@@ -30,13 +29,16 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
 public class MinigameServerInfoPacket implements Packet {
-    private @NotNull String server;
-    private @NotNull String plugin;
-    private @NotNull String version;
-    private int protocolVersion = Constants.PROTOCOL_VERSION;
+    private final @NotNull String server;
+    private final @NotNull String plugin;
+    private final @NotNull String version;
+    private final int protocolVersion;
+
+    public MinigameServerInfoPacket(@NotNull String server, @NotNull String plugin, @NotNull String version) {
+        this(server, plugin, version, Constants.PROTOCOL_VERSION);
+    }
 
     public MinigameServerInfoPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);

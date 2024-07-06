@@ -40,6 +40,14 @@ public abstract class ProtocolManager {
     }
 
     public void sendPacket(@NotNull String server, @NotNull Packet packet) throws IOException {
+        sendPacket0(server, encodePacket(packet));
+    }
+
+    public void broadcastPacket(@NotNull Packet packet) throws IOException {
+        broadcastPacket0(encodePacket(packet));
+    }
+
+    private byte @NotNull [] encodePacket(@NotNull Packet packet) throws IOException {
         var out = new ByteArrayOutputStream();
         var dout = new DataOutputStream(out);
 
@@ -50,12 +58,12 @@ public abstract class ProtocolManager {
         dout.write(packetId.getId());
         packet.write(dout);
 
-        var packetBytes = out.toByteArray();
-
-        sendPacket0(server, packetBytes);
+        return out.toByteArray();
     }
 
     protected abstract void sendPacket0(@NotNull String server, byte @NotNull [] payload) throws IOException;
+
+    protected abstract void broadcastPacket0(byte @NotNull [] payload) throws IOException;
 
     protected abstract void receivePacket0(@NotNull Packet packet);
 }

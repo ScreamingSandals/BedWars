@@ -19,8 +19,9 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@Data
+@RequiredArgsConstructor
+@Getter
 public class GameListPacket implements Packet {
-    private @NotNull String server;
-    private @NotNull List<@NotNull GameEntry> games;
+    private final @NotNull String server;
+    private final @NotNull List<@NotNull GameEntry> games;
 
     public GameListPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);

@@ -87,6 +87,19 @@ public class ProtocolManagerImpl extends ProtocolManager {
     }
 
     @Override
+    protected void broadcastPacket0(byte @NotNull [] payload) throws IOException {
+        var bout = new ByteArrayOutputStream();
+        var bungeeDout = new DataOutputStream(bout);
+        bungeeDout.writeUTF("Forward");
+        bungeeDout.writeUTF("ONLINE");
+        bungeeDout.writeUTF(Constants.MESSAGING_CHANNEL);
+        bungeeDout.writeShort(payload.length);
+        bungeeDout.write(payload);
+
+        CustomPayload.send("BungeeCord", bout.toByteArray());
+    }
+
+    @Override
     protected void receivePacket0(@NotNull Packet packet) {
         EventManager.fire(new PacketReceivedEvent(packet));
     }

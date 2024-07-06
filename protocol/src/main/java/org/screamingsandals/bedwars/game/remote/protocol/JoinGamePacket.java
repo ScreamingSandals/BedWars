@@ -19,8 +19,9 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,18 +32,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@Data
+@RequiredArgsConstructor
+@Builder(builderClassName = "Builder")
+@Getter
 public class JoinGamePacket implements Packet {
-    private @NotNull UUID playerUuid;
-    private @NotNull String gameIdentifier;
-    private @Nullable String sendingHub;
+    private final @NotNull UUID playerUuid;
+    private final @NotNull String gameIdentifier;
+    private final @Nullable String sendingHub;
 
     // Following fields are currently unused but may be useful in the future
-    private @Nullable String partyIdentifier;
-    private @Nullable List<@NotNull UUID> partyMembers;
-    private @Nullable UUID partyLeader;
-    private @Nullable String partyPlugin;
+    private final @Nullable String partyIdentifier;
+    private final @Nullable List<@NotNull UUID> partyMembers;
+    private final @Nullable UUID partyLeader;
+    private final @Nullable String partyPlugin;
 
     public JoinGamePacket(@NotNull UUID playerUuid, @NotNull String gameIdentifier, @Nullable String sendingHub) {
         this(playerUuid, gameIdentifier, sendingHub, null, null, null, null);
@@ -53,10 +55,14 @@ public class JoinGamePacket implements Packet {
         gameIdentifier = PacketUtils.readStandardUTF(dataInputStream);
         if (dataInputStream.readBoolean()) {
             sendingHub = PacketUtils.readStandardUTF(dataInputStream);
+        } else {
+            sendingHub = null;
         }
 
         if (dataInputStream.readBoolean()) {
             partyIdentifier = PacketUtils.readStandardUTF(dataInputStream);
+        } else {
+            partyIdentifier = null;
         }
         if (dataInputStream.readBoolean()) {
             partyMembers = new ArrayList<>();
@@ -64,12 +70,18 @@ public class JoinGamePacket implements Packet {
             for (int i = 0; i < size; i++) {
                 partyMembers.add(PacketUtils.readUuid(dataInputStream));
             }
+        } else {
+            partyMembers = null;
         }
         if (dataInputStream.readBoolean()) {
             partyLeader = PacketUtils.readUuid(dataInputStream);
+        } else {
+            partyLeader = null;
         }
         if (dataInputStream.readBoolean()) {
             partyPlugin = PacketUtils.readStandardUTF(dataInputStream);
+        } else {
+            partyPlugin = null;
         }
     }
 

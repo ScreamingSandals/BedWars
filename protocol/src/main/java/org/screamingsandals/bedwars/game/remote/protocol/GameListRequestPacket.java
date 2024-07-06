@@ -19,21 +19,33 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-@NoArgsConstructor
-@Data
+@RequiredArgsConstructor
+@Getter
 public class GameListRequestPacket implements Packet {
+    private final @Nullable String requestingServer;
+
     public GameListRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
+        if (dataInputStream.readBoolean()) {
+            this.requestingServer = PacketUtils.readStandardUTF(dataInputStream);
+        } else {
+            this.requestingServer = null;
+        }
     }
 
     @Override
     public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
+        dataOutputStream.writeBoolean(requestingServer != null);
+        if (requestingServer != null) {
+            PacketUtils.writeStandardUTF(dataOutputStream, requestingServer);
+        }
     }
 }
