@@ -47,6 +47,7 @@ public class GameStatePacket implements Packet {
     private final int minPlayers;
     private final int maxPlayers;
     private final int teams;
+    private final int aliveTeams;
     private final @NotNull String state;
     private final @NotNull List<@NotNull PlayerEntry> players;
     private final int elapsed;
@@ -66,6 +67,7 @@ public class GameStatePacket implements Packet {
         minPlayers = dataInputStream.readInt();
         maxPlayers = dataInputStream.readInt();
         teams = dataInputStream.readInt();
+        aliveTeams = dataInputStream.readInt();
         state = PacketUtils.readStandardUTF(dataInputStream);
         int playersSize = dataInputStream.readInt();
         players = new ArrayList<>();
@@ -96,6 +98,7 @@ public class GameStatePacket implements Packet {
         dataOutputStream.writeInt(minPlayers);
         dataOutputStream.writeInt(maxPlayers);
         dataOutputStream.writeInt(teams);
+        dataOutputStream.writeInt(aliveTeams);
         dataOutputStream.writeInt(players.size());
         PacketUtils.writeStandardUTF(dataOutputStream, state);
         for (var player : players) {

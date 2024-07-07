@@ -15,7 +15,7 @@ perworldinventory-kt = "2.3.1"
 multiverse = "4.0.0"
 
 # plugins
-screaming-plugin-builder = "1.0.85"
+screaming-plugin-builder = "1.0.86"
 buildconfig = "3.0.2"
 
 configurate = "4.1.2"

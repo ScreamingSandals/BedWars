@@ -34,6 +34,7 @@ import java.io.IOException;
 public class GameStateRequestPacket implements Packet {
     private final @Nullable String requestingServer;
     private final @NotNull String gameIdentifier;
+    private boolean subscribe;
 
     public GameStateRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         gameIdentifier = PacketUtils.readStandardUTF(dataInputStream);
@@ -42,6 +43,7 @@ public class GameStateRequestPacket implements Packet {
         } else {
             this.requestingServer = null;
         }
+        subscribe = dataInputStream.readBoolean();
     }
 
     @Override
@@ -51,5 +53,6 @@ public class GameStateRequestPacket implements Packet {
         if (requestingServer != null) {
             PacketUtils.writeStandardUTF(dataOutputStream, requestingServer);
         }
+        dataOutputStream.writeBoolean(subscribe);
     }
 }

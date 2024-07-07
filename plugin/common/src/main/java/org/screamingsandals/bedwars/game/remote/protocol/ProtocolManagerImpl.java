@@ -23,15 +23,27 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.BungeeCordMessenger;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.DummyMessenger;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.Messenger;
+import org.screamingsandals.bedwars.game.remote.protocol.messaging.ServerNameAwareMessenger;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.SocketMessenger;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoRequestPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.Packet;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.Preconditions;
@@ -40,6 +52,11 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,13 +101,22 @@ public class ProtocolManagerImpl extends ProtocolManager {
             case "socket": {
                 var host = MainConfig.getInstance().node("bungee", "communication", "socket", "host").getString("localhost");
                 var port = MainConfig.getInstance().node("bungee", "communication", "socket", "port").getInt(9000);
-                messenger = new SocketMessenger(host, port, BedWarsPlugin.getInstance().getServerName(), bytes -> {
+                var serverName = BedWarsPlugin.getInstance().getServerName();
+                var messenger = new SocketMessenger(host, port, serverName, bytes -> {
                     try {
                         processIncoming(bytes);
                     } catch (Exception e) {
                         logger.error("Error while receiving message using standard socket", e);
                     }
                 }, Tasker::runAsync);
+                this.messenger = messenger;
+                if (serverName != null) {
+                    try {
+                        messenger.startConnection();
+                    } catch (IOException e) {
+                        logger.error("An error occurred while starting socket messenger", e);
+                    }
+                }
                 break;
             }
             default: {
@@ -100,6 +126,13 @@ public class ProtocolManagerImpl extends ProtocolManager {
             }
         }
 
+    }
+
+    @OnEvent
+    public void onServerNameChange(@NotNull ServerNameChangeEvent event) {
+        if (messenger instanceof ServerNameAwareMessenger) {
+            ((ServerNameAwareMessenger) messenger).setServerName(Objects.requireNonNull(BedWarsPlugin.getInstance().getServerName()));
+        }
     }
 
     @OnPreDisable
@@ -114,6 +147,105 @@ public class ProtocolManagerImpl extends ProtocolManager {
     @Override
     protected void receivePacket0(@NotNull Packet packet) {
         EventManager.fire(new PacketReceivedEvent(packet));
+
+        if (packet instanceof GameListRequestPacket) {
+            var gameList = new GameListPacket(
+                    Objects.requireNonNull(BedWarsPlugin.getInstance().getServerName(), "This server does not know its name yet!"),
+                    GameManagerImpl.getInstance()
+                            .getGames()
+                            .stream()
+                            .map(game -> new GameListPacket.GameEntry(
+                                    game.getUuid(),
+                                    game.getName(),
+                                    game instanceof GameImpl ? ((GameImpl) game).getDisplayNameComponent().toJavaJson() : game.getName()
+                            ))
+                            .collect(Collectors.toList())
+            );
+            var requestingServer = ((GameListRequestPacket) packet).getRequestingServer();
+
+            try {
+                if (requestingServer != null) {
+                    sendPacket(requestingServer, gameList);
+                } else {
+                    broadcastPacket(gameList);
+                }
+            } catch (IOException e) {
+                logger.error("An error occurred while trying to send GameListRequestPacket", e);
+            }
+        } else if (packet instanceof GameStateRequestPacket) {
+            // TODO: we need a service to repeatedly sent status to servers subscribing to the game state (packet.subscribe)
+            var serverName = Objects.requireNonNull(BedWarsPlugin.getInstance().getServerName(), "This server does not know its name yet!");
+            var gameId = ((GameStateRequestPacket) packet).getGameIdentifier();
+
+            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameId);
+            if (gameOpt.isEmpty()) {
+                return; // cannot answer
+            }
+            var game = gameOpt.get();
+
+            int maxTime;
+            switch (game.getStatus()) {
+                case WAITING:
+                    maxTime = game.getLobbyCountdown();
+                    break;
+                case GAME_END_CELEBRATING:
+                    maxTime = game.getPostGameWaiting();
+                    break;
+                default:
+                    maxTime = game.getGameTime();
+            }
+
+            var gameState = GameStatePacket.builder()
+                    .name(serverName)
+                    .uuid(game.getUuid())
+                    .name(game.getName())
+                    .displayName(game.getDisplayNameComponent().toJavaJson())
+                    .onlinePlayers(game.countAlive())
+                    .maxPlayers(game.getMaxPlayers())
+                    .minPlayers(game.getMinPlayers())
+                    .teams(game.getTeams().size())
+                    .aliveTeams(game.getTeamsAlive().size())
+                    .state(game.getStatus().name())
+                    .players(
+                            game.getPlayers().stream()
+                                    .filter(p -> !p.isSpectator())
+                                    .map(p -> new GameStatePacket.PlayerEntry(p.getUuid(), p.getName()))
+                                    .collect(Collectors.toList())
+                    )
+                    .elapsed(maxTime - game.getTimeLeft())
+                    .maxTime(maxTime)
+                    .generationTime(Instant.now())
+                    .build();
+
+            var requestingServer = ((GameStateRequestPacket) packet).getRequestingServer();
+
+            try {
+                if (requestingServer != null) {
+                    sendPacket(requestingServer, gameState);
+                } else {
+                    broadcastPacket(gameState);
+                }
+            } catch (IOException e) {
+                logger.error("An error occurred while trying to send GameStatePacket", e);
+            }
+        } else if (packet instanceof MinigameServerInfoRequestPacket) {
+            var minigameServerInfo = new MinigameServerInfoPacket(
+                    Objects.requireNonNull(BedWarsPlugin.getInstance().getServerName(), "This server does not know its name yet!"),
+                    "ScreamingBedWars",
+                    VersionInfo.VERSION + "/" + VersionInfo.BUILD_NUMBER
+            );
+            var requestingServer = ((MinigameServerInfoRequestPacket) packet).getRequestingServer();
+
+            try {
+                if (requestingServer != null) {
+                    sendPacket(requestingServer, minigameServerInfo);
+                } else {
+                    broadcastPacket(minigameServerInfo);
+                }
+            } catch (IOException e) {
+                logger.error("An error occurred while trying to send MinigameServerInfoPacket", e);
+            }
+        }
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
+import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
@@ -53,6 +54,7 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.ai.AiManager;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.economy.EconomyManager;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.fakedeath.FakeDeath;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -312,9 +314,15 @@ public class BedWarsPlugin implements BedwarsAPI {
 
                 try {
                     if ("GetServer".equals(in.readUTF())) {
-                        serverName = in.readUTF();
+                        var newServerName = in.readUTF();
+                        if (!newServerName.equals(serverName)) {
+                            serverName = newServerName;
 
-                        Files.writeString(serverNameFile, serverName);
+                            Files.writeString(serverNameFile, serverName);
+
+                            // Notify other parts of the plugin that the server name has been updated
+                            EventManager.fire(new ServerNameChangeEvent());
+                        }
                     }
                 } catch (IOException e) {
                     logger.error("An error occurred while handling BungeeCord message", e);

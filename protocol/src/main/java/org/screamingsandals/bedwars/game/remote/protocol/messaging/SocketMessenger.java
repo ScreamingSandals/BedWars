@@ -31,12 +31,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.function.Consumer;
 
-public final class SocketMessenger implements Messenger {
+public final class SocketMessenger implements ServerNameAwareMessenger {
     private final @NotNull String server;
     private final int port;
     private final @NotNull Consumer<byte @NotNull []> packetHandler;
     private final @NotNull Consumer<@NotNull Runnable> threadCreator;
-    @Setter
     private @Nullable String identifier;
     private @Nullable Socket clientSocket;
     private @Nullable DataOutputStream out;
@@ -50,6 +49,11 @@ public final class SocketMessenger implements Messenger {
         this.identifier = identifier;
         this.packetHandler = packetHandler;
         this.threadCreator = threadCreator;
+    }
+
+    public void startConnection() throws IOException {
+        //noinspection resource
+        ensureConnection();
     }
 
     private @NotNull DataOutputStream ensureConnection() throws IOException {
@@ -122,5 +126,26 @@ public final class SocketMessenger implements Messenger {
         out.writeInt(payload.length);
         out.write(payload);
         out.flush();
+    }
+
+    @Override
+    public void setServerName(@NotNull String serverName) {
+        if (serverName.equals(identifier)) {
+            return;
+        }
+
+        identifier = serverName;
+        if (clientSocket != null) {
+            try {
+                stopConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                ensureConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
