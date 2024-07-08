@@ -86,8 +86,7 @@ public final class ItemArgument extends CommandArgument<CommandSender, ItemStack
     public static final class ItemParser implements ArgumentParser<CommandSender, ItemStack> {
 
         @Override
-        @NotNull
-        public ArgumentParseResult<@NotNull ItemStack> parse(final @NotNull CommandContext<@NotNull CommandSender> commandContext, final @NotNull Queue<@NotNull String> inputQueue) {
+        public @NotNull ArgumentParseResult<@NotNull ItemStack> parse(final @NotNull CommandContext<@NotNull CommandSender> commandContext, final @NotNull Queue<@NotNull String> inputQueue) {
             if (inputQueue.peek() == null) {
                 return ArgumentParseResult.failure(
                         new NoInputProvidedException(

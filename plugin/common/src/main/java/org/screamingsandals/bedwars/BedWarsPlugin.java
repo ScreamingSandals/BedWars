@@ -82,6 +82,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -165,6 +166,8 @@ public class BedWarsPlugin implements BedwarsAPI {
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
     @Getter
     private @Nullable String serverName;
+    @Getter
+    private @Nullable List<@NotNull String> bungeeServers;
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -313,7 +316,8 @@ public class BedWarsPlugin implements BedwarsAPI {
                 var in = new DataInputStream(new ByteArrayInputStream(bytes));
 
                 try {
-                    if ("GetServer".equals(in.readUTF())) {
+                    var channel = in.readUTF();
+                    if ("GetServer".equals(channel)) {
                         var newServerName = in.readUTF();
                         if (!newServerName.equals(serverName)) {
                             serverName = newServerName;
@@ -323,6 +327,8 @@ public class BedWarsPlugin implements BedwarsAPI {
                             // Notify other parts of the plugin that the server name has been updated
                             EventManager.fire(new ServerNameChangeEvent());
                         }
+                    } else if ("GetServers".equals(channel)) {
+                        bungeeServers = Arrays.asList(in.readUTF().split(", "));
                     }
                 } catch (IOException e) {
                     logger.error("An error occurred while handling BungeeCord message", e);

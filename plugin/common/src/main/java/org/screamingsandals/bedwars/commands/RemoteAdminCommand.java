@@ -22,13 +22,18 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
+
+import java.util.List;
 
 @Service
 public class RemoteAdminCommand extends BaseCommand {
@@ -42,9 +47,27 @@ public class RemoteAdminCommand extends BaseCommand {
         var baseAddCommand = commandSenderWrapperBuilder
                 .literal("add")
                 .argument(StringArgument.of("name"));
+
+        var serverArgument = StringArgument.<CommandSender>newBuilder("server")
+                .withSuggestionsProvider((context, s) -> {
+                    var servers = BedWarsPlugin.getInstance().getBungeeServers();
+                    if (servers != null) {
+                        return servers;
+                    }
+
+                    if (context.getSender() instanceof Player) {
+                        // ask for server list so we can autocomplete it next time
+                        BungeeUtils.sendBungeeMessage((Player) context.getSender(), dataOutputStream -> {
+                            dataOutputStream.writeUTF("GetServers");
+                        });
+                    }
+                    return List.of();
+                })
+                .build();
+
         manager.command(baseAddCommand
                 .literal("server")
-                .argument(StringArgument.of("server"))
+                .argument(serverArgument)
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
                     var name = commandContext.<String>get("name");
@@ -68,7 +91,7 @@ public class RemoteAdminCommand extends BaseCommand {
 
         manager.command(baseAddCommand
                 .literal("server-game")
-                .argument(StringArgument.of("server"))
+                .argument(serverArgument)
                 .argument(StringArgument.of("game"))
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
@@ -129,9 +152,10 @@ public class RemoteAdminCommand extends BaseCommand {
                 .argument(StringArgument.<CommandSender>newBuilder("name")
                         .withSuggestionsProvider((ctx, s) -> GameManagerImpl.getInstance().getRemoteGameNames())
                 );
+
         manager.command(baseSetCommand
                 .literal("server")
-                .argument(StringArgument.of("server"))
+                .argument(serverArgument)
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
                     var name = commandContext.<String>get("name");
@@ -156,7 +180,7 @@ public class RemoteAdminCommand extends BaseCommand {
 
         manager.command(baseSetCommand
                 .literal("server-game")
-                .argument(StringArgument.of("server"))
+                .argument(serverArgument)
                 .argument(StringArgument.of("game"))
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
