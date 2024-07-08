@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
-import org.screamingsandals.bedwars.game.remote.RemoteGameStateStorage;
+import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
@@ -44,10 +44,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class RemoteAdminCommand extends BaseCommand {
-    private final @NotNull RemoteGameStateStorage stateStorage;
+    private final @NotNull RemoteGameStateManager stateStorage;
     private final @NotNull ProtocolManagerImpl protocolManager;
 
-    public RemoteAdminCommand(@NotNull RemoteGameStateStorage stateStorage, @NotNull ProtocolManagerImpl protocolManager) {
+    public RemoteAdminCommand(@NotNull RemoteGameStateManager stateStorage, @NotNull ProtocolManagerImpl protocolManager) {
         super("remote-admin", BedWarsPermission.ADMIN_PERMISSION, true);
         this.stateStorage = stateStorage;
         this.protocolManager = protocolManager;
@@ -140,6 +140,7 @@ public class RemoteAdminCommand extends BaseCommand {
                     var gameOb = RemoteGameImpl.createGame(name, server);
                     gameOb.setRemoteGameIdentifier(game);
                     GameManagerImpl.getInstance().addGame(gameOb);
+                    RemoteGameStateManager.getInstance().subscribe(server, game);
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_ADDED_SERVER_GAME)
                                     .defaultPrefix()
@@ -201,6 +202,12 @@ public class RemoteAdminCommand extends BaseCommand {
                         return;
                     }
 
+                    var oldServer = game.get().getRemoteServer();
+                    var oldIdentifier = game.get().getRemoteGameIdentifier();
+                    if (oldIdentifier != null) {
+                        RemoteGameStateManager.getInstance().unsubscribe(oldServer, oldIdentifier);
+                    }
+
                     game.get().setRemoteServer(server);
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_SET_SERVER)
@@ -228,8 +235,16 @@ public class RemoteAdminCommand extends BaseCommand {
                         return;
                     }
 
+                    var oldServer = gameOb.get().getRemoteServer();
+                    var oldIdentifier = gameOb.get().getRemoteGameIdentifier();
+                    if (oldIdentifier != null) {
+                        RemoteGameStateManager.getInstance().unsubscribe(oldServer, oldIdentifier);
+                    }
+
                     gameOb.get().setRemoteServer(server);
-                    gameOb.get().setRemoteGameIdentifier(game);;
+                    gameOb.get().setRemoteGameIdentifier(game);
+                    RemoteGameStateManager.getInstance().subscribe(server, game);
+
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_SET_SERVER_GAME)
                                     .defaultPrefix()
@@ -255,6 +270,11 @@ public class RemoteAdminCommand extends BaseCommand {
                     if (game.isEmpty()) {
                         sender.sendMessage(Message.of(LangKeys.ADMIN_REMOTE_DOES_NOT_EXIST).defaultPrefix().placeholder("name", name));
                         return;
+                    }
+                    var oldServer = game.get().getRemoteServer();
+                    var oldIdentifier = game.get().getRemoteGameIdentifier();
+                    if (oldIdentifier != null) {
+                        RemoteGameStateManager.getInstance().unsubscribe(oldServer, oldIdentifier);
                     }
 
                     GameManagerImpl.getInstance().removeGame(game.get());

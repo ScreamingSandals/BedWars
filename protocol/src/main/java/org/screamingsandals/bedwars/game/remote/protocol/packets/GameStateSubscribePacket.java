@@ -22,7 +22,6 @@ package org.screamingsandals.bedwars.game.remote.protocol.packets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.DataInputStream;
@@ -31,25 +30,21 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Getter
-public class GameStateRequestPacket implements Packet {
-    private final @Nullable String requestingServer;
+public class GameStateSubscribePacket implements Packet {
+    private final @NotNull String requestingServer;
     private final @NotNull String gameIdentifier;
+    private final boolean subscribe;
 
-    public GameStateRequestPacket(@NotNull DataInputStream dataInputStream) throws IOException {
+    public GameStateSubscribePacket(@NotNull DataInputStream dataInputStream) throws IOException {
         gameIdentifier = PacketUtils.readStandardUTF(dataInputStream);
-        if (dataInputStream.readBoolean()) {
-            this.requestingServer = PacketUtils.readStandardUTF(dataInputStream);
-        } else {
-            this.requestingServer = null;
-        }
+        requestingServer = PacketUtils.readStandardUTF(dataInputStream);
+        subscribe = dataInputStream.readBoolean();
     }
 
     @Override
     public void write(@NotNull DataOutputStream dataOutputStream) throws IOException {
         PacketUtils.writeStandardUTF(dataOutputStream, gameIdentifier);
-        dataOutputStream.writeBoolean(requestingServer != null);
-        if (requestingServer != null) {
-            PacketUtils.writeStandardUTF(dataOutputStream, requestingServer);
-        }
+        PacketUtils.writeStandardUTF(dataOutputStream, requestingServer);
+        dataOutputStream.writeBoolean(subscribe);
     }
 }

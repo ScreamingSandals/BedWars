@@ -25,6 +25,7 @@ import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateRequestPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateSubscribePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoRequestPacket;
@@ -41,7 +42,8 @@ public enum PacketId {
     GAME_STATE_REQUEST(GameStateRequestPacket.class, GameStateRequestPacket::new),
     GAME_LIST_REQUEST(GameListRequestPacket.class, GameListRequestPacket::new),
     MINIGAME_SERVER_INFO(MinigameServerInfoPacket.class, MinigameServerInfoPacket::new),
-    MINIGAME_SERVER_INFO_REQUEST(MinigameServerInfoRequestPacket.class, MinigameServerInfoRequestPacket::new);
+    MINIGAME_SERVER_INFO_REQUEST(MinigameServerInfoRequestPacket.class, MinigameServerInfoRequestPacket::new),
+    GAME_STATE_SUBSCRIBE(GameStateSubscribePacket.class, GameStateSubscribePacket::new);
 
     private static final @NotNull PacketId @NotNull [] VALUES = values();
 
