@@ -128,7 +128,22 @@ public class RemoteGameImpl implements RemoteGame {
             return null;
         }
 
-        return state.getElapsed() + (int) ((System.currentTimeMillis() - state.getGenerationTime()) / 1000);
+        var elapsed = state.getElapsed();
+        if (state.isTimeMoving()) {
+            elapsed += (int) ((System.currentTimeMillis() - state.getGenerationTime()) / 1000);
+        }
+        return elapsed;
+    }
+
+    @Override
+    public @Nullable Integer getTimeLeftInCurrentState() {
+        var maxTime = getMaxTimeInTheCurrentState();
+        var elapsed = getElapsedTimeInCurrentState();
+        if (maxTime != null && elapsed != null) {
+            return maxTime - elapsed;
+        }
+
+        return null;
     }
 
     @Override

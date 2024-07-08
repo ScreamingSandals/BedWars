@@ -67,7 +67,6 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
             if (gameOpt.isPresent()) {
                 var g = gameOpt.get();
-                // TODO: make all placeholders work for remote games
                 if (g instanceof GameImpl) {
                     var game = (GameImpl) g;
                     if (operation.startsWith("team_")) {
@@ -184,22 +183,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         case "minplayers":
                             return Component.text(remoteGame.getMinPlayers());
                         case "time": {
-                            var maxTime = remoteGame.getMaxTimeInTheCurrentState();
-                            var elapsed = remoteGame.getElapsedTimeInCurrentState();
-                            if (maxTime != null && elapsed != null) {
-                                return Component.text(maxTime - elapsed);
-                            }
-
-                            return Component.text(0);
+                            var timeLeft = remoteGame.getTimeLeftInCurrentState();
+                            return Component.text(timeLeft != null ? timeLeft : 0);
                         }
                         case "timeformat": {
-                            var maxTime = remoteGame.getMaxTimeInTheCurrentState();
-                            var elapsed = remoteGame.getElapsedTimeInCurrentState();
-                            if (maxTime != null && elapsed != null) {
-                                return Component.text(GameImpl.getFormattedTimeLeft(maxTime - elapsed));
-                            }
-
-                            return Component.text(GameImpl.getFormattedTimeLeft(0));
+                            var timeLeft = remoteGame.getTimeLeftInCurrentState();
+                            return Component.text(GameImpl.getFormattedTimeLeft(timeLeft != null ? timeLeft : 0));
                         }
                         case "elapsedtime":
                             switch (remoteGame.getStatus()) {

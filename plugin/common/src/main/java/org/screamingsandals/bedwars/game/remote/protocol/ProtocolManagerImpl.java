@@ -24,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -214,6 +216,12 @@ public class ProtocolManagerImpl extends ProtocolManager {
                     )
                     .elapsed(maxTime - game.getTimeLeft())
                     .maxTime(maxTime)
+                    .isTimeMoving(
+                            game.getStatus() != GameStatus.WAITING
+                            || (game.countConnectedPlayers() >= game.getMinPlayers()
+                                && (game.countActiveTeams() > 1 || game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false))
+                            )
+                    )
                     .build();
 
             var requestingServer = ((GameStateRequestPacket) packet).getRequestingServer();

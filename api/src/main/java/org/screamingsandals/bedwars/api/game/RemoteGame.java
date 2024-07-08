@@ -101,4 +101,12 @@ public interface RemoteGame extends Game {
      * @return elapsed time or null if unknown
      */
     @Nullable Integer getElapsedTimeInCurrentState();
+
+    /**
+     * Gets a time left in the current state. This value is computed
+     * using {@link #getMaxTimeInTheCurrentState()} and {@link #getElapsedTimeInCurrentState()}.
+     *
+     * @return time left or null if unknown
+     */
+    @Nullable Integer getTimeLeftInCurrentState();
 }

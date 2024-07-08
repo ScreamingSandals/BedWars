@@ -55,6 +55,7 @@ public class GameStatePacket implements Packet {
     private final @NotNull List<@NotNull PlayerEntry> players;
     private final int elapsed;
     private final @Nullable Integer maxTime;
+    private final boolean isTimeMoving;
     private long generationTime = 0; // millis
 
     public GameStatePacket(@NotNull DataInputStream dataInputStream) throws IOException {
@@ -86,6 +87,7 @@ public class GameStatePacket implements Packet {
         } else {
             maxTime = null;
         }
+        isTimeMoving = dataInputStream.readBoolean();
         generationTime = dataInputStream.readLong();
     }
 
@@ -115,6 +117,7 @@ public class GameStatePacket implements Packet {
         if (maxTime != null) {
             dataOutputStream.writeInt(maxTime);
         }
+        dataOutputStream.writeBoolean(isTimeMoving);
         dataOutputStream.writeLong(System.currentTimeMillis());
     }
 
