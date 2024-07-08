@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.game.remote.protocol.packets;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -30,12 +32,12 @@ import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder(builderClassName = "Builder")
 @Getter
 public class GameStatePacket implements Packet {
@@ -44,6 +46,7 @@ public class GameStatePacket implements Packet {
     private final @NotNull String name;
     private final @Nullable String displayName;
     private final int onlinePlayers;
+    private final int alivePlayers;
     private final int minPlayers;
     private final int maxPlayers;
     private final int teams;
@@ -52,7 +55,7 @@ public class GameStatePacket implements Packet {
     private final @NotNull List<@NotNull PlayerEntry> players;
     private final int elapsed;
     private final @Nullable Integer maxTime;
-    private final @NotNull Instant generationTime;
+    private long generationTime = 0; // millis
 
     public GameStatePacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);
@@ -64,6 +67,7 @@ public class GameStatePacket implements Packet {
             displayName = null;
         }
         onlinePlayers = dataInputStream.readInt();
+        alivePlayers = dataInputStream.readInt();
         minPlayers = dataInputStream.readInt();
         maxPlayers = dataInputStream.readInt();
         teams = dataInputStream.readInt();
@@ -82,7 +86,7 @@ public class GameStatePacket implements Packet {
         } else {
             maxTime = null;
         }
-        generationTime = Instant.ofEpochSecond(dataInputStream.readLong());
+        generationTime = dataInputStream.readLong();
     }
 
     @Override
@@ -95,6 +99,7 @@ public class GameStatePacket implements Packet {
             PacketUtils.writeStandardUTF(dataOutputStream, displayName);
         }
         dataOutputStream.writeInt(onlinePlayers);
+        dataOutputStream.writeInt(alivePlayers);
         dataOutputStream.writeInt(minPlayers);
         dataOutputStream.writeInt(maxPlayers);
         dataOutputStream.writeInt(teams);
@@ -110,7 +115,7 @@ public class GameStatePacket implements Packet {
         if (maxTime != null) {
             dataOutputStream.writeInt(maxTime);
         }
-        dataOutputStream.writeLong(generationTime.getEpochSecond());
+        dataOutputStream.writeLong(System.currentTimeMillis());
     }
 
     @Data

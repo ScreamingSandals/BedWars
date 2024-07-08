@@ -191,7 +191,7 @@ public class GameCycleImpl implements GameCycle {
                     return;
                 }
 
-                String time = game.getFormattedTimeLeft(remainingGameTime);
+                String time = GameImpl.getFormattedTimeLeft(remainingGameTime);
                 var message = Message
                         .of(LangKeys.IN_GAME_END_TEAM_WIN)
                         .prefixOrDefault(game.getCustomPrefixComponent())
@@ -428,7 +428,7 @@ public class GameCycleImpl implements GameCycle {
         RecordSave.getInstance().getRecord(game.getName()).ifPresentOrElse(record ->
                 Message.of(LangKeys.IN_GAME_RECORD_CURRENT)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("time", game.getFormattedTimeLeft(record.getTime()))
+                        .placeholder("time", GameImpl.getFormattedTimeLeft(record.getTime()))
                         .placeholderRaw("team-members", String.join(", ", record.getWinners()))
                         .send(players), () ->
                 Message.of(LangKeys.IN_GAME_RECORD_NO)

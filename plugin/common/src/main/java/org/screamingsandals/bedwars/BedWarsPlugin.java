@@ -33,6 +33,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameStateStorage;
 import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
@@ -144,7 +145,8 @@ import java.util.stream.Collectors;
                 GroupManagerImpl.class,
                 TargetInvalidatedListener.class,
                 LocalGameLoaderImpl.class,
-                ProtocolManagerImpl.class
+                ProtocolManagerImpl.class,
+                RemoteGameStateStorage.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",

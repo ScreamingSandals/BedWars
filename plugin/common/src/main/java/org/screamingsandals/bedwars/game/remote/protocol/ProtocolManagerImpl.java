@@ -54,7 +54,6 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -200,7 +199,8 @@ public class ProtocolManagerImpl extends ProtocolManager {
                     .uuid(game.getUuid())
                     .name(game.getName())
                     .displayName(game.getDisplayNameComponent().toJavaJson())
-                    .onlinePlayers(game.countAlive())
+                    .onlinePlayers(game.countConnectedPlayers())
+                    .alivePlayers(game.countAlive())
                     .maxPlayers(game.getMaxPlayers())
                     .minPlayers(game.getMinPlayers())
                     .teams(game.getTeams().size())
@@ -214,7 +214,6 @@ public class ProtocolManagerImpl extends ProtocolManager {
                     )
                     .elapsed(maxTime - game.getTimeLeft())
                     .maxTime(maxTime)
-                    .generationTime(Instant.now())
                     .build();
 
             var requestingServer = ((GameStateRequestPacket) packet).getRequestingServer();

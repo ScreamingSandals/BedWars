@@ -62,13 +62,6 @@ public interface LocalGame extends Game {
      */
 	void stop();
 
-    /**
-     * @return true if GameStatus is different than DISABLED
-     */
-    default boolean isActivated() {
-        return getStatus() != GameStatus.DISABLED;
-    }
-
     // PLAYER MANAGEMENT
 
     /**
@@ -113,21 +106,6 @@ public interface LocalGame extends Game {
 	int getGameTime();
 
     /**
-     * @return configured minimal players to start the game
-     */
-	int getMinPlayers();
-
-    /**
-     * @return configured maximal players of the arena
-     */
-	int getMaxPlayers();
-
-    /**
-     * @return players in game
-     */
-	int countConnectedPlayers();
-
-    /**
      * @return list of players in game
      */
 	List<? extends BWPlayer> getConnectedPlayers();
@@ -155,17 +133,7 @@ public interface LocalGame extends Game {
     /**
      * @return
      */
-	int countAvailableTeams();
-
-    /**
-     * @return
-     */
 	List<? extends Team> getActiveTeams();
-
-    /**
-     * @return
-     */
-	int countActiveTeams();
 
     /**
      * @param player
@@ -413,8 +381,6 @@ public interface LocalGame extends Game {
      * @return
      */
     ComponentHolder getCustomPrefixComponent();
-
-    ComponentHolder getDisplayNameComponent();
 
     /**
      * @since 0.3.0

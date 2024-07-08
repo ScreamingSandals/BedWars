@@ -23,6 +23,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 /**
  * A remote game the players can connect to. Can be either identified only by the server or also by the specific arena
  * if the server supports arena selecting.
@@ -71,4 +73,32 @@ public interface RemoteGame extends Game {
      * @since 0.3.0
      */
     void setRemoteGameIdentifier(@Nullable String remoteGameIdentifier);
+
+    /**
+     * Gets a game name as it is called on the remote server.
+     *
+     * @return remote game name or null if unknown
+     */
+    @Nullable String getNameOnRemoteServer();
+
+    /**
+     * Gets a uuid used on the remote server to identify the game.
+     *
+     * @return remote game uuid or null if unknown
+     */
+    @Nullable UUID getUuidOnRemoteServer();
+
+    /**
+     * Gets the max time based on the current game state.
+     *
+     * @return max time or null if unknown
+     */
+    @Nullable Integer getMaxTimeInTheCurrentState();
+
+    /**
+     * Gets the currently elapsed time in the current state.
+     *
+     * @return elapsed time or null if unknown
+     */
+    @Nullable Integer getElapsedTimeInCurrentState();
 }

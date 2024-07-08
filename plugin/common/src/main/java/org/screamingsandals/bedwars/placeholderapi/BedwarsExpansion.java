@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -144,14 +145,14 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         case "elapsedtimeformat":
                             switch (game.getStatus()) {
                                 case WAITING:
-                                    return Component.text(game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getTimeLeft()));
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getLobbyCountdown() - game.getTimeLeft()));
                                 case RUNNING:
-                                    return Component.text(game.getFormattedTimeLeft(game.getGameTime() - game.getTimeLeft()));
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getGameTime() - game.getTimeLeft()));
                                 case GAME_END_CELEBRATING:
-                                    return Component.text(game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getTimeLeft()));
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getPostGameWaiting() - game.getTimeLeft()));
                                 case REBUILDING:
                                 case DISABLED:
-                                    return Component.text(game.getFormattedTimeLeft(0));
+                                    return Component.text(GameImpl.getFormattedTimeLeft(0));
                             }
                         case "world":
                             return Component.text(game.getWorld().getName());
@@ -167,6 +168,71 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                             return Component.text(game.countActiveTeams());
                         case "teamchests":
                             return Component.text(game.countTeamChests());
+                    }
+                } else {
+                    var remoteGame = (RemoteGameImpl) g;
+
+                    switch (operation) {
+                        case "name":
+                            return Component.text(remoteGame.getName());
+                        case "displayname":
+                            return remoteGame.getDisplayNameComponent().asComponent();
+                        case "players":
+                            return Component.text(remoteGame.countConnectedPlayers());
+                        case "maxplayers":
+                            return Component.text(remoteGame.getMaxPlayers());
+                        case "minplayers":
+                            return Component.text(remoteGame.getMinPlayers());
+                        case "time": {
+                            var maxTime = remoteGame.getMaxTimeInTheCurrentState();
+                            var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                            if (maxTime != null && elapsed != null) {
+                                return Component.text(maxTime - elapsed);
+                            }
+
+                            return Component.text(0);
+                        }
+                        case "timeformat": {
+                            var maxTime = remoteGame.getMaxTimeInTheCurrentState();
+                            var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                            if (maxTime != null && elapsed != null) {
+                                return Component.text(GameImpl.getFormattedTimeLeft(maxTime - elapsed));
+                            }
+
+                            return Component.text(GameImpl.getFormattedTimeLeft(0));
+                        }
+                        case "elapsedtime":
+                            switch (remoteGame.getStatus()) {
+                                case WAITING:
+                                case RUNNING:
+                                case GAME_END_CELEBRATING:
+                                    var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                                    return Component.text(elapsed != null ? elapsed : 0);
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text("0");
+                            }
+                        case "elapsedtimeformat":
+                            switch (remoteGame.getStatus()) {
+                                case WAITING:
+                                case RUNNING:
+                                case GAME_END_CELEBRATING:
+                                    var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                                    return Component.text(GameImpl.getFormattedTimeLeft(elapsed != null ? elapsed : 0));
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(0));
+                            }
+                        case "state":
+                            return Component.text(remoteGame.getStatus().name().toLowerCase(Locale.ROOT));
+                        case "running":
+                            return Component.text(remoteGame.getStatus() == GameStatus.RUNNING || remoteGame.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false");
+                        case "waiting":
+                            return Component.text(remoteGame.getStatus() == GameStatus.WAITING ? "true" : "false");
+                        case "available_teams":
+                            return Component.text(remoteGame.countAvailableTeams());
+                        case "connected_teams":
+                            return Component.text(remoteGame.countActiveTeams());
                     }
                 }
             }
@@ -295,21 +361,21 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_time": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     return Component.text(m_Game.get().getTimeLeft());
                 }
                 case "game_timeformat": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     return Component.text(m_Game.get().getFormattedTimeLeft());
                 }
                 case "game_elapsedtime": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     switch (m_Game.get().getStatus()) {
@@ -326,16 +392,16 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 }
                 case "game_elapsedtimeformat": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     switch (m_Game.get().getStatus()) {
                         case WAITING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft()));
                         case RUNNING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getGameTime() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getGameTime() - m_Game.get().getTimeLeft()));
                         case GAME_END_CELEBRATING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft()));
                         case REBUILDING:
                         case DISABLED:
                             return Component.text("0");

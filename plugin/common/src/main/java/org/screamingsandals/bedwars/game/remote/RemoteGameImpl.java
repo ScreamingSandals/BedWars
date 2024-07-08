@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.game.remote;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +27,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -44,16 +44,127 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 public class RemoteGameImpl implements RemoteGame {
     private @NotNull UUID uuid;
     private @NotNull String name;
     private @NotNull String remoteServer;
     private @Nullable String remoteGameIdentifier;
 
+    private @Nullable GameStatePacket state;
+
+    public RemoteGameImpl(@NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+        this.uuid = uuid;
+        this.name = name;
+        this.remoteServer = remoteServer;
+        this.remoteGameIdentifier = remoteGameIdentifier;
+    }
+
     @Override
-    public GameStatus getStatus() {
-        return GameStatus.WAITING;
+    public @NotNull GameStatus getStatus() {
+        if (state == null) {
+            return GameStatus.REMOTE_UNKNOWN;
+        }
+
+        return GameStatus.valueOf(state.getState());
+    }
+
+    @Override
+    public int getMinPlayers() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getMinPlayers();
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getMaxPlayers();
+    }
+
+    @Override
+    public @NotNull Component getDisplayNameComponent() {
+        if (state == null) {
+            return Component.text(remoteGameIdentifier != null ? remoteGameIdentifier : name);
+        }
+
+        return Component.fromJavaJson(state.getDisplayName());
+    }
+
+    @Override
+    public @Nullable String getNameOnRemoteServer() {
+        if (state == null) {
+            return null;
+        }
+
+        return state.getName();
+    }
+
+    @Override
+    public @Nullable UUID getUuidOnRemoteServer() {
+        if (state == null) {
+            return null;
+        }
+
+        return state.getUuid();
+    }
+
+    @Override
+    public @Nullable Integer getMaxTimeInTheCurrentState() {
+        if (state == null) {
+            return null;
+        }
+
+        return state.getMaxTime();
+    }
+
+    @Override
+    public @Nullable Integer getElapsedTimeInCurrentState() {
+        if (state == null) {
+            return null;
+        }
+
+        return state.getElapsed() + (int) ((System.currentTimeMillis() - state.getGenerationTime()) / 1000);
+    }
+
+    @Override
+    public int countConnectedPlayers() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getOnlinePlayers();
+    }
+
+    @Override
+    public int countAlive() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getAlivePlayers();
+    }
+
+    @Override
+    public int countAvailableTeams() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getTeams();
+    }
+
+    @Override
+    public int countActiveTeams() {
+        if (state == null) {
+            return 0;
+        }
+
+        return state.getAliveTeams();
     }
 
     public static RemoteGameImpl load(ConfigurationNode node) {
@@ -141,7 +252,7 @@ public class RemoteGameImpl implements RemoteGame {
     }
 
     @Override
-    public void joinToGame(BWPlayer p) {
+    public void joinToGame(@NotNull BWPlayer p) {
         if (!(p instanceof BedWarsPlayer)) {
             throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
         }

@@ -22,9 +22,14 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameStateStorage;
+import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
+import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.lib.lang.Message;
@@ -33,12 +38,19 @@ import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RemoteAdminCommand extends BaseCommand {
-    public RemoteAdminCommand() {
+    private final @NotNull RemoteGameStateStorage stateStorage;
+    private final @NotNull ProtocolManagerImpl protocolManager;
+
+    public RemoteAdminCommand(@NotNull RemoteGameStateStorage stateStorage, @NotNull ProtocolManagerImpl protocolManager) {
         super("remote-admin", BedWarsPermission.ADMIN_PERMISSION, true);
+        this.stateStorage = stateStorage;
+        this.protocolManager = protocolManager;
     }
 
     @Override
@@ -61,6 +73,28 @@ public class RemoteAdminCommand extends BaseCommand {
                             dataOutputStream.writeUTF("GetServers");
                         });
                     }
+                    return List.of();
+                })
+                .build();
+
+        var gameArgument = StringArgument.<CommandSender>newBuilder("game")
+                .withSuggestionsProvider((context, s) -> {
+                    @NotNull String server = context.get("server");
+
+                    if (stateStorage.hasKnownGamesForServer(server)) {
+                        return stateStorage.getKnownGames(server).stream().map(GameListPacket.GameEntry::getName).collect(Collectors.toList());
+                    }
+
+                    var servers = BedWarsPlugin.getInstance().getBungeeServers();
+                    if (servers == null || !servers.contains(server)) {
+                        return List.of();
+                    }
+
+                    try {
+                        protocolManager.sendPacket(server, new GameListRequestPacket(BedWarsPlugin.getInstance().getServerName()));
+                    } catch (IOException ignored) { // It is just autocomplete
+                    }
+
                     return List.of();
                 })
                 .build();
@@ -92,7 +126,7 @@ public class RemoteAdminCommand extends BaseCommand {
         manager.command(baseAddCommand
                 .literal("server-game")
                 .argument(serverArgument)
-                .argument(StringArgument.of("game"))
+                .argument(gameArgument)
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
                     var name = commandContext.<String>get("name");
@@ -181,7 +215,7 @@ public class RemoteAdminCommand extends BaseCommand {
         manager.command(baseSetCommand
                 .literal("server-game")
                 .argument(serverArgument)
-                .argument(StringArgument.of("game"))
+                .argument(gameArgument)
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
                     var name = commandContext.<String>get("name");

@@ -114,7 +114,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class GameImpl implements LocalGame {
-    private final UUID uuid;
+    private final @NotNull UUID uuid;
 
     @NotNull
     private GameCycle gameCycle = new GameCycleImpl(this);
@@ -792,7 +792,7 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public void joinToGame(BWPlayer p) {
+    public void joinToGame(@NotNull BWPlayer p) {
         if (!(p instanceof BedWarsPlayer)) {
             throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
         }
@@ -1352,7 +1352,7 @@ public class GameImpl implements LocalGame {
         return getFormattedTimeLeft(this.countdown);
     }
 
-    public String getFormattedTimeLeft(int countdown) {
+    public static @NotNull String getFormattedTimeLeft(int countdown) {
         int min;
         int sec;
         String minStr;
@@ -1903,7 +1903,7 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public Component getDisplayNameComponent() {
+    public @NotNull Component getDisplayNameComponent() {
         if (this.displayName != null && !this.displayName.isBlank()) {
             return Component.fromMiniMessage(this.displayName);
         } else {
