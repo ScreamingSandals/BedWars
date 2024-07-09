@@ -695,7 +695,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
 
                         dispatchRewardCommands("player-destroy-bed", broker,
-                                Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                                Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25), (CurrentTeam) getTeamOfPlayer(broker), null, null);
                     }
                 }
             }
@@ -887,6 +887,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else {
                     updateScoreboard();
                 }
+            }
+
+            if (status == GameStatus.RUNNING) {
+                Game.this.dispatchRewardCommands("player-early-leave", gamePlayer.player, 0, team, gamePlayer.isSpectator, null);
             }
         }
 
@@ -1996,6 +2000,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         Main.getConfigurator().config.getString("sounds.game_start.sound"),
                                         Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.game_start.volume"), (float) Main.getConfigurator().config.getDouble("sounds.game_start.pitch"));
                             });
+                            team.teamMembers.add(new CurrentTeam.Member(player.player.getUniqueId(), player.player.getName()));
                         }
                     }
 
@@ -2114,6 +2119,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
                     Main.getInstance().getServer().getPluginManager().callEvent(statusE);
                     updateScoreboard();
+
+                    for (GamePlayer player : players) {
+                        Game.this.dispatchRewardCommands("player-game-start", player.player, 0, getPlayerTeam(player), null, null);
+                    }
+                    Game.this.dispatchRewardCommands("game-start", null, 0);
                 }
             }
             // Phase 6.2: If status is same as before
@@ -2184,9 +2194,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                             .getStatistic(player.player);
                                                     Game.this.dispatchRewardCommands("player-win-run-immediately", player.player,
-                                                            statistic.getScore());
+                                                            statistic.getScore(), t, null, null);
                                                 } else {
-                                                    Game.this.dispatchRewardCommands("player-win-run-immediately", player.player, 0);
+                                                    Game.this.dispatchRewardCommands("player-win-run-immediately", player.player, 0, t, null, null);
                                                 }
 
                                                 final Player pl = player.player;
@@ -2198,9 +2208,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                             PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                                     .getStatistic(player.player);
                                                             Game.this.dispatchRewardCommands("player-win", pl,
-                                                                    statistic.getScore());
+                                                                    statistic.getScore(), t, null, null);
                                                         } else {
-                                                            Game.this.dispatchRewardCommands("player-win", pl, 0);
+                                                            Game.this.dispatchRewardCommands("player-win", pl, 0, t, null, null);
                                                         }
                                                     }
 
@@ -2214,6 +2224,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                             }
                                         }
                                     }
+
+                                    Game.this.dispatchRewardCommands("team-win", null, 0, t, null, null);
+                                    for (CurrentTeam.Member member : t.teamMembers) {
+                                        Game.this.dispatchRewardCommands("player-team-win", null, 0, t, t.getConnectedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(member.getUuid())), member);
+                                    }
+
                                     break;
                                 }
                             }
@@ -3410,14 +3426,36 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void dispatchRewardCommands(String type, Player player, int score) {
+        dispatchRewardCommands(type, player, score, null, null, null);
+    }
+
+    public void dispatchRewardCommands(String type, Player player, int score, CurrentTeam team, Boolean deathStatus, CurrentTeam.Member member) {
         if (!Main.getConfigurator().config.getBoolean("rewards.enabled")) {
             return;
         }
 
         List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
         for (String command : list) {
-            command = command.replace("{player}", player.getName());
+            if (command.startsWith("/example ")) {
+                continue; // Skip example commands
+            }
+
+            if (player != null) {
+                command = command.replace("{player}", player.getName());
+                command = command.replace("{playerUuid}", player.getUniqueId().toString());
+            }
+            if (member != null) {
+                command = command.replace("{player}", member.getName());
+                command = command.replace("{playerUuid}", member.getUuid().toString());
+            }
+            command = command.replace("{game}", name);
             command = command.replace("{score}", Integer.toString(score));
+            if (team != null) {
+                command = command.replace("{team}", team.teamInfo.name);
+            }
+            if (deathStatus != null) {
+                command = command.replace("{death}", deathStatus ? "true" : "false");
+            }
             command = command.startsWith("/") ? command.substring(1) : command;
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }

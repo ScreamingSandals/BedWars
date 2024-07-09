@@ -532,6 +532,31 @@ public class Configurator {
                 add("/example {player} 10");
             }
         });
+        checkOrSetConfig(modify, "rewards.player-game-start", new ArrayList<String>() {
+            {
+                add("/example {player} 10");
+            }
+        });
+        checkOrSetConfig(modify, "rewards.player-early-leave", new ArrayList<String>() {
+            {
+                add("/example {player} {death} 10");
+            }
+        });
+        checkOrSetConfig(modify, "rewards.team-win", new ArrayList<String>() {
+            {
+                add("/example {team} 10");
+            }
+        });
+        checkOrSetConfig(modify, "rewards.player-team-win", new ArrayList<String>() {
+            {
+                add("/example {team} {death} 10");
+            }
+        });
+        checkOrSetConfig(modify, "rewards.game-start", new ArrayList<String>() {
+            {
+                add("/example Hello World!");
+            }
+        });
 
         checkOrSetConfig(modify, "lore.generate-automatically", true);
         checkOrSetConfig(modify, "lore.text",

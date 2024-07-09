@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.game;
 
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -32,12 +33,14 @@ import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 
 public class CurrentTeam implements RunningTeam {
     public final Team teamInfo;
     public final List<GamePlayer> players = new ArrayList<>();
+    public final List<Member> teamMembers = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
     private Inventory chestInventory;
     private List<Block> chests = new ArrayList<>();
@@ -200,5 +203,11 @@ public class CurrentTeam implements RunningTeam {
     @Override
     public int countTeamChests() {
         return chests.size();
+    }
+
+    @Data
+    public static class Member {
+        private final UUID uuid;
+        private final String name;
     }
 }

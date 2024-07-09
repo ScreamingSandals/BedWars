@@ -150,11 +150,11 @@ public class PlayerListener implements Listener {
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
-                                    Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+                                    Main.getConfigurator().config.getInt("statistics.scores.kill", 10), game.getPlayerTeam(gKiller), null, null);
                         }
                         if (!isBed) {
                             game.dispatchRewardCommands("player-final-kill", killer,
-                                    Main.getConfigurator().config.getInt("statistics.scores.final-kill", 0));
+                                    Main.getConfigurator().config.getInt("statistics.scores.final-kill", 0), game.getPlayerTeam(gKiller), null, null);
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
