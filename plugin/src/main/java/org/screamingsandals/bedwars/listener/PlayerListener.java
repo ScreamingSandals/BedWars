@@ -24,6 +24,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -1211,7 +1212,15 @@ public class PlayerListener implements Listener {
 
             Block block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (block.getType() == Material.AIR || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                if (game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                    return;
+                }
+
+                if (!Main.isLegacy() && event.getBucket() == Material.WATER_BUCKET && event.getBlockClicked().getBlockData() instanceof Waterlogged) {
+                    block = event.getBlockClicked();
+                    game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
+                    game.getRegion().addBuiltDuringGame(block.getLocation());
+                } else if (block.getType() == Material.AIR) {
                     game.getRegion().addBuiltDuringGame(block.getLocation());
                 } else {
                     event.setCancelled(true);
