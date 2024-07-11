@@ -13,13 +13,11 @@ if (version.toString().endsWith('-SNAPSHOT')) {
 subprojects {
     apply plugin: 'java'
 
-    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+    if (project.name != 'BedWars-API' && project.name != 'BedWars' && project.name != 'BedWars-protocol') { // upload only BW and BW-API and BW-protocol
         project.ext.disablePublishingToMaven = true
     }
 
     apply plugin: 'org.screamingsandals.plugin-builder'
-
-    apply plugin: 'org.screamingsandals.plugin-slib'
 
     repositories {
         mavenLocal()
@@ -32,6 +30,8 @@ subprojects {
     if (project.name == 'BedWars-protocol') {
         return // not Slib project
     }
+
+    apply plugin: 'org.screamingsandals.plugin-slib'
 
     slib {
         version(libs.versions.screaming.lib)
