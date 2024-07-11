@@ -17,10 +17,11 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.game.remote.protocol.server;
+package org.screamingsandals.bedwars.game.remote.protocol.sockets;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.protocol.PacketId;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.BufferedInputStream;
@@ -29,12 +30,16 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class SimpleSocketServer {
     private boolean running = true;
-    private final Map<String, ClientConnection> clients = new ConcurrentHashMap<>();
+    private final @NotNull Map<@NotNull String, ClientConnection> clients = new ConcurrentHashMap<>();
+    private final @NotNull List<@NotNull String> ignoresIncomingState = Collections.synchronizedList(new ArrayList<>());
 
     public SimpleSocketServer(int port) throws IOException {
         try (var serverSocket = new ServerSocket(port)) {
@@ -60,6 +65,7 @@ public final class SimpleSocketServer {
         private final @NotNull Socket socket;
         private final @NotNull DataOutputStream out;
         private final @NotNull DataInputStream in;
+        private @Nullable String identifier;
 
         public ClientConnection(@NotNull Socket socket) throws IOException {
             this.socket = socket;
@@ -68,9 +74,8 @@ public final class SimpleSocketServer {
         }
 
         public void run() {
-            @Nullable String identifier = null;
             try (in; out; socket) {
-                 identifier = PacketUtils.readStandardUTF(in);
+                identifier = PacketUtils.readStandardUTF(in);
                 var existingEntry = clients.get(identifier);
                 if (existingEntry != null && existingEntry.socket.isConnected() && !existingEntry.socket.isClosed()) {
                     throw new RuntimeException("New client used the same identifier as another client which is still online: " + identifier);
@@ -79,9 +84,24 @@ public final class SimpleSocketServer {
                 System.out.println("Client logged in: " + identifier);
 
                 while (running && !socket.isClosed()) {
-                    var specificClient = in.readBoolean();
+                    var action = Action.byId(in.readByte());
+                    if (action == null) {
+                        System.out.println("Received invalid action from " + identifier + ". Kicking...");
+                        break;
+                    }
+
+                    if (action == Action.IGNORE_INCOMING_GAME_STATE) {
+                        if (!ignoresIncomingState.contains(identifier)) {
+                            ignoresIncomingState.add(identifier);
+                        }
+                        continue;
+                    } else if (action == Action.STOP_IGNORING_INCOMING_GAME_STATE) {
+                        ignoresIncomingState.remove(identifier);
+                        continue;
+                    }
+
                     ClientConnection client = null;
-                    if (specificClient) {
+                    if (action == Action.SEND_PACKET) {
                         client = clients.get(PacketUtils.readStandardUTF(in));
                         if (client == null || client.socket.isClosed()) {
                             in.readNBytes(in.readInt()); // we have to read the whole packet
@@ -90,15 +110,26 @@ public final class SimpleSocketServer {
                     }
 
                     var size = in.readInt();
+                    if (size == 0) {
+                        continue;
+                    }
+
                     var payload = in.readNBytes(size);
+                    var isIncomingState = Byte.toUnsignedInt(payload[0]) == PacketId.GAME_STATE.getId();
 
                     if (client != null) {
+                        if (isIncomingState && ignoresIncomingState.contains(client.identifier)) {
+                            continue;
+                        }
+
                         client.sendPacket(payload);
                     } else {
                         for (var c : clients.values()) {
-                            if (!c.socket.isClosed()) {
-                                c.sendPacket(payload);
+                            if (c.socket.isClosed() || (isIncomingState && ignoresIncomingState.contains(c.identifier))) {
+                                continue;
                             }
+
+                            c.sendPacket(payload);
                         }
                     }
 
@@ -107,6 +138,7 @@ public final class SimpleSocketServer {
                 throw new RuntimeException(e);
             } finally {
                 clients.remove(identifier);
+                ignoresIncomingState.remove(identifier);
             }
         }
 

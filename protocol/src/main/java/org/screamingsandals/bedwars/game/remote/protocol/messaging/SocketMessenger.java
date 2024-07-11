@@ -23,6 +23,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
+import org.screamingsandals.bedwars.game.remote.protocol.sockets.Action;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -31,7 +32,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.function.Consumer;
 
-public final class SocketMessenger implements ServerNameAwareMessenger {
+public final class SocketMessenger implements ServerNameAwareMessenger, IgnoreCapableMessenger {
     private final @NotNull String server;
     private final int port;
     private final @NotNull Consumer<byte @NotNull []> packetHandler;
@@ -112,7 +113,7 @@ public final class SocketMessenger implements ServerNameAwareMessenger {
     @Override
     public synchronized void sendPacket(@NotNull String server, byte @NotNull [] payload) throws IOException {
         var out = ensureConnection();
-        out.writeBoolean(true);
+        out.writeByte(Action.SEND_PACKET.getId());
         PacketUtils.writeStandardUTF(out, server);
         out.writeInt(payload.length);
         out.write(payload);
@@ -122,7 +123,7 @@ public final class SocketMessenger implements ServerNameAwareMessenger {
     @Override
     public synchronized void broadcastPacket(byte @NotNull [] payload) throws IOException {
         var out = ensureConnection();
-        out.writeBoolean(false);
+        out.writeByte(Action.BROADCAST_PACKET.getId());
         out.writeInt(payload.length);
         out.write(payload);
         out.flush();
@@ -146,6 +147,28 @@ public final class SocketMessenger implements ServerNameAwareMessenger {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void ignoreIncomingState() {
+        try {
+            var out = ensureConnection();
+            out.writeByte(Action.IGNORE_INCOMING_GAME_STATE.getId());
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void stopIgnoreIncomingState() {
+        try {
+            var out = ensureConnection();
+            out.writeByte(Action.STOP_IGNORING_INCOMING_GAME_STATE.getId());
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

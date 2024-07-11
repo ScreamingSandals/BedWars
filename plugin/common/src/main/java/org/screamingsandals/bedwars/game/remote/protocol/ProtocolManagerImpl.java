@@ -24,11 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
-import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
-import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.BungeeCordMessenger;
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.DummyMessenger;
@@ -37,7 +36,6 @@ import org.screamingsandals.bedwars.game.remote.protocol.messaging.ServerNameAwa
 import org.screamingsandals.bedwars.game.remote.protocol.messaging.SocketMessenger;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListRequestPacket;
-import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateRequestPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.MinigameServerInfoRequestPacket;
@@ -174,7 +172,6 @@ public class ProtocolManagerImpl extends ProtocolManager {
                 logger.error("An error occurred while trying to send GameListRequestPacket", e);
             }
         } else if (packet instanceof GameStateRequestPacket) {
-            // TODO: we need a service to repeatedly sent status to servers subscribing to the game state (packet.subscribe)
             var serverName = Objects.requireNonNull(BedWarsPlugin.getInstance().getServerName(), "This server does not know its name yet!");
             var gameId = ((GameStateRequestPacket) packet).getGameIdentifier();
 
@@ -184,45 +181,7 @@ public class ProtocolManagerImpl extends ProtocolManager {
             }
             var game = gameOpt.get();
 
-            int maxTime;
-            switch (game.getStatus()) {
-                case WAITING:
-                    maxTime = game.getLobbyCountdown();
-                    break;
-                case GAME_END_CELEBRATING:
-                    maxTime = game.getPostGameWaiting();
-                    break;
-                default:
-                    maxTime = game.getGameTime();
-            }
-
-            var gameState = GameStatePacket.builder()
-                    .name(serverName)
-                    .uuid(game.getUuid())
-                    .name(game.getName())
-                    .displayName(game.getDisplayNameComponent().toJavaJson())
-                    .onlinePlayers(game.countConnectedPlayers())
-                    .alivePlayers(game.countAlive())
-                    .maxPlayers(game.getMaxPlayers())
-                    .minPlayers(game.getMinPlayers())
-                    .teams(game.getTeams().size())
-                    .aliveTeams(game.getTeamsAlive().size())
-                    .state(game.getStatus().name())
-                    .players(
-                            game.getPlayers().stream()
-                                    .filter(p -> !p.isSpectator())
-                                    .map(p -> new GameStatePacket.PlayerEntry(p.getUuid(), p.getName()))
-                                    .collect(Collectors.toList())
-                    )
-                    .elapsed(maxTime - game.getTimeLeft())
-                    .maxTime(maxTime)
-                    .isTimeMoving(
-                            game.getStatus() != GameStatus.WAITING
-                            || (game.countConnectedPlayers() >= game.getMinPlayers()
-                                && (game.countActiveTeams() > 1 || game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false))
-                            )
-                    )
-                    .build();
+            var gameState = RemoteGameStateManager.buildStatePacket(game, serverName);
 
             var requestingServer = ((GameStateRequestPacket) packet).getRequestingServer();
 
@@ -258,5 +217,9 @@ public class ProtocolManagerImpl extends ProtocolManager {
     @Override
     protected @NotNull Messenger getMessenger() {
         return Preconditions.checkNotNull(messenger, "Messenger has not been constructed yet or communication is disabled!");
+    }
+
+    public @Nullable Messenger getMessengerOrNull() {
+        return messenger;
     }
 }
