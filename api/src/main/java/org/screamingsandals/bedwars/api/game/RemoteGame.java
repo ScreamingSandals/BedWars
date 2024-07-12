@@ -78,6 +78,7 @@ public interface RemoteGame extends Game {
      * Gets a game name as it is called on the remote server.
      *
      * @return remote game name or null if unknown
+     * @since 0.3.0
      */
     @Nullable String getNameOnRemoteServer();
 
@@ -85,6 +86,7 @@ public interface RemoteGame extends Game {
      * Gets a uuid used on the remote server to identify the game.
      *
      * @return remote game uuid or null if unknown
+     * @since 0.3.0
      */
     @Nullable UUID getUuidOnRemoteServer();
 
@@ -92,6 +94,7 @@ public interface RemoteGame extends Game {
      * Gets the max time based on the current game state.
      *
      * @return max time or null if unknown
+     * @since 0.3.0
      */
     @Nullable Integer getMaxTimeInTheCurrentState();
 
@@ -99,6 +102,7 @@ public interface RemoteGame extends Game {
      * Gets the currently elapsed time in the current state.
      *
      * @return elapsed time or null if unknown
+     * @since 0.3.0
      */
     @Nullable Integer getElapsedTimeInCurrentState();
 
@@ -107,6 +111,7 @@ public interface RemoteGame extends Game {
      * using {@link #getMaxTimeInTheCurrentState()} and {@link #getElapsedTimeInCurrentState()}.
      *
      * @return time left or null if unknown
+     * @since 0.3.0
      */
     @Nullable Integer getTimeLeftInCurrentState();
 }

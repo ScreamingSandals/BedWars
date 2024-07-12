@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -266,7 +267,7 @@ public class GameManagerImpl implements GameManager {
 
         try {
             for (var game : games) {
-                if (game instanceof RemoteGameImpl) {
+                if (game instanceof RemoteGameImpl && ((RemoteGameImpl) game).isPersistent()) {
                     ((RemoteGameImpl) game).serialize(node.appendListNode());
                 }
             }
@@ -295,5 +296,26 @@ public class GameManagerImpl implements GameManager {
     @Override
     public Optional<Game> getFirstRunningGame() {
         return getFirstRunningGame(false);
+    }
+
+    @Override
+    public @NotNull RemoteGameImpl createNewRemoteGame(boolean persistent, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+        var uuid = new AtomicReference<UUID>();
+        do {
+            uuid.set(UUID.randomUUID());
+        } while (games.stream().anyMatch(game -> game.getUuid().equals(uuid.get())));
+
+        return createNewRemoteGame(persistent, uuid.get(), name, remoteServer, remoteGameIdentifier);
+    }
+
+    @Override
+    public @NotNull RemoteGameImpl createNewRemoteGame(boolean persistent, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+        if (games.stream().anyMatch(game -> game.getUuid().equals(uuid))) {
+            throw new IllegalStateException("UUID is already used for other local or remote game");
+        }
+
+        var remoteGame = new RemoteGameImpl(persistent, uuid, name, remoteServer, remoteGameIdentifier);
+        addGame(remoteGame);
+        return remoteGame;
     }
 }

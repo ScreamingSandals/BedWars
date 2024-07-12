@@ -45,14 +45,16 @@ import java.util.UUID;
 
 @Data
 public class RemoteGameImpl implements RemoteGame {
-    private @NotNull UUID uuid;
-    private @NotNull String name;
+    private final boolean persistent;
+    private final @NotNull UUID uuid;
+    private final @NotNull String name;
     private @NotNull String remoteServer;
     private @Nullable String remoteGameIdentifier;
 
     private @Nullable GameStatePacket state;
 
-    public RemoteGameImpl(@NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+    public RemoteGameImpl(boolean persistent, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+        this.persistent = persistent;
         this.uuid = uuid;
         this.name = name;
         this.remoteServer = remoteServer;
@@ -226,7 +228,7 @@ public class RemoteGameImpl implements RemoteGame {
                 remoteGameIdentifier = null;
             }
 
-            var remoteGame = new RemoteGameImpl(uuid, name, remoteServer, remoteGameIdentifier);
+            var remoteGame = new RemoteGameImpl(true, uuid, name, remoteServer, remoteGameIdentifier);
             Server.getConsoleSender().sendMessage(
                     MiscUtils.BW_PREFIX.withAppendix(
                             Component.text("Remote game ", Color.GREEN),
@@ -244,14 +246,6 @@ public class RemoteGameImpl implements RemoteGame {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public static RemoteGameImpl createGame(@NotNull String name, @NotNull String remoteServer) {
-        UUID uuid;
-        do {
-            uuid = UUID.randomUUID();
-        } while (GameManagerImpl.getInstance().getGame(uuid).isPresent());
-        return new RemoteGameImpl(uuid, name, remoteServer, null);
     }
 
     public void serialize(ConfigurationNode node) throws SerializationException {

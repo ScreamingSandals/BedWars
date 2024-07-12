@@ -25,7 +25,6 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
@@ -111,8 +110,7 @@ public class RemoteAdminCommand extends BaseCommand {
                         sender.sendMessage(Message.of(LangKeys.ADMIN_REMOTE_NAME_ALREADY_EXISTS).defaultPrefix().placeholder("name", name));
                     }
 
-                    var game = RemoteGameImpl.createGame(name, server);
-                    GameManagerImpl.getInstance().addGame(game);
+                    var game = GameManagerImpl.getInstance().createNewRemoteGame(true, name, server, null);
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_ADDED_SERVER)
                                     .defaultPrefix()
@@ -137,9 +135,7 @@ public class RemoteAdminCommand extends BaseCommand {
                         sender.sendMessage(Message.of(LangKeys.ADMIN_REMOTE_NAME_ALREADY_EXISTS).defaultPrefix().placeholder("name", name));
                     }
 
-                    var gameOb = RemoteGameImpl.createGame(name, server);
-                    gameOb.setRemoteGameIdentifier(game);
-                    GameManagerImpl.getInstance().addGame(gameOb);
+                    var gameOb = GameManagerImpl.getInstance().createNewRemoteGame(true, name, server, game);
                     RemoteGameStateManager.getInstance().subscribe(server, game);
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_ADDED_SERVER_GAME)

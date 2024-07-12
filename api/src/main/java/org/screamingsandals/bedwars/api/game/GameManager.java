@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -99,4 +101,10 @@ public interface GameManager {
     Optional<? extends Game> getFirstWaitingGame();
 
     Optional<? extends Game> getFirstRunningGame();
+
+    @NotNull RemoteGame createNewRemoteGame(boolean persistent, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier);
+
+    @NotNull RemoteGame createNewRemoteGame(boolean persistent, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier);
+
+
 }
