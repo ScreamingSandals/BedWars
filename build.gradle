@@ -27,6 +27,12 @@ subprojects {
         maven { url 'https://repo.alessiodp.com/releases/'  }
     }
 
+    sourceCompatibility = '11.0'
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
     if (project.name == 'BedWars-protocol') {
         return // not Slib project
     }
@@ -84,11 +90,5 @@ subprojects {
         } else {
             archiveClassifier.set('dev')
         }
-    }
-
-    sourceCompatibility = '11.0'
-
-    compileJava {
-        options.encoding = "UTF-8"
     }
 }
