@@ -1256,6 +1256,31 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onSpectatorTeleported(PlayerTeleportEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        if (!Main.isPlayerInGame(player)) {
+            return;
+        }
+
+        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+
+        Game game = gPlayer.getGame();
+
+        if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
+            event.setCancelled(true);
+        }
+    }
+
     /* This event was replaced on 1.12 with newer (event handling is devided between Player112Listener and PlayerBefore112Listener) */
     public static void onItemPickup(Player player, Item item, Cancellable cancel) {
         if (cancel.isCancelled()) {
