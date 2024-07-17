@@ -148,7 +148,7 @@ public class LegacyRegion implements Region {
             BlockState feedState = blockFeed.getState();
 
             headState.setType(brokenBlockTypes.get(blockHead));
-            feedState.setType(brokenBlockTypes.get(blockFeed));
+            feedState.setType(brokenBlockTypes.getOrDefault(blockFeed, brokenBlockTypes.get(blockHead)));
             headState.setRawData((byte) 0x0);
             feedState.setRawData((byte) 0x8);
             feedState.update(true, false);
