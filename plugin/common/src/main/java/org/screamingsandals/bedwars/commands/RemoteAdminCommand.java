@@ -73,8 +73,7 @@ public class RemoteAdminCommand extends BaseCommand {
                         });
                     }
                     return List.of();
-                })
-                .build();
+                });
 
         var gameArgument = StringArgument.<CommandSender>newBuilder("game")
                 .withSuggestionsProvider((context, s) -> {
@@ -95,8 +94,7 @@ public class RemoteAdminCommand extends BaseCommand {
                     }
 
                     return List.of();
-                })
-                .build();
+                });
 
         manager.command(baseAddCommand
                 .literal("server")
