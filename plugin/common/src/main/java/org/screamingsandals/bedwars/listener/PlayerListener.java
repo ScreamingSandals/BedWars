@@ -359,7 +359,7 @@ public class PlayerListener {
         if (Server.getProxyType() != ProxyType.NONE && BedWarsPlugin.getInstance().getServerName() == null) {
             Tasker.runDelayed(
                     DefaultThreads.GLOBAL_THREAD, () -> BungeeUtils.sendBungeeMessage(player, out -> out.writeUTF("GetServer")),
-                    1, TaskerTime.TICKS
+                    1, TaskerTime.SECONDS
             );
         }
 

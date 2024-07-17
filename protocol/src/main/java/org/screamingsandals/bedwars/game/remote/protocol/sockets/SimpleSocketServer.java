@@ -105,7 +105,7 @@ public final class SimpleSocketServer {
                         client = clients.get(PacketUtils.readStandardUTF(in));
                         if (client == null || client.socket.isClosed()) {
                             in.readNBytes(in.readInt()); // we have to read the whole packet
-                            return;
+                            continue;
                         }
                     }
 
@@ -137,6 +137,7 @@ public final class SimpleSocketServer {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
+                System.out.println("Client " + identifier + " disconnected");
                 clients.remove(identifier);
                 ignoresIncomingState.remove(identifier);
             }

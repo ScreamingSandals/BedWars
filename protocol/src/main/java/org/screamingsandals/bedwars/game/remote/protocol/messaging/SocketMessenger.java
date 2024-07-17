@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.game.remote.protocol.sockets.Action;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.function.Consumer;
@@ -85,6 +86,8 @@ public final class SocketMessenger implements ServerNameAwareMessenger, IgnoreCa
                 try {
                     var size = in.readInt();
                     packetHandler.accept(in.readNBytes(size));
+                } catch (EOFException e) {
+                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

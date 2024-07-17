@@ -205,7 +205,7 @@ public class MainConfig {
                         .key("broadcast-state-changes-to-everyone").defValue(false)
                         .key("prevent-state-change-subscribing").defValue(false)
                         .key("prevent-incoming-state-change-processing").defValue(false)
-                        .key("prevent-sending-hello-packet").defValue(true)
+                        .key("prevent-sending-hello-packet").defValue(false)
                         .back()
                     .back()
                 .section("ignored-blocks")

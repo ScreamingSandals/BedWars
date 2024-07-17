@@ -130,7 +130,7 @@ public class RemoteGameStateManager {
         }
 
         if (!preventStateChangeSubscribing) {
-            mySubscriptions.forEach(subscription -> {
+            List.copyOf(mySubscriptions).forEach(subscription -> {
                 unsubscribe(subscription.server, subscription.gameIdentifier);
             });
         }
@@ -295,7 +295,7 @@ public class RemoteGameStateManager {
         }
 
         return GameStatePacket.builder()
-                .name(serverName)
+                .server(serverName)
                 .uuid(game.getUuid())
                 .name(game.getName())
                 .displayName(game.getDisplayNameComponent().toJavaJson())
