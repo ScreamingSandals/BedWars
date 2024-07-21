@@ -82,14 +82,22 @@ public final class SocketMessenger implements ServerNameAwareMessenger, IgnoreCa
 
         running = true;
         threadCreator.accept(() -> {
-            while (running && !clientSocket.isClosed()) {
+            try {
+                while (running && clientSocket.isConnected() && !clientSocket.isClosed()) {
+                    try {
+                        var size = in.readInt();
+                        packetHandler.accept(in.readNBytes(size));
+                    } catch (EOFException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } finally {
                 try {
-                    var size = in.readInt();
-                    packetHandler.accept(in.readNBytes(size));
-                } catch (EOFException e) {
-                    throw new RuntimeException(e);
+                    stopConnection();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         });

@@ -363,7 +363,7 @@ public class PlayerListener {
             );
         }
 
-        if (GameImpl.isBungeeEnabled() && MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
+        if (GameImpl.isBungeeEnabled()) {
             if (!MainConfig.getInstance().node("bungee", "legacy-mode").getBoolean(true)) {
                 Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in modern mode. Registering task...");
                 var countdown = new int[] {200};
@@ -414,7 +414,7 @@ public class PlayerListener {
                         task.cancel();
                     }
                 }, 1, TaskerTime.TICKS, 1, TaskerTime.TICKS);
-            } else {
+            } else if (MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
                 Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled in legacy mode. Registering task...");
                 Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     try {

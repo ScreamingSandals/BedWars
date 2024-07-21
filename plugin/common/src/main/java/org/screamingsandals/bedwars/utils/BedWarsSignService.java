@@ -88,8 +88,7 @@ public class BedWarsSignService extends AbstractSignManager {
     @Override
     protected void updateSign(@NotNull ClickableSign sign) {
         var name = sign.getKey();
-        // TODO: update signs for remote games
-        gameManager.getLocalGame(name).ifPresentOrElse(game -> Tasker.run(DefaultThreads.GLOBAL_THREAD, game::updateSigns),
+        gameManager.getGame(name).ifPresentOrElse(game -> Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(game)),
                 () -> {
                     if ("leave".equalsIgnoreCase(name)) {
                         Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> updateLeave(sign));

@@ -518,7 +518,7 @@ public class GameImpl implements LocalGame {
         if (!players.contains(gamePlayer)) {
             players.add(gamePlayer);
         }
-        updateSigns();
+        SignUtils.updateSigns(this);
 
         if (PlayerStatisticManager.isEnabled()) {
             // Load
@@ -663,7 +663,7 @@ public class GameImpl implements LocalGame {
         }
 
         players.remove(gamePlayer);
-        updateSigns();
+        SignUtils.updateSigns(this);
 
         if (status == GameStatus.WAITING) {
             SpawnEffects.spawnEffect(this, gamePlayer, "game-effects.lobbyleave");
@@ -736,7 +736,7 @@ public class GameImpl implements LocalGame {
 
             if (status != GameStatus.WAITING) {
                 afterRebuild = GameStatus.WAITING;
-                updateSigns();
+                SignUtils.updateSigns(this);
                 rebuild();
             } else {
                 cancelTask();
@@ -762,7 +762,7 @@ public class GameImpl implements LocalGame {
             for (TeamImpl team : teams) {
                 calculatedMaxPlayers += team.getMaxPlayers();
             }
-            Tasker.run(DefaultThreads.GLOBAL_THREAD, GameImpl.this::updateSigns);
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(this));
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBarImpl();
@@ -784,7 +784,7 @@ public class GameImpl implements LocalGame {
         }
         if (status != GameStatus.REBUILDING) {
             status = GameStatus.DISABLED;
-            updateSigns();
+            SignUtils.updateSigns(this);
         } else {
             afterRebuild = GameStatus.DISABLED;
         }
@@ -1303,7 +1303,7 @@ public class GameImpl implements LocalGame {
 
         this.status = this.afterRebuild;
         this.countdown = -1;
-        updateSigns();
+        SignUtils.updateSigns(this);
         cancelTask();
         Debug.info(name + ": rebuilding ends");
     }
@@ -1365,81 +1365,6 @@ public class GameImpl implements LocalGame {
         secStr = (sec < 10) ? "0" + sec : String.valueOf(sec);
 
         return minStr + ":" + secStr;
-    }
-
-    public void updateSigns() {
-        final var config = MainConfig.getInstance();
-        final var gameSigns = BedWarsSignService.getInstance().getSignsForKey(this.name);
-
-        if (gameSigns.isEmpty()) {
-            return;
-        }
-
-        String[] statusLine;
-        String[] playersLine;
-        Block blockBehindMaterial;
-        switch (status) {
-            case REBUILDING:
-                statusLine = LangKeys.SIGN_STATUS_REBUILDING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_REBUILDING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
-                break;
-            case RUNNING:
-            case GAME_END_CELEBRATING:
-                statusLine = LangKeys.SIGN_STATUS_RUNNING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_RUNNING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
-                break;
-            case WAITING:
-                statusLine = LangKeys.SIGN_STATUS_WAITING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_WAITING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
-                break;
-            case DISABLED:
-            default:
-                statusLine = LangKeys.SIGN_STATUS_DISABLED_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_DISABLED_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
-                break;
-        }
-
-        var statusMessage = Message.of(statusLine);
-        var playerMessage = Message.of(playersLine)
-                .placeholder("players", players.size())
-                .placeholder("maxplayers", calculatedMaxPlayers);
-
-        final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
-                .map(ConfigurationNode::getString)
-                .map(s -> Objects.requireNonNullElse(s, "")
-                        .replace("%arena%", this.displayName != null && !this.displayName.isBlank() ? Component.fromMiniMessage(this.displayName).toLegacy() : this.getName())
-                        .replace("%status%", statusMessage.asComponent().toLegacy())
-                        .replace("%players%", playerMessage.asComponent().toLegacy()))
-                .collect(Collectors.toList());
-
-        final var finalBlockBehindMaterial = blockBehindMaterial;
-        for (var signBlock : gameSigns) {
-            signBlock.getLocation().asOptional(Location.class)
-                    .ifPresent(location -> {
-                        if (location.getChunk().isLoaded()) {
-                            var blockState = location.getBlock().blockSnapshot();
-                            if (blockState instanceof SignBlockSnapshot) {
-                                var sign = (SignBlockSnapshot) blockState;
-                                for (int i = 0; i < texts.size() && i < 4; i++) {
-                                    sign.frontLine(i, Component.fromLegacy(texts.get(i)));
-                                }
-                                sign.updateBlock();
-                            }
-
-                            if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
-                                final var optionalBlock = SignUtils.getBlockBehindSign(signBlock);
-                                if (optionalBlock.isPresent()) {
-                                    final var glassBlock = optionalBlock.get();
-                                    glassBlock.block(finalBlockBehindMaterial);
-                                }
-                            }
-                        }
-                    });
-        }
     }
 
     @Override

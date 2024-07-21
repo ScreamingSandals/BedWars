@@ -42,6 +42,7 @@ import org.screamingsandals.bedwars.sidebar.GameSidebar;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.bedwars.utils.SignUtils;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.utils.TitleUtils;
 import org.screamingsandals.lib.Server;
@@ -360,7 +361,7 @@ public class GameCycleImpl implements GameCycle {
                 teamSelectorInventory.destroy();
             game.setTeamSelectorInventory(null);
 
-            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, game::updateSigns, 3, TaskerTime.TICKS);
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(game), 3, TaskerTime.TICKS);
 
             if (MainConfig.getInstance().node("use-chunk-tickets-if-available").getBoolean()) {
                 game.configureChunkTickets();
@@ -542,7 +543,7 @@ public class GameCycleImpl implements GameCycle {
             experimentalBoard = new GameSidebar(game);
             game.setExperimentalBoard(experimentalBoard);
         }
-        game.updateSigns();
+        SignUtils.updateSigns(game);
 
         game.setPreviousStatus(GameStatus.WAITING);
         Debug.info(game.getName() + ": lobby prepared");

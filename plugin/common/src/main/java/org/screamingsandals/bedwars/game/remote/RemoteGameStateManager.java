@@ -36,9 +36,11 @@ import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStateSubscribePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.HelloPacket;
+import org.screamingsandals.bedwars.utils.SignUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
@@ -198,7 +200,10 @@ public class RemoteGameStateManager {
                                     && remoteGame.getRemoteGameIdentifier() != null
                                     && gameState.getName().equals(remoteGame.getRemoteGameIdentifier()) || gameState.getUuid().toString().equals(remoteGame.getRemoteGameIdentifier())
                     )
-                    .forEach(remoteGame -> remoteGame.setState(gameState));
+                    .forEach(remoteGame -> {
+                        remoteGame.setState(gameState);
+                        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(remoteGame));
+                    });
         } else if (!broadcastStateChangesToEveryone && packet instanceof GameStateSubscribePacket) {
             var localGame = gameManager.getLocalGame(((GameStateSubscribePacket) packet).getGameIdentifier());
             if (localGame.isPresent()) {

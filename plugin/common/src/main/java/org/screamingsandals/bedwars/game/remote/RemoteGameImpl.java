@@ -26,22 +26,32 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.utils.BedWarsSignService;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.bedwars.utils.SignUtils;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.block.snapshot.SignBlockSnapshot;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 public class RemoteGameImpl implements RemoteGame {

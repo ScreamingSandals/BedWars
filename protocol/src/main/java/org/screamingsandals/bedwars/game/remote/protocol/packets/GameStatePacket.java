@@ -106,8 +106,8 @@ public class GameStatePacket implements Packet {
         dataOutputStream.writeInt(maxPlayers);
         dataOutputStream.writeInt(teams);
         dataOutputStream.writeInt(aliveTeams);
-        dataOutputStream.writeInt(players.size());
         PacketUtils.writeStandardUTF(dataOutputStream, state);
+        dataOutputStream.writeInt(players.size());
         for (var player : players) {
             PacketUtils.writeUuid(dataOutputStream, player.getUuid());
             PacketUtils.writeStandardUTF(dataOutputStream, player.getName());
