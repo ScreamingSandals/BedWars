@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.api.game;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,18 +27,18 @@ import java.util.UUID;
 /**
  * A remote game the players can connect to. Can be either identified only by the server or also by the specific arena
  * if the server supports arena selecting.
+ * <p>
+ * Unlike {@link LocalGame}, it is allowed to create third party implementations of RemoteGame and use them. These custom
+ * implementations won't be persistent. It is preferred to create a remote game instance using methods provided by {@link GameManager},
+ * unless the custom setup specifically requires a custom implementation.
  *
+ * @see GameManager#registerRemoteGame(RemoteGame)
+ * @see GameManager#createNewRemoteGame(boolean, String, String, String)
+ * @see GameManager#createNewRemoteGame(boolean, UUID, String, String, String)
  * @author ScreamingSandals
  * @since 0.3.0
  */
-@ApiStatus.NonExtendable
 public interface RemoteGame extends Game {
-    /**
-     * This methods allows you to save the arena to config (useful when using custom config options)
-     *
-     * @since 0.3.0
-     */
-    void saveToConfig();
 
     /**
      * Gets a name of the remote bungeecord or velocity server

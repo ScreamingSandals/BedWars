@@ -26,36 +26,21 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameStatePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.JoinGamePacket;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
-import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.utils.BedWarsSignService;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.bedwars.utils.SignUtils;
-import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.block.Block;
-import org.screamingsandals.lib.block.snapshot.SignBlockSnapshot;
-import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.world.Location;
-import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 public class RemoteGameImpl implements RemoteGame {
-    private final boolean persistent;
+    private final @Nullable File saveFile;
     private final @NotNull UUID uuid;
     private final @NotNull String name;
     private @NotNull String remoteServer;
@@ -63,8 +48,8 @@ public class RemoteGameImpl implements RemoteGame {
 
     private @Nullable GameStatePacket state;
 
-    public RemoteGameImpl(boolean persistent, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
-        this.persistent = persistent;
+    public RemoteGameImpl(@Nullable File saveFile, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
+        this.saveFile = saveFile;
         this.uuid = uuid;
         this.name = name;
         this.remoteServer = remoteServer;
@@ -192,82 +177,6 @@ public class RemoteGameImpl implements RemoteGame {
         }
 
         return state.getAliveTeams();
-    }
-
-    public static RemoteGameImpl load(ConfigurationNode node) {
-        try {
-            var uuid = node.node("uuid").get(UUID.class);
-            var name = node.node("name").getString();
-            var remoteServer = node.node("remoteServer").getString();
-            var remoteGameIdentifier = node.node("remoteGameIdentifier").getString();
-
-            if (uuid == null || name == null || name.isBlank() || remoteServer == null || remoteServer.isBlank()) {
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("Remote game cannot be loaded because one of the following required things are missing! Maybe corrupted database/remote_games.json file?", Color.RED)
-                        )
-                );
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("- uuid: " + (uuid == null ? "" : uuid), Color.RED)
-                        )
-                );
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("- name: " + (name == null ? "" : name), Color.RED)
-                        )
-                );
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("- remoteServer: " + (remoteServer == null ? "" : remoteServer), Color.RED)
-                        )
-                );
-                return null;
-            }
-
-            if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
-                Server.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("Remote game " + uuid + " has the same unique id as another arena that is already loaded. Skipping!", Color.RED)
-                        )
-                );
-                return null;
-            }
-
-            if (remoteGameIdentifier != null && remoteGameIdentifier.isBlank()) {
-                remoteGameIdentifier = null;
-            }
-
-            var remoteGame = new RemoteGameImpl(true, uuid, name, remoteServer, remoteGameIdentifier);
-            Server.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.withAppendix(
-                            Component.text("Remote game ", Color.GREEN),
-                            Component.text(uuid + "/" + name, Color.WHITE),
-                            Component.text(" (located on server ", Color.GREEN),
-                            Component.text(remoteServer, Color.WHITE),
-                            Component.text(" as ", Color.GREEN),
-                            Component.text((remoteGameIdentifier != null ? remoteGameIdentifier : "legacy bungee mode"), Color.WHITE),
-                            Component.text(") loaded!", Color.GREEN)
-                    )
-            );
-            return remoteGame;
-        } catch (SerializationException e) {
-            Debug.warn("Something went wrong while loading remote game from the shared file database/remote_games.json. Please report this to our Discord or GitHub!", true);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void serialize(ConfigurationNode node) throws SerializationException {
-        node.node("uuid").set(uuid);
-        node.node("name").set(name);
-        node.node("remoteServer").set(remoteServer);
-        node.node("remoteGameIdentifier").set(remoteGameIdentifier);
-    }
-
-    @Override
-    public void saveToConfig() {
-        GameManagerImpl.getInstance().triggerRemoteSaving();
     }
 
     @Override

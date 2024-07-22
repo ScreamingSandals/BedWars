@@ -23,11 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -169,13 +169,13 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                             return Component.text(game.countTeamChests());
                     }
                 } else {
-                    var remoteGame = (RemoteGameImpl) g;
+                    var remoteGame = (RemoteGame) g;
 
                     switch (operation) {
                         case "name":
                             return Component.text(remoteGame.getName());
                         case "displayname":
-                            return remoteGame.getDisplayNameComponent().asComponent();
+                            return remoteGame.getDisplayNameComponent().as(Component.class);
                         case "players":
                             return Component.text(remoteGame.countConnectedPlayers());
                         case "maxplayers":

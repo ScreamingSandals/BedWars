@@ -33,6 +33,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameLoaderImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
@@ -145,6 +146,7 @@ import java.util.stream.Collectors;
                 GroupManagerImpl.class,
                 TargetInvalidatedListener.class,
                 LocalGameLoaderImpl.class,
+                RemoteGameLoaderImpl.class,
                 ProtocolManagerImpl.class,
                 RemoteGameStateManager.class
         },
@@ -155,6 +157,8 @@ import java.util.stream.Collectors;
 )
 @RequiredArgsConstructor
 public class BedWarsPlugin implements BedwarsAPI {
+    public final @NotNull String SERVER_NAME_SYSTEM_PROPERTY_NAME = "org.screamingsandals.bedwars.serverName";
+
     @Getter
     private final org.screamingsandals.lib.plugin.@NotNull Plugin pluginDescription;
     @ConfigFile("serverName.txt")
@@ -279,8 +283,7 @@ public class BedWarsPlugin implements BedwarsAPI {
                         Files.move(sbw0_2_x, sbw0_2_x.getParent().resolve("BedWars.old"));
                         logger.info("Thank you for updating the plugin! We are now in new folder: plugins/ScreamingBedWars :)");
                     } catch (Throwable e) {
-                        logger.info("We couldn't copy your old SBW 0.2.x setup. Sorry :(");
-                        e.printStackTrace();
+                        logger.error("We couldn't copy your old SBW 0.2.x setup. Sorry :(", e);
                     }
                 }
             }
@@ -304,7 +307,13 @@ public class BedWarsPlugin implements BedwarsAPI {
             }
         });
 
-        if (Files.exists(serverNameFile)) {
+        var serverNameFromProperty = System.getProperty(SERVER_NAME_SYSTEM_PROPERTY_NAME);
+        var usesProperty = serverNameFromProperty != null && !serverNameFromProperty.isBlank();
+        if (usesProperty) {
+            serverName = serverNameFromProperty;
+        }
+
+        if (!usesProperty && Files.exists(serverNameFile)) {
             try {
                 serverName = Files.readString(serverNameFile);
             } catch (IOException e) {
@@ -320,6 +329,10 @@ public class BedWarsPlugin implements BedwarsAPI {
                 try {
                     var channel = in.readUTF();
                     if ("GetServer".equals(channel)) {
+                        if (usesProperty) {
+                            return;
+                        }
+
                         var newServerName = in.readUTF();
                         if (!newServerName.equals(serverName)) {
                             serverName = newServerName;

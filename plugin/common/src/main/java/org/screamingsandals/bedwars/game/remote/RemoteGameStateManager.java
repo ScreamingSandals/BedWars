@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -196,12 +197,14 @@ public class RemoteGameStateManager {
             gameManager.getRemoteGames()
                     .stream()
                     .filter(remoteGame ->
-                            gameState.getServer().equals(remoteGame.getRemoteServer())
+                            remoteGame instanceof RemoteGameImpl
+                                    && gameState.getServer().equals(remoteGame.getRemoteServer())
                                     && remoteGame.getRemoteGameIdentifier() != null
                                     && gameState.getName().equals(remoteGame.getRemoteGameIdentifier()) || gameState.getUuid().toString().equals(remoteGame.getRemoteGameIdentifier())
                     )
                     .forEach(remoteGame -> {
-                        remoteGame.setState(gameState);
+                        //noinspection DataFlowIssue
+                        ((RemoteGameImpl) remoteGame).setState(gameState);
                         Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(remoteGame));
                     });
         } else if (!broadcastStateChangesToEveryone && packet instanceof GameStateSubscribePacket) {

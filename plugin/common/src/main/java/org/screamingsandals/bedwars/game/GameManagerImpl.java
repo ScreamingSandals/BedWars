@@ -25,8 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
+import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.remote.RemoteGameLoaderImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -40,8 +42,8 @@ import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,7 +60,7 @@ public class GameManagerImpl implements GameManager {
     @DataFolder("arenas")
     private final Path arenasFolder;
     @ConfigFile("database/remote_games.json")
-    private final GsonConfigurationLoader remoteGamesLoader;
+    private final File remoteGamesFile;
     private final LoggerWrapper logger;
     private final List<Game> games = new LinkedList<>();
 
@@ -87,10 +89,10 @@ public class GameManagerImpl implements GameManager {
                 .map(game -> (GameImpl) game);
     }
 
-    public Optional<RemoteGameImpl> getRemoteGame(String name) {
+    public Optional<RemoteGame> getRemoteGame(String name) {
         return getGame(name)
-                .filter(game -> game instanceof RemoteGameImpl)
-                .map(game -> (RemoteGameImpl) game);
+                .filter(game -> game instanceof RemoteGame)
+                .map(game -> (RemoteGame) game);
     }
 
     @Override
@@ -104,10 +106,10 @@ public class GameManagerImpl implements GameManager {
                 .map(game -> (GameImpl) game);
     }
 
-    public Optional<RemoteGameImpl> getRemoteGame(UUID uuid) {
+    public Optional<RemoteGame> getRemoteGame(UUID uuid) {
         return getGame(uuid)
-                .filter(game -> game instanceof RemoteGameImpl)
-                .map(game -> (RemoteGameImpl) game);
+                .filter(game -> game instanceof RemoteGame)
+                .map(game -> (RemoteGame) game);
     }
 
     @Override
@@ -124,10 +126,10 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public List<RemoteGameImpl> getRemoteGames() {
+    public List<RemoteGame> getRemoteGames() {
         return games.stream()
-                .filter(game -> game instanceof RemoteGameImpl)
-                .map(game -> (RemoteGameImpl) game)
+                .filter(game -> game instanceof RemoteGame)
+                .map(game -> (RemoteGame) game)
                 .collect(Collectors.toList());
     }
 
@@ -141,7 +143,7 @@ public class GameManagerImpl implements GameManager {
     }
 
     public List<String> getRemoteGameNames() {
-        return games.stream().filter(game -> game instanceof RemoteGameImpl).map(Game::getName).collect(Collectors.toList());
+        return games.stream().filter(game -> game instanceof RemoteGame).map(Game::getName).collect(Collectors.toList());
     }
 
     @Override
@@ -181,33 +183,23 @@ public class GameManagerImpl implements GameManager {
     public void addGame(@NotNull Game game) {
         if (!games.contains(game)) {
             games.add(game);
-            if (game instanceof RemoteGameImpl) {
-                triggerRemoteSaving();
+            if (game instanceof RemoteGameImpl && ((RemoteGameImpl) game).getSaveFile() != null) {
+                RemoteGameLoaderImpl.getInstance().saveGame((RemoteGameImpl) game);
             }
         }
     }
 
     public void removeGame(@NotNull Game game) {
         games.remove(game);
-        if (game instanceof RemoteGameImpl) {
-            triggerRemoteSaving();
+        if (game instanceof RemoteGameImpl && ((RemoteGameImpl) game).getSaveFile() != null) {
+            // This will actually remove the game from the shared file as it is no longer registered
+            RemoteGameLoaderImpl.getInstance().saveGame((RemoteGameImpl) game);
         }
     }
 
     @OnPostEnable
     public void onPostEnable() {
-        try {
-            var remoteGames = remoteGamesLoader.load();
-
-            remoteGames.childrenList().forEach(node -> {
-                var game = RemoteGameImpl.load(node);
-                if (game != null) {
-                    games.add(game);
-                }
-            });
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
+        RemoteGameLoaderImpl.getInstance().loadGames(remoteGamesFile);
 
         if (Files.exists(arenasFolder)) {
             try (var stream = Files.walk(arenasFolder.toAbsolutePath())) {
@@ -262,22 +254,6 @@ public class GameManagerImpl implements GameManager {
         }
     }
 
-    public void triggerRemoteSaving() {
-        var node = remoteGamesLoader.createNode();
-
-        try {
-            for (var game : games) {
-                if (game instanceof RemoteGameImpl && ((RemoteGameImpl) game).isPersistent()) {
-                    ((RemoteGameImpl) game).serialize(node.appendListNode());
-                }
-            }
-
-            remoteGamesLoader.save(node);
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public Optional<Game> getGameWithHighestPlayers() {
         return getGameWithHighestPlayers(false);
@@ -299,6 +275,23 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
+    public void registerRemoteGame(@NotNull RemoteGame remoteGame) {
+        if (games.contains(remoteGame)) {
+            return;
+        }
+        if (games.stream().anyMatch(game -> game.getUuid().equals(remoteGame.getUuid()))) {
+            throw new IllegalStateException("UUID is already used for other local or remote game");
+        }
+
+        addGame(remoteGame);
+    }
+
+    @Override
+    public void unregisterRemoteGame(@NotNull RemoteGame remoteGame) {
+        removeGame(remoteGame);
+    }
+
+    @Override
     public @NotNull RemoteGameImpl createNewRemoteGame(boolean persistent, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier) {
         var uuid = new AtomicReference<UUID>();
         do {
@@ -314,7 +307,7 @@ public class GameManagerImpl implements GameManager {
             throw new IllegalStateException("UUID is already used for other local or remote game");
         }
 
-        var remoteGame = new RemoteGameImpl(persistent, uuid, name, remoteServer, remoteGameIdentifier);
+        var remoteGame = new RemoteGameImpl(persistent ? remoteGamesFile : null, uuid, name, remoteServer, remoteGameIdentifier);
         addGame(remoteGame);
         return remoteGame;
     }

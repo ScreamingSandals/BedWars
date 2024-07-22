@@ -102,8 +102,51 @@ public interface GameManager {
 
     Optional<? extends Game> getFirstRunningGame();
 
+    /**
+     * Registers provided remote game. This method should be used only with custom implementations of {@link RemoteGame}.
+     *
+     * @param remoteGame custom instance implementing {@link RemoteGame}
+     * @throws IllegalStateException if {@link RemoteGame#getUuid()} returns an already registered UUID
+     * @see #createNewRemoteGame(boolean, String, String, String)
+     * @see #createNewRemoteGame(boolean, UUID, String, String, String)
+     * @since 0.3.0
+     */
+    void registerRemoteGame(@NotNull RemoteGame remoteGame);
+
+    /**
+     * Unregisters a remote game from the game manager.
+     *
+     * @param remoteGame remote game instance
+     * @since 0.3.0
+     */
+    void unregisterRemoteGame(@NotNull RemoteGame remoteGame);
+
+    /**
+     * Creates a new {@link RemoteGame} with randomly generated {@link UUID}.
+     *
+     * @param persistent true if the game should be saved in the config file
+     * @param name local name of the remote game
+     * @param remoteServer name of the server hosting the game
+     * @param remoteGameIdentifier name or uuid (as hyphenated string) of the game on that server or null. If this parameter is null, the created instance represents a remote game in legacy mode.
+     * @return new remote game instance
+     * @see #createNewRemoteGame(boolean, UUID, String, String, String)
+     * @since 0.3.0
+     */
     @NotNull RemoteGame createNewRemoteGame(boolean persistent, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier);
 
+    /**
+     * Creates a new {@link RemoteGame}.
+     *
+     * @param persistent true if the game should be saved in the config file
+     * @param uuid local uuid of the remote game
+     * @param name local name of the remote game
+     * @param remoteServer name of the server hosting the game
+     * @param remoteGameIdentifier name or uuid (as hyphenated string) of the game on that server or null. If this parameter is null, the created instance represents a remote game in legacy mode.
+     * @return new remote game instance
+     * @throws IllegalStateException if the parameter {@code uuid} is not unique
+     * @see #createNewRemoteGame(boolean, String, String, String)
+     * @since 0.3.0
+     */
     @NotNull RemoteGame createNewRemoteGame(boolean persistent, @NotNull UUID uuid, @NotNull String name, @NotNull String remoteServer, @Nullable String remoteGameIdentifier);
 
 

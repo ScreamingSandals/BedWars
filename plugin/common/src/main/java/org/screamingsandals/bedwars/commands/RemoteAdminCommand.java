@@ -25,6 +25,8 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameLoaderImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.game.remote.protocol.packets.GameListPacket;
@@ -196,10 +198,15 @@ public class RemoteAdminCommand extends BaseCommand {
                         return;
                     }
 
-                    var oldServer = game.get().getRemoteServer();
-                    var oldIdentifier = game.get().getRemoteGameIdentifier();
+                    var g = game.get();
+
+                    var oldServer = g.getRemoteServer();
+                    var oldIdentifier = g.getRemoteGameIdentifier();
                     if (oldIdentifier != null) {
                         RemoteGameStateManager.getInstance().unsubscribe(oldServer, oldIdentifier);
+                    }
+                    if (g instanceof RemoteGameImpl && ((RemoteGameImpl) g).getSaveFile() != null) {
+                        RemoteGameLoaderImpl.getInstance().saveGame(g);
                     }
 
                     game.get().setRemoteServer(server);
@@ -207,7 +214,7 @@ public class RemoteAdminCommand extends BaseCommand {
                             Message.of(LangKeys.ADMIN_REMOTE_SET_SERVER)
                                     .defaultPrefix()
                                     .placeholder("name", name)
-                                    .placeholder("uuid", game.get().getUuid().toString())
+                                    .placeholder("uuid", g.getUuid().toString())
                                     .placeholder("server", server)
                     );
                 })
@@ -229,21 +236,26 @@ public class RemoteAdminCommand extends BaseCommand {
                         return;
                     }
 
-                    var oldServer = gameOb.get().getRemoteServer();
-                    var oldIdentifier = gameOb.get().getRemoteGameIdentifier();
+                    var g = gameOb.get();
+
+                    var oldServer = g.getRemoteServer();
+                    var oldIdentifier = g.getRemoteGameIdentifier();
                     if (oldIdentifier != null) {
                         RemoteGameStateManager.getInstance().unsubscribe(oldServer, oldIdentifier);
                     }
 
-                    gameOb.get().setRemoteServer(server);
-                    gameOb.get().setRemoteGameIdentifier(game);
+                    g.setRemoteServer(server);
+                    g.setRemoteGameIdentifier(game);
                     RemoteGameStateManager.getInstance().subscribe(server, game);
+                    if (g instanceof RemoteGameImpl && ((RemoteGameImpl) g).getSaveFile() != null) {
+                        RemoteGameLoaderImpl.getInstance().saveGame(g);
+                    }
 
                     sender.sendMessage(
                             Message.of(LangKeys.ADMIN_REMOTE_SET_SERVER_GAME)
                                     .defaultPrefix()
                                     .placeholder("name", name)
-                                    .placeholder("uuid", gameOb.get().getUuid().toString())
+                                    .placeholder("uuid", g.getUuid().toString())
                                     .placeholder("server", server)
                                     .placeholder("game", game)
                     );
