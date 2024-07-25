@@ -44,6 +44,8 @@ bungee:
 
 While there is no lobby plugin for Screaming BedWars, any server selection plugin can be used, such as [BungeeSigns](https://www.spigotmc.org/resources/bungeesigns.6563/). Plugins that can read MOTD are preferred as they can relay the game state to your hub server.
 
+If you prefer to use inventory-based GUIs instead of signs and wish to display information from the server's MOTD, you can utilize any inventory plugin compatible with [PlaceholderAPI](https://placeholderapi.com/), such as [DeluxeMenus](https://www.spigotmc.org/resources/deluxemenus.11734/). The [Pinger expansion](https://wiki.placeholderapi.com/users/placeholder-list/#pinger) is recommended, as it provides the necessary placeholders for this purpose. To create a server selector using DeluxeMenus, you may refer to [this guide](https://wiki.helpch.at/helpchat-plugins/deluxemenus/example-gui-menus#server-selector) and review [this example](https://github.com/HelpChat/DeluxeMenus-Wiki/blob/master/gui_menus/serverselector.yml).
+
 <!-- TODO: list possible options with little tutorials -->
 
 !!! tip "Synchronizing Statistics"
