@@ -1240,6 +1240,52 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onBreakLiquid(PlayerBucketFillEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        if (Main.isPlayerInGame(player)) {
+            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+            Game game = gPlayer.getGame();
+            Location loc = event.getBlockClicked().getLocation();
+
+            Block block = loc.getBlock();
+            if (game.getStatus() == GameStatus.RUNNING) {
+                if (game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                    return;
+                }
+
+                if (
+                    Main.isBreakableBlock(block.getType())
+                    || (
+                        !Main.isLegacy()
+                        && event.getBucket() == Material.WATER_BUCKET
+                        && Main.isBreakableBlock(Material.valueOf("WATER")) // Require breakable water
+                        && block.getBlockData() instanceof Waterlogged
+                    )
+                ) {
+                    game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
+                    game.getRegion().addBuiltDuringGame(block.getLocation());
+                } else {
+                    event.setCancelled(true);
+                }
+            } else if (game.getStatus() != GameStatus.DISABLED) {
+                event.setCancelled(true);
+            }
+        } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
+            for (String gameN : Main.getGameNames()) {
+                Game game = Main.getGame(gameN);
+                if (game.getStatus() != GameStatus.DISABLED && GameCreator.isInArea(event.getBlockClicked().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onItemMerge(ItemMergeEvent event) {
         if (event.isCancelled()) {
             return;
