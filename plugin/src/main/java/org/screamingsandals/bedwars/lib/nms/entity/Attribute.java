@@ -28,17 +28,17 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Getter
 public class Attribute implements AttributesAccessor {
-	public static final Attribute MAX_HEALTH = new Attribute(FIELD_MAX_HEALTH_1);
-	public static final Attribute FOLLOW_RANGE = new Attribute(FIELD_FOLLOW_RANGE_1);
-	public static final Attribute KNOCKBACK_RESISTANCE = new Attribute(FIELD_KNOCKBACK_RESISTANCE_1);
-	public static final Attribute MOVEMENT_SPEED = new Attribute(FIELD_MOVEMENT_SPEED_1);
-	public static final Attribute FLYING_SPEED = new Attribute(FIELD_FLYING_SPEED_1);
-	public static final Attribute ATTACK_DAMAGE = new Attribute(FIELD_ATTACK_DAMAGE_1);
-	public static final Attribute ATTACK_KNOCKBACK = new Attribute(FIELD_ATTACK_KNOCKBACK_1);
-	public static final Attribute ATTACK_SPEED = new Attribute(FIELD_ATTACK_SPEED_1);
-	public static final Attribute ARMOR = new Attribute(FIELD_ARMOR_1);
-	public static final Attribute ARMOR_TOUGHNESS = new Attribute(FIELD_ARMOR_TOUGHNESS_1);
-	public static final Attribute LUCK = new Attribute(FIELD_LUCK_1);
+	public static final Attribute MAX_HEALTH = new Attribute(FIELD_MAX_HEALTH);
+	public static final Attribute FOLLOW_RANGE = new Attribute(FIELD_FOLLOW_RANGE);
+	public static final Attribute KNOCKBACK_RESISTANCE = new Attribute(FIELD_KNOCKBACK_RESISTANCE);
+	public static final Attribute MOVEMENT_SPEED = new Attribute(FIELD_MOVEMENT_SPEED);
+	public static final Attribute FLYING_SPEED = new Attribute(FIELD_FLYING_SPEED);
+	public static final Attribute ATTACK_DAMAGE = new Attribute(FIELD_ATTACK_DAMAGE);
+	public static final Attribute ATTACK_KNOCKBACK = new Attribute(FIELD_ATTACK_KNOCKBACK);
+	public static final Attribute ATTACK_SPEED = new Attribute(FIELD_ATTACK_SPEED);
+	public static final Attribute ARMOR = new Attribute(FIELD_ARMOR);
+	public static final Attribute ARMOR_TOUGHNESS = new Attribute(FIELD_ARMOR_TOUGHNESS);
+	public static final Attribute LUCK = new Attribute(FIELD_LUCK);
 
 	private final Supplier<Object> object;
 }
