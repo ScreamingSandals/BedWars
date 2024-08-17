@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.game;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameCycle;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.boss.BossBarImpl;
@@ -222,6 +223,11 @@ public class GameCycleImpl implements GameCycle {
 
                 var endingEvent = new GameEndingEventImpl(game, winner);
                 EventManager.fire(endingEvent);
+
+                game.dispatchRewardCommands("team-win", null, 0, winner, null, null);
+                for (var member : winner.getTeamMembers()) {
+                    game.dispatchRewardCommands("player-team-win", null, 0, winner, winner.getPlayers().stream().anyMatch(p -> p.getUniqueId().equals(member.getUuid())), member);
+                }
             }
             EventManager.fire(statusE);
             Debug.info(game.getName() + ": game is ending");
@@ -264,7 +270,7 @@ public class GameCycleImpl implements GameCycle {
         }
 
         if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-            game.dispatchPlayerWinReward(player);
+            game.dispatchPlayerWinReward(player, winner);
         }
     }
 
@@ -423,6 +429,11 @@ public class GameCycleImpl implements GameCycle {
             if (configurationContainer.getOrDefault(GameConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, false)) {
                 game.startHealthIndicator();
             }
+
+            for (var player : players) {
+                game.dispatchRewardCommands("player-game-start", player, 0, game.getPlayerTeam(player), null, null);
+            }
+            game.dispatchRewardCommands("game-start", null, 0);
         }
 
         // show records

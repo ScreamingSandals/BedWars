@@ -201,12 +201,24 @@ public class PlayerListener {
                     var gKiller = killer.as(BedWarsPlayer.class);
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
-                            game.dispatchRewardCommands("player-kill", killer,
-                                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_KILL, 10));
+                            game.dispatchRewardCommands(
+                                "player-kill",
+                                killer,
+                                game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_KILL, 10),
+                                game.getPlayerTeam(gKiller),
+                                null,
+                                null
+                            );
                         }
                         if (!isBed) {
-                            game.dispatchRewardCommands("player-final-kill", killer,
-                                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_FINAL_KILL, 10));
+                            game.dispatchRewardCommands(
+                                "player-final-kill",
+                                killer,
+                                game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_FINAL_KILL, 10),
+                                game.getPlayerTeam(gKiller),
+                                null,
+                                null
+                            );
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
@@ -1397,7 +1409,7 @@ public class PlayerListener {
 
     @OnEvent
     public void onPlaceLiquid(PlayerBucketEvent event) {
-        if (event.cancelled() || event.action() != PlayerBucketEvent.Action.EMPTY) {
+        if (event.cancelled()) {
             return;
         }
 
@@ -1405,18 +1417,44 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            var loc = event.blockClicked().location();
-
-            loc.add(event.blockFace().getDirection().normalize());
+            var loc = event.blockClicked().location().add(event.blockFace().getDirection().normalize());
 
             var block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (block.block().isAir() || game.getRegion().isLocationModifiedDuringGame(block.location())) {
-                    game.getRegion().addBuiltDuringGame(block.location());
-                    Debug.info(player.getName() + " placed liquid");
+                if (game.getRegion().isLocationModifiedDuringGame(block.location())) {
+                    return;
+                }
+
+                if (event.action() == PlayerBucketEvent.Action.EMPTY) {
+                    if (Server.isVersion(1, 13) && event.bucket().is("minecraft:water_bucket") && event.blockClicked().block().getBoolean("waterlogged") != null) {
+                        block = event.blockClicked();
+                        game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                        game.getRegion().addBuiltDuringGame(block.location());
+                        Debug.info(player.getName() + " placed liquid");
+                    } else if (block.block().isAir()) {
+                        game.getRegion().addBuiltDuringGame(block.location());
+                        Debug.info(player.getName() + " placed liquid");
+                    } else {
+                        event.cancelled(true);
+                        Debug.info(player.getName() + " placed liquid, cancelling");
+                    }
                 } else {
-                    event.cancelled(true);
-                    Debug.info(player.getName() + " placed liquid, cancelling");
+                    if (
+                        BedWarsPlugin.isBreakableBlock(block.block())
+                            || (
+                                Server.isVersion(1, 13)
+                                && event.bucket().is("minecraft:water_bucket")
+                                && event.blockClicked().block().getBoolean("waterlogged") != null
+                                && BedWarsPlugin.isBreakableBlock(Block.of("minecraft:water")) // Require breakable water
+                        )
+                    ) {
+                        game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                        game.getRegion().addBuiltDuringGame(block.location());
+                        Debug.info(player.getName() + " broken liquid");
+                    } else {
+                        event.cancelled(true);
+                        Debug.info(player.getName() + " broken liquid, cancelling");
+                    }
                 }
             } else if (game.getStatus() != GameStatus.DISABLED) {
                 event.cancelled(true);
@@ -1498,6 +1536,27 @@ public class PlayerListener {
                     return;
                 }
             }
+        }
+    }
+
+    @OnEvent
+    public void onSpectatorTeleported(PlayerTeleportEvent event) {
+        if (event.cancelled()) {
+            return;
+        }
+
+        if (event.cause() != PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            return;
+        }
+
+        var game = PlayerManagerImpl.getInstance().getGameOfPlayer(event.player());
+
+        if (game.isEmpty()) {
+            return;
+        }
+
+        if (!ArenaUtils.isInArea(event.newLocation(), game.get().getPos1(), game.get().getPos2())) {
+            event.cancelled(true);
         }
     }
 }
