@@ -719,6 +719,10 @@ public class GameImpl implements LocalGame {
                     }
                 }
             }
+
+            if (status == GameStatus.RUNNING) {
+                dispatchRewardCommands("player-early-leave", gamePlayer, 0, team, gamePlayer.isSpectator(), null);
+            }
         }
 
         if (PlayerStatisticManager.isEnabled()) {
@@ -1768,7 +1772,11 @@ public class GameImpl implements LocalGame {
         return List.copyOf(spawners);
     }
 
-    public void dispatchRewardCommands(String type, Player player, int score) {
+    public void dispatchRewardCommands(@NotNull String type, @Nullable Player player, int score) {
+        dispatchRewardCommands(type, player, score, null, null, null);
+    }
+
+    public void dispatchRewardCommands(@NotNull String type, @Nullable Player player, int score, @Nullable TeamImpl team, @Nullable Boolean deathStatus, TeamImpl.@Nullable Member member) {
         if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
             return;
         }
@@ -1777,12 +1785,33 @@ public class GameImpl implements LocalGame {
                 .stream()
                 .map(ConfigurationNode::getString)
                 .filter(Objects::nonNull)
-                .map(s -> s
-                        .replace("{player}", player.getName())
-                        .replace("{score}", Integer.toString(score))
-                )
+                .map(command -> {
+                    if (command.startsWith("/example ")) {
+                        return null; // Skip example commands
+                    }
+
+                    if (player != null) {
+                        command = command.replace("{player}", player.getName());
+                        command = command.replace("{playerUuid}", player.getUniqueId().toString());
+                    }
+                    if (member != null) {
+                        command = command.replace("{player}", member.getName());
+                        command = command.replace("{playerUuid}", member.getUuid().toString());
+                    }
+                    command = command.replace("{game}", name);
+                    command = command.replace("{score}", Integer.toString(score));
+                    if (team != null) {
+                        command = command.replace("{team}", team.getName());
+                    }
+                    if (deathStatus != null) {
+                        command = command.replace("{death}", deathStatus ? "true" : "false");
+                    }
+
+                    return command;
+                })
+                .filter(Objects::nonNull)
                 .map(s -> s.startsWith("/") ? s.substring(1) : s)
-                .forEach(player::tryToDispatchCommand);
+                .forEach(Server.getConsoleSender()::tryToDispatchCommand);
     }
 
     @Override
@@ -2009,19 +2038,19 @@ public class GameImpl implements LocalGame {
         }
     }
 
-    protected void dispatchPlayerWinReward(Player player) {
+    protected void dispatchPlayerWinReward(@NotNull Player player, @NotNull TeamImpl winningTeam) {
         if (PlayerStatisticManager.isEnabled()) {
             var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-            dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
+            dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore(), winningTeam, null, null);
         } else {
-            dispatchRewardCommands("player-win-run-immediately", player, 0);
+            dispatchRewardCommands("player-win-run-immediately", player, 0, winningTeam, null, null);
         }
         Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             if (PlayerStatisticManager.isEnabled()) {
                 var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                dispatchRewardCommands("player-win", player, statistic.getScore());
+                dispatchRewardCommands("player-win", player, statistic.getScore(), winningTeam, null, null);
             } else {
-                dispatchRewardCommands("player-win", player, 0);
+                dispatchRewardCommands("player-win", player, 0, winningTeam, null, null);
             }
         }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
     }
@@ -2135,6 +2164,7 @@ public class GameImpl implements LocalGame {
                     )
             );
         });
+        team.getTeamMembers().add(new TeamImpl.Member(player.getUniqueId(), player.getName()));
     }
 
     protected void spawnSpectatorOnGameStart(BedWarsPlayer player) {

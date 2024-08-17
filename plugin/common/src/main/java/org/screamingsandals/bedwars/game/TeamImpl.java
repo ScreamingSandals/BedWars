@@ -19,8 +19,10 @@
 
 package org.screamingsandals.bedwars.game;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.target.Target;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -66,6 +69,7 @@ public class TeamImpl implements Team {
     private final List<Location> chests = new ArrayList<>();
     private boolean started;
     private final List<BedWarsPlayer> players = new ArrayList<>();
+    private final List<Member> teamMembers = new ArrayList<>();
     private Hologram hologram;
     private Hologram protectHologram;
     private final Random randomSpawn = new Random();
@@ -175,6 +179,7 @@ public class TeamImpl implements Team {
 
         chests.clear();
         players.clear();
+        teamMembers.clear();
         started = false;
         forced = false;
     }
@@ -234,5 +239,11 @@ public class TeamImpl implements Team {
     @Override
     public Location getRandomSpawn() {
         return teamSpawns.get(randomSpawn.nextInt(teamSpawns.size()));
+    }
+
+    @Data
+    public static class Member {
+        private final @NotNull UUID uuid;
+        private final @NotNull String name;
     }
 }
