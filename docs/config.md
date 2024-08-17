@@ -365,6 +365,16 @@ rewards:
   - /example {player} 10
   player-final-kill:
   - /example {player} 10
+  player-game-start:
+  - /example {player} 10
+  player-early-leave:
+  - /example {player} {death} 10
+  team-win:
+  - /example {team} 10
+  player-team-win:
+  - /example {team} {death} 10
+  game-start:
+  - /example Hello World!
 lore:
   generate-automatically: true
   text:

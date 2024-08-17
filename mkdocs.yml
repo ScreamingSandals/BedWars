@@ -38,7 +38,7 @@ extra:
     provider: mike
     default: latest
 
-copyright: Copyright &copy; 2023 ScreamingSandals
+copyright: Copyright &copy; 2024 ScreamingSandals
 
 markdown_extensions:
   - admonition

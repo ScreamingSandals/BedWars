@@ -12,6 +12,8 @@ mike set-default latest
 if [[ "$doc_version" == *SNAPSHOT ]]; then
   mike deploy --push --branch gh-pages "$doc_version"
 else
+  doc_version="$(cat .version | xargs | cut -d. -f1,2).x"
+
   latest=$(mike list --branch gh-pages | grep "[latest]" | cut -d '[' -f1 | xargs)
 
   if [[ "$(printf '%s\n' "$doc_version" "$latest" | sort -V | head -n1)" == "$doc_version" ]]; then
