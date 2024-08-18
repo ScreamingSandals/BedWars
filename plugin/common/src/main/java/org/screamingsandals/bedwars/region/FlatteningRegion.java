@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class FlatteningRegion implements BWRegion {
     private final List<Location> builtBlocks = new ArrayList<>();
-    private final Map<Location, Block> brokenOriginalBlocks = new HashMap<>();
+    private final Map<Location, BlockSnapshot> brokenOriginalBlocks = new HashMap<>();
 
     @Override
     public boolean isLocationModifiedDuringGame(Location loc) {
@@ -42,7 +42,7 @@ public class FlatteningRegion implements BWRegion {
 
     @Override
     public void putOriginalBlock(Location loc, BlockSnapshot block) {
-        brokenOriginalBlocks.put(loc, block.block());
+        brokenOriginalBlocks.put(loc, block);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FlatteningRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getKey().getBlock().block(block.getValue());
+            block.getValue().updateBlock(true, false);
         }
         brokenOriginalBlocks.clear();
     }

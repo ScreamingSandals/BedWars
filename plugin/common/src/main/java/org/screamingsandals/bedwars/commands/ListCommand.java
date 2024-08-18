@@ -21,8 +21,8 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -51,12 +51,12 @@ public class ListCommand extends BaseCommand {
         );
     }
 
-    public static void sendGameState(GameImpl game, CommandSender sender) {
+    public static void sendGameState(Game game, CommandSender sender) {
         sender.sendMessage(Component
                 .text()
                 .content(game.getName())
-                .color(game.getStatus() == GameStatus.DISABLED ? Color.RED : Color.GREEN)
-                .append(Component.text(" " + game.countPlayers(), Color.WHITE))
+                .color(game.getStatus() != GameStatus.REMOTE_UNKNOWN ? (game.getStatus() == GameStatus.DISABLED ? Color.RED : Color.GREEN) : Color.BLUE)
+                .append(Component.text(" " + game.countConnectedPlayers(), Color.WHITE))
         );
     }
 }

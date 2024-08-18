@@ -13,11 +13,30 @@ if (version.toString().endsWith('-SNAPSHOT')) {
 subprojects {
     apply plugin: 'java'
 
-    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+    if (project.name != 'BedWars-API' && project.name != 'BedWars' && project.name != 'BedWars-protocol') { // upload only BW and BW-API and BW-protocol
         project.ext.disablePublishingToMaven = true
     }
 
     apply plugin: 'org.screamingsandals.plugin-builder'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
+        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
+        maven { url 'https://repo.alessiodp.com/releases/'  }
+        maven { url "https://maven.mrnavastar.rocks/releases" }
+    }
+
+    sourceCompatibility = '11.0'
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    if (project.name == 'BedWars-protocol') {
+        return // not Slib project
+    }
 
     apply plugin: 'org.screamingsandals.plugin-slib'
 
@@ -58,15 +77,6 @@ subprojects {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
-        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
-        maven { url 'https://repo.alessiodp.com/releases/'  }
-        maven { url "https://maven.mrnavastar.rocks/releases" }
-    }
-
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
@@ -81,11 +91,5 @@ subprojects {
         } else {
             archiveClassifier.set('dev')
         }
-    }
-
-    sourceCompatibility = '11.0'
-
-    compileJava {
-        options.encoding = "UTF-8"
     }
 }

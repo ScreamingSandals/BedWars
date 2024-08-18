@@ -115,7 +115,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class GameImpl implements LocalGame {
-    private final UUID uuid;
+    private final @NotNull UUID uuid;
 
     @NotNull
     private GameCycle gameCycle = new GameCycleImpl(this);
@@ -526,7 +526,7 @@ public class GameImpl implements LocalGame {
         if (!players.contains(gamePlayer)) {
             players.add(gamePlayer);
         }
-        updateSigns();
+        SignUtils.updateSigns(this);
 
         if (PlayerStatisticManager.isEnabled()) {
             // Load
@@ -671,7 +671,7 @@ public class GameImpl implements LocalGame {
         }
 
         players.remove(gamePlayer);
-        updateSigns();
+        SignUtils.updateSigns(this);
 
         if (status == GameStatus.WAITING) {
             SpawnEffects.spawnEffect(this, gamePlayer, "game-effects.lobbyleave");
@@ -727,6 +727,10 @@ public class GameImpl implements LocalGame {
                     }
                 }
             }
+
+            if (status == GameStatus.RUNNING) {
+                dispatchRewardCommands("player-early-leave", gamePlayer, 0, team, gamePlayer.isSpectator(), null);
+            }
         }
 
         if (PlayerStatisticManager.isEnabled()) {
@@ -744,7 +748,7 @@ public class GameImpl implements LocalGame {
 
             if (status != GameStatus.WAITING) {
                 afterRebuild = GameStatus.WAITING;
-                updateSigns();
+                SignUtils.updateSigns(this);
                 rebuild();
             } else {
                 cancelTask();
@@ -770,7 +774,7 @@ public class GameImpl implements LocalGame {
             for (TeamImpl team : teams) {
                 calculatedMaxPlayers += team.getMaxPlayers();
             }
-            Tasker.run(DefaultThreads.GLOBAL_THREAD, GameImpl.this::updateSigns);
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> SignUtils.updateSigns(this));
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBarImpl();
@@ -792,7 +796,7 @@ public class GameImpl implements LocalGame {
         }
         if (status != GameStatus.REBUILDING) {
             status = GameStatus.DISABLED;
-            updateSigns();
+            SignUtils.updateSigns(this);
         } else {
             afterRebuild = GameStatus.DISABLED;
         }
@@ -800,7 +804,7 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public void joinToGame(BWPlayer p) {
+    public void joinToGame(@NotNull BWPlayer p) {
         if (!(p instanceof BedWarsPlayer)) {
             throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
         }
@@ -817,7 +821,6 @@ public class GameImpl implements LocalGame {
 
         if (status == GameStatus.REBUILDING) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player, Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
                                 .prefixOrDefault(getCustomPrefixComponent())
@@ -825,6 +828,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                         );
+                BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
@@ -838,7 +842,6 @@ public class GameImpl implements LocalGame {
         if ((status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING)
                 && !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_SPECTATOR_JOIN, false)) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player,
                         Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -847,6 +850,7 @@ public class GameImpl implements LocalGame {
                                 .asComponent(player)
                                 .toLegacy()
                 );
+                BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -861,11 +865,22 @@ public class GameImpl implements LocalGame {
             if (player.canJoinFullGame()) {
                 List<BedWarsPlayer> withoutVIP = getPlayersWithoutVIP();
 
-                if (withoutVIP.size() == 0) {
-                    Message
-                            .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
-                            .prefixOrDefault(getCustomPrefixComponent())
-                            .send(player);
+                if (withoutVIP.isEmpty()) {
+                    if (isBungeeEnabled()) {
+                        BungeeUtils.sendPlayerBungeeMessage(player,
+                            Message
+                                    .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
+                                    .prefixOrDefault(getCustomPrefixComponent())
+                                    .asComponent(player)
+                                    .toLegacy()
+                        );
+                        BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
+                    } else {
+                        Message
+                                .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
+                                .prefixOrDefault(getCustomPrefixComponent())
+                                .send(player);
+                    }
                     return;
                 }
 
@@ -895,15 +910,15 @@ public class GameImpl implements LocalGame {
                 kickPlayer.changeGame(null);
             } else {
                 if (isBungeeEnabled()) {
-                    BungeeUtils.movePlayerToBungeeServer(player, false);
-                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> BungeeUtils.sendPlayerBungeeMessage(player,
+                    BungeeUtils.sendPlayerBungeeMessage(player,
                             Message
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                                     .placeholder("arena", GameImpl.this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
                                     .asComponent(player)
                                     .toLegacy()
-                    ), 5, TaskerTime.TICKS);
+                    );
+                    BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -918,10 +933,22 @@ public class GameImpl implements LocalGame {
         if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && EconomyManager.isAvailable()) {
             if (fee > 0) {
                 if (!EconomyManager.withdrawPlayer(player, fee).isSuccessful()) {
-                    Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
-                            .placeholder("coins", fee)
-                            .placeholder("currency", EconomyManager.getCurrencyNameSingular())
-                            .send(player);
+                    if (isBungeeEnabled()) {
+                        BungeeUtils.sendPlayerBungeeMessage(player,
+                            Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
+                                    .placeholder("coins", fee)
+                                    .placeholder("currency", EconomyManager.getCurrencyNameSingular())
+                                    .send(player)
+                                    .asComponent(player)
+                                    .toLegacy()
+                        );
+                        BungeeUtils.movePlayerToBungeeServer(player, false, player.getHubServerName());
+                    } else {
+                        Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
+                                .placeholder("coins", fee)
+                                .placeholder("currency", EconomyManager.getCurrencyNameSingular())
+                                .send(player);
+                    }
                     return;
                 }
             }
@@ -1288,7 +1315,7 @@ public class GameImpl implements LocalGame {
 
         this.status = this.afterRebuild;
         this.countdown = -1;
-        updateSigns();
+        SignUtils.updateSigns(this);
         cancelTask();
         Debug.info(name + ": rebuilding ends");
     }
@@ -1337,7 +1364,7 @@ public class GameImpl implements LocalGame {
         return getFormattedTimeLeft(this.countdown);
     }
 
-    public String getFormattedTimeLeft(int countdown) {
+    public static @NotNull String getFormattedTimeLeft(int countdown) {
         int min;
         int sec;
         String minStr;
@@ -1350,81 +1377,6 @@ public class GameImpl implements LocalGame {
         secStr = (sec < 10) ? "0" + sec : String.valueOf(sec);
 
         return minStr + ":" + secStr;
-    }
-
-    public void updateSigns() {
-        final var config = MainConfig.getInstance();
-        final var gameSigns = BedWarsSignService.getInstance().getSignsForKey(this.name);
-
-        if (gameSigns.isEmpty()) {
-            return;
-        }
-
-        String[] statusLine;
-        String[] playersLine;
-        Block blockBehindMaterial;
-        switch (status) {
-            case REBUILDING:
-                statusLine = LangKeys.SIGN_STATUS_REBUILDING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_REBUILDING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
-                break;
-            case RUNNING:
-            case GAME_END_CELEBRATING:
-                statusLine = LangKeys.SIGN_STATUS_RUNNING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_RUNNING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
-                break;
-            case WAITING:
-                statusLine = LangKeys.SIGN_STATUS_WAITING_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_WAITING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
-                break;
-            case DISABLED:
-            default:
-                statusLine = LangKeys.SIGN_STATUS_DISABLED_STATUS;
-                playersLine = LangKeys.SIGN_STATUS_DISABLED_PLAYERS;
-                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
-                break;
-        }
-
-        var statusMessage = Message.of(statusLine);
-        var playerMessage = Message.of(playersLine)
-                .placeholder("players", players.size())
-                .placeholder("maxplayers", calculatedMaxPlayers);
-
-        final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
-                .map(ConfigurationNode::getString)
-                .map(s -> Objects.requireNonNullElse(s, "")
-                        .replace("%arena%", this.displayName != null && !this.displayName.isBlank() ? Component.fromMiniMessage(this.displayName).toLegacy() : this.getName())
-                        .replace("%status%", statusMessage.asComponent().toLegacy())
-                        .replace("%players%", playerMessage.asComponent().toLegacy()))
-                .collect(Collectors.toList());
-
-        final var finalBlockBehindMaterial = blockBehindMaterial;
-        for (var signBlock : gameSigns) {
-            signBlock.getLocation().asOptional(Location.class)
-                    .ifPresent(location -> {
-                        if (location.getChunk().isLoaded()) {
-                            var blockState = location.getBlock().blockSnapshot();
-                            if (blockState instanceof SignBlockSnapshot) {
-                                var sign = (SignBlockSnapshot) blockState;
-                                for (int i = 0; i < texts.size() && i < 4; i++) {
-                                    sign.frontLine(i, Component.fromLegacy(texts.get(i)));
-                                }
-                                sign.updateBlock();
-                            }
-
-                            if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
-                                final var optionalBlock = SignUtils.getBlockBehindSign(signBlock);
-                                if (optionalBlock.isPresent()) {
-                                    final var glassBlock = optionalBlock.get();
-                                    glassBlock.block(finalBlockBehindMaterial);
-                                }
-                            }
-                        }
-                    });
-        }
     }
 
     @Override
@@ -1776,7 +1728,11 @@ public class GameImpl implements LocalGame {
         return List.copyOf(spawners);
     }
 
-    public void dispatchRewardCommands(String type, Player player, int score) {
+    public void dispatchRewardCommands(@NotNull String type, @Nullable Player player, int score) {
+        dispatchRewardCommands(type, player, score, null, null, null);
+    }
+
+    public void dispatchRewardCommands(@NotNull String type, @Nullable Player player, int score, @Nullable TeamImpl team, @Nullable Boolean deathStatus, TeamImpl.@Nullable Member member) {
         if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
             return;
         }
@@ -1785,12 +1741,33 @@ public class GameImpl implements LocalGame {
                 .stream()
                 .map(ConfigurationNode::getString)
                 .filter(Objects::nonNull)
-                .map(s -> s
-                        .replace("{player}", player.getName())
-                        .replace("{score}", Integer.toString(score))
-                )
+                .map(command -> {
+                    if (command.startsWith("/example ")) {
+                        return null; // Skip example commands
+                    }
+
+                    if (player != null) {
+                        command = command.replace("{player}", player.getName());
+                        command = command.replace("{playerUuid}", player.getUniqueId().toString());
+                    }
+                    if (member != null) {
+                        command = command.replace("{player}", member.getName());
+                        command = command.replace("{playerUuid}", member.getUuid().toString());
+                    }
+                    command = command.replace("{game}", name);
+                    command = command.replace("{score}", Integer.toString(score));
+                    if (team != null) {
+                        command = command.replace("{team}", team.getName());
+                    }
+                    if (deathStatus != null) {
+                        command = command.replace("{death}", deathStatus ? "true" : "false");
+                    }
+
+                    return command;
+                })
+                .filter(Objects::nonNull)
                 .map(s -> s.startsWith("/") ? s.substring(1) : s)
-                .forEach(player::tryToDispatchCommand);
+                .forEach(Server.getConsoleSender()::tryToDispatchCommand);
     }
 
     @Override
@@ -1888,7 +1865,7 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public Component getDisplayNameComponent() {
+    public @NotNull Component getDisplayNameComponent() {
         if (this.displayName != null && !this.displayName.isBlank()) {
             return Component.fromMiniMessage(this.displayName);
         } else {
@@ -2017,19 +1994,19 @@ public class GameImpl implements LocalGame {
         }
     }
 
-    protected void dispatchPlayerWinReward(Player player) {
+    protected void dispatchPlayerWinReward(@NotNull Player player, @NotNull TeamImpl winningTeam) {
         if (PlayerStatisticManager.isEnabled()) {
             var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-            dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
+            dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore(), winningTeam, null, null);
         } else {
-            dispatchRewardCommands("player-win-run-immediately", player, 0);
+            dispatchRewardCommands("player-win-run-immediately", player, 0, winningTeam, null, null);
         }
         Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             if (PlayerStatisticManager.isEnabled()) {
                 var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
-                dispatchRewardCommands("player-win", player, statistic.getScore());
+                dispatchRewardCommands("player-win", player, statistic.getScore(), winningTeam, null, null);
             } else {
-                dispatchRewardCommands("player-win", player, 0);
+                dispatchRewardCommands("player-win", player, 0, winningTeam, null, null);
             }
         }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
     }
@@ -2143,6 +2120,7 @@ public class GameImpl implements LocalGame {
                     )
             );
         });
+        team.getTeamMembers().add(new TeamImpl.Member(player.getUniqueId(), player.getName()));
     }
 
     protected void spawnSpectatorOnGameStart(BedWarsPlayer player) {

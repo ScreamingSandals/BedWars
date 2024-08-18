@@ -64,7 +64,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         MigrateBedWarsRelCommand.class,
         MigrateBedWars1058Command.class,
         GroupCommand.class,
-        JoinGroupCommand.class
+        JoinGroupCommand.class,
+        RemoteAdminCommand.class
 })
 @UtilityClass
 public class CommandService {

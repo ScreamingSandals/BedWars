@@ -113,7 +113,7 @@ public class GolemListener {
         }
 
         var ironGolem = event.entity();
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if (game.getStatus() == GameStatus.RUNNING && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
                 for (var golem : game.getActiveSpecialItems(GolemImpl.class)) {
                     if (golem.getEntity().equals(ironGolem)) {
@@ -151,7 +151,7 @@ public class GolemListener {
         }
 
         var ironGolem = event.entity();
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
                 for (var item : game.getActiveSpecialItems(GolemImpl.class)) {
                     if (item.getEntity().equals(ironGolem)) {
@@ -206,7 +206,7 @@ public class GolemListener {
         }
 
         var ironGolem = event.entity();
-        for (var game : GameManagerImpl.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
                 for (var item : game.getActiveSpecialItems(GolemImpl.class)) {
                     if (item.getEntity().equals(ironGolem)) {
