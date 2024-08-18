@@ -95,18 +95,9 @@ public class BungeeUtils {
         var rustySuccess = true;
 
         if (GameImpl.isRustyConnectorEnabled()) {
-            if (BedWarsPlugin.getInstance().getFlame() != null) {
-                var familyName = MainConfig.getInstance().node("bungee", "rustyConnector", "family").getString("hub");
-
+            if (RustyConnectorUtils.getFlame() != null) {
                 try {
-                    Packet message = BedWarsPlugin.getInstance().getFlame().services().packetBuilder().newBuilder()
-                            .identification(PacketIdentification.from("RC", "SP"))
-                            .sendingToProxy()
-                            .parameter("f", familyName)
-                            .parameter("p", player.getUniqueId().toString())
-                            .build();
-
-                    BedWarsPlugin.getInstance().getFlame().services().magicLink().connection().orElseThrow().publish(message);
+                    RustyConnectorUtils.sendToHub(player);
                     Debug.info("Player " + player.getName() + " has been moved to hub server.");
                 } catch (Exception e) {
                     rustySuccess = false;

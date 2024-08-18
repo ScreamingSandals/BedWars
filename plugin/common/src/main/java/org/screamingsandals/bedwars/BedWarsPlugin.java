@@ -19,9 +19,6 @@
 
 package org.screamingsandals.bedwars;
 
-import group.aelysium.rustyconnector.toolkit.RustyConnector;
-import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderFlame;
-import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -171,8 +168,6 @@ public class BedWarsPlugin implements BedwarsAPI {
     private @Nullable String serverName;
     @Getter
     private @Nullable List<@NotNull String> bungeeServers;
-
-    private IMCLoaderFlame<?> flame;
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -399,16 +394,7 @@ public class BedWarsPlugin implements BedwarsAPI {
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
 
         if (GameImpl.isRustyConnectorEnabled()) {
-            Optional<IMCLoaderTinder> tinderHolder = RustyConnector.Toolkit.mcLoader();
-            if (tinderHolder.isPresent()) {
-                IMCLoaderTinder tinder = tinderHolder.get();
-                tinder.onStart(flame -> {
-                    this.flame = flame;
-                    Server.getConsoleSender().sendMessage(Component.text("Rusty Connector's Tinder found!", Color.GREEN));
-                });
-            } else {
-                Server.getConsoleSender().sendMessage(Component.text("Rusty Connector's Tinder not found!", Color.RED));
-            }
+            RustyConnectorUtils.init();
         }
     }
 
@@ -488,9 +474,5 @@ public class BedWarsPlugin implements BedwarsAPI {
 
     public void saveResource(@NotNull String resourcePath, boolean replace) {
         PluginUtils.saveResource(pluginDescription, logger, resourcePath, replace);
-    }
-
-    public IMCLoaderFlame<?> getFlame() {
-        return flame;
     }
 }
