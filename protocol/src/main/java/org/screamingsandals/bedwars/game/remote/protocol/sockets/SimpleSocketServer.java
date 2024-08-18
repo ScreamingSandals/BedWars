@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -135,7 +136,9 @@ public final class SimpleSocketServer {
 
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (!(e instanceof EOFException)) { // Mute EOF
+                    throw new RuntimeException(e);
+                }
             } finally {
                 System.out.println("Client " + identifier + " disconnected");
                 clients.remove(identifier);
