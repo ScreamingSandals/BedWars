@@ -116,8 +116,8 @@ public abstract class BaseAdminSubCommand {
 
         if (AdminCommand.gc.containsKey(gameName)) {
             return AdminCommand.gc.get(gameName);
-        } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
-            return GameManagerImpl.getInstance().getGame(gameName).orElseThrow();
+        } else if (GameManagerImpl.getInstance().hasLocalGame(gameName)) {
+            return GameManagerImpl.getInstance().getLocalGame(gameName).orElseThrow();
         }
         return null;
     }

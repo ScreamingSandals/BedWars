@@ -9,7 +9,7 @@
 
 Flexible BedWars plugin formerly coded as a replacement for BedwarsRel.
 
-Supported versions: \[1.8.8 - 1.21\]. Recommended version: \[1.20.6\]
+Supported versions: \[1.8.8 - 1.21.1\]. Recommended version: \[1.21.1\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

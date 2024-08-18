@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.TeamColor;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
@@ -467,8 +468,10 @@ public class MiscUtils {
                 .collect(Collectors.toList());
     }
 
-    public Optional<GameImpl> getGameWithHighestPlayers(List<GameImpl> games, boolean fee) {  // If tie choose random one
+    public Optional<Game> getGameWithHighestPlayers(List<Game> games, boolean fee) {  // If tie choose random one
         var biggest = games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
                 .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
                 .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
                 .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
@@ -479,6 +482,8 @@ public class MiscUtils {
         }
 
         var biggestGames = games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
                 .filter(game -> game.countPlayers() == biggest.get().countPlayers())
                 .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
                 .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
@@ -488,8 +493,10 @@ public class MiscUtils {
         return Optional.of(biggestGames.get(MiscUtils.randInt(0, biggestGames.size()-1)));
     }
 
-    public Optional<GameImpl> getGameWithLowestPlayers(List<GameImpl> games, boolean fee) {
+    public Optional<Game> getGameWithLowestPlayers(List<Game> games, boolean fee) {
         return games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
                 .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
                 .filter(game -> {
@@ -498,11 +505,14 @@ public class MiscUtils {
                     }
                     return true;
                 })
-                .min(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+                .min(Comparator.comparingInt(GameImpl::countConnectedPlayers))
+                .map(o -> o); // java moment
     }
 
-    public Optional<GameImpl> getFirstWaitingGame(List<GameImpl> games, boolean fee) {
+    public Optional<Game> getFirstWaitingGame(List<Game> games, boolean fee) {
         return games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
                 .filter(game -> {
                     if (fee) {
@@ -510,11 +520,14 @@ public class MiscUtils {
                     }
                     return true;
                 })
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers))
+                .map(o -> o); // java moment
     }
 
-    public Optional<GameImpl> getFirstRunningGame(List<GameImpl> games, boolean fee) {
+    public Optional<Game> getFirstRunningGame(List<Game> games, boolean fee) {
         return games.stream()
+                .filter(game -> game instanceof GameImpl)
+                .map(game -> (GameImpl) game)
                 .filter(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)
                 .filter(game -> {
                     if (fee) {
@@ -522,7 +535,8 @@ public class MiscUtils {
                     }
                     return true;
                 })
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers))
+                .map(o -> o); // java moment
     }
 
     public String center(String text, int length) {

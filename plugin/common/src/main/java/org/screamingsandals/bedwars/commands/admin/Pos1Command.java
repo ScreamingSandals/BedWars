@@ -59,7 +59,7 @@ public class Pos1Command extends BaseAdminSubCommand {
             }
 
             if (!force) {
-                for (var otherGame : GameManagerImpl.getInstance().getGames()) {
+                for (var otherGame : GameManagerImpl.getInstance().getLocalGames()) {
                     if (otherGame == game) {
                         continue;
                     }

@@ -46,7 +46,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -155,7 +155,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -213,7 +213,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -263,7 +263,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -333,7 +333,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -396,7 +396,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getLocalGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;

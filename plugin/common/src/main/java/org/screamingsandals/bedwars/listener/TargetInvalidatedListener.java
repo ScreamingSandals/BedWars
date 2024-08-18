@@ -159,7 +159,10 @@ public class TargetInvalidatedListener {
             game.dispatchRewardCommands(
                     "player-destroy-bed",
                     initiator,
-                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25)
+                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25),
+                    game.getTeamOfPlayer(initiator),
+                    null,
+                    null
             );
         }
     }

@@ -94,7 +94,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
                 Server.getConsoleSender().sendMessage(
                         MiscUtils.BW_PREFIX.withAppendix(
-                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
+                                Component.text("Arena " + uuid + " has the same unique id as another arena or remote game that is already loaded. Skipping!", Color.RED)
                         )
                 );
                 return CompletableFuture.completedFuture(null);

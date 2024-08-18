@@ -24,12 +24,12 @@ import group.aelysium.rustyconnector.toolkit.core.packet.Packet;
 import group.aelysium.rustyconnector.toolkit.core.packet.PacketIdentification;
 import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
-import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.DefaultThreads;
@@ -43,12 +43,17 @@ import java.io.IOException;
 @UtilityClass
 public class BungeeUtils {
     public void movePlayerToBungeeServer(Player player, boolean serverRestart) {
+        movePlayerToBungeeServer(player, serverRestart, null);
+    }
+
+    public void movePlayerToBungeeServer(Player player, boolean serverRestart, @Nullable String serverName) {
+        var server = serverName != null ? serverName : MainConfig.getInstance().node("bungee", "server").getString("hub");
         if (serverRestart) {
-            internalMove(player, true);
+            internalMove(player, true, server);
             return;
         }
 
-        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> internalMove(player, false));
+        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> internalMove(player, false, server));
     }
 
     public void sendPlayerBungeeMessage(Player player, String string) {
@@ -68,8 +73,25 @@ public class BungeeUtils {
         }, 30, TaskerTime.TICKS);
     }
 
-    private void internalMove(Player player, boolean restart) {
-        var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
+    public ByteArrayOutputStream constructDataOutput(DataOutputFiller consumer) throws IOException {
+        var out = new ByteArrayOutputStream();
+        var dout = new DataOutputStream(out);
+
+        consumer.fill(dout);
+
+        return out;
+    }
+
+    public void sendBungeeMessage(Player player, DataOutputFiller consumer) {
+        try (var out = constructDataOutput(consumer)) {
+            CustomPayload.send(player, "BungeeCord", out.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void internalMove(Player player, boolean restart, String server) {
         var rustySuccess = true;
 
         if (GameImpl.isRustyConnectorEnabled()) {
@@ -97,7 +119,6 @@ public class BungeeUtils {
         }
 
         if (!rustySuccess) {
-
             var out = new ByteArrayOutputStream();
             var dout = new DataOutputStream(out);
 
@@ -118,5 +139,9 @@ public class BungeeUtils {
                 }, 20, TaskerTime.TICKS);
             }
         }
+    }
+
+    public interface DataOutputFiller {
+        void fill(DataOutputStream dataOutputStream) throws IOException;
     }
 }

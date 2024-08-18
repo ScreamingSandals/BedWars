@@ -36,7 +36,7 @@ public interface GroupManager {
      * @return true if successful
      * @since 0.3.0
      */
-    boolean addToGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull LocalGame game);
+    boolean addToGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game);
 
     /**
      *
@@ -45,7 +45,7 @@ public interface GroupManager {
      * @return true if successful
      * @since 0.3.0
      */
-    boolean removeFromGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull LocalGame game);
+    boolean removeFromGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group, @NotNull Game game);
 
     /**
      *
@@ -54,7 +54,7 @@ public interface GroupManager {
      * @since 0.3.0
      */
     @NotNull
-    List<? extends @NotNull LocalGame> getGamesInGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group);
+    List<? extends @NotNull Game> getGamesInGroup(@Pattern("[a-zA-Z\\d\\-_]+") @NotNull String group);
 
     /**
      *

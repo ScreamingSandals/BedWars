@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.RemoteGame;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -65,120 +66,179 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             gameName = gameName.substring(0, index);
             var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
             if (gameOpt.isPresent()) {
-                var game = gameOpt.get();
-                if (operation.startsWith("team_")) {
-                    index = operation.lastIndexOf("_");
-                    if (index != -1) {
-                        var teamName = operation.substring(5, index);
-                        var teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
+                var g = gameOpt.get();
+                if (g instanceof GameImpl) {
+                    var game = (GameImpl) g;
+                    if (operation.startsWith("team_")) {
+                        index = operation.lastIndexOf("_");
+                        if (index != -1) {
+                            var teamName = operation.substring(5, index);
+                            var teamOperation = operation.substring(index + 1).toLowerCase(Locale.ROOT);
 
-                        TeamImpl team = game.getTeamFromName(teamName);
+                            TeamImpl team = game.getTeamFromName(teamName);
 
-                        if (team != null) {
-                            switch (teamOperation) {
-                                case "colored":
-                                    return Component.text(team.getName(), team.getColor().getTextColor());
-                                case "color":
-                                    return Component.text("", team.getColor().getTextColor());
-                                case "ingame":
-                                    return Component.text(team.isStarted() ? "yes" : "no");
-                                case "players":
-                                    return Component.text(team.countConnectedPlayers());
-                                case "maxplayers":
-                                    return Component.text(team.getMaxPlayers());
-                                case "bed": // 0.2.x
-                                case "targetvalid":
-                                    return Component.text(team.isStarted() && team.getTarget().isValid() ? "yes" : "no");
-                                case "bedsymbol": // 0.2.x
-                                case "targetvalidsymbol": {
-                                    if (team.isStarted() && team.getTarget().isValid()) {
-                                        if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
-                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent();
-                                        } else if (team.getTarget() instanceof AExpirableTarget && ((AExpirableTarget) team.getTarget()).getRemainingTime() < 30) {
-                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
-                                                    .placeholder("count", Component.text(((AExpirableTarget) team.getTarget()).getRemainingTime() + " "))
-                                                    .asComponent();
+                            if (team != null) {
+                                switch (teamOperation) {
+                                    case "colored":
+                                        return Component.text(team.getName(), team.getColor().getTextColor());
+                                    case "color":
+                                        return Component.text("", team.getColor().getTextColor());
+                                    case "ingame":
+                                        return Component.text(team.isStarted() ? "yes" : "no");
+                                    case "players":
+                                        return Component.text(team.countConnectedPlayers());
+                                    case "maxplayers":
+                                        return Component.text(team.getMaxPlayers());
+                                    case "bed": // 0.2.x
+                                    case "targetvalid":
+                                        return Component.text(team.isStarted() && team.getTarget().isValid() ? "yes" : "no");
+                                    case "bedsymbol": // 0.2.x
+                                    case "targetvalidsymbol": {
+                                        if (team.isStarted() && team.getTarget().isValid()) {
+                                            if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
+                                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent();
+                                            } else if (team.getTarget() instanceof AExpirableTarget && ((AExpirableTarget) team.getTarget()).getRemainingTime() < 30) {
+                                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                                        .placeholder("count", Component.text(((AExpirableTarget) team.getTarget()).getRemainingTime() + " "))
+                                                        .asComponent();
+                                            } else {
+                                                return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent();
+                                            }
                                         } else {
-                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent();
+                                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent();
                                         }
-                                    } else {
-                                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent();
                                     }
+                                    case "teamchests":
+                                        return Component.text(team.countTeamChests());
                                 }
-                                case "teamchests":
-                                    return Component.text(team.countTeamChests());
                             }
                         }
                     }
-                }
-                switch (operation) {
-                    case "name":
-                        return Component.text(game.getName());
-                    case "displayname":
-                        return game.getDisplayNameComponent().asComponent();
-                    case "players":
-                        return Component.text(game.countConnectedPlayers());
-                    case "maxplayers":
-                        return Component.text(game.getMaxPlayers());
-                    case "minplayers":
-                        return Component.text(game.getMinPlayers());
-                    case "time":
-                        return Component.text(game.getTimeLeft());
-                    case "timeformat":
-                        return Component.text(game.getFormattedTimeLeft());
-                    case "elapsedtime":
-                        switch (game.getStatus()) {
-                            case WAITING:
-                                return Component.text(game.getLobbyCountdown() - game.getTimeLeft());
-                            case RUNNING:
-                                return Component.text(game.getGameTime() - game.getTimeLeft());
-                            case GAME_END_CELEBRATING:
-                                return Component.text(game.getPostGameWaiting() - game.getTimeLeft());
-                            case REBUILDING:
-                            case DISABLED:
-                                return Component.text("0");
+                    switch (operation) {
+                        case "name":
+                            return Component.text(game.getName());
+                        case "displayname":
+                            return game.getDisplayNameComponent().asComponent();
+                        case "players":
+                            return Component.text(game.countConnectedPlayers());
+                        case "maxplayers":
+                            return Component.text(game.getMaxPlayers());
+                        case "minplayers":
+                            return Component.text(game.getMinPlayers());
+                        case "time":
+                            return Component.text(game.getTimeLeft());
+                        case "timeformat":
+                            return Component.text(game.getFormattedTimeLeft());
+                        case "elapsedtime":
+                            switch (game.getStatus()) {
+                                case WAITING:
+                                    return Component.text(game.getLobbyCountdown() - game.getTimeLeft());
+                                case RUNNING:
+                                    return Component.text(game.getGameTime() - game.getTimeLeft());
+                                case GAME_END_CELEBRATING:
+                                    return Component.text(game.getPostGameWaiting() - game.getTimeLeft());
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text("0");
+                            }
+                        case "elapsedtimeformat":
+                            switch (game.getStatus()) {
+                                case WAITING:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getLobbyCountdown() - game.getTimeLeft()));
+                                case RUNNING:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getGameTime() - game.getTimeLeft()));
+                                case GAME_END_CELEBRATING:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(game.getPostGameWaiting() - game.getTimeLeft()));
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(0));
+                            }
+                        case "world":
+                            return Component.text(game.getWorld().getName());
+                        case "state":
+                            return Component.text(game.getStatus().name().toLowerCase(Locale.ROOT));
+                        case "running":
+                            return Component.text(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false");
+                        case "waiting":
+                            return Component.text(game.getStatus() == GameStatus.WAITING ? "true" : "false");
+                        case "available_teams":
+                            return Component.text(game.countAvailableTeams());
+                        case "connected_teams":
+                            return Component.text(game.countActiveTeams());
+                        case "teamchests":
+                            return Component.text(game.countTeamChests());
+                    }
+                } else {
+                    var remoteGame = (RemoteGame) g;
+
+                    switch (operation) {
+                        case "name":
+                            return Component.text(remoteGame.getName());
+                        case "displayname":
+                            return remoteGame.getDisplayNameComponent().as(Component.class);
+                        case "players":
+                            return Component.text(remoteGame.countConnectedPlayers());
+                        case "maxplayers":
+                            return Component.text(remoteGame.getMaxPlayers());
+                        case "minplayers":
+                            return Component.text(remoteGame.getMinPlayers());
+                        case "time": {
+                            var timeLeft = remoteGame.getTimeLeftInCurrentState();
+                            return Component.text(timeLeft != null ? timeLeft : 0);
                         }
-                    case "elapsedtimeformat":
-                        switch (game.getStatus()) {
-                            case WAITING:
-                                return Component.text(game.getFormattedTimeLeft(game.getLobbyCountdown() - game.getTimeLeft()));
-                            case RUNNING:
-                                return Component.text(game.getFormattedTimeLeft(game.getGameTime() - game.getTimeLeft()));
-                            case GAME_END_CELEBRATING:
-                                return Component.text(game.getFormattedTimeLeft(game.getPostGameWaiting() - game.getTimeLeft()));
-                            case REBUILDING:
-                            case DISABLED:
-                                return Component.text(game.getFormattedTimeLeft(0));
+                        case "timeformat": {
+                            var timeLeft = remoteGame.getTimeLeftInCurrentState();
+                            return Component.text(GameImpl.getFormattedTimeLeft(timeLeft != null ? timeLeft : 0));
                         }
-                    case "world":
-                        return Component.text(game.getWorld().getName());
-                    case "state":
-                        return Component.text(game.getStatus().name().toLowerCase(Locale.ROOT));
-                    case "running":
-                        return Component.text(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false");
-                    case "waiting":
-                        return Component.text(game.getStatus() == GameStatus.WAITING ? "true" : "false");
-                    case "available_teams":
-                        return Component.text(game.countAvailableTeams());
-                    case "connected_teams":
-                        return Component.text(game.countActiveTeams());
-                    case "teamchests":
-                        return Component.text(game.countTeamChests());
+                        case "elapsedtime":
+                            switch (remoteGame.getStatus()) {
+                                case WAITING:
+                                case RUNNING:
+                                case GAME_END_CELEBRATING:
+                                    var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                                    return Component.text(elapsed != null ? elapsed : 0);
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text("0");
+                            }
+                        case "elapsedtimeformat":
+                            switch (remoteGame.getStatus()) {
+                                case WAITING:
+                                case RUNNING:
+                                case GAME_END_CELEBRATING:
+                                    var elapsed = remoteGame.getElapsedTimeInCurrentState();
+                                    return Component.text(GameImpl.getFormattedTimeLeft(elapsed != null ? elapsed : 0));
+                                case REBUILDING:
+                                case DISABLED:
+                                    return Component.text(GameImpl.getFormattedTimeLeft(0));
+                            }
+                        case "state":
+                            return Component.text(remoteGame.getStatus().name().toLowerCase(Locale.ROOT));
+                        case "running":
+                            return Component.text(remoteGame.getStatus() == GameStatus.RUNNING || remoteGame.getStatus() == GameStatus.GAME_END_CELEBRATING ? "true" : "false");
+                        case "waiting":
+                            return Component.text(remoteGame.getStatus() == GameStatus.WAITING ? "true" : "false");
+                        case "available_teams":
+                            return Component.text(remoteGame.countAvailableTeams());
+                        case "connected_teams":
+                            return Component.text(remoteGame.countActiveTeams());
+                    }
                 }
             }
         }
 
         if (identifier.startsWith("all_games_")) {
             var operation = identifier.substring(10).toLowerCase(Locale.ROOT);
+            // TODO: count remote games
             switch (operation) {
                 case "players":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().mapToInt(GameImpl::countConnectedPlayers).sum());
                 case "maxplayers":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().mapToInt(GameImpl::getMaxPlayers).sum());
                 case "anyrunning":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().anyMatch(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) ? "true" : "false");
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().anyMatch(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) ? "true" : "false");
                 case "anywaiting":
-                    return Component.text(GameManagerImpl.getInstance().getGames().stream().anyMatch(game -> game.getStatus() == GameStatus.WAITING) ? "true" : "false");
+                    return Component.text(GameManagerImpl.getInstance().getLocalGames().stream().anyMatch(game -> game.getStatus() == GameStatus.WAITING) ? "true" : "false");
             }
         }
 
@@ -290,21 +350,21 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_time": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     return Component.text(m_Game.get().getTimeLeft());
                 }
                 case "game_timeformat": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     return Component.text(m_Game.get().getFormattedTimeLeft());
                 }
                 case "game_elapsedtime": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     switch (m_Game.get().getStatus()) {
@@ -321,16 +381,16 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 }
                 case "game_elapsedtimeformat": {
                     var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
-                    if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING) {
+                    if (m_Game.isEmpty()) {
                         return Component.text("0");
                     }
                     switch (m_Game.get().getStatus()) {
                         case WAITING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getLobbyCountdown() - m_Game.get().getTimeLeft()));
                         case RUNNING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getGameTime() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getGameTime() - m_Game.get().getTimeLeft()));
                         case GAME_END_CELEBRATING:
-                            return Component.text(m_Game.get().getFormattedTimeLeft(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft()));
+                            return Component.text(GameImpl.getFormattedTimeLeft(m_Game.get().getPostGameWaiting() - m_Game.get().getTimeLeft()));
                         case REBUILDING:
                         case DISABLED:
                             return Component.text("0");

@@ -20,13 +20,17 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.lib.api.types.ComponentHolder;
 
 import java.util.UUID;
 
 /**
  * @author ScreamingSandals
  * @since 0.3.0
+ * @see LocalGame for locally configured games
+ * @see RemoteGame for registered games on another bungeecord servers
  */
 @ApiStatus.NonExtendable
 public interface Game {
@@ -34,17 +38,63 @@ public interface Game {
      *
      * @return arena's unique id
      */
-    UUID getUuid();
+    @NotNull UUID getUuid();
 
     /**
      * @return Arena name
      */
-    String getName();
+    @NotNull String getName();
+
+    /**
+     * @return GameStatus of the arena
+     */
+    @NotNull GameStatus getStatus();
+
+    /**
+     * @return true if GameStatus is different than DISABLED
+     */
+    default boolean isActivated() {
+        return getStatus() != GameStatus.DISABLED;
+    }
+
+    /**
+     * @return configured minimal players to start the game
+     */
+    int getMinPlayers();
+
+    /**
+     * @return configured maximal players of the arena
+     */
+    int getMaxPlayers();
+
+    @NotNull ComponentHolder getDisplayNameComponent();
 
     // PLAYER MANAGEMENT
 
     /**
      * @param player
      */
-    void joinToGame(BWPlayer player);
+    void joinToGame(@NotNull BWPlayer player);
+
+    /**
+     * @return players in game
+     */
+    int countConnectedPlayers();
+
+    /**
+     * @return count of players currently playing in any team or waiting in lobby before the game starts
+     */
+    int countAlive();
+
+    // TEAMS
+
+    /**
+     * @return
+     */
+    int countAvailableTeams();
+
+    /**
+     * @return
+     */
+    int countActiveTeams();
 }

@@ -151,7 +151,7 @@ public class DumpCommand extends BaseCommand {
                                                                             )).collect(Collectors.toList())
                                                                     )
                                                             ).collect(Collectors.toList()),
-                                                            "gamesInMemory", GameManagerImpl.getInstance().getGames().stream().map(game ->
+                                                            "gamesInMemory", GameManagerImpl.getInstance().getLocalGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile().getAbsolutePath(),
                                                                             "uuid", game.getUuid().toString(),
@@ -236,7 +236,7 @@ public class DumpCommand extends BaseCommand {
                                     } catch (ConfigurateException e) {
                                         e.printStackTrace();
                                     }
-                                    for (var game : GameManagerImpl.getInstance().getGames()) {
+                                    for (var game : GameManagerImpl.getInstance().getLocalGames()) {
                                         if (game.getFile() != null && game.getFile().exists()) {
                                             files.add(new AFile(
                                                     game.getFile().getParentFile().getName() + "/" + game.getFile().getName(),
@@ -261,7 +261,7 @@ public class DumpCommand extends BaseCommand {
                                             String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve(mainShopName), StandardCharsets.UTF_8))
                                     ));
                                     GameManagerImpl.getInstance()
-                                            .getGames()
+                                            .getLocalGames()
                                             .stream()
                                             .map(GameImpl::getGameStores)
                                             .flatMap(Collection::stream)

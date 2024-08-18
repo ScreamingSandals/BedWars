@@ -25,6 +25,7 @@ import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -32,6 +33,10 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.*;
+import org.screamingsandals.bedwars.game.remote.RemoteGameLoaderImpl;
+import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
+import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
+import org.screamingsandals.bedwars.game.remote.protocol.ProtocolManagerImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
@@ -51,6 +56,7 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.ai.AiManager;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.economy.EconomyManager;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.fakedeath.FakeDeath;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -61,19 +67,25 @@ import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.PlatformType;
+import org.screamingsandals.lib.utils.ProxyType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Plugin(
         id = "ScreamingBedWars",
@@ -130,7 +142,10 @@ import java.util.stream.Collectors;
                 GamesInventory.class,
                 GroupManagerImpl.class,
                 TargetInvalidatedListener.class,
-                LocalGameLoaderImpl.class
+                LocalGameLoaderImpl.class,
+                RemoteGameLoaderImpl.class,
+                ProtocolManagerImpl.class,
+                RemoteGameStateManager.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",
@@ -139,8 +154,12 @@ import java.util.stream.Collectors;
 )
 @RequiredArgsConstructor
 public class BedWarsPlugin implements BedwarsAPI {
+    public final @NotNull String SERVER_NAME_SYSTEM_PROPERTY_NAME = "org.screamingsandals.bedwars.serverName";
+
     @Getter
     private final org.screamingsandals.lib.plugin.@NotNull Plugin pluginDescription;
+    @ConfigFile("serverName.txt")
+    private final Path serverNameFile;
     @Getter
     private final @NotNull LoggerWrapper logger;
     private static BedWarsPlugin instance;
@@ -148,6 +167,10 @@ public class BedWarsPlugin implements BedwarsAPI {
     private boolean isDisabling = false;
     @Getter
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
+    @Getter
+    private @Nullable String serverName;
+    @Getter
+    private @Nullable List<@NotNull String> bungeeServers;
 
     private IMCLoaderFlame<?> flame;
 
@@ -259,8 +282,7 @@ public class BedWarsPlugin implements BedwarsAPI {
                         Files.move(sbw0_2_x, sbw0_2_x.getParent().resolve("BedWars.old"));
                         logger.info("Thank you for updating the plugin! We are now in new folder: plugins/ScreamingBedWars :)");
                     } catch (Throwable e) {
-                        logger.info("We couldn't copy your old SBW 0.2.x setup. Sorry :(");
-                        e.printStackTrace();
+                        logger.error("We couldn't copy your old SBW 0.2.x setup. Sorry :(", e);
                     }
                 }
             }
@@ -284,8 +306,48 @@ public class BedWarsPlugin implements BedwarsAPI {
             }
         });
 
-        if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
+        var serverNameFromProperty = System.getProperty(SERVER_NAME_SYSTEM_PROPERTY_NAME);
+        var usesProperty = serverNameFromProperty != null && !serverNameFromProperty.isBlank();
+        if (usesProperty) {
+            serverName = serverNameFromProperty;
+        }
+
+        if (!usesProperty && Files.exists(serverNameFile)) {
+            try {
+                serverName = Files.readString(serverNameFile);
+            } catch (IOException e) {
+                logger.error("An error occurred while reading serverName.txt file", e);
+            }
+        }
+
+        if (Server.getProxyType() != ProxyType.NONE) {
             CustomPayload.registerOutgoingChannel("BungeeCord");
+            CustomPayload.registerIncomingChannel("BungeeCord", (player, bytes) -> {
+                var in = new DataInputStream(new ByteArrayInputStream(bytes));
+
+                try {
+                    var channel = in.readUTF();
+                    if ("GetServer".equals(channel)) {
+                        if (usesProperty) {
+                            return;
+                        }
+
+                        var newServerName = in.readUTF();
+                        if (!newServerName.equals(serverName)) {
+                            serverName = newServerName;
+
+                            Files.writeString(serverNameFile, serverName);
+
+                            // Notify other parts of the plugin that the server name has been updated
+                            EventManager.fire(new ServerNameChangeEvent());
+                        }
+                    } else if ("GetServers".equals(channel)) {
+                        bungeeServers = Arrays.asList(in.readUTF().split(", "));
+                    }
+                } catch (IOException e) {
+                    logger.error("An error occurred while handling BungeeCord message", e);
+                }
+            });
         }
 
         if (!VersionInfo.VERSION.equals(pluginDescription.version())) {

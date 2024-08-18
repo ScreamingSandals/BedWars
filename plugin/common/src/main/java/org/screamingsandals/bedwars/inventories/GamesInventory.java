@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.inventories;
 
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.RejoinCommand;
 import org.screamingsandals.bedwars.events.PlayerOpenGamesInventoryEventImpl;
@@ -159,7 +160,7 @@ public class GamesInventory {
                                 case "randomly_join":
                                     final var randomlyJoin = item.getFirstPropertyByName("randomly_join").orElseThrow();
                                     final var games = randomlyJoin.getPropertyData().node("games");
-                                    final var gameList = new ArrayList<GameImpl>();
+                                    final var gameList = new ArrayList<Game>();
                                     if (!games.isList()) {
                                         // Game inventories from SBA don't contain list of games player can randomly join. This code will find them in the same sub inventory.
                                         try {
