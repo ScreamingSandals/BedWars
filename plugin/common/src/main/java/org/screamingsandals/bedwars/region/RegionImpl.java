@@ -19,7 +19,13 @@
 
 package org.screamingsandals.bedwars.region;
 
+import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.utils.BedUtils;
+import org.screamingsandals.lib.api.types.server.BlockHolder;
+import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
+import org.screamingsandals.lib.api.types.server.BlockSnapshotHolder;
+import org.screamingsandals.lib.api.types.server.ChunkHolder;
+import org.screamingsandals.lib.api.types.server.LocationHolder;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.world.Location;
@@ -31,41 +37,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FlatteningRegion implements BWRegion {
+public class RegionImpl implements Region {
     private final List<Location> builtBlocks = new ArrayList<>();
     private final Map<Location, BlockSnapshot> brokenOriginalBlocks = new HashMap<>();
 
-    @Override
     public boolean isLocationModifiedDuringGame(Location loc) {
         return builtBlocks.contains(loc);
     }
 
-    @Override
     public void putOriginalBlock(Location loc, BlockSnapshot block) {
         brokenOriginalBlocks.put(loc, block);
     }
 
-    @Override
     public void addBuiltDuringGame(Location loc) {
         builtBlocks.add(loc);
     }
 
-    @Override
     public void removeBlockBuiltDuringGame(Location loc) {
         builtBlocks.remove(loc);
     }
 
-    @Override
     public boolean isLiquid(Block material) {
         return material.isSameType("water", "lava");
     }
 
-    @Override
     public boolean isBedBlock(BlockSnapshot block) {
         return BedUtils.isBedBlock(block.block());
     }
 
-    @Override
     public void regen() {
         for (var block : builtBlocks) {
             var chunk = block.getChunk();
@@ -85,28 +84,23 @@ public class FlatteningRegion implements BWRegion {
         brokenOriginalBlocks.clear();
     }
 
-    @Override
     public boolean isBedHead(BlockSnapshot block) {
         return isBedBlock(block) && "head".equals(block.block().get("part"));
     }
 
-    @Override
     public boolean isDoorBlock(BlockSnapshot block) {
         return block.block().is("#doors");
     }
 
-    @Override
     public boolean isDoorBottomBlock(BlockSnapshot block) {
         var type = block.block();
         return type.is("#doors") && "lower".equals(type.get("half"));
     }
 
-    @Override
     public BlockPlacement getBedNeighbor(BlockPlacement head) {
         return BedUtils.getBedNeighbor(head);
     }
 
-    @Override
     public boolean isChunkUsed(Chunk chunk) {
         if (chunk == null) {
             return false;
@@ -122,5 +116,71 @@ public class FlatteningRegion implements BWRegion {
             }
         }
         return false;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isLocationModifiedDuringGame(LocationHolder loc) {
+        return isLocationModifiedDuringGame(loc.as(Location.class));
+    }
+
+    @Override
+    @Deprecated
+    public void markForRollback(LocationHolder loc, BlockSnapshotHolder blockSnapshot) {
+        putOriginalBlock(loc.as(Location.class), blockSnapshot.as(BlockSnapshot.class));
+    }
+
+    @Override
+    @Deprecated
+    public void addBuiltDuringGame(LocationHolder loc) {
+        addBuiltDuringGame(loc.as(Location.class));
+    }
+
+    @Override
+    @Deprecated
+    public void removeBuiltDuringGame(LocationHolder loc) {
+        removeBlockBuiltDuringGame(loc.as(Location.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isLiquid(BlockHolder blockHolder) {
+        return isLiquid(blockHolder.as(Block.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isBedBlock(BlockSnapshotHolder blockSnapshot) {
+        return isBedBlock(blockSnapshot.as(BlockSnapshot.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isBedHead(BlockSnapshotHolder blockSnapshot) {
+        return isBedHead(blockSnapshot.as(BlockSnapshot.class));
+    }
+
+    @Override
+    @Deprecated
+    public BlockPlacement getBedNeighbor(BlockPlacementHolder blockHead) {
+        return getBedNeighbor(blockHead.as(BlockPlacement.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isChunkUsed(ChunkHolder chunk) {
+        return isChunkUsed(chunk.as(Chunk.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isDoorBlock(BlockSnapshotHolder blockSnapshot) {
+        return isDoorBlock(blockSnapshot.as(BlockSnapshot.class));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isDoorBottomBlock(BlockSnapshotHolder blockSnapshot) {
+        return isDoorBottomBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 }

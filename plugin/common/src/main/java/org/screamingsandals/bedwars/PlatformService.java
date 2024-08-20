@@ -21,8 +21,6 @@ package org.screamingsandals.bedwars;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.region.BWRegion;
-import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
@@ -50,9 +48,6 @@ public abstract class PlatformService {
 
     @NotNull
     public abstract PlayerBlockBreakEvent fireFakeBlockBreakEvent(@NotNull BlockPlacement block, @NotNull Player player);
-
-    @NotNull
-    public abstract BWRegion getLegacyRegion();
 
     public abstract @Nullable Object savePlatformScoreboard(@NotNull Player player);
 

@@ -40,12 +40,10 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
 import org.screamingsandals.bedwars.bukkit.listener.BungeeMotdListener;
-import org.screamingsandals.bedwars.bukkit.region.LegacyRegion;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
@@ -194,12 +192,6 @@ public class BukkitPlatformService extends PlatformService {
         Bukkit.getPluginManager().callEvent(event);
 
         return new BukkitPlayerBlockBreakEvent(event);
-    }
-
-    @Override
-    @NotNull
-    public BWRegion getLegacyRegion() {
-        return new LegacyRegion();
     }
 
     @Override
