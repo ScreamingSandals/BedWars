@@ -17,36 +17,28 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.bukkit.listener;
+package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerListPingEvent;
-import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.server.ServerListPingEvent;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
-// TODO: Migrate from Bukkit to Slib and return it back to common module
 @Service
-public class BungeeMotdListener implements Listener {
+public class BungeeMotdListener {
     @ShouldRunControllable
     public boolean isEnabled() {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean();
     }
 
-    @OnPostEnable
-    public void onPostEnable(Plugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
-
-    @EventHandler
-    public void onServerListPing(ServerListPingEvent slpe) {
+    @OnEvent
+    public void onServerListPing(@NotNull ServerListPingEvent slpe) {
         var games = GameManagerImpl.getInstance().getLocalGames();
         if (games.isEmpty()) {
             return;
@@ -96,6 +88,9 @@ public class BungeeMotdListener implements Listener {
             return; // WTF??
         }
 
-        slpe.setMotd(string.replace("%name%", game.getName()).replace("%displayName%", game.getDisplayName() != null ? Component.fromMiniMessage(game.getDisplayName()).toLegacy() : game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers())));
+        // TODO: migrate the config to minimessage
+        slpe.description(Component.fromLegacy(
+                string.replace("%name%", game.getName()).replace("%displayName%", game.getDisplayName() != null ? Component.fromMiniMessage(game.getDisplayName()).toLegacy() : game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers()))
+        ));
     }
 }

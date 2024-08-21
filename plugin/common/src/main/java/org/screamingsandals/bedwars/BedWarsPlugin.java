@@ -148,7 +148,8 @@ import java.util.stream.Collectors;
                 LocalGameLoaderImpl.class,
                 RemoteGameLoaderImpl.class,
                 ProtocolManagerImpl.class,
-                RemoteGameStateManager.class
+                RemoteGameStateManager.class,
+                BungeeMotdListener.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",

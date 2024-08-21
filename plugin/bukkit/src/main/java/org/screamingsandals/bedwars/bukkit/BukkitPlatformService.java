@@ -39,7 +39,6 @@ import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
-import org.screamingsandals.bedwars.bukkit.listener.BungeeMotdListener;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -71,8 +70,7 @@ import java.util.function.Consumer;
 @Service
 @ServiceDependencies(initAnother = {
         PerWorldInventoryCompatibilityFix.class,
-        BukkitBStatsMetrics.class,
-        BungeeMotdListener.class
+        BukkitBStatsMetrics.class
 })
 public class BukkitPlatformService extends PlatformService {
     @OnPostEnable
