@@ -39,8 +39,7 @@ public interface Variant {
      * @return name of this variant
      * @since 0.3.0
      */
-    @NotNull
-    String getName();
+    @NotNull String getName();
 
     /**
      * Returns configuration container for all games inheriting this variant
@@ -48,8 +47,7 @@ public interface Variant {
      * @return game's configuration container
      * @since 0.3.0
      */
-    @NotNull
-    GameConfigurationContainer getConfigurationContainer();
+    @NotNull GameConfigurationContainer getConfigurationContainer();
 
     /**
      * Returns all spawner types accessible in this game variant.
@@ -58,8 +56,7 @@ public interface Variant {
      * @return list of all spawner types
      * @since 0.3.0
      */
-    @NotNull
-    List<? extends @NotNull ItemSpawnerType> getItemSpawnerTypes();
+    @NotNull List<? extends @NotNull ItemSpawnerType> getItemSpawnerTypes();
 
     /**
      * Returns names of all spawner types accessible in this game variant.
@@ -68,8 +65,7 @@ public interface Variant {
      * @return list of names of all spawner types
      * @since 0.3.0
      */
-    @NotNull
-    List<String> getItemSpawnerTypeNames();
+    @NotNull List<@NotNull String> getItemSpawnerTypeNames();
 
     /**
      * Returns all custom spawner types defined in this variant
@@ -77,8 +73,7 @@ public interface Variant {
      * @return list of custom spawner types
      * @since 0.3.0
      */
-    @NotNull
-    List<? extends @NotNull ItemSpawnerType> getCustomItemSpawnerTypes();
+    @NotNull List<? extends @NotNull ItemSpawnerType> getCustomItemSpawnerTypes();
 
     /**
      * Checks if default spawner types are included in this variant or not.
@@ -95,8 +90,7 @@ public interface Variant {
      * @return requested type if exists; otherwise null
      * @since 0.3.0
      */
-    @Nullable
-    ItemSpawnerType getItemSpawnerType(@NotNull String key);
+    @Nullable ItemSpawnerType getItemSpawnerType(@NotNull String key);
 
 
 }

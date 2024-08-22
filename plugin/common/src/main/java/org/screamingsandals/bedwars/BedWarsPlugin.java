@@ -50,6 +50,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.bedwars.variants.VariantLoaderImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
@@ -149,7 +150,8 @@ import java.util.stream.Collectors;
                 RemoteGameLoaderImpl.class,
                 ProtocolManagerImpl.class,
                 RemoteGameStateManager.class,
-                BungeeMotdListener.class
+                BungeeMotdListener.class,
+                VariantLoaderImpl.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",

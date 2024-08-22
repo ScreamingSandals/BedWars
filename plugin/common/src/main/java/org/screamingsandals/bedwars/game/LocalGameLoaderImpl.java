@@ -231,7 +231,7 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
 
             var variant = configMap.node("variant");
             if (!variant.empty()) {
-                var gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
+                var gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString(""));
                 if (gameVariant != null) {
                     game.setGameVariant(gameVariant);
                 }

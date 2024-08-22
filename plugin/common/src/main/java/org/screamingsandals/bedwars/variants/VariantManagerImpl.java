@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars.variants;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -35,43 +37,44 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class VariantManagerImpl implements VariantManager {
     @DataFolder("variants")
-    private final Path variantsFolder;
-    private final LoggerWrapper logger;
-    private final List<VariantImpl> variants = new LinkedList<>();
+    private final @NotNull Path variantsFolder;
+    private final @NotNull LoggerWrapper logger;
+    private final @NotNull List<VariantImpl> variants = new LinkedList<>();
+    private final @NotNull VariantLoaderImpl variantLoader;
 
-    public static VariantManagerImpl getInstance() {
+    public static @NotNull VariantManagerImpl getInstance() {
         return ServiceManager.get(VariantManagerImpl.class);
     }
 
     @Override
-    public Optional<VariantImpl> getVariant(String name) {
-        return variants.stream().filter(variant -> variant.getName().equals(name)).findFirst();
+    public @Nullable VariantImpl getVariant(@NotNull String name) {
+        return variants.stream().filter(variant -> variant.getName().equals(name)).findFirst().orElse(null);
     }
 
     @Override
-    public List<VariantImpl> getVariants() {
+    public @NotNull List<@NotNull VariantImpl> getVariants() {
         return List.copyOf(variants);
     }
 
     @Override
-    public boolean hasVariant(String name) {
-        return getVariant(name).isPresent();
+    public boolean hasVariant(@NotNull String name) {
+        return getVariant(name) != null;
     }
 
     @Override
-    public VariantImpl getDefaultVariant() {
-        return getVariant("default").orElseThrow();
+    public @NotNull VariantImpl getDefaultVariant() {
+        return Objects.requireNonNull(getVariant("default"), "A variant called default is not present. This is a bug!");
     }
 
     @Override
-    public List<String> getVariantNames() {
+    public @NotNull List<@NotNull String> getVariantNames() {
         return variants.stream().map(VariantImpl::getName).collect(Collectors.toList());
     }
 
@@ -81,7 +84,7 @@ public class VariantManagerImpl implements VariantManager {
             try {
                 Files.createDirectory(variantsFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("An error occurred while creating a folder {}", variantsFolder.toString(), e);
             }
         }
 
@@ -110,7 +113,7 @@ public class VariantManagerImpl implements VariantManager {
             } else {
                 results.forEach(file -> {
                     if (file.exists() && file.isFile() && !file.getName().toLowerCase(Locale.ROOT).endsWith(".disabled")) {
-                        var variant = VariantImpl.loadVariant(file);
+                        var variant = variantLoader.loadVariant(file);
                         if (variant != null) {
                             variants.add(variant);
                         }
@@ -118,7 +121,7 @@ public class VariantManagerImpl implements VariantManager {
                 });
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("An error occurred while loading variant files", e);
         }
     }
 

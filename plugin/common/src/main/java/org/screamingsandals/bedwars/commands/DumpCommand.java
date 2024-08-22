@@ -140,7 +140,7 @@ public class DumpCommand extends BaseCommand {
                                                                             "name", variant.getName(),
                                                                             "configurationContainer", ConfigurateUtils.toMap(variant.getConfigurationContainer().getSaved()),
                                                                             "defaultItemSpawnerTypesIncluded", variant.isDefaultItemSpawnerTypesIncluded(),
-                                                                            "customSpawners", variant.getCustomSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
+                                                                            "customSpawners", variant.getCustomItemSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
                                                                                     "configKey", itemSpawnerType.getConfigKey(),
                                                                                     "name", itemSpawnerType.getName(),
                                                                                     "translatableKey", itemSpawnerType.getTranslatableKey().toJavaJson(),

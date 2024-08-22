@@ -59,12 +59,11 @@ public class AddCommand extends BaseAdminSubCommand {
                             } else {
                                 VariantImpl variantObj = null;
                                 if (variant.isPresent()) {
-                                    var variantOpt = VariantManagerImpl.getInstance().getVariant(variant.get());
-                                    if (variantOpt.isPresent()) {
-                                        variantObj = variantOpt.get();
-                                    } else {
+                                    variantObj = VariantManagerImpl.getInstance().getVariant(variant.get());
+                                    if (variantObj == null) {
                                         sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_VARIANT)
                                                 .placeholder("variant", variant.get()).defaultPrefix());
+                                        return;
                                     }
                                 }
 

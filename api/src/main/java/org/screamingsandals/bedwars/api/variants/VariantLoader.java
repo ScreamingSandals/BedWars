@@ -22,22 +22,19 @@ package org.screamingsandals.bedwars.api.variants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.io.File;
 
 /**
- * Manages all BedWars variants
+ * Loads variant files.
  *
  * @author Screaming Sandals
  * @since 0.3.0
  */
-public interface VariantManager {
-    @Nullable Variant getVariant(@NotNull String name);
+public interface VariantLoader {
 
-    @NotNull List<@NotNull String> getVariantNames();
-
-    @NotNull List<? extends @NotNull Variant> getVariants();
-
-    boolean hasVariant(@NotNull String name);
-
-    @NotNull Variant getDefaultVariant();
+    /**
+     * @param file a file containing the variant data
+     * @return a loaded variant or null
+     */
+    @Nullable Variant loadVariant(@NotNull File file);
 }

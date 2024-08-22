@@ -17,27 +17,14 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.api.variants;
+package org.screamingsandals.bedwars.variants.prefab;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
-import java.util.List;
-
-/**
- * Manages all BedWars variants
- *
- * @author Screaming Sandals
- * @since 0.3.0
- */
-public interface VariantManager {
-    @Nullable Variant getVariant(@NotNull String name);
-
-    @NotNull List<@NotNull String> getVariantNames();
-
-    @NotNull List<? extends @NotNull Variant> getVariants();
-
-    boolean hasVariant(@NotNull String name);
-
-    @NotNull Variant getDefaultVariant();
+public interface Prefab {
+    interface Loader<T extends Prefab> {
+        @NotNull Prefab load(@NotNull ConfigurationNode node) throws ConfigurateException;
+    }
 }

@@ -19,95 +19,43 @@
 
 package org.screamingsandals.bedwars.variants;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
-import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.utils.ConfigurateUtils;
-import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.spectator.Color;
-import org.screamingsandals.lib.spectator.Component;
-import org.spongepowered.configurate.ConfigurationNode;
+import org.screamingsandals.bedwars.variants.prefab.Prefab;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Getter
 public class VariantImpl implements Variant {
-    @NotNull
-    private final String name;
-    @NotNull
-    private final GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
-    @NotNull
-    private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
+    private final @NotNull String name;
+    private final @NotNull GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
+    @Getter(AccessLevel.PROTECTED)
+    private final @NotNull List<@NotNull ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
     private final @NotNull File file;
+    @Getter(AccessLevel.PROTECTED)
+    private final @NotNull Map<@NotNull String, Prefab> prefabMap = new HashMap<>();
+    @Setter(AccessLevel.PROTECTED)
     private boolean defaultItemSpawnerTypesIncluded = true;
 
-    public static VariantImpl loadVariant(File file) {
-        try {
-            final ConfigurationNode configMap = ConfigurateUtils.loadFileAsNode(file);
-            if (configMap == null) {
-                return null;
-            }
-
-            VariantImpl variant;
-            if (file.getName().equalsIgnoreCase("default.yml")) {
-                variant = new VariantImpl("default", file);
-            } else {
-                var name = configMap.node("name").getString();
-                if (name == null || name.isEmpty() || name.equalsIgnoreCase("default")) {
-                    name = file.getName().split("\\.")[0];
-                }
-                variant = new VariantImpl(name, file);
-            }
-
-            variant.configurationContainer.applyNode(configMap.node("config"));
-
-            var spawnersNode = configMap.node("custom-spawner-types");
-            if (!spawnersNode.empty() && spawnersNode.isMap()) {
-                spawnersNode.childrenMap().forEach((spawnerK, node) -> {
-                    var type = ItemSpawnerTypeImpl.deserialize(spawnerK.toString(), node);
-                    if (type != null) {
-                        variant.customSpawnerTypes.add(type);
-                    }
-                });
-
-                if (!variant.customSpawnerTypes.isEmpty()) {
-                    variant.defaultItemSpawnerTypesIncluded = configMap.node("default-spawner-types-included").getBoolean(true);
-                }
-            } else {
-                variant.defaultItemSpawnerTypesIncluded = true;
-            }
-
-            Server.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.withAppendix(
-                            Component.text("Variant ", Color.GREEN),
-                            Component.text(variant.name + " (" + file.getName() + ")", Color.WHITE),
-                            Component.text(" loaded!", Color.GREEN)
-                    )
-            );
-
-            return variant;
-        } catch (Throwable throwable) {
-            Debug.warn("Something went wrong while loading variant file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
-            throwable.printStackTrace();
-            return null;
-        }
-    }
-
     @Override
-    @NotNull
-    public List<@NotNull ItemSpawnerTypeImpl> getItemSpawnerTypes() {
+    public @NotNull List<@NotNull ItemSpawnerTypeImpl> getItemSpawnerTypes() {
         if (!defaultItemSpawnerTypesIncluded) {
             return List.copyOf(customSpawnerTypes);
         }
@@ -122,8 +70,7 @@ public class VariantImpl implements Variant {
     }
 
     @Override
-    @NotNull
-    public List<String> getItemSpawnerTypeNames() {
+    public @NotNull List<@NotNull String> getItemSpawnerTypeNames() {
         var names = customSpawnerTypes.stream().map(ItemSpawnerTypeImpl::getConfigKey).collect(Collectors.toList());
         if (defaultItemSpawnerTypesIncluded) {
             for (var name : BedWarsPlugin.getInstance().getSpawnerTypes().keySet()) {
@@ -135,14 +82,12 @@ public class VariantImpl implements Variant {
         return names;
     }
 
-    @NotNull
-    public List<@NotNull ItemSpawnerTypeImpl> getCustomItemSpawnerTypes() {
+    public @Unmodifiable @NotNull List<@NotNull ItemSpawnerTypeImpl> getCustomItemSpawnerTypes() {
         return List.copyOf(customSpawnerTypes);
     }
 
     @Override
-    @Nullable
-    public ItemSpawnerTypeImpl getItemSpawnerType(@NotNull String name) {
+    public @Nullable ItemSpawnerTypeImpl getItemSpawnerType(@NotNull String name) {
         var finalName = name.toLowerCase(Locale.ROOT);
         var match = customSpawnerTypes.stream().filter(t -> t.getConfigKey().equals(finalName)).findFirst().orElse(null);
         if (match != null) {
@@ -154,4 +99,15 @@ public class VariantImpl implements Variant {
         return BedWarsPlugin.getInstance().getSpawnerTypes().get(finalName);
     }
 
+    public @Unmodifiable @NotNull Map<@NotNull String, Prefab> getPrefabs() {
+        return Collections.unmodifiableMap(prefabMap);
+    }
+
+    public @Unmodifiable @NotNull List<@NotNull String> getPrefabNames() {
+        return List.copyOf(prefabMap.keySet());
+    }
+
+    public @Nullable Prefab getPrefab(@NotNull String name) {
+        return prefabMap.get(name);
+    }
 }
