@@ -20,10 +20,13 @@
 package org.screamingsandals.bedwars.variants.prefab;
 
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.lib.player.Player;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
 public interface Prefab {
+    void place(Player player);
+
     interface Loader<T extends Prefab> {
         @NotNull Prefab load(@NotNull ConfigurationNode node) throws ConfigurateException;
     }

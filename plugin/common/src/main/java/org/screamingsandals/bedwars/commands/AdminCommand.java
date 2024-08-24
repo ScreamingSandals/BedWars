@@ -58,7 +58,8 @@ import java.util.stream.Stream;
         TeamCommand.class,
         TimeCommand.class,
         DisplayNameCommand.class,
-        FeeCommand.class
+        FeeCommand.class,
+        PrefabCommand.class
 })
 public class AdminCommand extends BaseCommand {
 

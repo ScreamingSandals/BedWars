@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.lib.player.Player;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -36,6 +37,17 @@ public class CommandPrefab implements Prefab {
     @Getter
     @Setter
     private @NotNull List<@NotNull String> commands;
+
+    @Override
+    public void place(Player player) {
+        commands.forEach(s -> {
+            if (s.startsWith("/")) {
+                s = s.substring(1);
+            }
+
+            player.tryToDispatchCommand(s);
+        });
+    }
 
     public static class Loader implements Prefab.Loader<CommandPrefab> {
         public static final @NotNull Loader INSTANCE = new Loader();
