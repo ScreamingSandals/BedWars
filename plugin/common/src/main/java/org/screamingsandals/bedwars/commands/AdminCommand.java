@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
 import java.util.HashMap;
@@ -81,5 +82,10 @@ public class AdminCommand extends BaseCommand {
                             Stream.concat(GameManagerImpl.getInstance().getLocalGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
                         )
                 );
+    }
+
+    @OnDisable
+    public void onDisable() {
+        gc.clear();
     }
 }

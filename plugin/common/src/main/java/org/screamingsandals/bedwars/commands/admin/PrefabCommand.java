@@ -57,7 +57,7 @@ public class PrefabCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            prefab.place(sender.as(Player.class));
+                            prefab.place(game, sender.as(Player.class));
                         }))
         );
     }

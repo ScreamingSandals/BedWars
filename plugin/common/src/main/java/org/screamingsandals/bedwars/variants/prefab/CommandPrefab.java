@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.lib.player.Player;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -39,11 +40,12 @@ public class CommandPrefab implements Prefab {
     private @NotNull List<@NotNull String> commands;
 
     @Override
-    public void place(Player player) {
+    public void place(@NotNull Game game, @NotNull Player player) {
         commands.forEach(s -> {
             if (s.startsWith("/")) {
                 s = s.substring(1);
             }
+            s = s.replace("%game%", game.getName());
 
             player.tryToDispatchCommand(s);
         });
