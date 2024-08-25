@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api.upgrades;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
@@ -31,8 +32,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * EXPERIMENTAL: Upgrade API is subject to change.
+ *
  * @author ScreamingSandals
  */
+@ApiStatus.Experimental
 public final class UpgradeStorage {
     private final String upgradeName;
     private final Class<? extends Upgrade> upgradeClass;

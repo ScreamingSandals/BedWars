@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.target.Target;
@@ -30,6 +31,7 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
+import org.screamingsandals.bedwars.game.upgrade.UpgradeImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.api.types.server.LocationHolder;
@@ -48,7 +50,9 @@ import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.world.Location;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -74,6 +78,7 @@ public class TeamImpl implements Team {
     private Hologram protectHologram;
     private final Random randomSpawn = new Random();
     private boolean forced = false;
+    private final @NotNull Map<@NotNull String, UpgradeImpl> teamUpgrades = new HashMap<>();
 
     public void start() {
         if (started) {
@@ -158,6 +163,9 @@ public class TeamImpl implements Team {
         // team chest inventory
         final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
         this.teamChestInventory = Objects.requireNonNull(ContainerFactory.createContainer(InventoryType.of("ender_chest"), message));
+        for (var upgrade : teamUpgrades.values()) {
+            upgrade.reset();
+        }
         this.started = true;
     }
 
@@ -234,6 +242,23 @@ public class TeamImpl implements Team {
     @Override
     public boolean isDead() {
         return forced && target != null ? !target.isValid() : players.isEmpty(); // forced teams in test play without players work a little differently
+    }
+
+    @Override
+    public @NotNull UpgradeImpl registerUpgrade(@NotNull String name, double initialLevel, @Nullable Double maxLevel) throws IllegalStateException {
+        if (teamUpgrades.containsKey(name)) {
+            throw new IllegalStateException("Upgrade " + name + " is already registered!");
+        }
+
+        var teamUpgrade = new UpgradeImpl(initialLevel, maxLevel);
+        teamUpgrade.reset();
+        teamUpgrades.put(name, teamUpgrade);
+        return teamUpgrade;
+    }
+
+    @Override
+    public @Nullable UpgradeImpl getUpgrade(@NotNull String name) {
+        return teamUpgrades.get(name);
     }
 
     @Override

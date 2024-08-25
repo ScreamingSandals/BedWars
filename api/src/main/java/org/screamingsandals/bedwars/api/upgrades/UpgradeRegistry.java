@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api.upgrades;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 
@@ -26,8 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * EXPERIMENTAL: Upgrade API is subject to change.
+ *
  * @author ScreamingSandals
  */
+@ApiStatus.Experimental
 public final class UpgradeRegistry {
     private static final Map<String, UpgradeStorage> registeredUpgrades = new HashMap<>();
 
