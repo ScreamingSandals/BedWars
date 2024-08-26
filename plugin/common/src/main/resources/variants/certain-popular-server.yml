@@ -126,6 +126,24 @@ custom-spawner-types:
     color: GOLD
     name: Gold
 
+upgrades:
+  sharpness:
+    type: enchantment
+    enchantment: minecraft:sharpness
+    limit: 1
+  knockback:
+    type: enchantment
+    enchantment: minecraft:knockback
+    limit: 1
+  efficiency:
+    type: enchantment
+    enchantment: minecraft:efficiency
+    limit: 2
+  protection:
+    type: enchantment
+    enchantment: minecraft:protection
+    limit: 4
+
 # TODO: prefabs (already done shops with skin, shop file etc.)
 prefabs:
   # Usage: /bw admin <arena> prefab upgradeShop

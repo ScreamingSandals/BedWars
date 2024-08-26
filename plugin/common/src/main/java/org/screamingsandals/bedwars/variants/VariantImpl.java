@@ -30,6 +30,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
+import org.screamingsandals.bedwars.game.upgrade.builtin.BuiltInUpgradeDefinition;
 import org.screamingsandals.bedwars.variants.prefab.Prefab;
 
 import java.io.File;
@@ -48,6 +49,8 @@ public class VariantImpl implements Variant {
     private final @NotNull GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
     @Getter(AccessLevel.PROTECTED)
     private final @NotNull List<@NotNull ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final @NotNull Map<@NotNull String, BuiltInUpgradeDefinition> upgradesMap = new HashMap<>();
     private final @NotNull File file;
     @Getter(AccessLevel.PROTECTED)
     private final @NotNull Map<@NotNull String, Prefab> prefabMap = new HashMap<>();
@@ -101,6 +104,10 @@ public class VariantImpl implements Variant {
 
     public @Unmodifiable @NotNull Map<@NotNull String, Prefab> getPrefabs() {
         return Collections.unmodifiableMap(prefabMap);
+    }
+
+    public @NotNull Map<@NotNull String, BuiltInUpgradeDefinition> getUpgrades() {
+        return Collections.unmodifiableMap(upgradesMap);
     }
 
     public @Unmodifiable @NotNull List<@NotNull String> getPrefabNames() {
