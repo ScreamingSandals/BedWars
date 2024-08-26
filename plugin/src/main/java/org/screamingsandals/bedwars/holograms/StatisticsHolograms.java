@@ -63,13 +63,22 @@ public class StatisticsHolograms implements TouchHandler {
 
         File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
         if (file.exists()) {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            List<Location> locations = (List<Location>) config.get("locations");
-            assert locations != null;
-            this.hologramLocations.addAll(locations);
+            try {
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                List<Location> locations = (List<Location>) config.get("locations");
+                if (locations != null) {
+                    if (locations.removeIf(location -> location.getWorld() == null)) { // Skip invalid locations
+                        Main.getInstance().getLogger().warning("There are holograms in " + file.getAbsolutePath() + " with location in unknown world! They were removed from the configuration");
+                    }
+                    this.hologramLocations.addAll(locations);
+                }
+            } catch (Throwable t) {
+                Main.getInstance().getLogger().severe("Failed to load holograms from " + file.getAbsolutePath());
+                t.printStackTrace();
+            }
         }
 
-        if (this.hologramLocations.size() == 0) {
+        if (this.hologramLocations.isEmpty()) {
             return;
         }
 

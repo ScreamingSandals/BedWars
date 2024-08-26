@@ -59,10 +59,14 @@ public class SignManager {
             if (conf != null) {
                 for (Map<String, Object> c : conf) {
                     String name = (String) c.get("name");
-                    if (name == null || name.trim().equals("")) {
+                    if (name == null || name.trim().isEmpty()) {
                         name = (String) c.get("game"); // Compatibility with old BedWars sign.yml
                     }
                     Location loc = (Location) c.get("location");
+                    if (loc.getWorld() == null) {
+                        Main.getInstance().getLogger().warning("A sign on location " + loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + " is in unknown world! It was removed from the configuration");
+                        continue; // Skip invalid locations
+                    }
                     signs.put(loc, new SignBlock(loc, name));
                     owner.updateSign(signs.get(loc));
                 }

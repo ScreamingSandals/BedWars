@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.game;
 
 import org.bukkit.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
@@ -33,6 +34,7 @@ import org.bukkit.entity.Item;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
     public Location loc;
+    public @Nullable String declaredSpawnerType;
     public ItemSpawnerType type;
     public String customName;
     public double startLevel;
