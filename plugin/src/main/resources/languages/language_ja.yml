@@ -380,3 +380,4 @@ help_bw_cheat_startemptygame: /bw cheat startemptygame - &c１つのチームの
 help_bw_cheat_destroybed: /bw cheat destroybed <team> - &c特定のチームのベッドを破壊する
 cheat_received_target_blocks_destroy: '&aすべてのチームのベッドが破壊されました！'
 kicking_in: '&cアリーナから退出する場合: &7%time%'
+game_ended_too_early: '&cゲームはすぐ終わりました...誰も勝ちませんでした。'
