@@ -35,7 +35,7 @@ import java.util.Objects;
 @Getter
 public class EnchantmentUpgradeDefinition implements BuiltInUpgradeDefinition {
     private static final @NotNull String ENCHANTMENT_KEY = "enchantment";
-    private static final @NotNull String MAX_LEVEL_KEY = "maxLevel";
+    private static final @NotNull String MAX_LEVEL_KEY = "max-level";
 
     private final @NotNull EnchantmentType type;
     private final int maxLevel;

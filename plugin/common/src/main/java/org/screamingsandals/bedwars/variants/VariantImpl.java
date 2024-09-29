@@ -117,4 +117,8 @@ public class VariantImpl implements Variant {
     public @Nullable Prefab getPrefab(@NotNull String name) {
         return prefabMap.get(name);
     }
+
+    public @Nullable BuiltInUpgradeDefinition getUpgrade(@NotNull String name) {
+        return upgradesMap.get(name);
+    }
 }

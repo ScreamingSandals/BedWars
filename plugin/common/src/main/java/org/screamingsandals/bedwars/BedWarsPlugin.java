@@ -155,7 +155,8 @@ import java.util.stream.Collectors;
         },
         packages = {
                 "org.screamingsandals.bedwars.special",
-                "org.screamingsandals.bedwars.lobby"
+                "org.screamingsandals.bedwars.lobby",
+                "org.screamingsandals.bedwars.game.upgrade.builtin"
         }
 )
 @RequiredArgsConstructor
