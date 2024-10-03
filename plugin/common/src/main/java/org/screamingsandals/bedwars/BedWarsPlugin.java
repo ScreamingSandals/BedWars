@@ -29,10 +29,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.bedwars.game.GroupManagerImpl;
-import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
-import org.screamingsandals.bedwars.game.LocalGameLoaderImpl;
+import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.game.remote.RemoteGameLoaderImpl;
 import org.screamingsandals.bedwars.game.remote.RemoteGameStateManager;
 import org.screamingsandals.bedwars.game.remote.ServerNameChangeEvent;
@@ -84,13 +81,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Plugin(
         id = "ScreamingBedWars",
@@ -109,7 +102,8 @@ import java.util.stream.Collectors;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Parties"
+        "Parties",
+        "rustyconnector-paper"
 })
 @Init(
         services = {
@@ -401,6 +395,10 @@ public class BedWarsPlugin implements BedwarsAPI {
         Server.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
 
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
+
+        if (GameImpl.isRustyConnectorEnabled()) {
+            RustyConnectorUtils.init();
+        }
     }
 
     @OnDisable
