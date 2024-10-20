@@ -6,7 +6,7 @@ dependencies {
     /* PROVIDED */
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:4.0.0'
-    compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly 'me.clip:placeholderapi:2.11.5'
     compileOnly('me.ebonjaeger:perworldinventory-kt:2.3.1')  {
         exclude group: '*', module: '*'
     }
