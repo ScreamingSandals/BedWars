@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.1"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.3"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -15,12 +15,12 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.21.1') {
-        // exclude 1.20, 1.20.3 and 1.20.5 - hotfixed versions
+    /*versionRange('1.8.8', '1.21.3') {
+        // exclude 1.20, 1.20.3, 1.20.5 and 1.21.2 - hotfixed versions
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
         // exclude 1.9.1 and 1.9.3 - no mappings at all
-        exclude '1.16', '1.10.1', '1.8.9', '1.9.1', '1.9.3', '1.20', '1.20.3', '1.20.5'
+        exclude '1.16', '1.10.1', '1.8.9', '1.9.1', '1.9.3', '1.20', '1.20.3', '1.20.5', '1.21.2
 
         // include only releases, no snapshots
         includeTypes 'release'
@@ -56,7 +56,7 @@ accessors {
         getter List, 'nonDefaultValues'
     }
     var Level = mapClass('net.minecraft.world.level.Level') {
-        getter Supplier, 'profilerSupplier' // 1.17 and newer
+        getter Supplier, 'profilerSupplier' // 1.17-1.21.1, no longer needed for GoalSelector since 1.21.2
         getter 'net.minecraft.util.profiling.ProfilerFiller', 'profiler' // for something between new and old versions
         field 'net.minecraft.server.VVV.MethodProfiler', 'methodProfiler' // for older versions, Spigot mapped
     }
@@ -85,6 +85,7 @@ accessors {
         setter boolean, 'invisible'
         getter boolean, 'noGravity'
         setter boolean, 'noGravity'
+        method boolean, 'onGround'
         // old
         field float, 'yRot'
         field float, 'xRot'
@@ -97,11 +98,8 @@ accessors {
         constructor Level, double, double, double
         getter boolean, 'small'
         setter boolean, 'small'
-        getter boolean, 'showArms'
         setter boolean, 'showArms'
-        getter boolean, 'noBasePlate'
         setter boolean, 'noBasePlate'
-        getter boolean, 'marker'
         setter boolean, 'marker'
     }
     var PathfinderMob = mapClass 'net.minecraft.world.entity.PathfinderMob'
@@ -211,7 +209,11 @@ accessors {
         constructor int, List // 1.19.3
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket') {
-        constructor Entity
+        constructor Entity // <= 1.21.1
+        constructor int, 'net.minecraft.world.entity.PositionMoveRotation', Set, boolean // 1.21.2+
+    }
+    mapClass('net.minecraft.world.entity.PositionMoveRotation') { // 1.21.2+
+        method it.name, 'of', 'net.minecraft.world.entity.Entity'
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundSetExperiencePacket') {
         constructor float, int, int
@@ -239,7 +241,8 @@ accessors {
     }
     var Goal = mapClass('net.minecraft.world.entity.ai.goal.Goal')
     mapClass('net.minecraft.world.entity.ai.goal.GoalSelector') {
-        constructor Supplier
+        constructor Supplier // <= 1.21.1
+        constructor() // 1.21.2+
         method void, 'addGoal', int, Goal
     }
     mapClass('net.minecraft.world.entity.ai.goal.MeleeAttackGoal') {

@@ -268,6 +268,10 @@ public class ClassStorage {
 	
 	public static Object obtainNewPathfinderSelector(Object handler) {
 		try {
+			if (GoalSelectorAccessor.CONSTRUCTOR_1.get() != null) {
+				return GoalSelectorAccessor.CONSTRUCTOR_1.get().newInstance();
+			}
+
 			Object world = getMethod(handler, EntityAccessor.METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 			try {
 				// 1.17

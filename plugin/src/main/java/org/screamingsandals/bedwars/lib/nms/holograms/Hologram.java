@@ -229,8 +229,21 @@ public class Hologram {
 					if (positionChanged) {
 						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
 						entity.setLocation(localLoc);
-						Object teleportPacket = ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
-								.newInstance(entity.getHandler());
+						Object teleportPacket;
+						if (ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_1.get() != null) {
+							Object move = ClassStorage.getMethod(PositionMoveRotationAccessor.METHOD_OF.get()).invokeStatic(entity.getHandler());
+
+							teleportPacket = ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_1.get()
+									.newInstance(
+											entity.getId(),
+											move,
+											Collections.emptySet(),
+											ClassStorage.getMethod(entity.getHandler(), EntityAccessor.METHOD_ON_GROUND.get()).invoke()
+									);
+						} else {
+							teleportPacket = ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
+									.newInstance(entity.getHandler());
+						}
 						packets.add(teleportPacket);
 					}
 				} else {
