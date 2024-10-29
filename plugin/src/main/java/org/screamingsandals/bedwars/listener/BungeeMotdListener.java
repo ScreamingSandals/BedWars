@@ -38,6 +38,10 @@ public class BungeeMotdListener implements Listener {
             game = Main.getInstance().getSelectedGame();
         } else if (Main.getConfigurator().config.getBoolean("bungee.random-game-selection.enabled")) {
             game = (Game) Main.getInstance().getRandomWaitingGameForBungeeMode();
+
+            if (game == null && !Main.getGameNames().isEmpty()) {
+                game = Main.getGame(Main.getGameNames().get(0)); // seems like there are no waiting games, let's just show one of the game in running state
+            }
         } else {
             game = Main.getGame(Main.getGameNames().get(0));
         }

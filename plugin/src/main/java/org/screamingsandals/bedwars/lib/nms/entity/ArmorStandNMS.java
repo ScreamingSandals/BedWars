@@ -56,24 +56,12 @@ public class ArmorStandNMS extends EntityNMS implements ArmorStandAccessor {
 		getMethod(handler, METHOD_SET_SHOW_ARMS.get()).invoke(arms);
 	}
 	
-	public boolean isArms() {
-		return (boolean) getMethod(handler, METHOD_IS_SHOW_ARMS.get()).invoke();
-	}
-	
 	public void setBasePlate(boolean basePlate) {
 		getMethod(handler, METHOD_SET_NO_BASE_PLATE.get()).invoke(basePlate);
 	}
 	
-	public boolean isBasePlate() {
-		return (boolean) getMethod(handler, METHOD_IS_NO_BASE_PLATE.get()).invoke();
-	}
-	
 	public void setMarker(boolean marker) {
 		getMethod(handler, METHOD_SET_MARKER.get()).invoke(marker);
-	}
-	
-	public boolean isMarker() {
-		return (boolean) getMethod(handler, METHOD_IS_MARKER.get()).invoke();
 	}
 
 }

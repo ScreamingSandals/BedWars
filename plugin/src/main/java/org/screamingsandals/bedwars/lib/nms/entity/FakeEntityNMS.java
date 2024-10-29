@@ -38,6 +38,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -183,10 +184,22 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public Object createLocationPacket() {
         try {
-            return ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
-                    .newInstance(
-                            handler
-                    );
+            if (ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_1.get() != null) {
+                Object move = ClassStorage.getMethod(PositionMoveRotationAccessor.METHOD_OF.get()).invokeStatic(this.handler);
+
+                return ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_1.get()
+                        .newInstance(
+                                this.entity.getEntityId(),
+                                move,
+                                Collections.emptySet(),
+                                this.entity.isOnGround()
+                        );
+            } else {
+                return ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
+                        .newInstance(
+                                handler
+                        );
+            }
         } catch (Throwable t) {
             Debug.warn("Failed to create location packet for fake entity!: " + t.getMessage());
         }
