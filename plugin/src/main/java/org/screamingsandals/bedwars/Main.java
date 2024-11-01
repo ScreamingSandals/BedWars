@@ -81,7 +81,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
     private String version;
     private boolean isDisabling = false;
-    private boolean isSpigot, isLegacy;
+    private boolean isSpigot, isPaper, isLegacy;
     private boolean isVault;
     private int versionNumber = 0;
     private Economy econ = null;
@@ -131,6 +131,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isSpigot() {
         return instance.isSpigot;
+    }
+
+    public static boolean isPaper() {
+        return instance.isPaper;
     }
 
     public static boolean isVault() {
@@ -362,6 +366,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         version = this.getDescription().getVersion();
         boolean snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
+        isPaper = ClassStorage.IS_PAPER_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
