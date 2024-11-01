@@ -2,57 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>http://localhost:8000/0.2.x/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/api/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/arena/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/bungee/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/commands/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/config/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/placeholderapi/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/shop/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/specials/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/troubleshooting/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/upgrades/</loc>
-         <lastmod>2024-08-17</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2024-11-01</lastmod>
     </url>
 </urlset>
