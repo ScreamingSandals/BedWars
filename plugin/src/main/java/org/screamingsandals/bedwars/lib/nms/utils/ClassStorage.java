@@ -32,6 +32,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.*;
 public class ClassStorage {
 
 	public static final boolean IS_SPIGOT_SERVER = safeGetClass("org.spigotmc.SpigotConfig") != null;
+	public static final boolean IS_PAPER_SERVER = safeGetClass("com.destroystokyo.paper.ParticleBuilder") != null;
 	public static final boolean HAS_CHUNK_TICKETS = getMethod(Chunk.class, "addPluginChunkTicket", Plugin.class).getReflectedMethod() != null;
 	
 	public static Class<?> safeGetClass(String... clazz) {
