@@ -25,7 +25,8 @@ leave: "%name% &chat das Spiel verlassen!"
 game_already_running: "&cSpiel &7%arena% &cläuft bereits!"
 game_is_full: "&cSpiel &7%arena% &cist voll!"
 unknown_command: "&cUnbekannter Befehl! Nutze &4/bw help &cfür Hilfe!"
-unknown_usage: "&cUngültige Anzahl an Argumente! Nutze &4/bw help &cfür Hilfe!"
+unknown_usage: "&cUngültige Anzahl an Argumenten oder unbekannte Argumente! Nutze
+  &4/bw help &cfür Hilfe!"
 no_arena_found: "&cSpiel wurde nicht gefunden!"
 usage_bw_join: "&cBenutze: /bw join <Spiel>"
 usage_bw_admin: "&cBenutze: /bw admin <Spiel> <add|edit|remove|save|...> ..."
@@ -193,7 +194,7 @@ admin_command_store_living_entity_type_set: "&aLebewesentyp des Shops wurde zu &
 admin_command_upgrades: "&aUpgrades wurden auf &7%bool%&a gesetzt!"
 safe_reload: "&a>Es wird gewartet, bis alle Spiele gestoppt sind oder 60 Sekunden
   vorbei sind, bevor das Plugin neu geladen wird!"
-safe_reload_failed_to_stop_game: "&cManche Spiele konnten in der Zeit nicht gestoppt
+safe_reload_failed_to_stop_game: "&cManche Spiele konnten nicht rechtzeitig gestoppt
   werden, die Arena könnte beschädigt sein!"
 holo_not_enabled: "&cHologramm nicht verfügbar. Ist Holographic Displays installiert?"
 holo_added: "&aHologramm an deine Postion gesetzt!"
@@ -211,7 +212,7 @@ sign_status_running: "&aLäuft"
 sign_status_running_players: "&c%players%&8/&c%maxplayers%"
 sign_status_waiting: "&6Wartend"
 sign_status_waiting_players: "&a%players%&8/&a%maxplayers%"
-list_header: "&aVerfügbare Spiele:"
+list_header: "&aVerfügbare Arenen:"
 team_chest: "&a&lTeamtruhe"
 team_chest_is_not_your: "&eDiese Teamtruhe gehört dir nicht!"
 team_chest_placed: "&aNeue Teamtruhe wurde platziert!"
@@ -462,3 +463,17 @@ door_is_destroyed: Tür von %team%§r wurde zerstört!
 destroy_this_door: '%teamcolor%&lZerstöre diese Tür!'
 protect_your_door_destroyed: '&7&lTür ist zerstört.'
 kicking_in: '&cVerlasse Arena in: &7%time%'
+game_ended_too_early: Das Spiel endet vorzeitig. Keiner gewinnt.
+help_bw_cheatin_give: /bw cheatIn <game> give <resource> <amount> <player> - &cGibt
+  dem Spieler eine bestimmte Menge an Ressourcen
+help_bw_cheatin_kill: /bw cheatIn <game> kill <player> - &cTötet einen bestimmten
+  Spieler
+help_bw_cheatin_destroyallbeds: /bw cheatIn <game> destroyallbeds - &cZerstört alle
+  Betten im Spiel
+waiting_placeholder_lobby_scoreboard: Warten...
+help_bw_cheatin_destroybed: /bw cheatIn <game> destroybed <team> - &cZerstört das
+  Bett des betreffenden Teams
+admin_arena_overlaps: '&cDer gewählte Ort führt dazu, dass sich die Arena mit einer
+  anderen Arena überschneidet, was zu Fehlern führen kann! Bitte wählen Sie einen
+  anderen Ort. Wenn Sie darauf bestehen, diesen Ort zu verwenden, führen Sie folgendes
+  aus: &7/bw admin %arena% %position% force'
