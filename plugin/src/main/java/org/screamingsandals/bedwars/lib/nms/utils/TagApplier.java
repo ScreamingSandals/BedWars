@@ -30,11 +30,8 @@ public class TagApplier {
 
             Object compound = CompoundTagAccessor.CONSTRUCTOR_0.get().newInstance();
             ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_STRING.get()).invoke("id", stack.getType().getKey().toString());
-            ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_INT.get()).invoke("count", stack.getType().getKey().toString());
-            ClassStorage.getMethod(
-                    ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_GET_COMPOUND.get()).invoke("components"),
-                    CompoundTagAccessor.METHOD_MERGE.get()
-            ).invoke(tag);
+            ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_INT.get()).invoke("count", stack.getAmount());
+            ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT.get()).invoke("components", parsedTag);
 
             Object optional = ClassStorage.getMethod(ItemStackAccessor.METHOD_PARSE.get()).invokeStatic(
                     ClassStorage.getMethod(ClassStorage.getMethod(Bukkit.getServer(), "getServer").invoke(), MinecraftServerAccessor.METHOD_REGISTRY_ACCESS.get()).invoke(),
@@ -51,7 +48,7 @@ public class TagApplier {
             ClassStorage.getMethod(
                     ClassStorage.getHandleOfItemStack(stack),
                     ItemStackAccessor.METHOD_SET_TAG.get()
-            ).invoke(tag);
+            ).invoke(parsedTag);
         }
         return stack;
     }

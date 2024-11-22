@@ -22,7 +22,7 @@ dependencies {
     implementation project(':BedWars-API')
     implementation project(':BedWars-NMS')
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.15'
+    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.16'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 }
 

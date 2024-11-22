@@ -36,6 +36,7 @@ public class ClassMethod {
 		try {
 			return method.invoke(instance, params);
 		} catch (Throwable t) {
+			t.printStackTrace();
 			return null;
 		}
 	}

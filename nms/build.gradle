@@ -35,8 +35,7 @@ accessors {
         constructor()
         method void, 'putInt', String, int
         method void, 'putString', String, String
-        method it.name, 'getCompound', String
-        method it.name, 'merge', it.name
+        method 'net.minecraft.nbt.Tag', 'put', String, 'net.minecraft.nbt.Tag'
     }
     mapClass('net.minecraft.nbt.TagParser') {
         method CompoundTag, 'parseTag', String
