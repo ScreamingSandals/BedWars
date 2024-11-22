@@ -50,6 +50,7 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lib.nms.utils.TagApplier;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
@@ -65,6 +66,7 @@ import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,6 +117,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         autoColoredMaterials.add("TERRACOTTA"); // FLATTENING ONLY
         autoColoredMaterials.add("STAINED_GLASS");
         autoColoredMaterials.add("STAINED_GLASS_PANE");
+
+        StackParser.tagParser = TagApplier::applyTag;
     }
 
     public static Main getInstance() {

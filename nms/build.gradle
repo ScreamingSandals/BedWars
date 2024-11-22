@@ -34,6 +34,12 @@ accessors {
     var CompoundTag = mapClass('net.minecraft.nbt.CompoundTag') {
         constructor()
         method void, 'putInt', String, int
+        method void, 'putString', String, String
+        method it.name, 'getCompound', String
+        method it.name, 'merge', it.name
+    }
+    mapClass('net.minecraft.nbt.TagParser') {
+        method CompoundTag, 'parseTag', String
     }
     var Component = mapClass('net.minecraft.network.chat.Component') {
         getter String, 'coloredString'
@@ -300,5 +306,15 @@ accessors {
 
         getter Component, 'text'
         setter Component, 'text'
+    }
+    mapClass('net.minecraft.world.item.ItemStack') {
+        method(void, 'setTag', CompoundTag)
+
+        // 1.20.5+
+        method(java.util.Optional, 'parse', 'net.minecraft.core.HolderLookup$Provider', 'net.minecraft.nbt.Tag')
+     }
+
+    mapClass('net.minecraft.server.MinecraftServer') {
+        method('net.minecraft.core.RegistryAccess$Frozen', 'registryAccess')
     }
 }

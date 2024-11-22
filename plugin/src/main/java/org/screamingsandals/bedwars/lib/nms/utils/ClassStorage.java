@@ -23,10 +23,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
+import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
 
 public class ClassStorage {
@@ -34,6 +38,14 @@ public class ClassStorage {
 	public static final boolean IS_SPIGOT_SERVER = safeGetClass("org.spigotmc.SpigotConfig") != null;
 	public static final boolean IS_PAPER_SERVER = safeGetClass("com.destroystokyo.paper.ParticleBuilder") != null;
 	public static final boolean HAS_CHUNK_TICKETS = getMethod(Chunk.class, "addPluginChunkTicket", Plugin.class).getReflectedMethod() != null;
+
+	public static final @NotNull String CB_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
+
+	// CraftBukkit classes
+	@UtilityClass
+	public static final class CB {
+		public static final Class<?> CraftItemStack = safeGetClass(CB_PACKAGE + ".inventory.CraftItemStack");
+	}
 	
 	public static Class<?> safeGetClass(String... clazz) {
 		for (String claz : clazz) {
@@ -290,5 +302,17 @@ public class ClassStorage {
 			t.printStackTrace();
 		}
 		return null;
+	}
+
+	public static ItemStack asCBStack(ItemStack item) {
+		return (ItemStack) ClassStorage.getMethod(CB.CraftItemStack, "asCraftCopy", ItemStack.class).invokeStatic(item);
+	}
+
+	public static Object getHandleOfItemStack(Object obj) {
+		return ClassStorage.getField(obj, "handle");
+	}
+
+	public static ItemStack nmsAsStack(Object nmsStack) {
+		return (ItemStack) ClassStorage.getMethod(CB.CraftItemStack, "asCraftMirror", ItemStackAccessor.TYPE.get()).invokeStatic(nmsStack);
 	}
 }
