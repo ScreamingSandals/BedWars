@@ -79,4 +79,9 @@ public interface ItemSpawnerType {
      * @return
      */
     ItemStackHolder getItem(int amount);
+
+    /**
+     * @since 0.3.0
+     */
+    ItemSpawnerTypeHolder toHolder();
 }

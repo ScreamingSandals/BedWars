@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api.variants;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
@@ -32,6 +33,7 @@ import java.util.List;
  * @author ScreamingSandals
  * @since 0.3.0
  */
+@ApiStatus.NonExtendable
 public interface Variant {
 
     /**

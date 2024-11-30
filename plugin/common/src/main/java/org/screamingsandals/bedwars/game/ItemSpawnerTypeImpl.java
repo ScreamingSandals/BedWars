@@ -78,6 +78,11 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
         return Objects.requireNonNull(ItemStackFactory.build(itemType, builder -> builder.name(getItemName()).amount(amount)));
     }
 
+    @Override
+    public ItemSpawnerTypeHolderImpl toHolder() {
+        return new ItemSpawnerTypeHolderImpl(configKey);
+    }
+
     public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {
         spawnerKey = spawnerKey.toLowerCase(Locale.ROOT);
 

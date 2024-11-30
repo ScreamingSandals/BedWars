@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -240,9 +241,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     spawnerTeam = Message.of(LangKeys.ADMIN_INFO_SPAWNER_NO_TEAM).asComponent(sender);
                                 }
 
+                                var spawnerType = spawner.getItemSpawnerType().toSpawnerType(game);
+
                                 Message
                                         .of(LangKeys.ADMIN_INFO_SPAWNER)
-                                        .placeholder("resource", spawner.getItemSpawnerType().getItemName())
+                                        .placeholder("resource", spawnerType == null ? Component.text(spawner.getItemSpawnerType().configKey(), Color.RED) : spawnerType.getItemName())
                                         .placeholder("x", loc_spawner.getBlockX())
                                         .placeholder("y", loc_spawner.getBlockY())
                                         .placeholder("z", loc_spawner.getBlockZ())

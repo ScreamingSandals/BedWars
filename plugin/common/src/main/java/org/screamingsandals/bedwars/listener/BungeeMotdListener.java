@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.listener;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -31,26 +32,34 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
 @Service
+@RequiredArgsConstructor
 public class BungeeMotdListener {
+    private final GameManagerImpl gameManager;
+    private final MainConfig mainConfig;
+
     @ShouldRunControllable
     public boolean isEnabled() {
-        return MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean();
+        return mainConfig.node("bungee", "enabled").getBoolean() && mainConfig.node("bungee", "motd", "enabled").getBoolean();
     }
 
     @OnEvent
     public void onServerListPing(@NotNull ServerListPingEvent slpe) {
-        var games = GameManagerImpl.getInstance().getLocalGames();
+        var games = gameManager.getLocalGames();
         if (games.isEmpty()) {
             return;
         }
 
         Game gameA = null;
-        if (GameManagerImpl.getInstance().isDoGamePreselection()) {
-            gameA = GameManagerImpl.getInstance().getPreselectedGame();
+        if (gameManager.isDoGamePreselection()) {
+            gameA = gameManager.getPreselectedGame();
         }
         if (gameA == null) {
-            if (MainConfig.getInstance().node("bungee", "random-game-selection", "enabled").getBoolean()) {
-                gameA = GameManagerImpl.getInstance().getGameWithHighestPlayers().orElse(null);
+            if (mainConfig.node("bungee", "random-game-selection", "enabled").getBoolean()) {
+                gameA = gameManager.getGameWithHighestPlayers().orElse(null);
+
+                if (gameA == null) {
+                    gameA = games.get(0); // seems like there are no waiting games, let's just show one of the game in running state
+                }
             } else {
                 gameA = games.get(0);
             }
@@ -66,20 +75,20 @@ public class BungeeMotdListener {
 
         switch (game.getStatus()) {
             case DISABLED:
-                string = MainConfig.getInstance().node("bungee", "motd", "disabled").getString();
+                string = mainConfig.node("bungee", "motd", "disabled").getString();
                 break;
             case GAME_END_CELEBRATING:
             case RUNNING:
-                string = MainConfig.getInstance().node("bungee", "motd", "running").getString();
+                string = mainConfig.node("bungee", "motd", "running").getString();
                 break;
             case REBUILDING:
-                string = MainConfig.getInstance().node("bungee", "motd", "rebuilding").getString();
+                string = mainConfig.node("bungee", "motd", "rebuilding").getString();
                 break;
             case WAITING:
                 if (game.countPlayers() >= game.getMaxPlayers()) {
-                    string = MainConfig.getInstance().node("bungee", "motd", "waiting_full").getString();
+                    string = mainConfig.node("bungee", "motd", "waiting_full").getString();
                 } else {
-                    string = MainConfig.getInstance().node("bungee", "motd", "waiting").getString();
+                    string = mainConfig.node("bungee", "motd", "waiting").getString();
                 }
                 break;
         }

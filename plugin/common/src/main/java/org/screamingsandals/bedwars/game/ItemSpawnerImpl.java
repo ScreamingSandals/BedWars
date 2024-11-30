@@ -25,10 +25,11 @@ import lombok.Setter;
 import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
-import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.api.game.ItemSpawnerTypeHolder;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ResourceSpawnEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -61,7 +62,7 @@ import java.util.concurrent.TimeUnit;
 @Setter
 public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     private final Location location;
-    private ItemSpawnerTypeImpl itemSpawnerType;
+    private ItemSpawnerTypeHolderImpl itemSpawnerType;
     private String customName = null;
     private boolean hologramEnabled = true;
     private double baseAmountPerSpawn = 1;
@@ -111,8 +112,11 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Task runningTask;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private ItemSpawnerTypeImpl cachedType;
 
-    public ItemSpawnerImpl(Location location, ItemSpawnerTypeImpl itemSpawnerType) {
+    public ItemSpawnerImpl(Location location, ItemSpawnerTypeHolderImpl itemSpawnerType) {
         this.location = location;
         this.itemSpawnerType = itemSpawnerType;
     }
@@ -209,11 +213,12 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
     @Override
     @Tolerate
-    public void setItemSpawnerType(ItemSpawnerType spawnerType) {
-        if (!(spawnerType instanceof ItemSpawnerTypeImpl)) {
+    public void setItemSpawnerType(ItemSpawnerTypeHolder spawnerType) {
+        if (!(spawnerType instanceof ItemSpawnerTypeHolderImpl)) {
             throw new IllegalArgumentException("Provided instance of item spawner type is not created by BedWars plugin!");
         }
-        this.itemSpawnerType = (ItemSpawnerTypeImpl) spawnerType;
+        this.itemSpawnerType = (ItemSpawnerTypeHolderImpl) spawnerType;
+        this.cachedType = null;
     }
 
     @Override
@@ -227,7 +232,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
     @Override
     public long getInitialIntervalTicks() {
-        return initialInterval != null ? initialInterval.second().getBukkitTime(initialInterval.first()) : itemSpawnerType.getIntervalTicks();
+        return initialInterval != null ? initialInterval.second().getBukkitTime(initialInterval.first()) : (cachedType != null ? cachedType.getIntervalTicks() : 1);
     }
 
     @Override
@@ -269,9 +274,9 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                     .hologram(loc);
             if (certainPopularServerHolo) {
                 hologram.firstLine(Message.of(LangKeys.IN_GAME_SPAWNER_TIER).placeholder("tier", this.tier));
-                hologram.bottomLine(TextEntry.of(itemSpawnerType.getItemBoldName()));
+                hologram.bottomLine(TextEntry.of(cachedType.getItemBoldName()));
             } else {
-                hologram.firstLine(TextEntry.of(itemSpawnerType.getItemBoldName()));
+                hologram.firstLine(TextEntry.of(cachedType.getItemBoldName()));
             }
 
             if (countdownHologram) {
@@ -286,13 +291,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
             if (floatingBlockEnabled &&
                     MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
-                var materialName = itemSpawnerType.getItemType().location().asString();
+                var materialName = cachedType.getItemType().location().asString();
                 var indexOfUnderscore = materialName.indexOf("_");
                 hologram
                         .item(
                                 Objects.requireNonNullElseGet(ItemStackFactory
                                         .build(materialName.substring(0, (indexOfUnderscore != -1 ? indexOfUnderscore : materialName.length())) + "_BLOCK"),
-                                        () -> ItemStackFactory.build(itemSpawnerType.getItemType()))
+                                        () -> ItemStackFactory.build(cachedType.getItemType()))
                         )
                         .itemPosition(Hologram.ItemPosition.BELOW)
                         .rotationMode(rotationMode)
@@ -331,6 +336,11 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             return;
         }
 
+        this.cachedType = itemSpawnerType.toSpawnerType(game);
+        if (this.cachedType == null) {
+            return;
+        }
+
         this.amountPerSpawn = this.baseAmountPerSpawn;
         this.tier = 0;
         this.certainPopularServerHolo = hologramType == HologramType.CERTAIN_POPULAR_SERVER || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, false));
@@ -354,7 +364,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             return;
         }
 
-        this.currentInterval = Objects.requireNonNullElseGet(this.initialInterval, this.itemSpawnerType::getInterval);
+        this.currentInterval = Objects.requireNonNullElseGet(this.initialInterval, this.cachedType::getInterval);
 
         if (runningTask != null) {
             runningTask.cancel();
@@ -377,6 +387,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                 this.firstTick = false;
                 this.elapsedTime++;
                 return;
+            }
+            // Someone changed the ItemSpawnerType while the game was running. That is unsupported and may lead to weird behaviour
+            if (this.cachedType == null) {
+                this.cachedType = itemSpawnerType.toSpawnerType(game);
+                if (this.cachedType == null) {
+                    return; // WHAT??
+                }
             }
 
             if (team != null && !game.isTeamActive(team) && stopTeamSpawnersOnDie) {
@@ -441,7 +458,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                 }
             }
 
-            var resourceSpawnEvent = new ResourceSpawnEventImpl(game, this, itemSpawnerType, itemSpawnerType.getItem(calculatedStack));
+            var resourceSpawnEvent = new ResourceSpawnEventImpl(game, this, cachedType, cachedType.getItem(calculatedStack));
             EventManager.fire(resourceSpawnEvent);
 
             if (resourceSpawnEvent.isCancelled()) {
@@ -455,7 +472,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             if (resource.getAmount() > 0) {
                 var loc = this.location.add(0, 0.05, 0);
                 var item = Objects.requireNonNull(Entities.dropItem(resource, loc));
-                var spread = customSpread != null ? customSpread : itemSpawnerType.getSpread();
+                var spread = customSpread != null ? customSpread : cachedType.getSpread();
                 if (spread != 1.0) {
                     item.setVelocity(item.getVelocity().multiply(spread));
                 }
@@ -477,7 +494,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     @Override
     public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
         node.node("location").set(MiscUtils.writeLocationToString(location));
-        node.node("type").set(itemSpawnerType.getConfigKey());
+        node.node("type").set(itemSpawnerType.configKey());
         node.node("customName").set(customName);
         node.node("startLevel").set(baseAmountPerSpawn);
         node.node("hologramEnabled").set(hologramEnabled);
@@ -507,12 +524,19 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             if (spawnerType == null) {
                 throw new UnsupportedOperationException("Wrongly configured spawner type!");
             }
-            var type = game.getGameVariant().getItemSpawnerType(spawnerType);
+            var typeHolder = new ItemSpawnerTypeHolderImpl(spawnerType);
+            var type = typeHolder.toSpawnerType(game);
+
             if (type == null) {
-                throw new UnsupportedOperationException("Wrongly configured spawner type!");
+                BedWarsPlugin.getInstance().getLogger().warn(
+                    "There is an unknown spawner type {} defined in game {} on location {}",
+                    spawnerType,
+                    game.getName(),
+                    node.node("location").getString()
+                );
             }
 
-            var spawner = new ItemSpawnerImpl(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("location").getString())), type);
+            var spawner = new ItemSpawnerImpl(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("location").getString())), typeHolder);
             spawner.setCustomName(node.node("customName").getString());
             spawner.setHologramEnabled(node.node("hologramEnabled").getBoolean(true));
             spawner.setBaseAmountPerSpawn(node.node("startLevel").getDouble(1));
@@ -521,6 +545,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             spawner.setFloatingBlockEnabled(node.node("floatingEnabled").getBoolean());
             spawner.setRotationMode(Hologram.RotationMode.valueOf(node.node("rotationMode").getString("Y")));
             spawner.setHologramType(ItemSpawner.HologramType.valueOf(node.node("hologramType").getString("DEFAULT")));
+            spawner.cachedType = type;
 
             var initialIntervalValueNode = node.node("initialInterval", "value");
             var initialIntervalUnitNode = node.node("initialInterval", "unit");
@@ -530,7 +555,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
             var customSpreadNode = node.node("customSpread");
             if (!customSpreadNode.empty()) {
-                spawner.setCustomSpread(customSpreadNode.getDouble(type.getSpread()));
+                spawner.setCustomSpread(customSpreadNode.getDouble(type != null ? type.getSpread() : 1));
             }
 
             return Optional.of(spawner);

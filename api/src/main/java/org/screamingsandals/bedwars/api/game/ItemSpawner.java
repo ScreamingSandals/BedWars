@@ -33,9 +33,9 @@ public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    ItemSpawnerType getItemSpawnerType();
+    ItemSpawnerTypeHolder getItemSpawnerType();
 
-    void setItemSpawnerType(ItemSpawnerType spawnerType);
+    void setItemSpawnerType(ItemSpawnerTypeHolder spawnerType);
 
     /**
      * @return
