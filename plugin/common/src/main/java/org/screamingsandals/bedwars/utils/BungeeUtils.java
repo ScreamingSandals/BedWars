@@ -19,9 +19,15 @@
 
 package org.screamingsandals.bedwars.utils;
 
+import group.aelysium.rustyconnector.toolkit.RustyConnector;
+import group.aelysium.rustyconnector.toolkit.core.packet.Packet;
+import group.aelysium.rustyconnector.toolkit.core.packet.PacketIdentification;
+import group.aelysium.rustyconnector.toolkit.mc_loader.central.IMCLoaderTinder;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.player.Player;
@@ -84,25 +90,45 @@ public class BungeeUtils {
         }
     }
 
+
     private void internalMove(Player player, boolean restart, String server) {
-        var out = new ByteArrayOutputStream();
-        var dout = new DataOutputStream(out);
+        var rustySuccess = true;
 
-        try {
-            dout.writeUTF("Connect");
-            dout.writeUTF(server);
-
-            CustomPayload.send(player, "BungeeCord", out.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Debug.info("Player " + player.getName() + " has been moved to hub server.");
-        if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean(true)) {
-            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                if (player.isOnline()) {
-                    player.kick(Component.text("BedWars can't properly transfer player through bungee network. Contact server admin."));
+        if (GameImpl.isRustyConnectorEnabled()) {
+            if (RustyConnectorUtils.getFlame() != null) {
+                try {
+                    RustyConnectorUtils.sendToHub(player);
+                    Debug.info("Player " + player.getName() + " has been moved to hub server.");
+                } catch (Exception e) {
+                    rustySuccess = false;
+                    Debug.warn("Rusty Connector transfer failed, falling back to Bungee.");
+                    e.printStackTrace();
                 }
-            }, 20, TaskerTime.TICKS);
+            } else {
+                rustySuccess = false;
+            }
+        }
+
+        if (!rustySuccess) {
+            var out = new ByteArrayOutputStream();
+            var dout = new DataOutputStream(out);
+
+            try {
+                dout.writeUTF("Connect");
+                dout.writeUTF(server);
+
+                CustomPayload.send(player, "BungeeCord", out.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Debug.info("Player " + player.getName() + " has been moved to hub server.");
+            if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean(true)) {
+                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+                    if (player.isOnline()) {
+                        player.kick(Component.text("BedWars can't properly transfer player through bungee network. Contact server admin."));
+                    }
+                }, 20, TaskerTime.TICKS);
+            }
         }
     }
 
