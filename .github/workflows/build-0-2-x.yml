@@ -3,6 +3,7 @@ name: Build and publish BedWars ver/0.2.x
 on:
   push:
     branches: [ ver/0.2.x ]
+
 concurrency: bedwars_0_2_x
 jobs:
   build:
@@ -30,9 +31,6 @@ jobs:
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          JAVADOC_HOST: ${{ secrets.JAVADOC_HOST }}
-          JAVADOC_SECRET: ${{ secrets.JAVADOC_SECRET }}
-          JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
           OPTIMIZE_FOR_CI_CD: "1"
           BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL_0_2_X }}
@@ -42,3 +40,56 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: plugin/build/libs/BedWars*[!s].jar
+  javadoc:
+    name: Deploy Javadoc
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract and Check Version
+        id: version-check
+        run: |
+          version=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          echo "VERSION=$version" >> $GITHUB_ENV
+          if [[ "$version" == *-SNAPSHOT ]]; then
+            echo "skip=true" >> $GITHUB_ENV
+          else
+            echo "skip=false" >> $GITHUB_ENV
+          fi
+          echo "Detected version: $version (Skip deployment: $skip)"
+      - name: Set up JDK 17
+        if: env.skip == 'false'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'gradle'
+      - name: Generate Javadoc
+        if: env.skip == 'false'
+        run: ./gradlew :BedWars-API:javadoc
+        env:
+          OPTIMIZE_FOR_CI_CD: "1"
+      - name: Deploy to GitHub Pages
+        if: env.skip == 'false'
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git fetch origin gh-pages
+          git worktree add gh-pages gh-pages
+          cd gh-pages || exit 1
+
+          TARGET_DIR="javadoc/$VERSION"
+          if [ -d "$TARGET_DIR" ]; then
+            echo "Clearing existing directory: $TARGET_DIR"
+            rm -rf "$TARGET_DIR"
+          fi
+
+          mkdir -p "$TARGET_DIR"
+          cp -r ../api/build/docs/javadoc/* "$TARGET_DIR"
+
+          git add .
+          git commit -m "Update Javadoc for version $VERSION" || echo "No changes to commit"
+          git push origin gh-pages

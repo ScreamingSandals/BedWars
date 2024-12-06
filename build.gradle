@@ -6,14 +6,9 @@ plugins {
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.36'
 }
 
-if (version.toString().endsWith('-SNAPSHOT')) {
-    defaultTasks 'clean', 'screamCompile'
-} else {
-    defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
-}
+defaultTasks 'clean', 'screamCompile'
 
 subprojects {
     System.setProperty("JavadocUploadCustomDirectoryPath", "sbw-0-2-x")
