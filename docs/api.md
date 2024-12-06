@@ -44,4 +44,4 @@ BedwarsAPI api = BedwarsAPI.getInstance();
 
 ```
 
-Javadoc: [https://jd.screamingsandals.org/sbw-0-2-x/BedWars-API/](https://jd.screamingsandals.org/sbw-0-2-x/BedWars-API/)
+Javadoc: [https://docs.screamingsandals.org/BedWars/javadoc/LATEST_VERSION_HERE/](https://docs.screamingsandals.org/BedWars/javadoc/LATEST_VERSION_HERE/)

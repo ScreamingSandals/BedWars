@@ -23,7 +23,7 @@ To set the **second** position, go into the **second** corner of your map and ex
 
 Now it's time to add the teams. To add a team, do `/bw admin <arena> team add <team name> <team colour> <team size>`.
 
-For the colors, you can use this [TeamColor](https://jd.screamingsandals.org/sbw-0-2-x/BedWars-API/org/screamingsandals/bedwars/api/TeamColor.html) enum: `RED`, `BLUE`, `GREEN`, `YELLOW`, `MAGENTA`, `PINK`, `LIME`, `BLACK`, `WHITE`, `ORANGE`, `LIGHT_GRAY`, `GRAY`, `LIGHT_BLUE`, `CYAN` and `BROWN`.
+For the colors, you can use this [TeamColor](https://docs.screamingsandals.org/BedWars/javadoc/LATEST_VERSION_HERE/org/screamingsandals/bedwars/api/TeamColor.html) enum: `RED`, `BLUE`, `GREEN`, `YELLOW`, `MAGENTA`, `PINK`, `LIME`, `BLACK`, `WHITE`, `ORANGE`, `LIGHT_GRAY`, `GRAY`, `LIGHT_BLUE`, `CYAN` and `BROWN`.
 
 !!! warning
 
