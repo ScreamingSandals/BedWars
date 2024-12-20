@@ -1,30 +1,46 @@
+import org.screamingsandals.gradle.builder.MavenUtilities
+import org.screamingsandals.gradle.builder.Utilities
+import org.screamingsandals.gradle.builder.JavadocUtilities
+
 plugins {
     alias libs.plugins.screaming.plugin.builder apply false
     alias libs.plugins.screaming.plugin.slib apply false
     alias libs.plugins.buildconfig apply false
+    alias libs.plugins.lombok apply false
 }
 
-if (version.toString().endsWith('-SNAPSHOT')) {
-    defaultTasks 'clean', 'screamCompile'
-} else {
-    defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
-}
+defaultTasks 'clean', 'build'
 
 subprojects {
     apply plugin: 'java'
 
-    if (project.name != 'BedWars-API' && project.name != 'BedWars' && project.name != 'BedWars-protocol') { // upload only BW and BW-API and BW-protocol
-        project.ext.disablePublishingToMaven = true
-    }
-
     apply plugin: 'org.screamingsandals.plugin-builder'
+
+    apply plugin: 'io.freefair.lombok'
+
+    def mavenPublication = null
+    Utilities.configureLicenser(project)
+    if (project.name == 'BedWars-API' && project.name == 'BedWars' && project.name == 'BedWars-protocol') {
+        Utilities.configureSourceJarTasks(project)
+        mavenPublication = MavenUtilities.setupPublishing(project)
+        if (!version.toString().endsWith('-SNAPSHOT') && project.name == 'BedWars-API') {
+            JavadocUtilities.configureJavadocTasks(project)
+        }
+        Utilities.setupMavenRepositoriesFromProperties(project)
+    }
 
     repositories {
         mavenLocal()
         mavenCentral()
+        maven { url 'https://repo.screamingsandals.org/public/' }
+        maven { url 'https://repo.papermc.io/repository/maven-snapshots/' }
         maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }
+    }
+
+    dependencies {
+        compileOnly libs.jetbrains.annotations
     }
 
     sourceCompatibility = '11.0'
@@ -69,7 +85,7 @@ subprojects {
         }
     }
 
-    enableShadowPlugin()
+    Utilities.configureShadowPlugin(project, mavenPublication)
 
     configurations.all {
         // Check for updates every build

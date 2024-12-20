@@ -13,10 +13,12 @@ parties-api = "3.2.6"
 perworldinventory-old = "1.11.5"
 perworldinventory-kt = "2.3.1"
 multiverse = "4.0.0"
+jetbrains-annotations = "26.0.1"
 
 # plugins
-screaming-plugin-builder = "1.0.86"
+screaming-plugin-builder = "1.1.0-SNAPSHOT"
 buildconfig = "3.0.2"
+lombok = "8.11"
 
 configurate = "4.1.2"
 configurate-patched-gson = "4.1.2-sandals-patch"
@@ -36,8 +38,10 @@ perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt",
 multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
 configurate-gson = { group = "org.spongepowered", name = "configurate-gson", version.ref = "configurate-patched-gson" }
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 
 [plugins]
 screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
 screaming-plugin-slib = { id = "org.screamingsandals.plugin-slib", version.ref = "screaming-plugin-builder" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
