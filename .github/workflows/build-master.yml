@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v4
       - name: Set the Build number
         id: calculated_build_number
         env:
@@ -20,26 +23,19 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-          cache: 'gradle'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew
+        run: ./gradlew clean checkLicenses build shadowJar publish --stacktrace --warning-mode all
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          JAVADOC_HOST: ${{ secrets.JAVADOC_HOST }}
-          JAVADOC_SECRET: ${{ secrets.JAVADOC_SECRET }}
-          JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
-          OPTIMIZE_FOR_CI_CD: "1"
           BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          REPOSILITE_BASE_URL: ${{ secrets.REPOSILITE_BASE_URL }}
-          GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          GITHUB_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
       - name: Upload the final artifact
         uses: actions/upload-artifact@v4
         with:
-          path: plugin/universal/build/libs/BedWars*[!s].jar
+          path: plugin/*/build/libs/BedWars*[!s].jar
