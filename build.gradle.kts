@@ -1,9 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.freefair.gradle.plugins.lombok.LombokPlugin
-import org.screamingsandals.gradle.builder.BuilderPlugin
-import org.screamingsandals.gradle.builder.MavenUtilities
-import org.screamingsandals.gradle.builder.Utilities
-import org.screamingsandals.gradle.builder.JavadocUtilities
+import org.screamingsandals.gradle.builder.*
 import org.screamingsandals.gradle.slib.SLibPlugin
 import org.screamingsandals.gradle.slib.SLibExtension
 
@@ -13,22 +10,26 @@ plugins {
     alias(libs.plugins.lombok) apply false
 }
 
-defaultTasks("clean", "build", "shadowJar")
+defaultTasks("clean", "build")
 
 subprojects {
     apply<JavaPlugin>()
     apply<BuilderPlugin>()
     apply<LombokPlugin>()
 
-    var mavenPublication: MavenPublication? = null
-    Utilities.configureLicenser(project)
+    if (project.name != "BedWars-protocol") {
+        configureShadowPlugin()
+    }
+
+    configureLicenser()
     if (project.name != "BedWars-common") {
-        Utilities.configureSourceJarTasks(project)
-        mavenPublication = MavenUtilities.setupPublishing(project).publication
-        if (!version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API") {
-            JavadocUtilities.configureJavadocTasks(project)
+        configureSourceJarTasks()
+        val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
+        setupMavenPublishing(addSourceJar=true, addJavadocJar=buildJavadoc)
+        if (buildJavadoc) {
+            configureJavadocTasks()
         }
-        MavenUtilities.setupMavenRepositoriesFromProperties(project)
+        setupMavenRepositoriesFromProperties()
     }
 
     repositories {
@@ -87,8 +88,6 @@ subprojects {
             }
         }
     }
-
-    Utilities.configureShadowPlugin(project, mavenPublication)
 
     configurations.all {
         // Check for updates every build
