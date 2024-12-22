@@ -42,6 +42,7 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     public final FakeEntityNMS<?> bossbarEntity;
     public final boolean viaActive;
     public BossBar viaBossBar; // can't be final
+    public boolean viaAfterJsonUpdate;
 
     public BossBar18(Location location) {
         String backend = Main.getConfigurator().config.getString("bossbar.backend-entity");
@@ -51,9 +52,12 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
             bossbarEntity = new BossBarWither(location);
         }
         boolean viaActive = false;
-        if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
+        if (Main.getConfigurator().config.getBoolean("bossbar.allow-via-hooks") && Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
             try {
-                viaBossBar = Via.getAPI().legacyAPI().createLegacyBossBar("", 1, BossColor.PURPLE, BossStyle.SOLID);
+                String version = Bukkit.getPluginManager().getPlugin("ViaVersion").getDescription().getVersion();
+                // due to Via now accepting both, many strings including an empty string fails
+                viaAfterJsonUpdate = Integer.parseInt(version.split("\\.", 2)[0]) >= 5 && !version.equals("5.0.0") && !version.equals("5.0.1");
+                viaBossBar = Via.getAPI().legacyAPI().createLegacyBossBar(viaAfterJsonUpdate ? "{text: \"\"}" : "", 1, BossColor.PURPLE, BossStyle.SOLID);
                 viaActive = true;
             } catch (Throwable ignored) {
                 // Too old ViaVersion is installed
@@ -71,7 +75,7 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     public void setMessage(String message) {
         bossbarEntity.setCustomName(message);
         if (viaActive) {
-            viaBossBar.setTitle(message);
+            viaBossBar.setTitle(viaAfterJsonUpdate ? "{text: \"" + message.replace("\"", "\\\"") + "\"}" : message);
         }
     }
 

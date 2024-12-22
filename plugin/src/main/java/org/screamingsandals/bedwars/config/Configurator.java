@@ -475,6 +475,7 @@ public class Configurator {
         checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
         if (Main.getVersionNumber() <= 108) {
             checkOrSetConfig(modify, "bossbar.backend-entity", "dragon");
+            checkOrSetConfig(modify, "bossbar.allow-via-hooks", true);
         }
 
         checkOrSetConfig(modify, "holograms.enabled", true);
