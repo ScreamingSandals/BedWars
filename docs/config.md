@@ -329,6 +329,8 @@ bossbar:
     style: SEGMENTED_20
   # The backend-entity field is present only if the server is running on 1.8.8. Allowed values: wither, dragon
   backend-entity: dragon
+  # The allow-via-hooks field is present only if the server is running on 1.8.8. The plugin tries to hook to ViaVersion API to make colored and segmented bossbars for 1.9+ players. As the ViaVersion API constantly changes, this may occasionally cause protocol issues.
+  allow-via-hooks: true
 holograms:
   enabled: true
   headline: Your &eBEDWARS&f stats
