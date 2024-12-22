@@ -5,7 +5,13 @@ pluginManagement {
         maven {
             url = uri("https://repo.screamingsandals.org/public/")
         }
-
+        maven {
+            // TODO: remove repository when (if) uploaded to gradle plugin portal
+            url = uri("https://maven.neoforged.net/releases")
+            content {
+                includeGroup("net.neoforged.licenser")
+            }
+        }
     }
 }
 
