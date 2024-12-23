@@ -1,9 +1,8 @@
 pluginManagement {
     repositories {
         mavenCentral()
-        mavenLocal()
         gradlePluginPortal()
-//        maven("https://repo.screamingsandals.org/public/")
+        maven("https://repo.screamingsandals.org/public/")
         // TODO: remove repository when (if) uploaded to gradle plugin portal
         maven("https://maven.neoforged.net/releases") {
             content {
