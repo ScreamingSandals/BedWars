@@ -19,7 +19,10 @@ rootProject.name = "BedWars-parent"
 include(":BedWars-API")
 project(":BedWars-API").projectDir = file("api")
 include(":BedWars")
-project(":BedWars").projectDir = file("plugin/universal")
+project(":BedWars").let {
+    it.projectDir = file("plugin/universal")
+    it.projectDir.mkdirs()
+}
 include(":BedWars-protocol")
 project(":BedWars-protocol").projectDir = file("protocol")
 include(":BedWars-common")

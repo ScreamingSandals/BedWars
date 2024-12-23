@@ -25,10 +25,10 @@ subprojects {
     if (project.name != "BedWars-common") {
         configureSourceJarTasks()
         val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
-        setupMavenPublishing(addSourceJar=true, addJavadocJar=buildJavadoc)
         if (buildJavadoc) {
             configureJavadocTasks()
         }
+        setupMavenPublishing(addSourceJar=(project.name == "BedWars-API" || project.name == "BedWars-protocol"), addJavadocJar=buildJavadoc)
         setupMavenRepositoriesFromProperties()
     }
 
