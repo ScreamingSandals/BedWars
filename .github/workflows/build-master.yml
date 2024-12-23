@@ -39,6 +39,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: |
-            plugin/*/build/libs/BedWars*[!s].jar
-            protocol/build/libs/BedWars*[!s].jar
+            plugin/*/build/libs/BedWars*.jar
+            !plugin/*/build/libs/BedWars*-unshaded.jar
+            protocol/build/libs/BedWars*.jar
+            !protocol/build/libs/BedWars*-unshaded.jar
             !plugin/common/**/*

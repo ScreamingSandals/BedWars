@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.freefair.gradle.plugins.lombok.LombokPlugin
 import org.screamingsandals.gradle.builder.*
 import org.screamingsandals.gradle.slib.SLibPlugin
@@ -17,43 +16,60 @@ subprojects {
     apply<BuilderPlugin>()
     apply<LombokPlugin>()
 
-    if (project.name != "BedWars-protocol") {
-        configureShadowPlugin()
-    }
-
-    configureLicenser()
-    if (project.name != "BedWars-common") {
-        configureSourceJarTasks()
-        val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
-        if (buildJavadoc) {
-            configureJavadocTasks()
-        }
-        setupMavenPublishing(addSourceJar=(project.name == "BedWars-API" || project.name == "BedWars-protocol"), addJavadocJar=buildJavadoc)
-        setupMavenRepositoriesFromProperties()
-    }
-
     repositories {
         mavenCentral()
-        maven { url = uri("https://repo.screamingsandals.org/public/") }
-        maven { url = uri("https://repo.papermc.io/repository/maven-snapshots/") }
-        maven { url = uri("https://repo.onarandombox.com/content/groups/public")  }
-        maven { url = uri("https://repo.codemc.org/repository/maven-public/")  }
-        maven { url = uri("https://repo.alessiodp.com/releases/")  }
+        maven("https://repo.screamingsandals.org/public/")
+        maven("https://repo.papermc.io/repository/maven-snapshots/")
+        maven("https://repo.onarandombox.com/content/groups/public")
+        maven("https://repo.codemc.org/repository/maven-public/")
+        maven("https://repo.alessiodp.com/releases/")
     }
 
     dependencies {
         "compileOnly"(rootProject.libs.jetbrains.annotations)
     }
 
-    extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_11
+    tasks.withType<Jar> {
+        archiveClassifier.set(System.getenv("BUILD_NUMBER") ?: "dev")
     }
 
-    tasks.withType<JavaCompile> {
-        options.compilerArgs.add("-Xlint:deprecation")
+    if (project.name != "BedWars-protocol") {
+        configureShadowPlugin {
+            relocate("com.zaxxer", "org.screamingsandals.bedwars.lib.HikariCP")
+            relocate("org.bstats", "org.screamingsandals.bedwars.lib.ext.bstats")
+            relocate("org.spongepowered.configurate", "org.screamingsandals.bedwars.lib.ext.configurate")
+            relocate("org.yaml.snakeyaml", "org.screamingsandals.bedwars.lib.ext.snakeyaml")
+            relocate("io.leangen.geantyref", "org.screamingsandals.bedwars.lib.ext.geantyref")
+            relocate("cloud.commandframework", "org.screamingsandals.bedwars.lib.ext.cloud")
+            relocate("me.lucko.commodore", "org.screamingsandals.bedwars.lib.ext.commodore")
+        }
+    }
+
+    configureLicenser()
+    if (project.name != "BedWars-common") { // do not publish the common artifact, only API, protocol, platform artifacts and universal artifact
+        // TODO: figure out how to relocate api-utils in Javadoc and sourceJar of BedWars-API (to the package defined in SLibExtension)
+        val buildSources = project.name == "BedWars-API" || project.name == "BedWars-protocol"
+        if (buildSources) {
+            configureSourcesJar()
+        }
+        val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
+        if (buildJavadoc) {
+            configureJavadocTasks()
+        }
+        setupMavenPublishing(addSourceJar=buildSources, addJavadocJar=buildJavadoc)
+        setupMavenRepositoriesFromProperties()
+    }
+
+    configureJavac(JavaVersion.VERSION_11)
+
+    // TODO: check if this is needed (and probably remove it later)
+    configurations.all {
+        // Check for updates every build
+        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
     }
 
     if (project.name == "BedWars-protocol") {
+        // Not an slib project
         return@subprojects
     }
 
@@ -86,27 +102,6 @@ subprojects {
             simpleInventories {
                 version(rootProject.libs.versions.simple.inventories)
             }
-        }
-    }
-
-    configurations.all {
-        // Check for updates every build
-        resolutionStrategy.cacheChangingModulesFor(0, "seconds")
-    }
-
-    tasks.withType<ShadowJar> {
-        relocate("com.zaxxer", "org.screamingsandals.bedwars.lib.HikariCP")
-        relocate("org.bstats", "org.screamingsandals.bedwars.lib.ext.bstats")
-        relocate("org.spongepowered.configurate", "org.screamingsandals.bedwars.lib.ext.configurate")
-        relocate("org.yaml.snakeyaml", "org.screamingsandals.bedwars.lib.ext.snakeyaml")
-        relocate("io.leangen.geantyref", "org.screamingsandals.bedwars.lib.ext.geantyref")
-        relocate("cloud.commandframework", "org.screamingsandals.bedwars.lib.ext.cloud")
-        relocate("me.lucko.commodore", "org.screamingsandals.bedwars.lib.ext.commodore")
-
-        if (System.getenv("BUILD_NUMBER") != null) {
-            archiveClassifier.set(System.getenv("BUILD_NUMBER"))
-        } else {
-            archiveClassifier.set("dev")
         }
     }
 }
