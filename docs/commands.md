@@ -47,7 +47,7 @@ Every command has its own specified permission in brackets.
 * `/bw stats` - Shows your statistics (permission: `bw.cmd.stats`)
 * `/bw stats <player>` - Shows your statistics (permission: `bw.cmd.stats` together with `bw.otherstats` or `bw.admin`)
 * `/bw leaderboard` - Shows top players on this server (permission: `bw.cmd.leaderboard`)
-* `/bw rejoin` - Joins the latest game you have played (permission: `bw.cmd.rejoin`)
+* `/bw rejoin` - Joins the latest game you have played, so you can easily rematch. Note that despite its unfortunate name, this command does not allow you to reconnect to a running match in case of a network failure. (permission: `bw.cmd.rejoin`)
 * `/bw autojoin` - Joins random game (permission: `bw.cmd.autojoin`)
 * `/bw party warp` - Warps all players in your party to your game or towards you (permission: `bw.cmd.party`, requires [Parties](https://alessiodp.com/parties) plugin and `party` section in config.yml enabled)
 
