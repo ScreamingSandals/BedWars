@@ -88,6 +88,10 @@ public class PlayerListener {
 
     @OnEvent(order = EventExecutionOrder.LAST)
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.cancelled()) {
+            return;
+        }
+
         final var victim = event.player();
 
         // TODO: check for cancellation state if possible (need adjustments in slib)

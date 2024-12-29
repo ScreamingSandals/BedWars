@@ -648,6 +648,7 @@ public class MainConfig {
 
             if (!Server.isVersion(1, 9)) {
                 generator.start().key("bossbar", "backend-entity").defValue("dragon");
+                generator.start().key("bossbar", "allow-via-hooks").defValue(true);
             }
 
             generator.start()

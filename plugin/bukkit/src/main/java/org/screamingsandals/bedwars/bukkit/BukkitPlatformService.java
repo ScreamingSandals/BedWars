@@ -39,19 +39,15 @@ import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
-import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.PlayerBlockPlaceEvent;
 import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockBreakEvent;
 import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockPlaceEvent;
-import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.BukkitBossBar1_8;
-import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.GlobalBossBarBackend1_8;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
@@ -61,7 +57,6 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskBase;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Locale;
@@ -73,21 +68,6 @@ import java.util.function.Consumer;
         BukkitBStatsMetrics.class
 })
 public class BukkitPlatformService extends PlatformService {
-    @OnPostEnable
-    public void onPostEnable() {
-        if (!Server.isVersion(1, 9)) {
-            var backend = MainConfig.getInstance().node("bossbar", "backend-entity").getString("dragon");
-            if ("dragon".equalsIgnoreCase(backend)) {
-                backend = "ender_dragon";
-            }
-            try {
-                GlobalBossBarBackend1_8.setBackend(BukkitBossBar1_8.Backend.valueOf(backend.toUpperCase(Locale.ROOT)));
-            } catch (Throwable ignored) {
-                // invalid value
-            }
-        }
-    }
-
     @Override
     public void reloadPlugin(@NotNull CommandSender sender) {
         sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());
