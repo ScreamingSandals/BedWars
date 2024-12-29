@@ -401,6 +401,12 @@ public class BedWarsPlugin implements BedwarsAPI {
         Server.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
 
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
+        if (!Server.isVersion(1, 9)) {
+            // 1.8.8 boss bars
+            var backend = MainConfig.getInstance().node("bossbar", "backend-entity").getString("dragon");
+            Server.preferEnderDragonBossBar("dragon".equalsIgnoreCase(backend) || "ender_dragon".equalsIgnoreCase(backend));
+            Server.enableViaHooksForBossBar(MainConfig.getInstance().node("bossbar", "allow-via-hooks").getBoolean());
+        }
     }
 
     @OnDisable
