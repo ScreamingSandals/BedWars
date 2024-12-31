@@ -50,7 +50,7 @@ public class JoinCommand extends BaseCommand {
                 player.sendMessage(i18n("no_arena_found"));
             }
         } else {
-            final Game game = Main.getInstance().getGameWithHighestPlayers();
+            final Game game = Main.getInstance().getRandomWaitingGameForBungeeMode();
             if (game != null) {
                 game.joinToGame(player);
                 return true;

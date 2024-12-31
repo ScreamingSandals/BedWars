@@ -802,6 +802,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 return;
             }
 
+            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+                return;
+            }
+
             availableGames.computeIfAbsent(game.getConnectedPlayers().size(), ArrayList::new).add(game);
         });
 
@@ -809,9 +813,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             return null;
         }
 
-        List<Game> gamesWithMinimumPlayers = availableGames.lastEntry().getValue();
+        List<Game> gamesWithMaximumPlayers = availableGames.lastEntry().getValue();
 
-        return gamesWithMinimumPlayers.get(MiscUtils.randInt(0, gamesWithMinimumPlayers.size() - 1));
+        return gamesWithMaximumPlayers.get(MiscUtils.randInt(0, gamesWithMaximumPlayers.size() - 1));
     }
 
     public org.screamingsandals.bedwars.api.game.Game getFirstRunningGame() {
