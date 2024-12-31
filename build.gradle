@@ -50,4 +50,8 @@ subprojects {
     }
 
     sourceCompatibility = '1.8'
+    compileJava {
+        options.compilerArgs.add("-Xlint:-options")
+        options.release = 8
+    }
 }
