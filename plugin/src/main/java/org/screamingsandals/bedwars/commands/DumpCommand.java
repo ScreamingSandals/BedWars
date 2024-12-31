@@ -63,7 +63,7 @@ public class DumpCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        String service = args.size() > 0 ? args.get(0).toLowerCase(Locale.ROOT) : "paste.gg";
+        String service = args.size() > 0 ? args.get(0).toLowerCase(Locale.ROOT) : "pastes.dev";
         new Thread(() -> {
             try {
                 Gson gson = new GsonBuilder()
