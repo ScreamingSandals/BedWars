@@ -492,3 +492,7 @@ help_bw_cheatin_give: /bw cheatIn <partie> give <resource> <quantite> <joueur> -
   au joueur le nombre de la ressource spécifiée
 help_bw_cheatin_destroyallbeds: /bw cheatIn <partie> destroyallbeds - &cDetruits tous
   les lits de la partie spécifiée
+admin_arena_overlaps: "&cL'emplacement choisi entraîne un chevauchement de l'arène
+  avec une autre arène, ce qui peut entraîner des erreurs ! Veuillez choisir un autre
+  emplacement. Si vous tenez à utiliser cet emplacement, exécutez &7/bw admin %arena%
+  %position% force"
