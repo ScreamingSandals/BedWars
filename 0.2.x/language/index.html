@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.x/shop/">
+        <link rel="canonical" href="http://localhost:8000/0.2.x/language/">
       
       
-        <link rel="prev" href="../commands/">
+        <link rel="prev" href="../config/">
       
       
-        <link rel="next" href="../upgrades/">
+        <link rel="next" href="../commands/">
       
       
       <link rel="icon" href="../assets/icon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Shop - ScreamingBedWars</title>
+        <title>Language - ScreamingBedWars</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#shop" class="md-skip">
+        <a href="#language" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Shop
+              Language
             
           </span>
         </div>
@@ -344,10 +344,30 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../language/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Language
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -356,6 +376,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-built-in-languages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using built-in languages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-language-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing language files
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-new-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a new language
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -384,30 +451,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Shop
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../shop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -416,68 +463,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#creating-a-new-item" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creating a new item
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Creating a new item">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-short-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using short stack
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-long-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using long stack
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-item-as-a-category" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using item as a category
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -597,127 +582,269 @@
                   
 
 
-<h1 id="shop">Shop<a class="headerlink" href="#shop" title="Permanent link">&para;</a></h1>
-<p>Screaming BedWars plugin uses our own lib called SimpleInventories to create and render inventory-based guis, and therefore shops. This article will show you some basics of this format. Check <a href="https://github.com/ScreamingSandals/SimpleInventories/wiki">this wiki</a> for more advanced variables.</p>
-<h2 id="creating-a-new-item">Creating a new item<a class="headerlink" href="#creating-a-new-item" title="Permanent link">&para;</a></h2>
-<p>To create a new item, first you need to know internal item's name. You can use <a href="https://minecraft.wiki">Minecraft Wiki</a> to get the specific resource name. The name usually starts with <code>minecraft:</code>, this part can be omitted from the final name.</p>
-<p>You can also use modern names in legacy environments (1.8.8-1.12.2). If the modern name does not work, check <a href="https://helpch.at/docs/1.12.2/org/bukkit/Material.html">this page</a> for old names. Old names are deprecated and they may not be supported in future releases of BedWars.</p>
-<p>There are two supported formats of items. We call them <code>short stack</code> and <code>long stack</code>.</p>
-<h3 id="using-short-stack">Using short stack<a class="headerlink" href="#using-short-stack" title="Permanent link">&para;</a></h3>
-<p>This format can describe only material name, amount, display name and lore. Except for material name, every part is optional. Each part is divided using semicolon.</p>
+<h1 id="language">Language<a class="headerlink" href="#language" title="Permanent link">&para;</a></h1>
+<h2 id="using-built-in-languages">Using built-in languages<a class="headerlink" href="#using-built-in-languages" title="Permanent link">&para;</a></h2>
+<p>To use one of the built-in languages, update the <code>locale</code> value in your <code>config.yml</code> file to your desired language code. Below is a list of available language codes:  </p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Sword</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Example: Set to Czech (Čeština)</span>
+<span class="nt">locale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cs</span>
 </code></pre></div></td></tr></table></div>
-<p>To specify price and make the item buyable, suffix this format with <code>for &lt;amount&gt; &lt;resource&gt;</code>:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone for 1 bronze</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2 for 3 iron</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Sword for 5 gold</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode for 9 iron</span>
-</code></pre></div></td></tr></table></div>
-<p>In order to be able to specify other attributes (for example <code>properties</code>), we have to convert this from string to map. This is done by splitting the string into variables <code>stack</code> and <code>price</code>:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 bronze</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 iron</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Pickaxe</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9 iron</span>
-</code></pre></div></td></tr></table></div>
-<h3 id="using-long-stack">Using long stack<a class="headerlink" href="#using-long-stack" title="Permanent link">&para;</a></h3>
-<p>Long stack allows you to create items with enchantments and other attributes. Let's see the previous example rewritten in this format:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 bronze</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt</span>
-<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 iron</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxe</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt</span>
-<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Trinitrotoluene</span>
-<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Does explode</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9 iron</span>
-</code></pre></div></td></tr></table></div>
-<p>As we can see, the <code>stack</code> attribute is now a map, which allows more attributes to be present. For example, we can enchant our Super Pickaxe with Fortune III.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxe</span>
-<span class="w">    </span><span class="nt">enchants</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">fortune</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
-</code></pre></div></td></tr></table></div>
-<p>The enchantment names can be found <a href="https://www.digminecraft.com/lists/enchantment_list_pc.php">here</a>.</p>
-<p>For list of all available options visit <a href="https://github.com/ScreamingSandals/SimpleInventories/wiki/Variable:-stack">this page</a>.</p>
-<h2 id="using-item-as-a-category">Using item as a category<a class="headerlink" href="#using-item-as-a-category" title="Permanent link">&para;</a></h2>
-<p>You can use any item as a category (even if the item is in another category). Players can then click on that item to open the category. The format is very similar, the only thing you have to specify is a list called <code>items</code>, where you put items of that specific category. Format of items in <code>items</code> is same as format in the base <code>data</code> list.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxes</span>
-<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
-<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You will never mine with anything else!</span>
-<span class="w">  </span><span class="nt">items</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wooden_pickaxe for 10 gold</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">golden_pickaxe for 20 gold</span>
-</code></pre></div></td></tr></table></div>
+<table>
+<thead>
+<tr>
+<th>Language Code</th>
+<th>Language Name</th>
+<th>Native Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>af</code></td>
+<td>Afrikaans</td>
+<td>Afrikaans</td>
+</tr>
+<tr>
+<td><code>ar</code></td>
+<td>Arabic</td>
+<td>العربية</td>
+</tr>
+<tr>
+<td><code>bg</code></td>
+<td>Bulgarian</td>
+<td>Български</td>
+</tr>
+<tr>
+<td><code>bs</code></td>
+<td>Bosnian</td>
+<td>Bosanski</td>
+</tr>
+<tr>
+<td><code>ca</code></td>
+<td>Catalan</td>
+<td>Català</td>
+</tr>
+<tr>
+<td><code>cs</code></td>
+<td>Czech</td>
+<td>Čeština</td>
+</tr>
+<tr>
+<td><code>da</code></td>
+<td>Danish</td>
+<td>Dansk</td>
+</tr>
+<tr>
+<td><code>de</code></td>
+<td>German</td>
+<td>Deutsch</td>
+</tr>
+<tr>
+<td><code>el</code></td>
+<td>Greek</td>
+<td>Ελληνικά</td>
+</tr>
+<tr>
+<td><code>en-UD</code></td>
+<td>English (Upside Down)</td>
+<td>English (Upside Down)</td>
+</tr>
+<tr>
+<td><code>en</code></td>
+<td>English</td>
+<td>English</td>
+</tr>
+<tr>
+<td><code>es</code></td>
+<td>Spanish</td>
+<td>Español</td>
+</tr>
+<tr>
+<td><code>fi</code></td>
+<td>Finnish</td>
+<td>Suomi</td>
+</tr>
+<tr>
+<td><code>fr</code></td>
+<td>French</td>
+<td>Français</td>
+</tr>
+<tr>
+<td><code>he</code></td>
+<td>Hebrew</td>
+<td>עברית</td>
+</tr>
+<tr>
+<td><code>hr</code></td>
+<td>Croatian</td>
+<td>Hrvatski</td>
+</tr>
+<tr>
+<td><code>hu</code></td>
+<td>Hungarian</td>
+<td>Magyar</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>Indonesian</td>
+<td>Bahasa Indonesia</td>
+</tr>
+<tr>
+<td><code>it</code></td>
+<td>Italian</td>
+<td>Italiano</td>
+</tr>
+<tr>
+<td><code>ja</code></td>
+<td>Japanese</td>
+<td>日本語</td>
+</tr>
+<tr>
+<td><code>ko</code></td>
+<td>Korean</td>
+<td>한국어</td>
+</tr>
+<tr>
+<td><code>lv</code></td>
+<td>Latvian</td>
+<td>Latviešu</td>
+</tr>
+<tr>
+<td><code>nl</code></td>
+<td>Dutch</td>
+<td>Nederlands</td>
+</tr>
+<tr>
+<td><code>no</code></td>
+<td>Norwegian</td>
+<td>Norsk</td>
+</tr>
+<tr>
+<td><code>pl</code></td>
+<td>Polish</td>
+<td>Polski</td>
+</tr>
+<tr>
+<td><code>pt-BR</code></td>
+<td>Portuguese (Brazil)</td>
+<td>Português (Brasil)</td>
+</tr>
+<tr>
+<td><code>pt</code></td>
+<td>Portuguese</td>
+<td>Português</td>
+</tr>
+<tr>
+<td><code>ro</code></td>
+<td>Romanian</td>
+<td>Română</td>
+</tr>
+<tr>
+<td><code>ru</code></td>
+<td>Russian</td>
+<td>Русский</td>
+</tr>
+<tr>
+<td><code>sk</code></td>
+<td>Slovak</td>
+<td>Slovenčina</td>
+</tr>
+<tr>
+<td><code>sl</code></td>
+<td>Slovenian</td>
+<td>Slovenščina</td>
+</tr>
+<tr>
+<td><code>sr-CS</code></td>
+<td>Serbian (Cyrillic)</td>
+<td>Српски (ћирилица)</td>
+</tr>
+<tr>
+<td><code>sr</code></td>
+<td>Serbian (Latin)</td>
+<td>Srpski (latinica)</td>
+</tr>
+<tr>
+<td><code>sv</code></td>
+<td>Swedish</td>
+<td>Svenska</td>
+</tr>
+<tr>
+<td><code>th</code></td>
+<td>Thai</td>
+<td>ภาษาไทย</td>
+</tr>
+<tr>
+<td><code>tr</code></td>
+<td>Turkish</td>
+<td>Türkçe</td>
+</tr>
+<tr>
+<td><code>uk</code></td>
+<td>Ukrainian</td>
+<td>Українська</td>
+</tr>
+<tr>
+<td><code>vi</code></td>
+<td>Vietnamese</td>
+<td>Tiếng Việt</td>
+</tr>
+<tr>
+<td><code>zh-CN</code></td>
+<td>Chinese (Simplified)</td>
+<td>简体中文</td>
+</tr>
+<tr>
+<td><code>zh</code></td>
+<td>Chinese (Traditional)</td>
+<td>繁體中文</td>
+</tr>
+</tbody>
+</table>
+<p>These translations are maintained by the community and may not always be fully complete. If you would like to help improve them, you can contribute on our <a href="https://weblate.screamingsandals.org/projects/bedwars/0-2-x/">Weblate instance</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Using Norwegian language</p>
+<p>YAML treats the literal value <code>no</code> as <code>false</code>. To use <code>no</code> as the Norwegian language code, you must cast it to a string like this:<br />
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">locale</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no&quot;</span>
+</code></pre></div></td></tr></table></div></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Empty language folder</p>
+<p>The <code>languages</code> folder is typically empty because the built-in languages are stored within the plugin jar itself. You do not need to download any files unless you plan to customize the translations.</p>
+</div>
+<p>These translations are maintained by the community and may not be 100% complete. You can help us translating them <a href="https://weblate.screamingsandals.org/projects/bedwars/0-2-x/">on our Weblate instance</a>.</p>
+<h2 id="customizing-language-files">Customizing language files<a class="headerlink" href="#customizing-language-files" title="Permanent link">&para;</a></h2>
+<p>If you wish to make changes to language files, follow these steps:</p>
+<ol>
+<li><strong>Download the base language file</strong><br />
+   You can download the base language files from our <a href="https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages">GitHub repository</a>.</li>
+<li><strong>Add the file to your languages folder</strong><br />
+   Place your modified language file in the <code>languages</code> folder inside your <code>BedWars</code> folder (located in the default <code>plugins</code> folder). For example, to modify the Czech language, create a file named <code>language_cs.yml</code>.</li>
+<li><strong>Update <code>config.yml</code></strong><br />
+   Update the <code>locale</code> variable in your <code>config.yml</code> to match your file’s language code.<br />
+   <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Example for Czech:</span>
+<span class="nt">locale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cs</span>
+</code></pre></div></td></tr></table></div></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>While you can download and modify the entire language file, it is better to create an empty language file and include only the lines you want to override.
+This ensures that any untranslated lines will still use the updated built-in versions. If you paste the unchanged lines into your custom file, they will override the built-in translations, even if the plugin updates them later.</p>
+</div>
+<h2 id="creating-a-new-language">Creating a new language<a class="headerlink" href="#creating-a-new-language" title="Permanent link">&para;</a></h2>
+<p>To create a completely new language, follow these steps:  </p>
+<ol>
+<li>Download the English language file from the <a href="https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages">GitHub repository</a>.  </li>
+<li>Save the file as <code>language_myCode.yml</code>, where <code>myCode</code> is your desired language code.  </li>
+<li>Translate the individual lines into your new language.  </li>
+<li>Update the <code>locale</code> variable in your <code>config.yml</code> to your new language code:<br />
+   <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">locale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myCode</span>
+</code></pre></div></td></tr></table></div></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you create a new language, consider helping us add it to the plugin by contributing to our Weblate instance! This way, your language becomes available to everyone in future plugin updates. Visit our <a href="https://weblate.screamingsandals.org/projects/bedwars/0-2-x/">Weblate instance</a> to get started.</p>
+</div>
 
 
 
