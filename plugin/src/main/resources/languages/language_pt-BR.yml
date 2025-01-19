@@ -436,3 +436,6 @@ help_bw_cheat_startemptygame: /bw cheat startemptygame - &cComeça o jogo mesmo 
 help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDestrói todas as camas
   do jogo
 cheat_received_target_blocks_destroy: '&aA cama de todos os times foram destruídas!'
+upgrade_success: '&a%name% foi aprimorado %spawner% para o nível %level%!'
+upgrade_translate: aprimorar
+door_is_destroyed: Porta do %team%&r está destruída!
