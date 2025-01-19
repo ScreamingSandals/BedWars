@@ -411,5 +411,5 @@ help_bw_cheat_kill: /bw cheat kill [player] - &c杀死玩家
 game_forced: '&a游戏将以空队伍开始。破坏他们的目标方块以胜利！'
 team_not_in_game: '&c队伍 &7%name%&c 不在游戏内!'
 cheat_received_target_block_destroy: '&a队伍 &7%name%&a 已被摧毁!'
-help_bw_cheat_startemptygame: ''
+help_bw_cheat_startemptygame: '/bw cheat startemptygame 开始'
 door_is_destroyed: '%team%队的门&r 被摧毁了'
