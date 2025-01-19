@@ -466,13 +466,13 @@ kicking_in: '&cVerlasse Arena in: &7%time%'
 game_ended_too_early: Das Spiel endet vorzeitig. Keiner gewinnt.
 help_bw_cheatin_give: /bw cheatIn <game> give <resource> <amount> <player> - &cGibt
   dem Spieler eine bestimmte Menge an Ressourcen
-help_bw_cheatin_kill: /bw cheatIn <game> kill <player> - &cTötet einen bestimmten
+help_bw_cheatin_kill: /bw cheatIn <Spiel> kill <Spieler> - &cTötet einen bestimmten
   Spieler
 help_bw_cheatin_destroyallbeds: /bw cheatIn <game> destroyallbeds - &cZerstört alle
   Betten im Spiel
 waiting_placeholder_lobby_scoreboard: Warten...
-help_bw_cheatin_destroybed: /bw cheatIn <game> destroybed <team> - &cZerstört das
-  Bett des betreffenden Teams
+help_bw_cheatin_destroybed: /bw cheatIn <Spiel> destroybed <Team> - &cZerstört das
+  Bett eines bestimmten Teams
 admin_arena_overlaps: '&cDer gewählte Ort führt dazu, dass sich die Arena mit einer
   anderen Arena überschneidet, was zu Fehlern führen kann! Bitte wählen Sie einen
   anderen Ort. Wenn Sie darauf bestehen, diesen Ort zu verwenden, führen Sie folgendes
