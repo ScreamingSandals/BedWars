@@ -3,11 +3,17 @@
 Flexible BedWars plugin, formerly coded as a replacement for BedwarsRel.  
 Supported versions: \[1.8.8 - 1.21.4\], recommended versions: \[1.21.4\].
 
+## Unofficial translations
+
+The following languages have unofficial translations of this documentation. Please note that these translations are community-driven and may not reflect the latest updates or changes.
+
+* [Chinese Translation on Yizhan Wiki](https://plugins.yizhan.wiki/ShortDoc/BedWars)
+
 ## Support
 
-If you need any help, you can contact us on [Discord](https://screamingsandals.org/discord). Make sure to read this documentation, the servers' rules and the FAQ's before asking for support.
+If you need help, you can contact us on [Discord](https://screamingsandals.org/discord) or [GitHub Discussions](https://github.com/ScreamingSandals/BedWars/discussions). Please read this documentation, the server rules, and the FAQs before asking for support.
 
-If you find any bugs, feel free to report it into [GitHub issues](https://github.com/ScreamingSandals/BedWars/issues), we will look into it.
+If you encounter any bugs, feel free to report them on [GitHub Issues](https://github.com/ScreamingSandals/BedWars/issues), and we will check them out.
 
 ## Features
 
