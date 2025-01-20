@@ -191,7 +191,7 @@ public class GameCreator {
                             if (args.length >= 4) {
                                 response = addStore(player.getLocation(), args[2], Boolean.parseBoolean(args[3]), args[1]);
                             } else {
-                                response = addStore(player.getLocation(), args[2], true, args[1]);
+                                response = addStore(player.getLocation(), args[2], false, args[1]);
                             }
                         } else {
                             response = addStore(player.getLocation(), null, true, args[1]);
