@@ -122,6 +122,10 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ex.printStackTrace();
             }
         } else {
+            if (!fileDatabase.isSet("data") || !fileDatabase.isConfigurationSection("data")) {
+                return;
+            }
+
             for (String key : fileDatabase.getConfigurationSection("data").getKeys(false)) {
                 allScores.put(UUID.fromString(key), new AbstractMap.SimpleEntry<>(fileDatabase.getString("data." + key + ".name"), fileDatabase.getInt("data." + key + ".score")));
             }
