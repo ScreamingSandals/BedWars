@@ -27,7 +27,8 @@ game_already_running: "&cАрена &7%arena% &cуже запущена! Вы н
 game_is_full: "&cАрена &7%arena% &cзаполнена! Подождите, когда кто-нибудь выйдет или
   игра закончится!"
 unknown_command: "&cНеизвестная команда! Напишите &4/bw help &cдля получения помощи!"
-unknown_usage: "&cНеправильно написанная команда! Напишите &4/bw help &cдля помощи!"
+unknown_usage: "&cКоманда содержит неизвестные аргументы или их некорректное количество!
+  Напишите &4/bw help &cдля получения помощи!"
 no_arena_found: "&cАрена не найдена!"
 usage_bw_join: "&cИспользуйте: /bw join <арена>"
 usage_bw_admin: "&cИспользуйте: /bw admin <арена> <add|edit|remove|save|...> ..."
@@ -186,10 +187,9 @@ admin_command_bar_color_set: "&aЦвет изменён на &7%color%&a для 
 admin_command_wrong_living_entity_type: "&cНеверный тип существа!"
 admin_command_store_living_entity_type_set: "&aТип торговца изменён на &7%type%&a!"
 admin_command_upgrades: "&aПрокачки изменена на &7%bool%&a!"
-safe_reload: "&aПроисходит ожидание безопасной остановки всех арен или истечения 60
-  секунд перед перезагрузкой!"
+safe_reload: "&aОжидание безопасной остановки всех игр в течение 60 секунд перед перезагрузкой!"
 safe_reload_failed_to_stop_game: "&cНекоторые арены не успели завершиться, что может
-  навредить им!"
+  повредить их!"
 holo_not_enabled: "&cГолограммы отключены. Вы установили Holographic Displays?"
 holo_added: "&aГолограмма создана на вашей позиции!"
 click_to_holo_for_remove: "&eТеперь нажмите на голограмму, которую хотите убрать!"
@@ -450,3 +450,15 @@ protect_your_door: '%teamcolor%&lЗащищают вашу дверь!'
 protect_your_door_destroyed: '&7&lДверь сломана.'
 destroy_this_door: '%teamcolor%&lРазрушили эту дверь!'
 door_is_destroyed: Дверь команды %team% уничтожена!
+game_ended_too_early: '&cИгра закончилась слишком рано. Никто не выиграл.'
+help_bw_cheatin_destroyallbeds: /bw cheatIn <арена> destroyallbeds - &cРазрушает все
+  кровати в игре
+waiting_placeholder_lobby_scoreboard: Ожидание...
+help_bw_cheatin_kill: /bw cheatIn <арена> kill <игрок> - &cУбивает указанного игрока
+help_bw_cheatin_destroybed: /bw cheatIn <арена> destroybed <команда> - &cЛомает кровать
+  определённой команды
+help_bw_cheatin_give: /bw cheatIn <арена> give <ресурс> <число> <игрок> - &cВыдаёт
+  указанное количество ресурсов игроку
+admin_arena_overlaps: '&cВыбранная позиция пересекает другую арену, что может привести
+  к проблемам! Выберите другую локацию. Если же вы хотите её использовать, введите
+  &7/bw admin %arena% %position% force'
