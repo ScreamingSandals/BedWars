@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class TagApplier {
     public static @NotNull ItemStack applyTag(@NotNull ItemStack stack, @NotNull String tag) throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        Object parsedTag = ClassStorage.getMethod(TagParserAccessor.METHOD_PARSE_TAG.get()).invokeStatic(tag);
+        Object parsedTag = ClassStorage.getMethod(TagParserAccessor.METHOD_PARSE_COMPOUND_FULLY.get()).invokeStatic(tag);
 
         if (parsedTag == null) {
             return stack;

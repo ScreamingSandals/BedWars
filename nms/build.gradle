@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.4"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.5"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -15,7 +15,7 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.21.4') {
+    /*versionRange('1.8.8', '1.21.5') {
         // exclude 1.20, 1.20.3, 1.20.5 and 1.21.2 - hotfixed versions
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
@@ -38,7 +38,10 @@ accessors {
         method 'net.minecraft.nbt.Tag', 'put', String, 'net.minecraft.nbt.Tag'
     }
     mapClass('net.minecraft.nbt.TagParser') {
-        method CompoundTag, 'parseTag', String
+        methodChain {
+            it.item(CompoundTag, 'parseCompoundFully', String)
+            it.item(CompoundTag, 'parseTag', String)
+        }
     }
     var Component = mapClass('net.minecraft.network.chat.Component') {
         getter String, 'coloredString'
@@ -70,7 +73,7 @@ accessors {
         getter Level, 'commandSenderWorld'
         method boolean, 'saveAsPassenger', CompoundTag
         method void, 'load', CompoundTag
-        method void, 'absMoveTo', double, double, double, float, float
+        method void, 'absSnapTo', double, double, double, float, float
         getter int, 'id'
         getter UUID, 'UUID'
         getter 'net.minecraft.world.entity.EntityType', 'type'

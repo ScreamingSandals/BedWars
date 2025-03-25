@@ -38,7 +38,7 @@ public class BossBarWither extends FakeEntityNMS<Wither> implements WitherBossAc
         try {
             final Object nmsEntity = CONSTRUCTOR_0.get()
                     .newInstance(ClassStorage.getHandle(location.getWorld()));
-            ClassStorage.getMethod(METHOD_ABS_MOVE_TO.get()).invokeInstance(
+            ClassStorage.getMethod(METHOD_ABS_SNAP_TO.get()).invokeInstance(
                     nmsEntity,
                     location.getX(),
                     location.getY(),

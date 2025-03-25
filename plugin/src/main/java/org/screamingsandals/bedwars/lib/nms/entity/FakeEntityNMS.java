@@ -208,7 +208,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public void teleport(Player viewer, Location location) {
         try {
-            ClassStorage.getMethod(handler, METHOD_ABS_MOVE_TO.get())
+            ClassStorage.getMethod(handler, METHOD_ABS_SNAP_TO.get())
                     .invoke(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
         } catch (Throwable t) {
             Debug.warn("Failed to set location for fake entity!: " + t.getMessage());

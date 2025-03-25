@@ -83,7 +83,7 @@ public class EntityNMS implements EntityAccessor {
 			ClassStorage.setField(handler, FIELD_LEVEL.get(), ClassStorage.getHandle(location.getWorld()));
 		}
 		
-		ClassStorage.getMethod(handler, METHOD_ABS_MOVE_TO.get())
+		ClassStorage.getMethod(handler, METHOD_ABS_SNAP_TO.get())
 			.invoke(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 	}
 
