@@ -40,7 +40,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
@@ -61,7 +61,7 @@ public class GameManagerImpl implements GameManager {
     private final Path arenasFolder;
     @ConfigFile("database/remote_games.json")
     private final File remoteGamesFile;
-    private final LoggerWrapper logger;
+    private final Logger logger;
     private final List<Game> games = new LinkedList<>();
 
     @Getter

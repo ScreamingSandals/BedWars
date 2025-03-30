@@ -49,7 +49,7 @@ import org.screamingsandals.lib.utils.ProxyType;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class RemoteGameStateManager {
     private final @NotNull GameManagerImpl gameManager;
     private final @NotNull Map<@NotNull UUID, List<@NotNull String>> subscriptions = new HashMap<>();
     private final @NotNull List<@NotNull Subscription> mySubscriptions = new ArrayList<>();
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
 
     private boolean broadcastStateChangesToEveryone;
     private boolean preventStateChangeSubscribing;

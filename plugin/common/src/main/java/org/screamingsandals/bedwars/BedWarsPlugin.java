@@ -76,7 +76,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.ByteArrayInputStream;
@@ -167,7 +167,7 @@ public class BedWarsPlugin implements BedwarsAPI {
     @ConfigFile("serverName.txt")
     private final Path serverNameFile;
     @Getter
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
     private static BedWarsPlugin instance;
 
     private boolean isDisabling = false;

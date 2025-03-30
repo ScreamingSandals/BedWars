@@ -51,7 +51,7 @@ import org.screamingsandals.lib.utils.ProxyType;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProtocolManagerImpl extends ProtocolManager {
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
 
     private CustomPayload.@Nullable Registration registration;
     private @Nullable Messenger messenger;

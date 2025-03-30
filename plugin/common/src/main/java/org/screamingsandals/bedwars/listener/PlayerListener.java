@@ -94,8 +94,6 @@ public class PlayerListener {
 
         final var victim = event.player();
 
-        // TODO: check for cancellation state if possible (need adjustments in slib)
-
         if (PlayerManagerImpl.getInstance().isPlayerInGame(victim)) {
             Debug.info(victim.getName() + " died in a BedWars game, processing his death...");
             final var gVictim = victim.as(BedWarsPlayer.class);

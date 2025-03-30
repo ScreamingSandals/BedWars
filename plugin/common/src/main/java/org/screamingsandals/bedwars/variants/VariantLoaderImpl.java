@@ -32,7 +32,7 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -41,7 +41,7 @@ import java.io.File;
 @Service
 @RequiredArgsConstructor
 public class VariantLoaderImpl implements VariantLoader {
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
 
     @Override
     public @Nullable VariantImpl loadVariant(@NotNull File file) {
