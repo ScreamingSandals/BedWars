@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -31,7 +31,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -57,7 +57,7 @@ public class BedWarsLangService extends LangService {
     public static final String MESSAGE_PLACEHOLDER_NAME = "bw-lang";
 
     private final MainConfig mainConfig;
-    private final LoggerWrapper logger;
+    private final Logger logger;
     @DataFolder("languages")
     private final Path languagesFolder;
     @Getter

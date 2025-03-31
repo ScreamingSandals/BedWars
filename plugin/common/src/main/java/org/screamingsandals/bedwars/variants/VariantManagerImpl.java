@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -29,7 +29,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 public class VariantManagerImpl implements VariantManager {
     @DataFolder("variants")
     private final @NotNull Path variantsFolder;
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
     private final @NotNull List<VariantImpl> variants = new LinkedList<>();
     private final @NotNull VariantLoaderImpl variantLoader;
 

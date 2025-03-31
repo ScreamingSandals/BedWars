@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -85,7 +85,7 @@ public class DumpCommand extends BaseCommand {
                         .argument(
                                 StringArgument.<CommandSender>newBuilder("service")
                                         .withSuggestionsProvider((objectCommandContext, s) -> SERVICES)
-                                        .asOptionalWithDefault(SERVICES.get(0))
+                                        .asOptionalWithDefault(SERVICES.get(1))
                                         .build()
                         )
                         .handler(commandContext -> {
