@@ -10,9 +10,10 @@
 
 # Gradle
 /.gradle
+/build
 /*/build/
 /plugin/*/build/
-/plugin/universal/test-environment/
+/plugin/*/test-environment/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
