@@ -64,7 +64,7 @@ public class MiscUtils {
             .content("[")
             .color(Color.WHITE)
             .append(
-                    Component.text("B", Color.RED),
+                    Component.text("D", Color.RED),
                     Component.text("W] ", Color.WHITE)
             )
             .build();

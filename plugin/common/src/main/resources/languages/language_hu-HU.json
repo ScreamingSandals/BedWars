@@ -1,0 +1,263 @@
+{
+    "no_permissions": "<red>Nincs jogosultságod ehhez!",
+    "safe_reload": "<green>Várj 60 másodpercet mielőtt újraindítanád a szervert.",
+    "safe_reload_failed_to_stop_game": "<red>Néhány aréna nem lett időben leállítva, így lehet hogy megsérültek a fájljaik!",
+    "list_header": "<green>Elérhető arénák:",
+    "success": "<green>Sikeresen lefutott a parancs!",
+    "unknown_command": "<red>Ismeretlen parancs! Használd a <dark_red>/dw help <red> parancsot a segítségért!",
+    "unknown_usage": "<red> Érvénytelen argumentum! Használd a <dark_red>/dw help <red>parancsot a segítségért!",
+    "sign": {
+        "admin": {
+            "created": "<green>A tábla sikeresen létrehozva!",
+            "cannot_create": "<red>A tábla nem hozható létre, mert nem találja a megadott arénát!",
+            "cannot_destroy": "<red>Nincs jogod kiütni ezt a táblát!",
+            "unknown_game": "<red>A táblán szereplő aréna nem létezik. Szólj egy szerveren lévő adminisztrátornak!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Játék",
+                "players": "<red>Letiltva"
+            },
+            "rebuilding": {
+                "status": "<red>Újjáépítés",
+                "players": "<gold>Aréna"
+            },
+            "running": {
+                "status": "<green>Fut",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>Várakozás",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "disabled": "<red>A statisztika nincs engedélyezve ezen a szerveren!",
+        "player_does_not_exist": "<red>Ez a játékos nem található!",
+        "not_found": "<red>Ennek a játékosnak a statisztikája nem található!",
+        "header": "<red><player> <green>statisztikája:",
+        "kills": "<gray>Ölések: <green><kills>",
+        "deaths": "<gray>Halálok: <yellow><deaths>",
+        "kd": "<gray>Ö/H: <green><kd>",
+        "wins": "<gray>Győzelmek: <green><wins>",
+        "loses": "<gray>Vereségek: <red><loses>",
+        "games": "<gray>Lejátszott játékok száma: <aqua><games>",
+        "score": "<gray>Összesített pontszám: <green><score>",
+        "beds": "<gray>Kiütött ágyak: <green><beds>"
+    },
+    "in_game": {
+        "errors": {
+            "you_are_not_in_game": "<red>Nem vagy játékban!",
+            "game_already_running": "<red>A <gray><arena> <red>játék már elindult! Nem léphetsz be egy olyan játékba, ami már elindult!",
+            "already_in_game": "<red>Már benne vagy egy játékban.",
+            "not_in_any_game_yet": "<red>Még egy játékot sem játszottál.",
+            "vip_not_enough_players": "<red>Nincs elég játékos az aréna indításához!",
+            "vip_game_is_full": "<red>A <gray><arena> <red>játék megtelt VIP játékosokkal. Kérlek várd meg amíg véget ér!",
+            "game_kicked_by_vip": "<red>Ki lettél rúgva egy VIP játékos által!",
+            "there_is_no_empty_game": "<red>Nincs olyan aréna amibe csatlakozhatnál, mivel az összes fut!",
+            "game_is_full": "<red>A<gray><arena> <red>játék már megtelt! Kérlek, várd ki a végéig!",
+            "game_not_found": "<red>Nincs ilyen játék!",
+            "game_is_rebuilding": "<red>A <gray><arena><red> játék éppen újraindul! Kérlek várj...",
+            "command_is_not_allowed": "<red>Ezt a parancsot nem használhatod játék közben!",
+            "game_is_gone": "<red>Az aréna ahol játszottál, már nem ebben a világban van."
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "A <team><reset> csapat kijelölt blokkja el lett pusztítva!",
+                "anchor": "A <team><reset> csapat horgonyát kiütötték!",
+                "cake": "A <team><reset> csapat tortáját megették!",
+                "subtitle": "Most már megtudod ölni a csapat tagjait!",
+                "subtitle_victim": "Most már nem éledsz újra!",
+                "bed": "A <team><reset> csapat ágyát kiütötték!"
+            },
+            "hologram": {
+                "protect": {
+                    "bed": "<teamcolor><bold>Védd meg a csapat ágyát!",
+                    "anchor": "<teamcolor><bold>Védd meg a csapat horgonyát!",
+                    "cake": "<teamcolor><bold>Védd meg a csapat tortáját!",
+                    "any": "<teamcolor><bold>Védd meg a blokkot!"
+                },
+                "destroyed": {
+                    "bed": "<gray><bold>Az ágyat kiütötték.",
+                    "anchor": "<gray><bold>A horgonyt kiütötték.",
+                    "cake": "<gray><bold>A tortát megették.",
+                    "any": "<gray><bold>A blokkot kiütötték."
+                },
+                "destroy": {
+                    "bed": "<teamcolor><bold>Üssd ki az ágyat!",
+                    "cake": "<teamcolor><bold>Edd meg a tortát!",
+                    "any": "<teamcolor><bold>Üssd ki a blokkot!",
+                    "anchor": "<teamcolor><bold>Üssd ki a horgonyt!"
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title": "<green>Újraéledés: <red><time>",
+            "title_cancel": "<red>A csapat kiesett. :("
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <aqua>másodperc",
+            "every_second": "<aqua>minden másodperc",
+            "full": "<red><bold>A spawner kiürült",
+            "not_enough_level": "<red>A spawner nem működik! A fejlesztáshez <levels> szintre van szükséged."
+        },
+        "resources": {
+            "bronze": "Bronz",
+            "iron": "Vas",
+            "gold": "Arany",
+            "netherite": "Netherit",
+            "diamond": "Gyémánt",
+            "emerald": "Smaragd"
+        },
+        "shop": {
+            "name": "Bolt",
+            "page_forward": "Következő oldal",
+            "shop_back": "<red>Vissza a kategóriákhoz",
+            "page_back": "Előző oldal",
+            "price": "Ár:",
+            "amount": "Mennyiség:",
+            "buy_failed": "<red>Nem tudod megvásárolni a(z) <gray><item><red> itemet, mert még ezekre van szükséged: <gray><material><red>!",
+            "buy_success": "<green>Sikeresen megvásároltad a(z) <gray><item><green> az itemet ennyiért: <gray><material><green>!"
+        },
+        "team_selection": {
+            "already_selected": "<green>Te már ebben a csapatban vagy: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>A <team><red> tele vanl!",
+            "full_no_change": "<red>A <team><red> csapat tele van, ezért a <oldteam><red> csapatba maradtál!",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>A csapat tele van!",
+            "select_item_lore_join": "Katt ide a csatlakozáshoz!",
+            "inventory_name": "Válassz csapatot",
+            "selected": "<green>Kiválasztott csapat: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Csapat Választó",
+            "leave_from_game_item": "<red>Kilépés",
+            "start_game_item": "<dark_green>Játék Indítása"
+        },
+        "bossbar": {
+            "waiting": "<red>Az aréna kis időn belül indul!",
+            "running": "<green>Az aréna elindult. Sok szerencsét!"
+        },
+        "end": {
+            "you_won": "<green>Graulálok a te csapatod nyerte meg a játékot!",
+            "you_lost": "<red>Sajnálom, de a te csapatod vesztett!",
+            "game_end": "<red>A játék véget ért. Köszönjük hogy játszottál!",
+            "team_win": "<green>A <reset><team><green> csapat megnyerte a játékot ennyi idő alatt: <gray><time>"
+        },
+        "respawn_protection": {
+            "remaining": "<red>A kezdővédelem <white><time> <green>másodperc múlva lejár!",
+            "end": "<red>A kezdővédelem lejárt!"
+        },
+        "leave": "<name> <red>kilépett az arénából!",
+        "player_self_killed": "<red><victim> <red>meghalt!",
+        "player_killed": "<red><killer> <red>megölte <victim><red> játékost!",
+        "game_start_title": "<green>Az aréna elindult!",
+        "game_start_subtitle": "<green>A(z) <gray><arena><green> aréna elindult. Jó szórakozást!",
+        "join": "<name> <green>csatlakozott az arénába!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "vault_deposite": "<green>Hozzáadtak <gray><coins> <currency><green>-t a karakteredhez!"
+    },
+    "help": {
+        "title": "DoorWars <version> - Segítség",
+        "title_console": "DoorWars <version> - Konzol Segítség",
+        "bw_join": "/dw join \\<arena> - <green>Csatlakozik egy arénába",
+        "bw_leave": "/dw leave - <green>Kilép egy arénából",
+        "bw_rejoin": "/dw rejoin - <green>Visszacsatlakozik az arénába",
+        "bw_list": "/dw list - <green>Kilistázza az arénákat",
+        "bw_leaderboard": "/dw leaderboard - <green>Megnézi a legjobb játékosokat",
+        "bw_stats": "/dw stats - <green>Megnézi a statisztikáid",
+        "bw_reload": "/dw reload - <red>Újra tölti a plugint",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Létrehoz egy statisztika/toplista hologramot",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Engedélyezi vagy beállítja a főlobbyt",
+        "bw_admin_info": "/dw admin \\<arena> info [section] - <yellow>Megnézi az aréna információit",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add - <yellow>Létrehoz egy új arénát",
+        "bw_admin_spec": "/dw admin <pre><arena></pre> spec - <yellow>Beállítja a nézők spawnját",
+        "bw_admin_pos2": "/dw admin <pre><arena></pre> pos2 - <yellow>Kijelöli az aréna második pozícióját",
+        "bw_admin_pausecountdown": "/dw admin <pre><arena></pre> pausecountdown <pre><seconds></pre> - <yellow>Beállít egy szünetet mielőtt elindulna az aréna",
+        "bw_admin_time": "/dw admin <pre><arena></pre> time <pre><seconds></pre> - <yellow>Beállítja az aréna időtartamát",
+        "bw_admin_team_add": "/dw admin <pre><arena></pre>team add <pre><team> <color> <max players></pre> - <yellow>Hozzáad az arénához egy új csapatot",
+        "bw_admin_team_color": "/dw admin <pre><arena></pre> team color <pre><team> <color></pre> - <yellow>Megváltoztatja a csapat színét",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>Beállít a csapatnak egy sebezhető blokkot",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>Beállítja egy entitásra a csapatba csatlakozást",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>Törli az összes item spawnert",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [name above dealer head] [file with shop] [use main shop] - <yellow>Hozzáad az arénához egy boltost",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>Töröl egy boltost a pozíciódról",
+        "bw_admin_config": "/dw admin <pre><arena></pre> config <pre><constant> <value></pre> - <yellow>Beállít az arénának egy megadott konfigot",
+        "bw_admin_arena_time": "/dw admin <pre><arena></pre> arenatime <pre><type></pre> - <yellow>Beállítja az aréna időzónáját (NAPPAL, ESTE, stb.)",
+        "bw_admin_post_game_waiting": "/dw admin <pre><arena></pre> postgamewaiting <pre><seconds></pre> - <yellow>Beállítja a várakozási időt",
+        "bw_admin_customprefix": "/dw admin <pre><arena></pre> customprefix <pre><name|off></pre> - <yellow>Engedélyezi az egyedi prefixeket",
+        "bw_admin_remove": "/dw admin <pre><arena></pre> remove - <red>Törli az arénát",
+        "bw_admin_save": "/dw admin <pre><arena></pre> save - <green>Elmenti az aréna beállításait!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>Csatlakoztatja a játékosokat az arénába",
+        "bw_admin_store_child": "/dw admin <pre><arena></pre> store child - <yellow>Beállítja boltos méretét",
+        "bw_admin_interactive": "/dw admin <pre><arena></pre> interactive - <yellow>Ha az aréna szerkesztés módban van akkor engedélyezi az interaktív módot",
+        "bw_admin_store_adult": "/dw admin <pre><arena></pre> store adult - <yellow>Beállítja a boltos méretét",
+        "bw_admin_minplayers": "/dw admin <pre><arena></pre> minplayers <pre><minimum></pre> - <yellow>Beállít egy minimum játékos számot",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>Megváltoztatja a csapat maximális játékos számát",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>Beállítja a csapat spawnját",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources]</pre> - <yellow>Hozzáad egy új item spawnert",
+        "bw_admin_store_type": "/dw admin <pre><arena></pre> store type <pre><living entity></pre> - <yellow>Beállítja a boltos entitánsát (Falusi, Ló, Tehén, Malac, stb.)",
+        "bw_admin_arena_weather": "/dw admin <pre><arena></pre> arenaweather <pre><type></pre> - <yellow>Beállítja az aréna időjárását (alap, TISZTA, ESŐS)",
+        "bw_admin_edit": "/dw admin <pre><arena></pre> edit - <yellow>Be/kikapcsolja a szerkesztési módot",
+        "bw_admin_spawner_remove": "/dw admin <pre><arena></pre> spawner remove - <yellow>Törli az összes spawnert a pozíciódról",
+        "bw_autojoin": "/dw autojoin - <green>Véletlenszerűen csatlakozik egy arénába",
+        "bw_stats_other": "/dw stats [player] - <green>Megnézi egy játékos statisztikáit",
+        "bw_removeholo": "/dw removeholo - <yellow>Törli a hologramot amint jobb klikkelsz rá.",
+        "bw_admin_lobby": "/dw admin <pre><arena></pre> lobby - <yellow>Beállítja az aréna várakozóját",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>Kijelöli az aréna első pozícióját",
+        "bw_admin_lobby_pos1": "/dw admin <pre><arena></pre> lobbypos1 - <yellow>Kijelöli az aréna első pozícióját",
+        "bw_admin_lobby_pos2": "/dw admin <pre><arena></pre> lobbypos2 - <yellow>Kijelöli az aréna második pozícióját",
+        "bw_dump": "/dw dump - <yellow>Dumpolja a szervert vagyis lekér egy linket hogy megnézd az esetleges hibákat"
+    },
+    "update": {
+        "new_release": [
+            "<green>Elérhető a DoorWars <version> verziója!",
+            "Letölthető az alábbi linken <url>"
+        ],
+        "patch_release": [
+            "<yellow>Elérhető a DoorWars <version> patch verziója!",
+            "Letölthető az alábbi linken: <url>"
+        ]
+    },
+    "admin": {
+        "usage": "<red>Használat: /dw admin \\<arena> \\<add|edit|remove|save|...> ...",
+        "arena": {
+            "error": {
+                "already_exists": "<red>Ez az aréna már létezik!",
+                "arena_must_be_in_edit_mode": "<red>Az arénának szerkesztő módba kell lennie!",
+                "already_working_on_it": "<red>Ez az aréna már létezik csak még nincs beállítva!",
+                "arena_not_in_edit": "<red>Ez az aréna nem létezik vagy fut. Letiltani a <gray>/dw admin <pre><arena></pre> edit<red> és engedélyezni pedig a <gray>/dw admin <pre><arena></pre> save<red> paranccsal lehet"
+            },
+            "success": {
+                "removed": "<red><b>Az aréna törölve lett!",
+                "edit_mode": "<green>Az aréna átváltott a szerkesztés módra!",
+                "added": "<green>Sikeresen hozzáadtad az arénát!"
+            },
+            "edit": {
+                "errors": {
+                    "must_be_in_same_world": "<red>Az összes parancsot ugyanabban a világban kell végrehajtanod!",
+                    "invalid_countdown": "<red>A visszaszámlálásnak <lowest> < x < <highest> másodpercnek belül kell lennie!",
+                    "must_be_in_bounds": "<red>A kijelöléseket az arénában kell elvégezni!",
+                    "store_already_exist": "<red>Ez a boltos már létezik!",
+                    "store_does_not_exist": "<red>Ez a boltos nem létezik!",
+                    "invalid_spawner_type": "<red>A spawner csak bronzt, aranyat, aranyat és egyedi tárgyakat spawnoltat!",
+                    "invalid_spawner_level": "<white>Hibás szint szám, ezért az alapértelmezett 1 szintet használtuk.",
+                    "invalid_color": "<red>Ez a szín ismeretlen!",
+                    "max_players": "<red>A maximális játékosszám nem lehet kisebb vagy egyenlő mint 1!",
+                    "spawners_needed": "<red>Az aréna mentéséhez minimum 1 spawnert be kell állítani!",
+                    "team_does_not_exist": "<red>Ez a csapat nem létezik!",
+                    "team_already_exists": "<red>Ez a csapat már létezik!",
+                    "set_lobby_before_save": "<red>Mielőtt mentenéd az arénát állítsd be a várakozót!",
+                    "set_spec_before_save": "<red>Mielött mentenéd az arénát állítsd be a nézők spawnját!",
+                    "set_stores_before_save": "<red>Mielőtt mentenéd az arénát állíts be egy boltost!",
+                    "set_spawners_before_save": "<red>Mielőtt mented az arénát állíts be egy spawnert!",
+                    "set_bounds_first": "<red>Mielőtt beállítanád a spawnt, előbb jelöld ki az aréna első és második pozícióját!",
+                    "invalid_bounds": "<red>A két kijelölt pozíció közötti terület túl kicsi. Minimum 5 blokk távolságnak kell lennie!",
+                    "need_2_teams": "<red>Az aréna mentéséhez minimum 2 csapat kell!",
+                    "set_bounds_before_save": "<red>Mielőtt mentenéd az arénát jelöld ki mind a kettő pozíciót!"
+                }
+            }
+        }
+    }
+}

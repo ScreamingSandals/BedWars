@@ -1,0 +1,76 @@
+{
+    "unknown_usage": "استدلال های نامعتبر! برای کمک،<dark_red>/dw help <red> رو امتحان کنید!",
+    "list_header": "<green> منطقه های موجود:",
+    "success": "<green> دستور(کامند) موفقیت آمیز بود!",
+    "sign": {
+        "admin": {
+            "created": "<green> تابلو با موفقیت ساخته شد!",
+            "cannot_create": "<red>علامت ایجاد نشد! لطفا نام مپ را بررسی کنید!",
+            "cannot_destroy": "<red>شما مجوز تخریب این علامت را ندارید!",
+            "unknown_game": "<red>بازی که روی تابلو نوشته شده وجود ندارد! لطفا با یک ادمین تماس بگیرید!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>بازی",
+                "players": "<red>غیرفعال شد"
+            },
+            "rebuilding": {
+                "status": "<gold>بازسازی",
+                "players": "<gold>دنیا"
+            },
+            "waiting": {
+                "status": "<gold>درانتظار"
+            },
+            "running": {
+                "status": "<green>دویدن",
+                "players": "<red><بازیکن ها><خاکستری تیره>/<red><بیشترین_بازیکن>"
+            }
+        }
+    },
+    "unknown_command": "<red>دستور ناشناخته! برای کمک، <dark_red>/dw help <red> رو امتحان کنید!",
+    "no_permissions": "<red> شما دسترسی لازم برای این کار رو ندارید!",
+    "safe_reload": "<green>منتظر بمانید تا تمام بازی ها متوقف شوند یا 60 ثانیه قبل از بارگیری مجدد پلاگین .",
+    "safe_reload_failed_to_stop_game": "<red> بعضی از بازیا متوقف نشدن.اون منطقه ممکنه آسیب دیده باشه!",
+    "statistics": {
+        "disabled": "<red>آمار بازیکن در این سرور غیرفعال است!",
+        "not_found": "<red>آمار این بازیکن یافت نشد!",
+        "header": "<green>آمار از<red><player><green>:",
+        "player_does_not_exist": "<red>بازیکن پیدا نشد!",
+        "loses": "<gray>باخت ها: <red><loses>",
+        "games": "<grey>بازی های انجام شده: <aqua><games>",
+        "kills": "<gray>کشته ها: <green><kills>",
+        "deaths": "<gray>مرگ ها: <yellow><deaths>",
+        "wins": "<gray>برد ها: <green><wins>",
+        "beds": "<gray>تخت های خراب شده: <green><beds>",
+        "score": "<gray>امتیاز کل: <green><score>"
+    },
+    "specials": {
+        "tntsheep": {
+            "no_target_found": "‌<red>هدفی پیدا نشد!"
+        }
+    },
+    "in_game": {
+        "target_block": {
+            "hologram": {
+                "destroyed": {
+                    "cake": "<gray><bold>کیک خورده شده است."
+                }
+            },
+            "destroyed": {
+                "all_beds": "همه تخت ها خراب شدن!",
+                "death_mode": "<dark_purple><bold>حالت مرگ!",
+                "bed_certain_popular_server": "<red><bold>تخت خراب شد!"
+            }
+        },
+        "errors": {
+            "command_is_not_allowed": "<red>این دستور حین بازی کردن غیرفعال است!",
+            "game_is_rebuilding": "<red>بازی <grey><arena><red> در حال بازسازی است! لطفا صبر کنید...",
+            "already_in_game": "<red>شما در حال حاضر در یک بازی هستید.",
+            "there_is_no_empty_game": "<red>هیچ بازی در حالت انتظار وجود ندارد. همه بازی ها در حال اجرا هستند!",
+            "game_not_found": "<red>بازی پیدا نشد!",
+            "you_are_not_in_game": "شما در یک بازی نیستید!",
+            "vip_not_enough_players": "<red>بازیکن کافی در این بازی وجود ندارد!",
+            "game_kicked_by_vip": "<red>شما توسط یک فرد خاص از بازی اخراج شدید!"
+        }
+    }
+}

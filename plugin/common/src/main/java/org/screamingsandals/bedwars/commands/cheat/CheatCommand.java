@@ -172,7 +172,7 @@ public abstract class CheatCommand extends BaseCommand {
         );
 
         manager.command(commandSenderWrapperBuilder
-                .literal("invalidateTarget", "destroybed")
+                .literal("invalidateTarget", "destroydoor")
                 .argument(StringArgument.<CommandSender>newBuilder("team")
                         .withSuggestionsProvider((c, s) -> {
                             var game = getGameForSuggestionProvider(c);
@@ -236,7 +236,7 @@ public abstract class CheatCommand extends BaseCommand {
         );
 
         manager.command(commandSenderWrapperBuilder
-                .literal("invalidateAllTargets", "destroyallbeds")
+                .literal("invalidateAllTargets", "destroyalldoors")
                 .handler(commandContext -> {
                     var sender = commandContext.getSender();
 

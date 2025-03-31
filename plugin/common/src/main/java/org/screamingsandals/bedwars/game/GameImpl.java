@@ -73,6 +73,7 @@ import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.entity.ItemEntity;
 import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
@@ -378,10 +379,61 @@ public class GameImpl implements LocalGame {
         if (targetTeam != null) {
             if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.block().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
+            } else if (block.block().isSameType("birch_door", "mangrove_door", "crimson_door")) {
+                return false;
+            } else if (block.block().isSameType("spruce_door", "dark_oak_door", "bamboo_door")) {
+                // Changes upon destruction
+                if (!region.isOriginalBlockSaved(block.location())) {
+                    region.putOriginalBlock(block.location(), block.blockSnapshot());
+                }
+
+                var neighbour = block.location().add(0, "lower".equals(block.block().get("half")) ? 1 : -1, 0).getBlock();
+                if (!region.isOriginalBlockSaved(neighbour.location())) {
+                    region.putOriginalBlock(neighbour.location(), neighbour.blockSnapshot());
+                }
+
+                List<String> doors = List.of(
+                        "oak_door",
+                        "spruce_door",
+                        "birch_door",
+                        "jungle_door",
+                        "acacia_door",
+                        "dark_oak_door",
+                        "mangrove_door",
+                        "cherry_door",
+                        "pale_oak_door",
+                        "bamboo_door",
+                        "crimson_door",
+                        "warped_door",
+                        "iron_door",
+                        "copper_door",
+                        "exposed_copper_door",
+                        "weathered_copper_door",
+                        "oxidized_copper_door",
+                        "waxed_copper_door",
+                        "waxed_exposed_copper_door",
+                        "waxed_weathered_copper_door",
+                        "waxed_oxidized_copper_door"
+                );
+
+                Block block1;
+                do {
+                    block1 = Block.ofNullable(doors.get(MiscUtils.randInt(0, doors.size() - 1)));
+                } while (block1 == null);
+
+                block.alterBlockWithoutPhysics(block1.withStateData(block.block().stateData()));
+                neighbour.alterBlockWithoutPhysics(block1.withStateData(neighbour.block().stateData()));
+
+                return false;
             } else {
                 var pt = getPlayerTeam(player);
-                if (pt == targetTeam) {
+                if (false && pt == targetTeam) {
                     return false;
+                }
+                if (block.block().isSameType("oak_door", "acacia_door", "pale_oak_door")) {
+                    System.out.println("Hello");
+                    List<String> entities = List.of("zombie", "skeleton", "creeper");
+                    EntitiesManagerImpl.getInstance().addEntityToGame(EntityType.of(entities.get(MiscUtils.randInt(0, entities.size() - 1))).spawn(block.location()), this);
                 }
                 var result = internalProcessInvalidation(targetTeam, targetTeam.getTarget(), player, TargetInvalidationReason.TARGET_BLOCK_DESTROYED);
                 if (result) {
@@ -454,10 +506,14 @@ public class GameImpl implements LocalGame {
                 }
 
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.blockSnapshot());
+                    if (!region.isOriginalBlockSaved(block.location())) {
+                        region.putOriginalBlock(block.location(), block.blockSnapshot());
+                    }
                     if (block.location().equals(loc)) {
                         var neighbor = region.getBedNeighbor(block);
-                        region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
+                        if (!region.isOriginalBlockSaved(neighbor.location())) {
+                            region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
+                        }
                     } else {
                         region.putOriginalBlock(loc, region.getBedNeighbor(block).blockSnapshot());
                     }
@@ -469,17 +525,17 @@ public class GameImpl implements LocalGame {
                 var neighbour = loc.add(0, "lower".equals(type.get("half")) ? 1 : -1, 0);
                 var neighbourBlock = neighbour.getBlock();
                 if (neighbourBlock.block().is("#doors", "#tall_flowers")) {
-                    if (putOriginalBlocks) {
+                    if (putOriginalBlocks && !region.isOriginalBlockSaved(neighbour)) {
                         region.putOriginalBlock(neighbour, neighbourBlock.blockSnapshot());
                     }
                     neighbourBlock.alterBlockWithoutPhysics(Block.air());
                 }
-                if (putOriginalBlocks) {
+                if (putOriginalBlocks && !region.isOriginalBlockSaved(loc)) {
                     region.putOriginalBlock(loc, block.blockSnapshot());
                 }
                 loc.getBlock().block(Block.air());
             } else {
-                if (putOriginalBlocks) {
+                if (putOriginalBlocks && !region.isOriginalBlockSaved(loc)) {
                     region.putOriginalBlock(loc, block.blockSnapshot());
                 }
                 loc.getBlock().block(Block.air());

@@ -93,8 +93,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Plugin(
-        id = "ScreamingBedWars",
-        authors = {"ScreamingSandals <Misat11, iamceph, Pronze, ZlataOvce>"},
+        id = "DoorWars",
+        authors = {"ScreamingSandals <Miata11, iamceph, Pronze, ZlataOvce>"},
         version = VersionInfo.VERSION,
         loadTime = Plugin.LoadTime.POSTWORLD
 )
@@ -120,7 +120,7 @@ import java.util.stream.Collectors;
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,
-                UpdateChecker.class,
+//                UpdateChecker.class,
                 PlayerStatisticManager.class,
                 StatisticsHolograms.class,
                 LeaderboardHolograms.class,
@@ -226,7 +226,7 @@ public class BedWarsPlugin implements BedwarsAPI {
     }
 
     public static boolean isCommandAllowedInGame(String commandPref) {
-        if ("/bw".equals(commandPref) || "/bedwars".equals(commandPref)) {
+        if ("/dw".equals(commandPref) || "/doorwars".equals(commandPref)) {
             return true;
         }
         try {
@@ -258,7 +258,7 @@ public class BedWarsPlugin implements BedwarsAPI {
 
     @OnPluginLoad
     public void load() {
-        if (Plugins.getPlatformType() == PlatformType.BUKKIT) {
+        if (false && Plugins.getPlatformType() == PlatformType.BUKKIT) {
             var folder = pluginDescription.dataFolder();
             if (!Files.exists(folder)) {
                 var sbw0_2_x = folder.getParent().resolve("BedWars");
@@ -370,7 +370,7 @@ public class BedWarsPlugin implements BedwarsAPI {
                 .content("============")
                 .color(Color.AQUA)
                 .append(
-                        Component.text("===", Color.RED),
+                        Component.text("====", Color.RED),
                         Component.text("======  by " + pluginDescription.contributors().stream().map(org.screamingsandals.lib.plugin.Plugin.Contributor::name).collect(Collectors.joining(", ")), Color.WHITE)
                 )
         );
@@ -380,7 +380,7 @@ public class BedWarsPlugin implements BedwarsAPI {
                 .content("+ Screaming ")
                 .color(Color.AQUA)
                 .append(
-                        Component.text("Bed", Color.RED),
+                        Component.text("Door", Color.RED),
                         Component.text("Wars +  ", Color.WHITE),
                         Component.text("Version: " + VersionInfo.VERSION + " ", Color.GOLD)
                 )
@@ -391,7 +391,7 @@ public class BedWarsPlugin implements BedwarsAPI {
                 .content("============")
                 .color(Color.AQUA)
                 .append(
-                        Component.text("===", Color.RED),
+                        Component.text("====", Color.RED),
                         Component.text("======  ",Color.WHITE),
                         Component.text(snapshot ? "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : "STABLE VERSION", snapshot ? Color.RED : Color.GREEN)
                 )

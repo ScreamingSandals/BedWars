@@ -1,0 +1,696 @@
+{
+    "unknown_command": "<red>Unknown command! Try using <dark_red>/dw help <red>for help!",
+    "unknown_usage": "<red>Invalid arguments! Try using <dark_red>/dw help <red>for help!",
+    "no_permissions": "<red>You don't have enough permission to do that!",
+    "safe_reload": "<green>Waiting until all games are stopped or 60 seconds before reloading the plugin.",
+    "safe_reload_failed_to_stop_game": "<red>Some games were not stopped in time, the arena may have been damaged!",
+    "list_header": "<green>Available arenas:",
+    "success": "<green>Command was successful!",
+    "sign": {
+        "admin": {
+            "created": "<green>Sign was successfully created!",
+            "cannot_create": "<red>Sign couldn't be created! Please check the name of the arena!",
+            "cannot_destroy": "<red>You don't have permissions to destroy this sign!",
+            "unknown_game": "<red>The game that is written on the sign doesnt exist! Please contact an admin!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Game",
+                "players": "<red>disabled"
+            },
+            "rebuilding": {
+                "status": "<gold>Rebuilding",
+                "players": "<gold>arena"
+            },
+            "running": {
+                "status": "<green>Running",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>Waiting",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "disabled": "<red>Player statistics are disabled on this server!",
+        "player_does_not_exist": "<red>Player is not found!",
+        "not_found": "<red>Statistics for this player are not found!",
+        "header": "<green>Statistics of <red><player><green>:",
+        "kills": "<gray>Kills: <green><kills>",
+        "deaths": "<gray>Deaths: <yellow><deaths>",
+        "kd": "<gray>K/D: <green><kd>",
+        "wins": "<gray>Wins: <green><wins>",
+        "loses": "<gray>Loses: <red><loses>",
+        "games": "<gray>Played games: <aqua><games>",
+        "beds": "<gray>Destroyed beds: <green><beds>",
+        "score": "<gray>Total score: <green><score>"
+    },
+    "in_game": {
+        "errors": {
+            "game_already_running": "<red>Game <gray><arena> <red>is already running! You can't join a running game!",
+            "game_is_full": "<red>Game <gray><arena> <red>is full! Please wait for game end!",
+            "game_not_found": "<red>Game not found!",
+            "you_are_not_in_game": "<red>You're not in a game!",
+            "game_is_rebuilding": "<red>Game <gray><arena><red> is rebuilding! Please wait...",
+            "already_in_game": "<red>You are already in some game.",
+            "not_in_any_game_yet": "<red>You haven't been in any game yet.",
+            "command_is_not_allowed": "<red>This command is blocked while the game is running!",
+            "vip_not_enough_players": "<red>Not enough players in arena!",
+            "vip_game_is_full": "<red>Game <gray><arena> <red>is full of VIP players. Please wait for game end!",
+            "game_is_gone": "<red>Looks like the game you were in is no longer in this world.",
+            "game_kicked_by_vip": "<red>You were kicked by VIP player!",
+            "there_is_no_empty_game": "<red>There's no game in waiting state. All games are already running!"
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "Target block of <team><reset> is destroyed!",
+                "any_certain_popular_server": "<red><bold>TARGET BLOCK DESTROYED!",
+                "bed": "Bed of <team><reset> is destroyed!",
+                "bed_certain_popular_server": "<red><bold>BED DESTROYED!",
+                "door": "Door of <team><reset> is destroyed!",
+                "door_certain_popular_server": "<red><bold>DOOR DESTROYED!",
+                "anchor": "Respawn Anchor of <team><reset> is destroyed!",
+                "anchor_certain_popular_server": "<red><bold>ANCHOR DESTROYED!",
+                "cake": "Cake of <team><reset> has been eaten!",
+                "cake_certain_popular_server": "<red><bold>CAKE EATEN!",
+                "killable": "You are now able to kill all members of <team>!",
+                "subtitle": "You can now kill the team members!",
+                "subtitle_victim": "You will no longer respawn!",
+                "death_mode": "<dark_purple><bold>Death mode!",
+                "all_beds": "All beds have been destroyed!",
+                "all_anchors": "All anchors have been destroyed!",
+                "all_target_blocks": "All target blocks have been destroyed!",
+                "all_cakes": "All cakes have been eaten!"
+            },
+            "hologram": {
+                "protect": {
+                    "any": "<teamcolor><bold>Protect your target block!",
+                    "bed": "<teamcolor><bold>Protect your bed!",
+                    "door": "<teamcolor><bold>Protect your door!",
+                    "anchor": "<teamcolor><bold>Protect your anchor!",
+                    "cake": "<teamcolor><bold>Protect your cake!"
+                },
+                "destroyed": {
+                    "any": "<gray><bold>Target block is destroyed.",
+                    "bed": "<gray><bold>Bed is destroyed.",
+                    "door": "<gray><bold>Door is destroyed.",
+                    "anchor": "<gray><bold>Anchor is destroyed.",
+                    "cake": "<gray><bold>Cake has been eaten."
+                },
+                "destroy": {
+                    "any": "<teamcolor><bold>Destroy this target block!",
+                    "bed": "<teamcolor><bold>Destroy this bed!",
+                    "door": "<teamcolor><bold>Destroy this door!",
+                    "anchor": "<teamcolor><bold>Destroy this anchor!",
+                    "cake": "<teamcolor><bold>Eat this cake!"
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title": "<green>Respawn in: <red><time>",
+            "title_cancel": "<red>Team is dead :("
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <aqua>seconds",
+            "countdown_custom": "<yellow><value> <aqua><unit>",
+            "every_second": "<aqua>every second",
+            "full": "<red><bold>Spawner is depleted",
+            "full_certain_popular_server": "<red><bold>Spawner is full!",
+            "not_enough_level": "<red>Spawner can't work! You need to upgrade by <levels> levels.",
+            "reached_maximum_level": "<red>Spawner has reached its maximum level!",
+            "tier": "<yellow>Tier <red><tier>",
+            "countdown_certain_popular_server": "<yellow>Spawns in <red><seconds> <yellow>seconds",
+            "countdown_custom_certain_popular_server": "<yellow>Spawns in <red><value> <yellow><unit>"
+        },
+        "resources": {
+            "bronze": "Bronze",
+            "iron": "Iron",
+            "gold": "Gold",
+            "netherite": "Netherite",
+            "diamond": "Diamond",
+            "emerald": "Emerald"
+        },
+        "shop": {
+            "name": "Shop",
+            "page_back": "Page back",
+            "page_forward": "Page forward",
+            "shop_back": "<red>Back to category list",
+            "price": "Price:",
+            "amount": "Amount:",
+            "buy_success": "<green>Successfully purchased <gray><item><green> for <gray><material><green>!",
+            "buy_failed": "<red>Lack of material to buy <gray><item><red>! Needed <gray><material><red>!",
+            "upgrade_success": "<green><name> has successfully upgraded <spawner> to level <level>!",
+            "upgrade_translate": "upgrade"
+        },
+        "team_selection": {
+            "inventory_name": "Select team - <arena>",
+            "selected": "<green>Selected team: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "already_selected": "<green>You are already in team: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>Team <team><red> is full!",
+            "full_no_change": "<red>Team <team><red> is full, You stay in <oldteam><red>!",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>Team is full!",
+            "select_item_lore_join": "Click to join the team!"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Select team",
+            "leave_from_game_item": "<red>Leave the game",
+            "start_game_item": "<dark_green>Start game"
+        },
+        "bossbar": {
+            "waiting": "<red>The game will begin shortly!",
+            "running": "<green>Game started! Good luck!"
+        },
+        "end": {
+            "you_won": "<green>Your team won!",
+            "you_lost": "<red>Your team lost!",
+            "game_ended_too_early": "<red>The game ends too early. No one wins.",
+            "team_win": "<green>Team <reset><team><green> won game in <gray><time>",
+            "game_end": "<red>Game ended! Thanks for playing!"
+        },
+        "respawn_protection": {
+            "remaining": "<red>Respawn protection will be gone in <white><time> <green>seconds!",
+            "end": "<red>Respawn protection is gone!"
+        },
+        "cheat": {
+            "please_provide_valid_cheat_type": "<red>Provided cheat type is not valid or is missing!",
+            "invalid_player": "<red>Specified player is not in any game or is a spectator!",
+            "received_give": "<green>Player <gray><player><green> got <gray><amount><green> of <gray><resource>",
+            "received_kill": "<green>Player <gray><player><green> killed by cheat!",
+            "game_not_running": "<red>You can only cheat when game is running!",
+            "special_item_used": "<green>Special item <gray><item></gray> has been used!",
+            "region_regenerated": "<green>Region of arena <gray><arena></gray> has been regenerated!",
+            "game_not_waiting": "<red>You can execute this cheat only when game is in the waiting state!",
+            "game_forced": "<green>Game is now going to start with one empty team, so at least two teams are in the game for plugin to work correctly. Invalidate its target to win! <gray>It is not protected so it should be easy for you, right?",
+            "team_does_not_exist": "<red>Team <gray><team></gray> does not exist!",
+            "team_is_not_in_game": "<red>Team <gray><team></gray> is currently not in the game, and therefore this cheat cannot be executed!",
+            "unknown_target": "<red>The command does not know how to invalidate the target of the team <gray><team></gray>!",
+            "target_is_not_valid": "<red>The target of the team <gray><team></gray> could not be invalidated because it is already invalid!",
+            "received_target_invalidated": "<green>The target of the team <gray><team></gray> has been invalidated! <gray>Players in that team no longer likes you :(",
+            "received_targets_invalidated": "<green>All possible targets of all teams in the game have been invalidated! <gray>That would make the game a bit faster.",
+            "team_random_failed": "<red>An algorithm failed to choose you a random team. <gray>That's weird.",
+            "received_team_join": "<green>Player <gray><player></gray> joined team <gray><team></gray>!",
+            "cheat_failed": "<red>Cheat failed for unknown reason."
+        },
+        "scoreboard": {
+            "you": "<gray>YOU",
+            "state": {
+                "waiting": "<white>Waiting...",
+                "countdown": "<white>Starting in <green><countdown>s"
+            },
+            "mode": {
+                "solo": "Solo",
+                "doubles": "Doubles",
+                "triples": "Triples",
+                "squads": "Squads"
+            }
+        },
+        "messages": {
+            "game_start": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <white><bold>Bed Wars</bold>",
+                "",
+                "    <yellow><bold>Protect your bed and destroy the enemy beds.</bold>",
+                "     <yellow><bold>Upgrade yourself and your team by collecting</bold>",
+                "<yellow><bold><resources></bold>",
+                "            <yellow><bold>to access powerful upgrades.</bold>",
+                "",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                ""
+            ],
+            "game_over_statistics": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <yellow><bold>Bed Wars</bold>",
+                "",
+                "                             <team_color><win_team>",
+                "                             <winners>",
+                "",
+                "    <yellow><bold>1st<gray> - <white><first_killer_name> <gray>- <white><first_killer_score></bold>",
+                "    <gold><bold>2nd<gray> - <white><second_killer_name> <gray>- <white><second_killer_score></bold>",
+                "    <red><bold>3rd<gray> - <white><third_killer_name> <gray>- <white><third_killer_score>/bold>",
+                "",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                ""
+            ]
+        },
+        "record": {
+            "no": "<aqua>This is the first time this game is played. What about setting a new record?",
+            "current": "<aqua>The current record of this game is <gray><time><aqua> achieved by <gray><team-members><aqua>!"
+        },
+        "join": "<name> <green>joined the game!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "leave": "<name> <red>left the game!",
+        "player_self_killed": "<red>Player <victim> <red>died!",
+        "player_killed": "<red>Player <killer> <red>killed <victim><red>!",
+        "game_start_title": "<green>Game started!",
+        "game_start_subtitle": "<green>Game <gray><arena><green> has started! Enjoy the game!",
+        "economy_deposited": "<green>Added <gray><coins> <currency><green> to your balance!",
+        "economy_missing_coins": "<red>You need <yellow><coins> <currency><red> to enter this game!",
+        "kicking_in": "<red>Leaving the arena in: <gray><time>"
+    },
+    "help": {
+        "title": "DoorWars <version> - Help",
+        "messages": {
+            "command": "Command",
+            "description": "Description",
+            "no_description": "No description",
+            "arguments": "Arguments",
+            "optional": "Optional",
+            "showing_results_for_query": "Showing search results for query",
+            "no_results_for_query": "No results for query",
+            "available_commands": "Available Commands",
+            "click_to_show_help": "Click to show help for this command",
+            "page_out_of_range": "Error: Page <page> is not in range. Must be in range [1, <max_pages>]",
+            "click_for_next_page": "Click for next page",
+            "click_for_previous_page": "Click for previous page"
+        },
+        "title_console": "DoorWars <version> - Help for Console",
+        "bw_join": "/dw join \\<arena> - <green>Join the game",
+        "bw_leave": "/dw leave - <green>Leave the game",
+        "bw_rejoin": "/dw rejoin - <green>Join again to latest game",
+        "bw_autojoin": "/dw autojoin - <green>Join to first waiting game",
+        "bw_list": "/dw list - <green>List of active games",
+        "bw_leaderboard": "/dw leaderboard - <green>Show top players of this server",
+        "bw_stats": "/dw stats - <green>Show your statistics",
+        "bw_stats_other": "/dw stats [player] - <green>Show statistics of other players",
+        "bw_reload": "/dw reload - <red>Reloads plugin",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Adds hologram to the player's location",
+        "bw_removeholo": "/dw removeholo - <yellow>After executing this command, the player can right-click the holographic statistic to remove it.",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Enables main lobby or sets main lobby location",
+        "bw_admin_info": "/dw admin \\<arena> info [section] - <yellow>Shows you all information about arena",
+        "bw_admin_add": "/dw admin \\<arena> add [variant] - <yellow>Create a new arena",
+        "bw_admin_lobby": "/dw admin \\<arena> lobby - <yellow>Sets lobby position to your position",
+        "bw_admin_spec": "/dw admin \\<arena> spec - <yellow>Sets specatator's spawn to your position",
+        "bw_admin_pos1": "/dw admin \\<arena> pos1 - <yellow>Sets the extreme point of the arena to your position",
+        "bw_admin_pos2": "/dw admin \\<arena> pos2 - <yellow>Sets the second extreme point of the arena to your position",
+        "bw_admin_lobby_pos1": "/dw admin \\<arena> lobbypos1 - <yellow>Sets the extreme point of the lobby to your position",
+        "bw_admin_lobby_pos2": "/dw admin \\<arena> lobbypos2 - <yellow>Sets the second extreme point of the lobby to your position",
+        "bw_admin_pausecountdown": "/dw admin \\<arena> pausecountdown \\<seconds> - <yellow>Sets the pause duration before game starts",
+        "bw_admin_minplayers": "/dw admin \\<arena> minplayers \\<minimum> - <yellow>Sets minimum of players needed to start the game",
+        "bw_admin_time": "/dw admin \\<arena> time \\<seconds> - <yellow>Sets the game's duration",
+        "bw_admin_team_add": "/dw admin \\<arena>team add \\<team> \\<color> \\<max players> - <yellow>Add a team to the game",
+        "bw_admin_team_color": "/dw admin \\<arena> team color \\<team> \\<color> - <yellow>Change team color",
+        "bw_admin_team_maxplayers": "/dw admin \\<arena> team maxplayers \\<team> \\<max players> - <yellow>Change max team players",
+        "bw_admin_team_spawn": "/dw admin \\<arena> team spawn \\<team> - <yellow>Sets team spawn to your position",
+        "bw_admin_team_bed": "/dw admin \\<arena> team bed \\<team> - <yellow>Sets team target block to your target position (it can be another block, not just bed)",
+        "bw_admin_jointeam": "/dw admin \\<arena> jointeam \\<team> - <yellow>Sets the ability to connect to a team using an entity",
+        "bw_admin_spawner_add": "/dw admin \\<arena> spawner add \\<bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources] - <yellow>Add item spawner to your position",
+        "bw_admin_spawner_max_spawned_resources": "/dw admin \\<arena> spawner maxSpawnedResources \\<value> - <yellow>Sets max spawned resources limit of the spawner at your position",
+        "bw_admin_spawner_rotation_mode": "/dw admin \\<arena> spawner rotationMode \\<mode> - <yellow>Sets the floating hologram's rotation mode of the spawner at your position",
+        "bw_admin_spawner_change_type": "/dw admin \\<arena> spawner changeType \\<type> - <yellow>Changes the type of the spawner at your position",
+        "bw_admin_spawner_custom_name": "/dw admin \\<arena> spawner customName \\<name> - <yellow>Sets the custom name of the spawner at your position",
+        "bw_admin_spawner_hologram_type": "/dw admin \\<arena> spawner hologramType \\<type> - <yellow>Sets the type of the spawner's hologram at your position",
+        "bw_admin_spawner_linked_team": "/dw admin \\<arena> spawner linkedTeam \\<team|null> - <yellow>Links the spawner at your position with the specified team",
+        "bw_admin_spawner_base_amount": "/dw admin \\<arena> spawner baseAmount \\<amount> - <yellow>Sets the base amount of resources that the spawner should spawn per cycle",
+        "bw_admin_spawner_hologram": "/dw admin \\<arena> spawner hologram \\<true|false> - <yellow>Enables/Disables hologram above the spawner",
+        "bw_admin_spawner_floating": "/dw admin \\<arena> spawner floating \\<true|false> - <yellow>Enables/Disables floating block under the spawner's hologram",
+        "bw_admin_spawner_reset": "/dw admin \\<arena> spawner reset - <yellow>Remove all spawners",
+        "bw_admin_store_add": "/dw admin \\<arena> store add [name above dealer head] [file with shop] [use main shop] - <yellow>Add trading villager to your position",
+        "bw_admin_store_remove": "/dw admin \\<arena> store remove - <yellow>Remove trading villager from your position",
+        "bw_admin_store_type": "/dw admin \\<arena> store type \\<living entity> - <yellow>Sets entity type of store (Villager, Horse, Cow, Pig etc.)",
+        "bw_admin_config_set": "/dw admin \\<arena> config set \\<data type> \\<constant> \\<value> - <yellow>Sets value of a constant for a game",
+        "bw_admin_config_reset": "/dw admin \\<arena> config reset \\<constant> - <yellow>Resets a constant to the inherited value",
+        "bw_admin_config_list_add": "/dw admin \\<arena> config list \\<data type> \\<constant> add \\<value> - <yellow>Adds new value to the list of constants",
+        "bw_admin_config_list_set": "/dw admin \\<arena> config list \\<data type> \\<constant> set \\<position> \\<value> - <yellow>Changes value at the position to the list of constants",
+        "bw_admin_config_list_remove": "/dw admin \\<arena> config list \\<data type> \\<constant> remove \\<position> - <yellow>Removes value from the position in the list of constants",
+        "bw_admin_config_list_clear": "/dw admin \\<arena> config list \\<data type> \\<constant> clear - <yellow>Clears the list of constants without setting it to inherit",
+        "bw_admin_fee": "/dw admin \\<arena> fee \\<fee> - <yellow>Sets the economy fee needed to enter the arena.",
+        "bw_admin_arena_time": "/dw admin \\<arena> arenatime \\<type> - <yellow>Sets time in arena (DAY, NIGHT, etc.)",
+        "bw_admin_arena_weather": "/dw admin \\<arena> arenaweather \\<type> - <yellow>Sets weather in arena (default, CLEAN, DOWNFALL)",
+        "bw_admin_post_game_waiting": "/dw admin \\<arena> postgamewaiting \\<seconds> - <yellow>Sets the waiting time before player is teleported out of the arena",
+        "bw_admin_customprefix": "/dw admin \\<arena> customprefix \\<name|off> - <yellow>Enables custom prefix for arena",
+        "bw_admin_display_name": "/dw admin \\<arena> displayName \\<name|off> - <yellow>Sets display name of the arena",
+        "bw_admin_remove": "/dw admin \\<arena> remove - <red>Remove the arena",
+        "bw_admin_edit": "/dw admin \\<arena> edit - <yellow>Turns the game off and switches the arena to edit mode",
+        "bw_admin_save": "/dw admin \\<arena> save - <green>Saves the game and activates it!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>Joins all players on the server to DoorWars game",
+        "bw_admin_spawner_remove": "/dw admin \\<arena> spawner remove - <yellow>Removes all spawners at location",
+        "bw_admin_store_child": "/dw admin \\<arena> store child - <yellow>Mark this shopkeeper as child",
+        "bw_admin_store_adult": "/dw admin \\<arena> store adult - <yellow>Mark this shopkeeper as adult",
+        "bw_migrate": "/dw migrate \\<plugin> - <yellow>Migrates the configuration from a different DoorWars plugin.",
+        "bw_dump": "/dw dump - <yellow>Dumps the server and gives you link to the dump. This link can be useful for support",
+        "bw_admin_interactive": "/dw admin \\<arena> interactive - <yellow>If arena is in edit mode, this command will enable interactive mode",
+        "bw_cheat_give": "/dw cheat give \\<resource> [amount] [player] - <red>Gives player specified amount of resource",
+        "bw_cheat_kill": "/dw cheat kill [player] - <red>Kills specified player",
+        "bw_cheat_build_pop_up_tower": "/dw cheat buildPopUpTower [game] - <red>Builds popup tower",
+        "bw_cheat_rebuild_region": "/dw cheat rebuildRegion [game] - <red>Rebuilds the game region",
+        "bw_gamesinv": "/dw gamesinv \\<inventory> - <green>Opens the specific games inventory"
+    },
+    "games_inventory": {
+        "could_not_find_game": "<red>Could not find a game!",
+        "unknown_inventory": "<red>Unknown games inventory <gray><type><red>!"
+    },
+    "update": {
+        "new_release": [
+            "<green>New RELEASE version <version> of DoorWars is available!",
+            "Download it from <url>"
+        ],
+        "patch_release": [
+            "<yellow>New patch release for DoorWars <version> is here!",
+            "You can download it from <url>"
+        ]
+    },
+    "admin": {
+        "usage": "<red>Usage: /dw admin \\<arena> \\<add|edit|remove|save|...> ...",
+        "arena": {
+            "error": {
+                "already_exists": "<red>Arena already exists!",
+                "already_working_on_it": "<red>Arena already exists but isn't finished!",
+                "arena_not_in_edit": "<red>Arena doesn't exist or is running! Deactivate it with <gray>/dw admin \\<arena> edit<red> and then activate it with <gray>/dw admin \\<arena> save",
+                "arena_must_be_in_edit_mode": "<red>Arena must be in edit mode!"
+            },
+            "success": {
+                "removed": "<red><b>Arena removed!",
+                "added": "<green>Arena <gray><arena><green> added!",
+                "added_with_variant": "<green>Arena <gray><arena><green> added! Used game variant: <gray><variant><green>!",
+                "edit_mode": "<green>Arena switched to edit mode!"
+            },
+            "edit": {
+                "errors": {
+                    "must_be_in_same_world": "<red>All commands must be executed in the same world!",
+                    "invalid_countdown": "<red>Countdown must be within <lowest> < x < <highest> seconds!",
+                    "must_be_in_bounds": "<red>Location must be placed inside the arena (pos1 and pos2 coordinates)!",
+                    "set_bounds_first": "<red>Before setting spawn, please set the pos1 and pos2 coordinates (Determining the size and position of the arena)!",
+                    "invalid_bounds": "<red>The height difference between pos1 and pos2 is too small! The minimum is 5 blocks!",
+                    "store_already_exist": "<red>Store already exists!",
+                    "store_does_not_exist": "<red>Store doesn't exist!",
+                    "invalid_spawner_type": "<red>Spawner must be bronze, iron, gold, or by custom configuration!",
+                    "invalid_spawner_level": "<white>Wrong level number, default level 1 was used.",
+                    "invalid_color": "<red>This color is invalid!",
+                    "max_players": "<red>Max players count must be >= 1!",
+                    "need_2_teams": "<red>The game needs 2 or more teams!",
+                    "spawners_needed": "<red>The game must have at least one item spawner!",
+                    "team_does_not_exist": "<red>This team doesn't exist!",
+                    "team_already_exists": "<red>This team already exists!",
+                    "cannot_rename_team": "<red>Cannot rename team <gray><team><red> to <gray><new-team><red>! This name is already taken!",
+                    "set_bounds_before_save": "<red>Before saving the game please set the pos1 and pos2 coordinates (Determining the size and position of the arena)!",
+                    "set_lobby_before_save": "<red>Before saving the game please set lobby spawn!",
+                    "set_spec_before_save": "<red>Before saving the game please set spec spawn!",
+                    "set_stores_before_save": "<red>Before saving the game please add at least 1 store!",
+                    "set_spawners_before_save": "<red>Before saving the game please add at least 1 spawner!",
+                    "set_target_block_for_team_before_save": "<red>Before saving the game please set target block of team <gray><team><red>!",
+                    "set_spawn_for_team_before_save": "<red>Before saving the game please set spawn of team <gray><team><red>!",
+                    "missing_spawners": "<yellow>There are no spawners in the game.",
+                    "missing_stores": "<yellow>There are no stores in the game.",
+                    "weird_store_count": "<yellow>There number of stores in this game is <gray><count><yellow> which is not a multiplier of the team count. Is this correct?",
+                    "skip_warnings": "<yellow>If you want to save <gray><game><yellow> anyways, please execute this command: <gray><command>",
+                    "invalid_min_players": "<red>Minimum players must be 2 or higher!",
+                    "invalid_constant_value": "<red>Wrong value! It could be <gray>true<red>, <gray>false<red> or <gray>inherit<red>!",
+                    "invalid_constant_name": "<red>Wrong name of constant!",
+                    "invalid_constant_position": "<red>Wrong position of constant list's member!",
+                    "invalid_constant_enum_value": "<red>Invalid value <gray><value></gray>! Must be one of these: <gray><values>",
+                    "invalid_arena_time": "<red>Wrong type of arena's world time!",
+                    "invalid_arena_weather": "<red>Wrong type of arena's world weather!",
+                    "invalid_bar_color": "<red>Wrong color for Boss Bar!",
+                    "invalid_entity_type": "<red>Wrong living entity type!",
+                    "invalid_time": "<red>Time <gray><number><red> is invalid!",
+                    "npc_must_have_skin_name": "<red>If you use entity type PLAYER, you must specify skin name in format <gray>PLAYER:[skin's owner]",
+                    "no_spawner": "<red>There's no spawner on this position!",
+                    "multiple_spawners": {
+                        "first_line": "<red>There are more spawners in the same place, please choose a specific one:",
+                        "line": "- <type> - <gray><command></gray>"
+                    },
+                    "invalid_variant": "<red>Game variant <gray><variant><red> does not exist!",
+                    "team_spawn_set_blocked": "<red>The team <gray><team><red> has more than one spawnpoint, so using set command is not allowed.",
+                    "team_spawn_on_the_same_block": "<red>There is already a spawnpoint at this position. If you want to change the rotation, remove it first.",
+                    "team_no_spawn_there": "<red>There is no spawnpoint at this position.",
+                    "nothing_in_hand": "<red>You are not holding any item in your hand!",
+                    "invalid_item": "<red>Value <gray><item><red> is not a valid item!",
+                    "overlapping_arenas": "<red>The chosen location causes the arena to overlap with another arena, which can lead to errors! Please choose a different location. If you insist on using this location, execute <gray><command>",
+                    "invalid_prefab": "<red>No prefab called <gray><name><red> is configured in variant <gray><variant><red>!"
+                },
+                "success": {
+                    "saved_and_started": "<green>The game has been successfully saved and is running! Now you can join and play in the arena!",
+                    "target_block_set": "<green>Target block (<gray><material><green>) of team <gray><team><green> was successfully set to position XYZ: <gray><x>/<y>/<z>",
+                    "target_none_set": "<green>Team <gray><team><green> will now play without any target. That means they will not be able to respawn!",
+                    "target_not_properly_balanced": "<yellow>Target has been set, however not every team has the same target type now, this may make the game unbalanced. Consider changing that.",
+                    "target_countdown_set": "<green>Target countdown of team <gray><team><green> was successfully set to <gray><countdown><green> seconds!",
+                    "target_block_countdown_set": "<green>Target block (<gray><material><green>) of team <gray><team><green> was successfully set to position XYZ: <gray><x>/<y>/<z><green> and its countdown was set to <gray><countdown><green> seconds!",
+                    "team_spawn_set": "<green>Spawn of team <gray><team><green> was successfully set to position XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_multiple_spawns_ad": "<aqua>Do you want to setup more than one spawnpoint for a team? Use <gray><command>",
+                    "team_spawn_added": "<green>Spawn of team <gray><team><green> has been successfully added to position XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_removed": "<green>Spawn of team <gray><team><green> has been successfully removed from position XYZ: <gray><x>/<y>/<z>",
+                    "team_spawn_reset": "<green>All spawns of team <gray><team><green> has been removed.",
+                    "team_spawn_list": "<green>The team <gray><team><green> has <gray><count><green> spawnpoints at these positions:",
+                    "team_spawn_list_entry": "- <green>XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_list_no": "<red>The team <gray><team><red> has no spawnpoints yet.",
+                    "team_maxplayers_set": "<green>Maximal count of players in team <gray><team><green> was successfully set to <gray><maxplayers>",
+                    "team_color_set": "<green>Color of <gray><team><green> was successfully set to <teamcolor>",
+                    "team_removed": "<green>Team <gray><team><green> was successfully removed!",
+                    "team_created": "<green>Team <gray><team><green> was successfully created with color <teamcolor><green> and maximal player count: <gray><maxplayers>",
+                    "team_renamed": "<green>Team <gray><team><green> was successfully renamed to <gray><new-team><green>!",
+                    "spawners_removed": "<green>All spawners for game <gray><arena><green> were removed!",
+                    "spawner_added": "<green>Spawner <gray><resource><green> was successfully added to position XYZ: <gray><x>/<y>/<z>",
+                    "store_added": "<green>A store was added to your position: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "store_removed": "<green>Store from position XYZ: <gray><x>/<y>/<z><green> was successfully removed!",
+                    "store_name_set": "<green>Name of the store at position XYZ: <gray><x>/<y>/<z><green> is now <gray><name><green>!",
+                    "store_name_reset": "<green>The store at position XYZ: <gray><x>/<y>/<z><green> no longer has custom name!",
+                    "store_file_set": "<green>File of the store at position XYZ: <gray><x>/<y>/<z><green> is now <gray><file><green>!",
+                    "store_file_reset": "<green>The store at position XYZ: <gray><x>/<y>/<z><green> no longer has custom file!",
+                    "lobby_spawn_set": "<green>Lobby spawn was successfully set to position XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "spec_spawn_set": "<green>Spectator spawn was successfully set to position XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos1_set": "<green>Position 1 of arena <gray><arena><green> was set to XYZ: <gray><x>/<y>/<z>",
+                    "pos2_set": "<green>Position 2 of arena <gray><arena><green> was set to XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos1_set": "<green> Lobby position 1 of arena <gray><arena><green> was set to XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos2_set":  "<green> Lobby position 2 of arena <gray><arena><green> was set to XYZ: <gray><x>/<y>/<z>",
+                    "lobby_countdown_set": "<green>Lobby countdown was set to <gray><countdown>",
+                    "game_time_set": "<green>Game time was set to <gray><time>",
+                    "min_players_set": "<green>Successfully set minimum players to <gray><min><green>!",
+                    "constant_set": "<green>Constant <gray><config><green> was successfully set to <gray><value><green>!",
+                    "constant_list_added": "<green>Value <gray><value><green> has been successfully added to the <gray><config><green> list at position <gray><position><green>!",
+                    "constant_list_removed": "<green>Value at the position <gray><position><green> has been removed from the <gray><config><green> list!",
+                    "constant_list_cleared": "<green>List <gray><config><green> is now empty, but does not fallback to the inherited one!",
+                    "constant_reset": "<green>Constant <gray><config><green> was successfully reset to the inherited value!",
+                    "arena_time_set": "<green>Arena's world time has been set to <gray><time><green>!",
+                    "weather_set": "<green>Arena's world weather has been set to <gray><weather><green>!",
+                    "bar_color_set": "<green>Color set to <gray><color><green> for bossbar <gray><type><green>!",
+                    "store_entity_type_set": "<green>Store's living entity type has been set to <gray><type><green>!",
+                    "removed_spawners": "<gray><count> <green>spawners were deleted from <gray><x>/<y>/<z>",
+                    "child_state": "<green>Variable isBaby for this shopkeeper has been changed to <gray><value>",
+                    "post_game_waiting": "<green>Waiting time after game has been successfully set to <gray><number><green>!",
+                    "custom_prefix_enabled": "<green>Custom prefix was successfully set to <gray><prefix><green>.",
+                    "custom_prefix_disabled": "<green>Custom prefix was successfully disabled.",
+                    "spawner_hologram_enabled": "<green>Hologram of this <type> spawner has been <gray>enabled<green>.",
+                    "spawner_hologram_disabled": "<green>Hologram of this <type> spawner has been <gray>disabled<green>.",
+                    "spawner_floating_enabled": "<green>Floating block of this <type> spawner has been <gray>enabled<green>.",
+                    "spawner_floating_disabled": "<green>Floating block of this <type> spawner has been <gray>disabled<green>.",
+                    "spawner_base_amount_set": "<green>Base amount of resource of this <type> spawner has been set to <gray><amount><green>.",
+                    "spawner_max_spawned_resources_set": "<green>Max spawned resources limit for this <type> spawner has been set to <gray><amount><green>.",
+                    "spawner_team_linked": "<green>This <type> spawner has been linked with to <team> team.",
+                    "spawner_team_unlinked": "<green>This <type> spawner is no longer linked to any team.",
+                    "spawner_rotation_mode_set": "<green>Rotation mode of hologram of this <type> spawner has been set to <gray><rotation><green>.",
+                    "spawner_hologram_type_set": "<green>Hologram type of this <type> spawner has been set to <gray><type><green>.",
+                    "spawner_custom_name_set": "<green>Custom name of this <type> spawner has been set to <gray><name><green>.",
+                    "spawner_type_changed": "<green>Type of this <type> spawner has been changed to <new_type>.",
+                    "spawner_initial_interval_set": "<green>Initial interval of this <type> spawner has been set to <gray><interval> <unit><green>.",
+                    "spawner_initial_interval_reset": "<green>Initial interval of this <type> spawner has been reset to the default value defined in the config or in the variant.",
+                    "spawner_spread_set": "<green>Spread of this <type> spawner has been set to <gray><spread><green>.",
+                    "spawner_spread_reset": "<green>Spread of this <type> spawner has been reset to he default value defined in the config or in the variant.",
+                    "display_name_enabled": "<green>Display name was successfully set to <gray><display_name><green>.",
+                    "display_name_disabled": "<green>Display name was successfully disabled.",
+                    "fee_set": "<green>Arena entry fee was successfully set to <gray><fee><green>."
+                }
+            }
+        },
+        "remote": {
+            "name_already_exists": "<red>The name <gray><name><red> is already in use by a remote game or a local game",
+            "does_not_exist": "<red>Remote game <gray><name><red> does not exist!",
+            "added_server": "<green>Successfully added new remote game <gray><name><green> located on a server <gray><server><green> (old bungee mode)",
+            "added_server_game": "<green>Successfully added new remote game <gray><name><green> located on a server <gray><server><green> under the identifier <gray><game>",
+            "set_server": "<green>Successfully set remote game <gray><name><green> to server <gray><server><green> (old bungee mode)",
+            "set_server_game": "<green>Successfully set remote game <gray><name><green> to game <gray><game><green> located on a server <gray><server><green>",
+            "list": "<green>List of remote games:",
+            "empty": "<red>There are no configured remote games!",
+            "list_format": "<gray><name><green>/<gray><uuid><green> - server: <gray><server><green>, game: <gray><game>",
+            "list_format_no_game": "old bungee mode",
+            "deleted": "<green>Successfully deleted the remote game <gray><name><green>!",
+            "hub_did_not_send_packet": "<red>Join packet from the hub server was not received within 10 seconds! Contact the server admin!"
+        },
+        "mainlobby": {
+            "info": "<red>WARNING<white>: You need to execute /dw reload to make Mainlobby work!"
+        },
+        "holo": {
+            "not_enabled": "<red>Holographic is disabled.",
+            "added": "<green>Holographic added to your position!",
+            "click_to_remove": "<yellow>Now click the holographic you want to remove!",
+            "removed": "<green>Holographic successfully removed!"
+        },
+        "group": {
+            "added": "<green>Game <gray><game><green> has been added to the group <gray><group><green>!",
+            "removed": "<green>Game <gray><game><green> has been removed from the group <gray><group><green>!",
+            "invalid_group_name": "<red>Invalid group name <gray><group><red>! Name must contain only alphanumeric characters, dashes and underscores!",
+            "empty": "<red>Group <gray><group><red> is empty!",
+            "list": "<green>List of games in group <gray><group><green>:"
+        },
+        "team_join_entity": {
+            "click_right_on_entity": "<green>Now use right click on the desired entity for which you want to set up join to team: <gray><team>",
+            "entity_not_compatible": "<red>The Entity you are trying to use is not compatible! Only Living entities or Armor Stands can be used!",
+            "entity_added": "<green>Entity to join team added!"
+        },
+        "npc": {
+            "added": "<green>New npc has been added to the position XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+            "now_click": "<yellow>Now right-click on the NPC you want to edit.",
+            "no_longer_editing": "<green>You are no longer editing any NPC. Use <gray>/dw npc select<green> to select new one.",
+            "editing": "<green>You are now editing NPC at the position XYZ: <gray><x>/<y>/<z>",
+            "not_editing": "<red>You are not editing any NPC! Select one using <gray>/dw npc select",
+            "should_look": "<green>The NPC should now look at players!",
+            "should_not_look": "<green>The NPC no longer should look at players!",
+            "requires_value": "<green>This action requires value to be specified!",
+            "action_set": "<green>The action of this NPC has been set to <gray><action><green> with argument \"<gray><value><green>\"",
+            "removed": "<green>The NPC has been removed!",
+            "skin_changed": "<green>The skin has been changed!",
+            "skin_change_failed": "<red>The skin could not be changed!"
+        },
+        "hologram": {
+            "line_added": "<green>New line has been added to the end of the hologram: <white><line>",
+            "line_set": "<green>The line number <gray><linenumber><green> of the hologram has been set to <white><line>",
+            "line_removed": "<green>The line number <gray><linenumber><green> of the hologram has been removed!",
+            "theres_no_line_number": "<red>There is no line with number <linenumber>",
+            "invalid_number": "<red>The line number must be higher than 0!",
+            "reset": "<green>The hologram has been reset."
+        },
+        "info": {
+            "header": "<green>Details of the arena:",
+            "name": "<gray>Name: <reset><name>",
+            "status": "<gray>Status: <reset><status>",
+            "status_disabled": "<red>DISABLED",
+            "status_waiting": "<yellow>WAITING FOR PLAYERS",
+            "status_running": "<green>GAME'S RUNNING",
+            "status_rebuilding": "<yellow>REBUILDING",
+            "status_disabled_in_edit": "<red>DISABLED<reset> (<yellow>IN EDIT MODE<reset>)",
+            "world": "<gray>World: <reset><world>",
+            "pos1": "<gray>Position 1: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "pos2": "<gray>Position 2: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>Spectator position: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>Lobby position: <white>World: <gray><world> <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>Teams:",
+            "team": "- <team><reset> (Maximal players count: <gray><maxplayers><reset>)",
+            "team_spawn": "  <gray>Team spawn: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_target": "  <gray>Bed: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>Spawners:",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>Holo: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "min_players": "<gray>Minimal players count: <reset><minplayers>",
+            "villagers": "<gray>Stores:",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_entity_type": "  Type: <green><type>",
+            "villager_shop": "  Has own shop: <gray><bool>",
+            "villager_shop_name": "  Shop name: <gold><file><reset> (inherit from main: <gray><bool><reset>)",
+            "villager_shop_dealer_name": "  Dealer custom name above head: <name><reset>",
+            "villager_shop_dealer_has_no_name": "<red>No name is set",
+            "lobby_countdown": "<gray>Countdown before the game starts: <white><time> s",
+            "game_time": "<gray>Length of the game: <white><time> s",
+            "constants": "<gray>Constants configuration:",
+            "constant": "- <gray><constant><reset>: <gray><value>",
+            "constant_true": "<green>True",
+            "constant_false": "<red>False",
+            "constant_inherit": "<yellow>Inherited from plugin configuration",
+            "post_game_waiting": "<gray>Post game waiting time: <white><time> s",
+            "spawner_no_team": "<red>No team",
+            "file": "<gray><i>File: <file>",
+            "config": "Configuration of <gray><configured-component>",
+            "key": "Key",
+            "value": "Value",
+            "data_type": "Data type",
+            "default_value": "<yellow>Uses default value from configuration file or variant file"
+        },
+        "info_select": {
+            "header": "<green>Please select information section of <gray><arena><green>:",
+            "base": "<green>Base information<white> - <gray><command>",
+            "stores": "<green>List of stores<white> - <gray><command>",
+            "spawners": "<green>List of spawners<white> - <gray><command>",
+            "teams": "<green>List of teams<white> - <gray><command>",
+            "config": "<green>Configuration<white> - <gray><command>",
+            "click": "<aqua>Click to execute <gray><command><aqua>!"
+        }
+    },
+    "specials": {
+        "trap": {
+            "caught": "<red>You got caught in trap of team <white><team><red>!",
+            "caught_team": "<white><player><red> got caught in your team's trap!",
+            "built": "<green>You've built a trap! Now wait for someone to get caught in it!"
+        },
+        "warp_powder": {
+            "multiuse": "<red>Another WarpPowder is already actived!",
+            "canceled": "<red>WarpPowder was canceled!",
+            "started": "<green>WarpPowder was started! Please don't move for <gray><time><green> seconds!"
+        },
+        "tracker": {
+            "no_target_found": "<red>No target found!",
+            "target_found": "<white><target> <green>has been found <white><distance> <geen>blocks away!"
+        },
+        "rescue_platform": {
+            "not_in_air": "<red>For using this, you need to be in the air.",
+            "destroy": "<red>Platform will be destroyed in <white><time> <red>seconds.",
+            "created_unbreakable": "<green>Unbreakable Platform was created!",
+            "created": "<green>Platform is created and will be destroyed in <white><time> <green>seconds."
+        },
+        "protection_wall": {
+            "not_usable_here": "<red>There is no space left for creating Protection Wall.",
+            "destroy": "<red>Protection Wall will be destroyed in <white><time> <red>seconds.",
+            "created_unbreakable": "<green>Unbreakable Protection Wall was created!",
+            "created": "<green>Protection Wall is created and will be destroyed in <white><time> <green>seconds."
+        },
+        "tntsheep": {
+            "no_target_found": "<red>No target found!"
+        },
+        "arrow_blocker": {
+            "started": "<green>Arrow blocker has been activated for <white><time><green> seconds!",
+            "already_activated": "<red>Arrow blocker is already activated!",
+            "ended": "<red>Arrow blocker is no longer activated!"
+        },
+        "golem": {
+            "created": "<green>Golem has been spawned."
+        },
+        "team_chest": {
+            "name": "<green><bold>Team chest",
+            "not_yours": "<yellow>This team chest isn't yours!",
+            "placed": "<green>New team chest was placed!",
+            "broken": "<red>Your team chest was broken!"
+        },
+        "item_delay": "<red>You need to wait <time> seconds before using this item again!"
+    },
+    "leaderboard": {
+        "no_scores": "<gray>There are no scores yet!",
+        "holo_added": "<green>Leaderboard hologram was added to your position!",
+        "header": "<gold>DoorWars Leaderboard - Top <number> players",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>"
+    },
+    "party": {
+        "inform_game_join": "<green>Joining game of party leader",
+        "warped": "<green>Party leader has warped you here",
+        "command": {
+            "invalid_arguments": "<red>Invalid number of arguments! Type /dw party help to know more.",
+            "help": "/dw party warp - <yellow>Warps all players to your game or towards you",
+            "not_in_party": "<red>You have to be in a party to do this command!",
+            "not_party_leader": "<red>You are not the leader of this party!",
+            "is_empty": "<red>Your party is empty, cannot warp anyone!",
+            "warped": "<green>Party members have been warped."
+        }
+    },
+    "dump": {
+        "success": "<green>Successfully dumped server. Link: <dump>",
+        "failed": "<red>Dump failed!",
+        "unknown_service": "<red>Unknown service <gray><unknown_service><red>. Allowed values are: <gray><allowed_values>"
+    },
+    "language": {
+        "usage_bw_lang": "Usage: /dw lang \\<locale> - <yellow>Sets the locale to be used by <red>Bed<white>Wars",
+        "invalid": "<red>The specified language file could not be loaded!",
+        "already_set": "Language: [<lang>] is already set as the default language!",
+        "success": "<green>Successfully set language to <white>[<lang>]"
+    },
+    "migrate": {
+        "success": "<green>Successfully migrated the configuration from <red><plugin><green>!",
+        "failure": "<red>Something went wrong while migrating the configuration! See the console for details."
+    },
+    "unit": {
+        "tick": "tick",
+        "ticks": "ticks",
+        "second": "second",
+        "seconds": "seconds",
+        "minute": "minute",
+        "minutes": "minutes",
+        "hour": "hour",
+        "hours": "hours"
+    }
+}

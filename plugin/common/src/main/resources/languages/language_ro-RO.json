@@ -1,0 +1,451 @@
+{
+    "unknown_command": "<red>Comanda necunoscuta! Foloseste <dark_red>/dw help <red>pentru ajutor!",
+    "sign": {
+        "admin": {
+            "unknown_game": "<red>Arena scrisa pe semn nu exista! Contacteaza un admin!",
+            "created": "<green>Semnul a fost creat cu succes!",
+            "cannot_create": "<red>Semnul nu a fost creeat! Verifica numele arenei!",
+            "cannot_destroy": "<red>Nu ai permisiune sa distrugi acest semn!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Arena",
+                "players": "<red>dezactivata"
+            },
+            "rebuilding": {
+                "status": "<gold>Reconstruire",
+                "players": "<gold>arena"
+            },
+            "running": {
+                "status": "<green>In joc",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>In asteptare",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "in_game": {
+        "errors": {
+            "game_is_full": "<red>Aerna <gray><arena> <red>este plina! Asteapta ca arena sa se termine!",
+            "there_is_no_empty_game": "<red>Nu este nici o arena in asteptare. Toate arenele sunt in joc!",
+            "you_are_not_in_game": "<red>Nu esti intr-o arena!",
+            "already_in_game": "<red>Esti deja intr-o arena.",
+            "game_already_running": "<red>Arena <gray><arena> <red>a inceput deja! Nu te poti alatura unui joc deja inceput!",
+            "command_is_not_allowed": "<red>Aceasta comanda este blocata in timpul jocului!",
+            "game_not_found": "<red>Arena nu a fost gasita!",
+            "game_is_rebuilding": "<red>Arena <gray><arena><red> se reconstruieste! Asteapta...",
+            "not_in_any_game_yet": "<red>Nu ai jucat nici un meci inca.",
+            "vip_not_enough_players": "<red>Nu sunt destui jucatori in arena!",
+            "vip_game_is_full": "<red>Arena <gray><arena> <red>este plina de jucatori VIP. Asteapta ca arena sa se termine!",
+            "game_is_gone": "<red>Pare ca arena nu mai exista in aceasta lume.",
+            "game_kicked_by_vip": "<red>Ai fost dat afara de un jucator VIP!"
+        },
+        "target_block": {
+            "hologram": {
+                "destroy": {
+                    "cake": "<teamcolor><bold>Mananca acest tort!",
+                    "any": "<teamcolor><bold>Distruge acest bloc tinta!",
+                    "bed": "<teamcolor><bold>Distruge acest pat!",
+                    "anchor": "<teamcolor><bold>Distruge aceasta ancora!"
+                },
+                "destroyed": {
+                    "any": "<gray><bold>Blocul tinta a fost distrus.",
+                    "bed": "<gray><bold>Patul este distrus.",
+                    "anchor": "<gray><bold>Ancora este distrusa.",
+                    "cake": "<gray><bold>Tortul a fost mancat."
+                },
+                "protect": {
+                    "any": "<teamcolor><bold>Protejeaza-ti blocul tinta!",
+                    "bed": "<teamcolor><bold>Protejeaza-ti patul!",
+                    "anchor": "<teamcolor><bold>Protejeaza-ti ancora!",
+                    "cake": "<teamcolor><bold>Protejeaza-ti tortul!"
+                }
+            },
+            "destroyed": {
+                "subtitle_victim": "Acum nu vei mai reinvia!",
+                "any": "Blocul tinta al echipei <team><reset> a fost distrus!",
+                "bed": "Patul echipei <team><reset> este distrus!",
+                "anchor": "Ancora de reinviere a echipei <team><reset> este distrusa!",
+                "cake": "Tortul echipei <team><reset> a fost mancat!",
+                "subtitle": "Acum poti ucide membrii echipei!"
+            }
+        },
+        "team_selection": {
+            "selected": "<green>Echipa selectata: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "select_item_lore": "<white>---------------------",
+            "already_selected": "<green>Esti deja in echipa: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>Echipa <team><red> este plina!",
+            "full_no_change": "<red>Echipa <team><red> este plina, ramai in <oldteam><red>!",
+            "select_item": "<teamName> <gray>(<yellow><inTeam> <white>/ <yellow><maxInTeam><gray>)",
+            "select_item_lore_full": "<white>Echipa este plina!",
+            "select_item_lore_join": "Clic pentru a te alatura echipei!",
+            "inventory_name": "Selecteaza echipa - <arena>"
+        },
+        "player_self_killed": "<red>Jucatorul <victim> <red>a murit!",
+        "spawner": {
+            "full": "<red><bold>Spanwerul a fost golit",
+            "countdown": "<yellow><seconds> <bold>secunde",
+            "every_second": "<bold>fiecare secunda",
+            "not_enough_level": "<red>Spawnerul nu poate functiona! Trebuie sa-l upgradezi inca <levels> nivele."
+        },
+        "game_start_subtitle": "<green>Aerna <gray><arena><green> a inceput!",
+        "shop": {
+            "buy_success": "<green>Ai cumparat cu succes <gray><item><green> pentru <gray><material><green>!",
+            "buy_failed": "<red>Nu ai destule materiale sa cumperi <gray><item><red>! Ai nevoie de <gray><material><red>!",
+            "name": "Magazin",
+            "page_back": "Pagina inapoi",
+            "page_forward": "Pagina inainte",
+            "shop_back": "<red>Inapoi la lista categoriilor",
+            "price": "Pret:",
+            "amount": "Cantitate:"
+        },
+        "respawn_protection": {
+            "remaining": "<red>Protectia de reinviere se va termina in <white><time> <green>secunde!",
+            "end": "<red>Protectia de reinviere s-a terminat!"
+        },
+        "join": "<name> <green>a intrat in joc!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "respawn_cooldown": {
+            "title": "<green>Reinvii in: <red><time>",
+            "title_cancel": "<red>Echipa este moarta :("
+        },
+        "resources": {
+            "bronze": "Bronz",
+            "iron": "Fier",
+            "gold": "Aur",
+            "netherite": "Netherita",
+            "diamond": "Diamant",
+            "emerald": "Smarald"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Selecteaza echipa",
+            "leave_from_game_item": "<red>Paraseste arena",
+            "start_game_item": "<dark_green>Incepe jocul"
+        },
+        "bossbar": {
+            "waiting": "<red>Arena o sa inceapa in curand!",
+            "running": "<green>Jocul a inceput! Noroc!"
+        },
+        "end": {
+            "you_won": "<green>Echipa ta a casigat!",
+            "you_lost": "<red>Echipa ta a pierdut!",
+            "team_win": "<green>Echipa <reset><team><green> a castigat jocul in <gray><time>",
+            "game_end": "<red>Jocul s-a terminat!"
+        },
+        "leave": "<name> <red>a iesit din joc!",
+        "player_killed": "<red>Jucatorul <killer> <red>l-a omorat pe <victim><red>!",
+        "game_start_title": "<green>Jocul a inceput!",
+        "vault_deposite": "<green>Au fost adaugati <gray><coins> <currency><green> la balanta ta!",
+        "cheat": {
+            "game_not_running": "<red>Poti sa trisezi doar in timpul jocului!",
+            "please_provide_valid_cheat_type": "<red>Tipul de cheat nu este valid sau nu exista!",
+            "invalid_player": "<red>Jucatorul specificat nu este in joc sau nu este spectator!",
+            "received_give": "<green>Jucatorul <gray><player><green> a primit <gray><amount><green> de <gray><resource>",
+            "received_kill": "<green>Jucatoru,l <gray><player><green> a fost omorat de cheat!"
+        }
+    },
+    "unknown_usage": "<red>Argumente invalide! Foloseste <dark_red>/dw help <red> pentru ajutor!",
+    "statistics": {
+        "disabled": "<red>Statisticile jucatorilor au fost dezactivate pe acest server!",
+        "wins": "<gray>Castiguri: <green><wins>",
+        "player_does_not_exist": "<red>Jucatorul nu a fost gasit!",
+        "not_found": "<red>Statisticile jucatorului nu au fost gasite!",
+        "header": "<green>Statisticile lui <red><player><green>:",
+        "kills": "<gray>Ucideri: <green><kills>",
+        "deaths": "<gray>Decese: <yellow><deaths>",
+        "kd": "<gray>K/D: <green><kd>",
+        "loses": "<gray>Pierderi: <red><loses>",
+        "games": "<gray>Jocuri jucate: <aqua><games>",
+        "beds": "<gray>Paturi distruse: <green><beds>",
+        "score": "<gray>Scor total: <green><score>"
+    },
+    "no_permissions": "<red>Nu ai permisiune sa faci asta!",
+    "safe_reload": "<green>Se asteapta ca arenele sa se opreasca sau pluginul se reincarca in 60 de secunde.",
+    "safe_reload_failed_to_stop_game": "<red>Unele arene nu au fost oprite in timp, arenele pot fi stricate!",
+    "list_header": "<green>Arene valabile:",
+    "success": "<green>Comanda a fost executata cu succes!",
+    "help": {
+        "bw_leaderboard": "/dw leaderboard - <green>Arata topul jucatorilor de pe server",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Adauga o holograma la locatia jucatorului",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Porneste lobbyul principal sau il seteaza",
+        "bw_admin_spec": "/dw admin <pre><arena></pre> spec - <yellow>Seteaza spawnul spectatorilor la pozitia ta",
+        "bw_admin_lobby_pos1": "/dw admin <pre><arena></pre> lobbypos1 - <yellow>Seteaza punctul extrem al lobbyului la pozitia ta",
+        "bw_admin_lobby_pos2": "/dw admin <pre><arena></pre> lobbypos2 - <yellow>Seteaza al doilea punct de extrem al lobbyului la pozitia ta",
+        "bw_admin_pausecountdown": "/dw admin <pre><arena></pre> pausecountdown <pre><seconds></pre> - <yellow>Seteaza durata de pauza inainte de inceperea arenei",
+        "bw_admin_minplayers": "/dw admin <pre><arena></pre> minplayers <pre><minimum></pre> - <yellow>Seteaza minimul de jucatori pentru inceperea arenei",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>Seteaza spawnul echipei la pozitia ta",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources]</pre> - <yellow>Adauga un spawner de iteme la pozitia ta",
+        "title": "DoorWars <version> - Ajutor",
+        "title_console": "DoorWars <version> - Ajutor pentru consola",
+        "bw_join": "/dw join <pre><arena></pre> - <green> Intra in arena",
+        "bw_leave": "/dw leave - <green> Iesi din arena",
+        "bw_rejoin": "/dw rejoin - <green> Reintra in ultimul joc",
+        "bw_autojoin": "/dw autojoin - <green>Intra in primul joc in asteptare",
+        "bw_list": "/dw list - <green>Lista tuturor arenelor",
+        "bw_stats": "/dw stats - <green>Arata statisticile tale",
+        "bw_stats_other": "/dw stats [player] - <green>Arata statisticile altui jucator",
+        "bw_reload": "/dw reload - <red>Reincarca pluginul",
+        "bw_removeholo": "/dw removeholo - <yellow>Dupa executarea acestei comenzi, jucatorul poate apasa clic dreapta pe holograma pentru a o scoate.",
+        "bw_admin_info": "/dw admin <pre><arena></pre> info [section] - <yellow>Arata toate informatiile despre arena",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add - <yellow>Creeaza o arena noua",
+        "bw_admin_lobby": "/dw admin <pre><arena></pre> lobby - <yellow>Seteaza pozitia lobbyului la pozitia ta",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>Seteaza punctul extrem al arenei la pozitia ta",
+        "bw_admin_pos2": "/dw admin <pre><arena></pre> pos2 - <yellow>Seteaza al doilea punct extrem al arenei la pozitia ta",
+        "bw_admin_time": "/dw admin <pre><arena></pre> time <pre><seconds></pre> - <yellow>Seteaza durata arenei",
+        "bw_admin_team_add": "/dw admin <pre><arena></pre>team add <pre><team> <color> <max players></pre> - <yellow>Adauga o echipa in arena",
+        "bw_admin_team_color": "/dw admin <pre><arena></pre> team color <pre><team> <color></pre> - <yellow>Schimba culoarea echipei",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>Schimba numarul maxim de jucatori in echipa",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>Seteaza blocul tinta la pozitiq ta (poate fi si alt bloc, nu doar pat)",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>Seteaza abilitatea de a conecta o echipa la o entitate",
+        "bw_admin_remove": "/dw admin <pre><arena></pre> remove - <red>Sterge arena",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>Sterge toate spawnerele",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [numele deasupra entitatii] [fisierul shopului] [foloseste shop principal] - <yellow>Adauga un villager pentru shop la locatia ta",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>Sterge villagerul de la locatia ta",
+        "bw_admin_store_type": "/dw admin <pre><arena></pre> store type <pre><living entity></pre> - <yellow>Seteaza tipul de entitate al magazinului (Villager, Horse, Cow, Pig etc.)",
+        "bw_admin_config": "/dw admin <pre><arena></pre> config <pre><constant> <value></pre> - <yellow>Seteaza o valoare pentru variabila constanta pentru joc",
+        "bw_admin_arena_time": "/dw admin <pre><arena></pre> arenatime <pre><type></pre> - <yellow>Seteaza timpul arenei (DAY, NIGHT, etc.)",
+        "bw_admin_arena_weather": "/dw admin <pre><arena></pre> arenaweather <pre><type></pre> - <yellow>Seteaza vremea arenei (default, CLEAN, DOWNFALL)",
+        "bw_admin_post_game_waiting": "/dw admin <pre><arena></pre> postgamewaiting <pre><seconds></pre> - <yellow>Seteaza timpul de asteptare inainte ca jucatorul sa fie teleportat din arena",
+        "bw_admin_customprefix": "/dw admin <pre><arena></pre> customprefix <pre><name|off></pre> - <yellow>Activeaza prefix specific pentru arena",
+        "bw_admin_edit": "/dw admin <pre><arena></pre> edit - <yellow>Opreste arena si o schimba in modul de editat",
+        "bw_admin_save": "/dw admin <pre><arena></pre> save - <green>Salveaza arena si o activeaza!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>Adauga toti jucatorii de pe server intr-un joc",
+        "bw_admin_spawner_remove": "/dw admin <pre><arena></pre> spawner remove - <yellow>Sterge toate spawnerele la locatia ta",
+        "bw_admin_store_adult": "/dw admin <pre><arena></pre> store adult - <yellow>Marcheaza entitatea de shop ca si adult",
+        "bw_dump": "/dw dump - <yellow>Iti da link de la informatiile serverului. Acest link poate fi folositor pentru suport",
+        "bw_admin_store_child": "/dw admin <pre><arena></pre> store child - <yellow>Marcheaza entitatea de shop ca si copil",
+        "bw_admin_interactive": "/dw admin <pre><arena></pre> interactive - <yellow>Daca arena este in modul de editare, aceasta comanda va activa modul interactiv",
+        "bw_cheat_give": "/dw cheat give <pre><resource></pre> [amount] [player] - <red>Da jucatorului resursa specificata",
+        "bw_cheat_kill": "/dw cheat kill [player] - <red>Omoara jucatorul specificat"
+    },
+    "admin": {
+        "arena": {
+            "error": {
+                "arena_not_in_edit": "<red>Arena nu exista sau merge! Dezactiveaz-o cu <gray>/dw admin <pre><arena></pre> edit<red>si apoi activeaz-o cu <gray>/dw admin <pre><arena></pre> save",
+                "arena_must_be_in_edit_mode": "<red>Arena trebuie sa fie in modul de editat!",
+                "already_exists": "<red>Arena deja exista!",
+                "already_working_on_it": "<red>Arena deja exista dar nu e terminata!"
+            },
+            "edit": {
+                "errors": {
+                    "must_be_in_same_world": "<red>Toate comenzi trebuie executate in aceeasi lume!",
+                    "invalid_spawner_type": "<red>Spawnerul trebuie sa fie bronze, iron, gold, sau configuratie proprie!",
+                    "team_already_exists": "<red>Aceasta echipa exista deja!",
+                    "set_bounds_before_save": "<red>Inainte sa salvezi arena seteaza coordonatele pos1 si pos2 (Determina marimea si pozitia arenei)!",
+                    "set_stores_before_save": "<red>Inainte sa salvezi arena adauga macar 1 magazin!",
+                    "set_spawners_before_save": "<red>Inainte sa salvezi arena adauga macar 1 spawner!",
+                    "invalid_constant_value": "<red>Valoare gresita! Poate sa fie doar <gray>true<red>, <gray>false<red> sau <gray>inherit<red>!",
+                    "npc_must_have_skin_name": "<red>Faca folosesti tipul PLAYER, trebuie sa specifi skinul cu formatul <gray>PLAYER:[nume skin]",
+                    "invalid_countdown": "<red>Numaratoarea inversa trebuie sa fie intre <lowest> < x < <highest> secunde!",
+                    "must_be_in_bounds": "<red>Locatia trebuie plasata in arena (coordonatele pos1 si pos2)!",
+                    "set_bounds_first": "<red>Inainte sa setezi spawnul, seteaza coordonatele pos1 si pos2 (Determina marimea si pozitia arenei)!",
+                    "invalid_bounds": "<red>Inaltimea dintre pos1 si pos2 este prea mica! Minimul este de 5 blocuri!",
+                    "store_already_exist": "<red>Magazinul exista deja!",
+                    "store_does_not_exist": "<red>Magazinul nu exista!",
+                    "invalid_spawner_level": "<white>Numar nivel gresit, nivelul 1 a fost folosit.",
+                    "invalid_color": "<red>Aceasta culoare este invalida!",
+                    "max_players": "<red>Numarul de jucatori maxim trebuie sa fie >= 1!",
+                    "need_2_teams": "<red>Arena are nevoie de 2 sau mai multe echipe!",
+                    "spawners_needed": "<red>Arena trebuie sa aiba macar un spawner de iteme!",
+                    "team_does_not_exist": "<red>Aceasta echipa nu exista!",
+                    "set_lobby_before_save": "<red>Inainte sa salvezi arena seteaza spawnul lobby-ului!",
+                    "set_spec_before_save": "<red>Inainte sa salvezi arena si seteaza spawnul spectatorilor!",
+                    "set_target_block_for_team_before_save": "<red>Inainte sa salvezi arena seteaza blocul tinta pentru echipa <gray><team><red>!",
+                    "set_spawn_for_team_before_save": "<red>Inainte sa salvezi arena seteaza spawnul echipei <gray><team><red>!",
+                    "invalid_min_players": "<red>Minimul de jucatori trebuie sa fie 2 sau mai mult!",
+                    "invalid_constant_name": "<red>Nume gresit de constanta!",
+                    "invalid_arena_time": "<red>Tip de timp de arena gresit!",
+                    "invalid_arena_weather": "<red>Tipul de vreme pentru arena este gresit!",
+                    "invalid_bar_color": "<red>Culoare gresita pentru Boss Bar!",
+                    "invalid_entity_type": "<red>Tip de entitate gresit!",
+                    "invalid_time": "<red>Timpul <gray><number><red> este invalid!"
+                },
+                "success": {
+                    "target_block_set": "<green>Blocul tinta (<gray><material><green>) al echipei <gray><team><green> a fost setat cu succes la pozitia XYZ: <gray><x>/<y>/<z>",
+                    "spawner_added": "<green>Spawnerul <gray><resource><green> a fost adaugat cu succes la pozitia XYZ: <gray><x>/<y>/<z>",
+                    "lobby_spawn_set": "<green>Spawnul in lobby a fost setat la pozitia XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos2_set": "<green>Pozitia 2 a arenei <gray><arena><green> a fost setata la XYZ: <gray><x>/<y>/<z>",
+                    "game_time_set": "<green>Timpul in joc a fost setat la <gray><time>",
+                    "arena_time_set": "<green>Timpul arenei a fost setat la <gray><time><green>!",
+                    "bar_color_set": "<green>Culoare setata la <gray><color><green> pentru bossbar <gray><type><green>!",
+                    "removed_spawners": "<gray><count> <green>spawnere au fost sterse de la <gray><x>/<y>/<z>",
+                    "team_spawn_set": "<green>Spawnul echipei <gray><team><green> a fost setat cu succes la pozitia XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "saved_and_started": "<green>Arena a fost salvata cu succes si acum ruleaza! Poti intra si te juca in arena acum!",
+                    "team_maxplayers_set": "<green>Numarul maxim de playeri pentru echipa <gray><team><green> a fost setat la <gray><maxplayers>",
+                    "team_color_set": "<green>Culoarea echipei <gray><team><green> a fost setata la <teamcolor>",
+                    "team_removed": "<green>Echipa <gray><team><green> a fost stearsa cu succes!",
+                    "team_created": "<green>Echipa <gray><team><green> a fost creeata cu succes cu culoarea <teamcolor><green> si numarul maxim de jucatori: <gray><maxplayers>",
+                    "spawners_removed": "<green>Toate spawnerele echipei <gray><arena><green> au fost sterse!",
+                    "store_added": "<green>Un magazin a fost adaugat la pozitia: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "store_removed": "<green>Sateanul de la pozitia XYZ: <gray><x>/<y>/<z><green> a fost sters cu succes!",
+                    "spec_spawn_set": "<green>Spawnul spectatorilor a fost setat cu succes la pozitia XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos1_set": "<green>Pozitia 1 a arenei <gray><arena><green> a fost setata la XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos1_set": "<green> Pozitia 1 a lobbyului din arena <gray><arena><green> a fost setata la XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos2_set": "<green> Pozitia 2 a lobbyuluii din arena <gray><arena><green> a fost setat la XYZ: <gray><x>/<y>/<z>",
+                    "lobby_countdown_set": "<green>Numaratoare inversa a lobbyului a fost setata la <gray><countdown>",
+                    "min_players_set": "<green>Minimul de jucatori a fost setat cu succes la <gray><min><green>!",
+                    "constant_set": "<green>Constanta <gray><config><green> a fost setata cu succes la <gray><value><green>!",
+                    "weather_set": "<green>Vremea arenei a fost setata la <gray><weather><green>!",
+                    "store_entity_type_set": "<green>Tipul entitatii magazinului a fost setat la <gray><type><green>!",
+                    "child_state": "<green>Variabila isBaby pentru acest magazin a fost schimbata la <gray><value>",
+                    "post_game_waiting": "<green>Timpul de asteptare dupa joc a fost setat cu succes la <gray><number><green>!",
+                    "custom_prefix_enabled": "<green>Prefix propriu a fost setat cu succes la <gray><prefix><green>.",
+                    "custom_prefix_disabled": "<green>Prefix propriu dezactivat cu succes."
+                }
+            },
+            "success": {
+                "removed": "<red><b>Arena stearsa!",
+                "added": "<green>Arena adaugata!",
+                "edit_mode": "<green>Arena schimbata in modul de editat!"
+            }
+        },
+        "usage": "<red>Foloseste: /dw admin <pre><arena> <add|edit|remove|save|...> ...</pre>",
+        "team_join_entity": {
+            "click_right_on_entity": "<green>Acum foloseste clic dreapta pe entitatea dorita pentru care vrei sa intri in echipa: <gray><team>",
+            "entity_not_compatible": "<red>Entitatea pe care vrei sa o alegi nu este compatibila! Doar entitati in viata sau armor standuri pot fi folosite!",
+            "entity_added": "<green>Entitate pentru a intra in echipa adaugata!"
+        },
+        "info": {
+            "status_waiting": "<yellow>ASTEAPTA JUCATORI",
+            "pos1": "<gray>Pozitia 1: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>Pozitie lobby: <white>World: <gray><world> <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_target": "  <gray>Pat: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_entity_type": "  Tip: <green><type>",
+            "villager_shop_name": "  Nume magazin: <gold><file><reset> (mostenit de la principal: <gray><bool><reset>)",
+            "game_time": "<gray>Durata jocului: <white><time> s",
+            "constant_inherit": "<yellow>Mostenit de la configurarea pluginului",
+            "header": "<green>Detaliile arenei:",
+            "name": "<gray>Nume: <reset><name>",
+            "status_disabled": "<red>DEZACTIVAT",
+            "status_running": "<green>IN JOC",
+            "status_rebuilding": "<yellow>RECONSTRUIRE",
+            "status_disabled_in_edit": "<red>DEZACTIVATA<reset> (<yellow>IN MODUL DE EDITAT<reset>)",
+            "world": "<gray>Lume: <reset><world>",
+            "pos2": "<gray>Pozitia 2: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>Pozitie spectatori: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>Echipe:",
+            "team": "- <team><reset> (Numar maxim de jucatori: <gray><maxplayers><reset>)",
+            "team_spawn": "  <gray>Spawnul echipei: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>Spawnere:",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>Holograma: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "min_players": "<gray>Numar minim jucatori: <reset><minplayers>",
+            "villagers": "<gray>Magazine:",
+            "villager_shop": "  Are magazin propriu: <gray><bool>",
+            "villager_shop_dealer_name": "  Magazin nume propriu deasupra capului: <name><reset>",
+            "villager_shop_dealer_has_no_name": "<red>Nici un nume setat",
+            "lobby_countdown": "<gray>Numaratoare inversa inainte sa inceapa jocul: <white><time> s",
+            "status": "<gray>Stare: <reset><status>",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "constants": "<gray>Configurarea constantelor:",
+            "constant_true": "<green>Adevarat",
+            "constant_false": "<red>Fals",
+            "post_game_waiting": "<gray>Timp asteptare dupa joc: <white><time> s",
+            "spawner_no_team": "<red>Fara echipa",
+            "file": "<gray><i>Fisier: <file>",
+            "constant": "- <gray><constant><reset>: <gray><value>"
+        },
+        "info_select": {
+            "header": "<green>Selecteaza sectiunea de informatie a arenei <gray><arena><green>:",
+            "click": "<aqua>Click pentru a executa <gray><command><aqua>!",
+            "base": "<green>Informatii de baza<white> - <gray><command>",
+            "stores": "<green>Lista magazinelor<white> - <gray><command>",
+            "spawners": "<green>Lista spawnerelor<white> - <gray><command>",
+            "teams": "<green>Lista echipelor<white> - <gray><command>",
+            "config": "<green>Configurare<white> - <gray><command>"
+        },
+        "mainlobby": {
+            "info": "<red>ATENTIE<white>: Trebuie sa executi /dw reload pentru ca lobbyul principal sa mearga!"
+        },
+        "holo": {
+            "not_enabled": "<red>Hologramele sunt dezactivate. Este Holographic Displays instalat?",
+            "added": "<green>Holograma adaugata la pozitia ta!",
+            "click_to_remove": "<yellow>Acum da clic pe holograma pe care o vrei stearsa!",
+            "removed": "<green>Holograma stearsa cu succes!"
+        }
+    },
+    "update": {
+        "new_release": [
+            "<green>O noua versiune <version> de DoorWars este valabila!",
+            "Descarca-l de la <url>"
+        ],
+        "patch_release": [
+            "<yellow>Un nou patch pentru DoorWars <version> este aici!",
+            "Poti sa-l descarci de la <url>"
+        ]
+    },
+    "language": {
+        "already_set": "Limba: [<lang>] este deja setata ca si limba prestabilita!",
+        "success": "<green>Limba setata cu succes la <white>[<lang>]",
+        "usage_bw_lang": "Foloseste: /dw lang <pre><locale></pre> - <yellow>Seteaza limba folosita de catre <red>Bed<white>Wars",
+        "invalid": "<red>Limba specificata nu poate fi incarcata!"
+    },
+    "specials": {
+        "trap": {
+            "built": "<green>Ai construit o capcana! Asteapta sa calce cineva in ea!",
+            "caught": "<red>Ai fost prins in capcana echipei <white><team><red>!",
+            "caught_team": "<white><player><red> a fost prin in capcana echipei tale!"
+        },
+        "tracker": {
+            "target_found": "<white><target> <green>a fost gasit la <white><distance> <geen>blocuri distanta!",
+            "no_target_found": "<red>Nu a fost gasita tinta!"
+        },
+        "rescue_platform": {
+            "created": "<green>Platforma este creata si va fi distrusa in <white><time> <green>secunde.",
+            "not_in_air": "<red>Pentru a folosi asta, trebuie sa fi in aer.",
+            "destroy": "<red>Platforma va fi distrusa in <white><time> <red>secunde.",
+            "created_unbreakable": "<green>Unbreakable Platform a fost creeata!"
+        },
+        "protection_wall": {
+            "created": "<green>Protection Wall este creata si va fi distrusa in <white><time> <green>secunde.",
+            "not_usable_here": "<red>Nu mai este spatiu pentru a creea Protection Wall.",
+            "destroy": "<red>Protection Wall va fi distrus in <white><time> <red>secunde.",
+            "created_unbreakable": "<green>Unbreakable Protection Wall este creata!"
+        },
+        "team_chest": {
+            "placed": "<green>Un nou cufar al echipei a fost plasat!",
+            "name": "<green><bold>Cufarul echipei",
+            "not_yours": "<yellow>Acest cufar nu este al echipei tale!",
+            "broken": "<red>Cufarul echipei tale a fost spart!"
+        },
+        "warp_powder": {
+            "multiuse": "<red>Alt WarpPowder este deja activat!",
+            "canceled": "<red>WarpPowder a fost oprit!",
+            "started": "<green>WarpPowder este pornit! Nu te misca pentru <gray><time><green> secunde!"
+        },
+        "tntsheep": {
+            "no_target_found": "<red>Nu a fost gasita tinta!"
+        },
+        "arrow_blocker": {
+            "started": "<green>Arrow blocker a fost activat pentru <white><time><green> secunde!",
+            "already_activated": "<red>Arrow blocker este deja activat!",
+            "ended": "<red>Arrow blocker nu mai este activat!"
+        },
+        "golem": {
+            "created": "<green>Golem a fost spawnat."
+        },
+        "item_delay": "<red>Trebuie sa astepti <time> secunde inainte sa folosesti acest item iarasi!"
+    },
+    "leaderboard": {
+        "holo_added": "<green>Holograma pentru clasament a fost adaugata la pozitia ta!",
+        "no_scores": "<gray>Nu sunt scoruri inca!",
+        "header": "<gold>Clasament DoorWars - Top <number> jucatori",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>"
+    },
+    "party": {
+        "inform_game_join": "<green>Te alaturi jocului liderului echipei",
+        "warped": "<green>Liderul echipei te-a teleportat aici",
+        "command": {
+            "invalid_arguments": "<red>Numar invalid de argumente!, scrie /dw party help pentru mai multe",
+            "help": "/dw party warp - <yellow>Teleporteaza toti jucatorii la jocul tau sau la tine",
+            "not_in_party": "<red>Trebuie sa fi intr-o echipa pentru a face asta!",
+            "not_party_leader": "<red>Nu esti liderul acestei echipe!",
+            "is_empty": "<red>Echipa ta este goala, nu poti teleporta pe nimeni!",
+            "warped": "<green>Membrii echipei au fost teleportati"
+        }
+    },
+    "dump": {
+        "success": "<green>Informatii server trimise. Link: <dump>",
+        "failed": "<red>Informatii server nereusite!"
+    }
+}

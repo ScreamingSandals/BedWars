@@ -1,0 +1,140 @@
+{
+    "safe_reload": "<green>Przed załadowaniem czekam aż wszystkie gry zostaną zakończone (maksymalny czas: 60 sekund).",
+    "list_header": "<green>Dostępne areny:",
+    "sign": {
+        "admin": {
+            "created": "<green>Tabliczka została pomyślnie utworzona!",
+            "cannot_create": "<red>Tabliczka nie może zostać stworzona! Proszę sprawdzić nazwę areny!",
+            "cannot_destroy": "<red>Nie masz uprawnień do zniszczenia tej tabliczki!",
+            "unknown_game": "<red>Gra napisana na tabliczce nie istnieje! Skontaktuj się z administratorem!"
+        },
+        "status": {
+            "waiting": {
+                "status": "<gold>Oczekiwanie",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            },
+            "disabled": {
+                "status": "<red>Gra",
+                "players": "<red>Wyłączone"
+            },
+            "running": {
+                "status": "<green>W trakcie",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "rebuilding": {
+                "players": "<gold>mapa",
+                "status": "<gold>Restartowanie"
+            }
+        }
+    },
+    "statistics": {
+        "player_does_not_exist": "<red>Nie znaleziono gracza!",
+        "wins": "<gray>Wygrane: <green><wins>",
+        "loses": "<gray>Przegrane: <red><loses>",
+        "score": "<gray>Łącznie punktów: <green><score>",
+        "beds": "<gray>Zniszczone Łóżka: <green><beds>",
+        "kills": "<gray>Zabójstwa: <green><kills>",
+        "deaths": "<gray>Śmierci: <yellow><deaths>",
+        "kd": "<gray>K/D: <green><kd>",
+        "games": "<gray>Zagrane gry: <aqua><games>",
+        "disabled": "<red>Statystyki graczy są wyłączone na tym serwerze!",
+        "not_found": "<red>Statystyki dla tego gracza nie zostały znalezione!",
+        "header": "<green>Statystyki dla <red><player><green>:"
+    },
+    "unknown_command": "<red>Nieznana komenda! Wpisz <dark_red>/dw help <red>aby uzyskać pomoc!",
+    "no_permissions": "<red>Nie posiadasz wymaganych uprawnień!",
+    "unknown_usage": "<red>Błędne argumenty! Wpisz<dark_red>/dw help <red>aby uzyskać pomoc!",
+    "in_game": {
+        "errors": {
+            "game_already_running": "<red>Arena <gray><arena> <red>jest w trakcie gry! Nie możesz dołączyć do trwającej areny!",
+            "game_is_full": "<red>Arena<gray><arena> <red>jest pełna! Poczekaj na zakończenie gry!",
+            "game_not_found": "<red>Nie znaleziono gry!",
+            "you_are_not_in_game": "<red>Nie jesteś w grze!",
+            "already_in_game": "<red>Jesteś już w trakcie jakiejś gry.",
+            "not_in_any_game_yet": "<red>Nigdy nie byłeś w grze.",
+            "command_is_not_allowed": "<red>Ta komenda jest zablokowana podczas trwania areny!",
+            "vip_not_enough_players": "<red>Nie ma wystarczającej ilości graczy na arenie!",
+            "game_kicked_by_vip": "<red>Zostałeś wyrzucony przez VIPa!",
+            "game_is_rebuilding": "<red>Arena <gray><arena><red> jest restartowana! Proszę czekać...",
+            "vip_game_is_full": "<red>Arena <gray><arena> <red>jest pełna graczy VIP . Poczekaj na zakończenie gry!",
+            "game_is_gone": "<red>Wygląda na to, że gra, w której byłeś, nie jest już na tym świecie.",
+            "there_is_no_empty_game": "<red>Nie ma gry w stanie oczekiwania. Wszystkie gry już działają!"
+        },
+        "target_block": {
+            "hologram": {
+                "protect": {
+                    "bed": "<teamcolor><bold>Chroń swoje łóżko!",
+                    "cake": "<teamcolor><bold>Chroń swoje ciasto!"
+                },
+                "destroyed": {
+                    "bed": "<gray><bold>Łóżko zostało zniszczone."
+                },
+                "destroy": {
+                    "bed": "<teamcolor><bold>Zniszcz te łóżko!",
+                    "cake": "<teamcolor><bold>Zjedz te ciasto!"
+                }
+            },
+            "destroyed": {
+                "bed": "Łóżko drużyny <team><reset> zostało zniszczone!",
+                "cake": "Ciasto drużyny <team><reset> zostało zjedzone!",
+                "anchor": "Kotwica odrodzenia drużyny <team><reset> została zniszczona!",
+                "any": "Blok docelowy <drużyna><reset> został zniszczony!",
+                "subtitle": "Możesz teraz zabijać członków drużyny!",
+                "subtitle_victim": "Teraz już nigdy się nie odrodzisz!",
+                "bed_certain_popular_server": "<red><bold>BLOK DOCELOWY ZNISZCZONY!",
+                "anchor_certain_popular_server": "<red><bold>ZNISZCZONA KOTWICA!"
+            }
+        },
+        "respawn_cooldown": {
+            "title": "<green>Odrodzenie za: <red><time>",
+            "title_cancel": "<red>Drużyna jest martwa :("
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <bold>sekund",
+            "every_second": "<bold>każda sekunda"
+        },
+        "resources": {
+            "bronze": "Brąz",
+            "iron": "Żelazo",
+            "gold": "Złoto",
+            "diamond": "Diament",
+            "emerald": "Szmaragd"
+        },
+        "shop": {
+            "name": "Sklep",
+            "page_back": "Wcześniejsza strona",
+            "amount": "Ilość:",
+            "price": "Cena:",
+            "buy_success": "<green>Pomyślnie zakupiono <gray><item><green> za <gray><material><green>!"
+        },
+        "team_selection": {
+            "inventory_name": "Wybierz drużyne - <arena>",
+            "full": "<red>Drużyna <team><red> jest pełna!",
+            "select_item_lore_full": "<white>Drużyna jest pełna!",
+            "select_item_lore_join": "Kliknij, aby dołączyć do drużyny!"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Wybierz drużyne",
+            "leave_from_game_item": "<red>Wyjdź z areny",
+            "start_game_item": "<dark_green>Startuj arene"
+        },
+        "bossbar": {
+            "waiting": "<red>Gra za chwile się zacznie!",
+            "running": "<green>Gra wystartowała! Powodzenia!"
+        },
+        "end": {
+            "you_won": "<green>Twoja drużyna wygrała!",
+            "you_lost": "<red>Twoja drużyna przegrała!",
+            "game_end": "<red>Gra zakończona! Dziękujemy za gre!",
+            "team_win": "<green>Drużyna <reset><team><green> wygrała w czasie <gray><time>"
+        },
+        "join": "<name> <green>dołączył do areny!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "leave": "<name> <red>wyszedł z areny!",
+        "player_killed": "<red>Gracz <killer> <red>zabił <victim><red>!",
+        "game_start_title": "<green>Gra wystartowała!",
+        "game_start_subtitle": "<green>Arena <gray><arena><green> wystartowała! Miłej gry!",
+        "player_self_killed": "<red>Gracz <victim> <red>zginął!"
+    },
+    "success": "<green>Komenda wykonana pomyślnie!",
+    "safe_reload_failed_to_stop_game": "<red>Niektóre gry nie zostały zatrzymane na czas, arena mogła zostać uszkodzona!"
+}

@@ -1,0 +1,672 @@
+{
+    "unknown_command": "",
+    "unknown_usage": "",
+    "no_permissions": "",
+    "safe_reload": "",
+    "safe_reload_failed_to_stop_game": "",
+    "list_header": "",
+    "success": "",
+    "sign": {
+        "admin": {
+            "created": "",
+            "cannot_create": "",
+            "cannot_destroy": "",
+            "unknown_game": ""
+        },
+        "status": {
+            "disabled": {
+                "status": "",
+                "players": ""
+            },
+            "rebuilding": {
+                "status": "",
+                "players": ""
+            },
+            "running": {
+                "status": "",
+                "players": ""
+            },
+            "waiting": {
+                "status": "",
+                "players": ""
+            }
+        }
+    },
+    "statistics": {
+        "disabled": "",
+        "player_does_not_exist": "",
+        "not_found": "",
+        "header": "",
+        "kills": "",
+        "deaths": "",
+        "kd": "",
+        "wins": "",
+        "loses": "",
+        "games": "",
+        "beds": "",
+        "score": ""
+    },
+    "in_game": {
+        "errors": {
+            "game_already_running": "",
+            "game_is_full": "",
+            "game_not_found": "",
+            "you_are_not_in_game": "",
+            "game_is_rebuilding": "",
+            "already_in_game": "",
+            "not_in_any_game_yet": "",
+            "command_is_not_allowed": "",
+            "vip_not_enough_players": "",
+            "vip_game_is_full": "",
+            "game_is_gone": "",
+            "game_kicked_by_vip": "",
+            "there_is_no_empty_game": ""
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "",
+                "any_certain_popular_server": "",
+                "bed": "",
+                "bed_certain_popular_server": "",
+                "anchor": "",
+                "anchor_certain_popular_server": "",
+                "cake": "",
+                "cake_certain_popular_server": "",
+                "killable": "",
+                "subtitle": "",
+                "subtitle_victim": "",
+                "death_mode": "",
+                "all_beds": "",
+                "all_anchors": "",
+                "all_target_blocks": "",
+                "all_cakes": ""
+            },
+            "hologram": {
+                "protect": {
+                    "any": "",
+                    "bed": "",
+                    "anchor": "",
+                    "cake": ""
+                },
+                "destroyed": {
+                    "any": "",
+                    "bed": "",
+                    "anchor": "",
+                    "cake": ""
+                },
+                "destroy": {
+                    "any": "",
+                    "bed": "",
+                    "anchor": "",
+                    "cake": ""
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title": "",
+            "title_cancel": ""
+        },
+        "spawner": {
+            "countdown": "",
+            "countdown_custom": "",
+            "every_second": "",
+            "full": "",
+            "full_certain_popular_server": "",
+            "not_enough_level": "",
+            "reached_maximum_level": "",
+            "tier": "",
+            "countdown_certain_popular_server": "",
+            "countdown_custom_certain_popular_server": ""
+        },
+        "resources": {
+            "bronze": "",
+            "iron": "",
+            "gold": "",
+            "netherite": "",
+            "diamond": "",
+            "emerald": ""
+        },
+        "shop": {
+            "name": "",
+            "page_back": "",
+            "page_forward": "",
+            "shop_back": "",
+            "price": "",
+            "amount": "",
+            "buy_success": "",
+            "buy_failed": "",
+            "upgrade_success": "",
+            "upgrade_translate": ""
+        },
+        "team_selection": {
+            "inventory_name": "",
+            "selected": "",
+            "already_selected": "",
+            "full": "",
+            "full_no_change": "",
+            "select_item": "",
+            "select_item_lore": "",
+            "select_item_lore_full": "",
+            "select_item_lore_join": ""
+        },
+        "lobby_items": {
+            "compass_selector_team": "",
+            "leave_from_game_item": "",
+            "start_game_item": ""
+        },
+        "bossbar": {
+            "waiting": "",
+            "running": ""
+        },
+        "end": {
+            "you_won": "",
+            "you_lost": "",
+            "team_win": "",
+            "game_end": ""
+        },
+        "respawn_protection": {
+            "remaining": "",
+            "end": ""
+        },
+        "cheat": {
+            "please_provide_valid_cheat_type": "",
+            "invalid_player": "",
+            "received_give": "",
+            "received_kill": "",
+            "game_not_running": "",
+            "special_item_used": "",
+            "region_regenerated": "",
+            "game_not_waiting": "",
+            "game_forced": "",
+            "team_does_not_exist": "",
+            "team_is_not_in_game": "",
+            "unknown_target": "",
+            "target_is_not_valid": "",
+            "received_target_invalidated": "",
+            "received_targets_invalidated": "",
+            "team_random_failed": "",
+            "received_team_join": "",
+            "cheat_failed": ""
+        },
+        "scoreboard": {
+            "you": "",
+            "state": {
+                "waiting": "",
+                "countdown": ""
+            },
+            "mode": {
+                "solo": "",
+                "doubles": "",
+                "triples": "",
+                "squads": ""
+            }
+        },
+        "messages": {
+            "game_start": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "game_over_statistics": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+        "record": {
+            "no": "",
+            "current": ""
+        },
+        "join": "",
+        "leave": "",
+        "player_self_killed": "",
+        "player_killed": "",
+        "game_start_title": "",
+        "game_start_subtitle": "",
+        "economy_deposited": "",
+        "economy_missing_coins": ""
+    },
+    "help": {
+        "title": "",
+        "messages": {
+            "command": "",
+            "description": "",
+            "no_description": "",
+            "arguments": "",
+            "optional": "",
+            "showing_results_for_query": "",
+            "no_results_for_query": "",
+            "available_commands": "",
+            "click_to_show_help": "",
+            "page_out_of_range": "",
+            "click_for_next_page": "",
+            "click_for_previous_page": ""
+        },
+        "title_console": "",
+        "bw_join": "",
+        "bw_leave": "",
+        "bw_rejoin": "",
+        "bw_autojoin": "",
+        "bw_list": "",
+        "bw_leaderboard": "",
+        "bw_stats": "",
+        "bw_stats_other": "",
+        "bw_reload": "",
+        "bw_addholo": "",
+        "bw_removeholo": "",
+        "bw_mainlobby": "",
+        "bw_admin_info": "",
+        "bw_admin_add": "",
+        "bw_admin_lobby": "",
+        "bw_admin_spec": "",
+        "bw_admin_pos1": "",
+        "bw_admin_pos2": "",
+        "bw_admin_lobby_pos1": "",
+        "bw_admin_lobby_pos2": "",
+        "bw_admin_pausecountdown": "",
+        "bw_admin_minplayers": "",
+        "bw_admin_time": "",
+        "bw_admin_team_add": "",
+        "bw_admin_team_color": "",
+        "bw_admin_team_maxplayers": "",
+        "bw_admin_team_spawn": "",
+        "bw_admin_team_bed": "",
+        "bw_admin_jointeam": "",
+        "bw_admin_spawner_add": "",
+        "bw_admin_spawner_max_spawned_resources": "",
+        "bw_admin_spawner_rotation_mode": "",
+        "bw_admin_spawner_change_type": "",
+        "bw_admin_spawner_custom_name": "",
+        "bw_admin_spawner_hologram_type": "",
+        "bw_admin_spawner_linked_team": "",
+        "bw_admin_spawner_base_amount": "",
+        "bw_admin_spawner_hologram": "",
+        "bw_admin_spawner_floating": "",
+        "bw_admin_spawner_reset": "",
+        "bw_admin_store_add": "",
+        "bw_admin_store_remove": "",
+        "bw_admin_store_type": "",
+        "bw_admin_config_set": "",
+        "bw_admin_config_reset": "",
+        "bw_admin_config_list_add": "",
+        "bw_admin_config_list_set": "",
+        "bw_admin_config_list_remove": "",
+        "bw_admin_config_list_clear": "",
+        "bw_admin_fee": "",
+        "bw_admin_arena_time": "",
+        "bw_admin_arena_weather": "",
+        "bw_admin_post_game_waiting": "",
+        "bw_admin_customprefix": "",
+        "bw_admin_display_name": "",
+        "bw_admin_remove": "",
+        "bw_admin_edit": "",
+        "bw_admin_save": "",
+        "bw_alljoin": "",
+        "bw_admin_spawner_remove": "",
+        "bw_admin_store_child": "",
+        "bw_admin_store_adult": "",
+        "bw_migrate": "",
+        "bw_dump": "",
+        "bw_admin_interactive": "",
+        "bw_cheat_give": "",
+        "bw_cheat_kill": "",
+        "bw_cheat_build_pop_up_tower": "",
+        "bw_cheat_rebuild_region": "",
+        "bw_gamesinv": ""
+    },
+    "games_inventory": {
+        "could_not_find_game": "",
+        "unknown_inventory": ""
+    },
+    "update": {
+        "new_release": [
+            "",
+            ""
+        ],
+        "patch_release": [
+            "",
+            ""
+        ]
+    },
+    "admin": {
+        "usage": "",
+        "arena": {
+            "error": {
+                "already_exists": "",
+                "already_working_on_it": "",
+                "arena_not_in_edit": "",
+                "arena_must_be_in_edit_mode": ""
+            },
+            "success": {
+                "removed": "",
+                "added": "",
+                "added_with_variant": "",
+                "edit_mode": ""
+            },
+            "edit": {
+                "errors": {
+                    "must_be_in_same_world": "",
+                    "invalid_countdown": "",
+                    "must_be_in_bounds": "",
+                    "set_bounds_first": "",
+                    "invalid_bounds": "",
+                    "store_already_exist": "",
+                    "store_does_not_exist": "",
+                    "invalid_spawner_type": "",
+                    "invalid_spawner_level": "",
+                    "invalid_color": "",
+                    "max_players": "",
+                    "need_2_teams": "",
+                    "spawners_needed": "",
+                    "team_does_not_exist": "",
+                    "team_already_exists": "",
+                    "cannot_rename_team": "",
+                    "set_bounds_before_save": "",
+                    "set_lobby_before_save": "",
+                    "set_spec_before_save": "",
+                    "set_stores_before_save": "",
+                    "set_spawners_before_save": "",
+                    "set_target_block_for_team_before_save": "",
+                    "set_spawn_for_team_before_save": "",
+                    "missing_spawners": "",
+                    "missing_stores": "",
+                    "weird_store_count": "",
+                    "skip_warnings": "",
+                    "invalid_min_players": "",
+                    "invalid_constant_value": "",
+                    "invalid_constant_name": "",
+                    "invalid_constant_position": "",
+                    "invalid_constant_enum_value": "",
+                    "invalid_arena_time": "",
+                    "invalid_arena_weather": "",
+                    "invalid_bar_color": "",
+                    "invalid_entity_type": "",
+                    "invalid_time": "",
+                    "npc_must_have_skin_name": "",
+                    "no_spawner": "",
+                    "multiple_spawners": {
+                        "first_line": "",
+                        "line": ""
+                    },
+                    "invalid_variant": "",
+                    "team_spawn_set_blocked": "",
+                    "team_spawn_on_the_same_block": "",
+                    "team_no_spawn_there": "",
+                    "nothing_in_hand": "",
+                    "invalid_item": ""
+                },
+                "success": {
+                    "saved_and_started": "",
+                    "target_block_set": "",
+                    "target_none_set": "",
+                    "target_not_properly_balanced": "",
+                    "target_countdown_set": "",
+                    "target_block_countdown_set": "",
+                    "team_spawn_set": "",
+                    "team_multiple_spawns_ad": "",
+                    "team_spawn_added": "",
+                    "team_spawn_removed": "",
+                    "team_spawn_reset": "",
+                    "team_spawn_list": "",
+                    "team_spawn_list_entry": "",
+                    "team_spawn_list_no": "",
+                    "team_maxplayers_set": "",
+                    "team_color_set": "",
+                    "team_removed": "",
+                    "team_created": "",
+                    "team_renamed": "",
+                    "spawners_removed": "",
+                    "spawner_added": "",
+                    "store_added": "",
+                    "store_removed": "",
+                    "store_name_set": "",
+                    "store_name_reset": "",
+                    "store_file_set": "",
+                    "store_file_reset": "",
+                    "lobby_spawn_set": "",
+                    "spec_spawn_set": "",
+                    "pos1_set": "",
+                    "pos2_set": "",
+                    "lobby_pos1_set": "",
+                    "lobby_pos2_set": "",
+                    "lobby_countdown_set": "",
+                    "game_time_set": "",
+                    "min_players_set": "",
+                    "constant_set": "",
+                    "constant_list_added": "",
+                    "constant_list_removed": "",
+                    "constant_list_cleared": "",
+                    "constant_reset": "",
+                    "arena_time_set": "",
+                    "weather_set": "",
+                    "bar_color_set": "",
+                    "store_entity_type_set": "",
+                    "removed_spawners": "",
+                    "child_state": "",
+                    "post_game_waiting": "",
+                    "custom_prefix_enabled": "",
+                    "custom_prefix_disabled": "",
+                    "spawner_hologram_enabled": "",
+                    "spawner_hologram_disabled": "",
+                    "spawner_floating_enabled": "",
+                    "spawner_floating_disabled": "",
+                    "spawner_base_amount_set": "",
+                    "spawner_max_spawned_resources_set": "",
+                    "spawner_team_linked": "",
+                    "spawner_team_unlinked": "",
+                    "spawner_rotation_mode_set": "",
+                    "spawner_hologram_type_set": "",
+                    "spawner_custom_name_set": "",
+                    "spawner_type_changed": "",
+                    "spawner_initial_interval_set": "",
+                    "spawner_initial_interval_reset": "",
+                    "spawner_spread_set": "",
+                    "spawner_spread_reset": "",
+                    "display_name_enabled": "",
+                    "display_name_disabled": "",
+                    "fee_set": ""
+                }
+            }
+        },
+        "mainlobby": {
+            "info": ""
+        },
+        "holo": {
+            "not_enabled": "",
+            "added": "",
+            "click_to_remove": "",
+            "removed": ""
+        },
+        "group": {
+            "added": "",
+            "removed": "",
+            "invalid_group_name": "",
+            "empty": "",
+            "list": ""
+        },
+        "team_join_entity": {
+            "click_right_on_entity": "",
+            "entity_not_compatible": "",
+            "entity_added": ""
+        },
+        "npc": {
+            "added": "",
+            "now_click": "",
+            "no_longer_editing": "",
+            "editing": "",
+            "not_editing": "",
+            "should_look": "",
+            "should_not_look": "",
+            "requires_value": "",
+            "action_set": "",
+            "removed": "",
+            "skin_changed": "",
+            "skin_change_failed": ""
+        },
+        "hologram": {
+            "line_added": "",
+            "line_set": "",
+            "line_removed": "",
+            "theres_no_line_number": "",
+            "invalid_number": "",
+            "reset": ""
+        },
+        "info": {
+            "header": "",
+            "name": "",
+            "status": "",
+            "status_disabled": "",
+            "status_waiting": "",
+            "status_running": "",
+            "status_rebuilding": "",
+            "status_disabled_in_edit": "",
+            "world": "",
+            "pos1": "",
+            "pos2": "",
+            "spec": "",
+            "lobby": "",
+            "teams": "",
+            "team": "",
+            "team_spawn": "",
+            "team_target": "",
+            "spawners": "",
+            "spawner": "",
+            "min_players": "",
+            "villagers": "",
+            "villager_pos": "",
+            "villager_entity_type": "",
+            "villager_shop": "",
+            "villager_shop_name": "",
+            "villager_shop_dealer_name": "",
+            "villager_shop_dealer_has_no_name": "",
+            "lobby_countdown": "",
+            "game_time": "",
+            "constants": "",
+            "constant": "",
+            "constant_true": "",
+            "constant_false": "",
+            "constant_inherit": "",
+            "post_game_waiting": "",
+            "spawner_no_team": "",
+            "file": "",
+            "config": "",
+            "key": "",
+            "value": "",
+            "data_type": "",
+            "default_value": ""
+        },
+        "info_select": {
+            "header": "",
+            "base": "",
+            "stores": "",
+            "spawners": "",
+            "teams": "",
+            "config": "",
+            "click": ""
+        }
+    },
+    "specials": {
+        "trap": {
+            "caught": "",
+            "caught_team": "",
+            "built": ""
+        },
+        "warp_powder": {
+            "multiuse": "",
+            "canceled": "",
+            "started": ""
+        },
+        "tracker": {
+            "no_target_found": "",
+            "target_found": ""
+        },
+        "rescue_platform": {
+            "not_in_air": "",
+            "destroy": "",
+            "created_unbreakable": "",
+            "created": ""
+        },
+        "protection_wall": {
+            "not_usable_here": "",
+            "destroy": "",
+            "created_unbreakable": "",
+            "created": ""
+        },
+        "tntsheep": {
+            "no_target_found": ""
+        },
+        "arrow_blocker": {
+            "started": "",
+            "already_activated": "",
+            "ended": ""
+        },
+        "golem": {
+            "created": ""
+        },
+        "team_chest": {
+            "name": "",
+            "not_yours": "",
+            "placed": "",
+            "broken": ""
+        },
+        "item_delay": ""
+    },
+    "leaderboard": {
+        "no_scores": "",
+        "holo_added": "",
+        "header": "",
+        "line": ""
+    },
+    "party": {
+        "inform_game_join": "",
+        "warped": "",
+        "command": {
+            "invalid_arguments": "",
+            "help": "",
+            "not_in_party": "",
+            "not_party_leader": "",
+            "is_empty": "",
+            "warped": ""
+        }
+    },
+    "dump": {
+        "success": "",
+        "failed": ""
+    },
+    "language": {
+        "usage_bw_lang": "",
+        "invalid": "",
+        "already_set": "",
+        "success": ""
+    },
+    "migrate": {
+        "success": "",
+        "failure": ""
+    },
+    "unit": {
+        "tick": "",
+        "ticks": "",
+        "second": "",
+        "seconds": "",
+        "minute": "",
+        "minutes": "",
+        "hour": "",
+        "hours": ""
+    }
+}

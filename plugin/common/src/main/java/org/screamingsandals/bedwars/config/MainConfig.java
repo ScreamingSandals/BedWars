@@ -72,7 +72,7 @@ public class MainConfig {
 
             generator.start()
                 .key("locale").defValue("en")
-                .key("prefix").defValue("[BW]")
+                .key("prefix").defValue("[DW]")
                 .key("debug").defValue(false)
                 .key("allow-crafting").defValue(false)
                 .key("keep-inventory-on-death").defValue(false)
@@ -99,7 +99,7 @@ public class MainConfig {
                 .key("game-start-items").moveIfAbsolute(ConfigurationNode::isList, "game-start-items", "enabled")
                 .key("invisible-lobby-on-game-start").defValue(true)
                 .key("enable-below-name-health-indicator").defValue(true)
-                .key("enable-cheat-command-for-admins").defValue(false)
+                .key("enable-cheat-command-for-admins").defValue(true)
                 .key("shopkeepers-are-silent").defValue(true)
                 .key("use-team-letter-prefixes-before-player-names").defValue(false)
                 .key("use-certain-popular-server-titles").defValue(false)
@@ -304,7 +304,7 @@ public class MainConfig {
                         .key("title")
                             .migrateOldAbsoluteKey("lobby-scoreboard", "title")
                             .remap(this::toMiniMessage)
-                            .defValue("<yellow>BEDWARS")
+                            .defValue("<yellow>DOORWARS")
                         .key("content")
                             .migrateOldAbsoluteKey("lobby-scoreboard", "content")
                             .remap(node -> {
@@ -654,9 +654,9 @@ public class MainConfig {
             generator.start()
                 .section("holograms")
                     .key("enabled").defValue(true)
-                    .key("headline").defValue("Your §eBEDWARS§f stats")
+                    .key("headline").defValue("Your §eDOORWARS§f stats")
                     .section("leaderboard")
-                        .key("headline").defValue("&6Bedwars Leaderboard")
+                        .key("headline").defValue("&6DOORWARS Leaderboard")
                         .key("format").defValue("&l%order%. &7%name% - &a%score%")
                         .key("size").defValue(10)
                         .back()
@@ -704,7 +704,7 @@ public class MainConfig {
                 .key("sign").moveIfAbsolute(ConfigurationNode::isList, "sign", "lines")
                 .section("sign")
                     .key("lines").defValue(() -> List.of(
-                                "§c§l[BedWars]",
+                                "§c§l[DOORWARS]",
                                 "%arena%",
                                 "%status%",
                                 "%players%"
@@ -787,7 +787,7 @@ public class MainConfig {
                     .drop("one", "admins")
                     .back()
                 .section("target-block")
-                    .key("allow-destroying-with-explosions").defValue(false)
+                    .key("allow-destroying-with-explosions").defValue(true)
                     .section("respawn-anchor")
                         .key("fill-on-start").defValue(true)
                         .key("enable-decrease").defValue(true)
@@ -809,7 +809,7 @@ public class MainConfig {
                     .section("header")
                         .key("enabled").defValue(true)
                         .key("contents").defValue(() -> List.of(
-                                    "&aMy awesome BedWars server",
+                                    "&aMy awesome DOORWARS server",
                                     "&bMap: %map%",
                                     "&cPlayers: %respawnable%/%max%"
                             ))

@@ -25,5 +25,5 @@ public enum TargetInvalidationReason {
     TARGET_BLOCK_EATEN,
     TIMEOUT,
     COMMAND,
-    PLUGIN
+    PLUGIN,
 }

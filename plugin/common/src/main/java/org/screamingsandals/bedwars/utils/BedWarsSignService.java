@@ -138,7 +138,7 @@ public class BedWarsSignService extends AbstractSignManager {
     @Override
     protected boolean isFirstLineValid(@NotNull Component firstLine) {
         var line = firstLine.toPlainText();
-        return "[bedwars]".equalsIgnoreCase(line) || "[bwgame]".equalsIgnoreCase(line);
+        return "[doorwars]".equalsIgnoreCase(line) || "[dwgame]".equalsIgnoreCase(line);
     }
 
     @Override

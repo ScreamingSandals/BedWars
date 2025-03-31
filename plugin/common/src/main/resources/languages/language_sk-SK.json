@@ -1,0 +1,306 @@
+{
+    "sign": {
+        "admin": {
+            "created": "<green>Ceduľka bola úspešne vytvorená!",
+            "cannot_create": "<red>Ceduľku sa nepodarilo vytvoriť! Prosím skontrolujte názov arény!",
+            "cannot_destroy": "<red>Nemáš práva na zničenie tejto ceduľky!",
+            "unknown_game": "<red>Hra, ktorá je na ceduľke neexistuje! Prosím kontaktujte administrátorov!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Hra",
+                "players": "<red>vypnute"
+            },
+            "waiting": {
+                "status": "<gold>Čakanie",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            },
+            "rebuilding": {
+                "status": "<gold>Prestavba",
+                "players": "<gold>aréna"
+            },
+            "running": {
+                "status": "<green>Beží",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "player_does_not_exist": "<red>Hráč sa nenašiel!",
+        "header": "<green>Štatistiky hráča <red><player><green>:",
+        "disabled": "<red>Štatistiky hráčov sú na tomto serveri zakázané!",
+        "kills": "<gray>Zabití: <green><kills>",
+        "deaths": "<gray>Úmrtí: <yellow><deaths>",
+        "wins": "<gray>Výhier: <green><wins>",
+        "loses": "<gray>Prehier: <red><loses>",
+        "games": "<gray>Odohraných hier: <aqua><games>",
+        "score": "<gray>Celkové skóre: <green><score>",
+        "not_found": "<red>Štatistiky pre tohto hráča neboli nájdené!",
+        "beds": "<gray>Zničených postelí: <green><beds>",
+        "kd": "<gray>K/D: <green><kd>"
+    },
+    "unknown_command": "<red>Nesprávny príkaz! Zadaj <dark_red>/dw help <red>pre zobrazenie nápovedy!",
+    "no_permissions": "<red>Na toto nemáš povolenie!",
+    "list_header": "<green>Dostupné arény:",
+    "success": "<green>Príkaz bol úspešný!",
+    "in_game": {
+        "errors": {
+            "game_not_found": "<red>Hra nebola nájdená!",
+            "you_are_not_in_game": "<red>Nie si v hre!",
+            "game_already_running": "<red>Hra<gray><arena> <red>už beží! Nemôžeš sa pripojiť do bežiacej hry!",
+            "game_is_full": "<red>Hrac <gray><arena> <red>je plná! Prosím počkaj až skončí!",
+            "game_is_rebuilding": "<red>Hra <gray><arena><red> sa obnovuje! Prosím počkaj...",
+            "already_in_game": "<red>Už si v nejakej hre.",
+            "not_in_any_game_yet": "<red>Ešte si nebol v žiadnej hre.",
+            "command_is_not_allowed": "<red>Tento príkaz je nedostupný, pokiaľ beží hra!",
+            "vip_not_enough_players": "<red>V hre je nedostatok hráčov!",
+            "vip_game_is_full": "<red>Hra <gray><arena> <red>je plná VIP hráčov. Prosím počkaj na koniec hry!",
+            "game_is_gone": "<red>Vypadá to, že hra v ktorej si bol, už nie je v tomto svete.",
+            "game_kicked_by_vip": "<red>Bol si vyhodený VIP hráčom!",
+            "there_is_no_empty_game": "<red>Nie je žiadna hra v čakajúcej fáze. Všetky hry už bežia!"
+        },
+        "target_block": {
+            "destroyed": {
+                "bed": "Posteľ tímu <team><reset> bola zničená!",
+                "any": "Cieľový blok tímu <team><reset> je zničený!",
+                "anchor": "Respawn Anchor tímu <team><reset> je zničený!",
+                "cake": "Koláč tímu <team><reset> bol zjedený!",
+                "subtitle": "Teraz nemôže zabiť členov tímu!",
+                "subtitle_victim": "Odteraz sa už nerespawneš!"
+            },
+            "hologram": {
+                "protect": {
+                    "bed": "<teamcolor><bold>Ochráňte svoju posteľ!",
+                    "anchor": "<teamcolor><bold>Ochráňte svoju kotvu!",
+                    "cake": "<teamcolor><bold>Chráňte svoj koláč!",
+                    "any": "<teamcolor><bold>Chráňte svoj cieľový blok!"
+                },
+                "destroyed": {
+                    "bed": "<gray><bold>Posteľ je zničená.",
+                    "cake": "<gray><bold>Koláč bol zjedený.",
+                    "any": "<gray><bold>Cieľový blok bol zničený.",
+                    "anchor": "<gray><bold>Anchor bol zničený."
+                },
+                "destroy": {
+                    "bed": "<teamcolor><bold>Znič túto posteľ!",
+                    "cake": "<teamcolor><bold>Zjedz tento koláč!",
+                    "any": "<teamcolor><bold>Znič tento cieľový blok!",
+                    "anchor": "<teamcolor><bold>Znič tento anchor!"
+                }
+            }
+        },
+        "spawner": {
+            "every_second": "<bold>každú sekundu",
+            "full": "<red><bold>Spawner je vyčerpaný",
+            "countdown": "<yellow><seconds> <bold>sekúnd",
+            "not_enough_level": "<red>Spawner nemôže pracovať! Musíš upgradovať o <levels> level(y)."
+        },
+        "resources": {
+            "bronze": "Bronz",
+            "iron": "Železo",
+            "gold": "Zlato",
+            "netherite": "Netherit",
+            "diamond": "Diamant",
+            "emerald": "Emerald"
+        },
+        "shop": {
+            "name": "Obchod",
+            "page_forward": "Nasledujúca strana",
+            "shop_back": "<red>Späť na zoznam kategórii",
+            "price": "Cena:",
+            "amount": "Množstvo:",
+            "page_back": "Predchádzajúca strana",
+            "buy_success": "<green>Úspešne kúpené <gray><item><green> za <gray><material><green>!",
+            "buy_failed": "<red>Nedostatok materiálu na zakúpenie <gray><item><red>! Potrebné <gray><material><red>!"
+        },
+        "team_selection": {
+            "select_item_lore_full": "<white>Tím je plný!",
+            "select_item_lore_join": "Klikni pre pripojenie sa k tímu!",
+            "select_item_lore": "<white>---------------------",
+            "inventory_name": "Zvoľ tím - <arena>",
+            "selected": "<green>Zvolený tím: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "already_selected": "<green>Už si v tímu: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>Team <team><red> je plný!",
+            "full_no_change": "<red>Tím<team><red> je plný, Zostávaš v tíme <oldteam><red>!",
+            "select_item": "<teamName> <gray>(<yellow><inTeam> <white>/ <yellow><maxInTeam><gray>)"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Výber tímu",
+            "leave_from_game_item": "<red>Opustiť hru",
+            "start_game_item": "<dark_green>Spustiť hru"
+        },
+        "bossbar": {
+            "running": "<green>Hra začala! Veľa šťastia!",
+            "waiting": "<red>Hra za chvíľu začne!"
+        },
+        "end": {
+            "you_won": "<green>Váš tím vyhral!",
+            "game_end": "<red>Hra skončila! Ďakujeme za hranie!",
+            "you_lost": "<red>Váš team prehral!",
+            "team_win": "<green>Tím <reset><team><green> vyhral hru v čase <gray><time>"
+        },
+        "leave": "<name> <red>opustil hru!",
+        "player_killed": "<red>Hráč <killer> <red>zabil hráča <victim><red>!",
+        "game_start_title": "<green>Hra začala!",
+        "respawn_cooldown": {
+            "title_cancel": "<red>Tím je zničený :(",
+            "title": "<green>Respawn za: <red><time>"
+        },
+        "player_self_killed": "<red>Hráč <victim> <red>zomrel!",
+        "respawn_protection": {
+            "remaining": "<red>Respawn ochrana vyprší za <white><time> <green>sekúnd!",
+            "end": "<red>Respawn ochrana vypršala!"
+        },
+        "game_start_subtitle": "<green>Hra <gray><arena><green> začala! Užite si hru!",
+        "vault_deposite": "<green><gray><coins> <currency><green> pridané do tvojho Vault účta!",
+        "join": "<name> <green>sa pripojil do hry!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]"
+    },
+    "specials": {
+        "team_chest": {
+            "name": "<green><bold>Tímová truhla",
+            "not_yours": "<yellow>Táto tímová truhla nie je vaša!",
+            "placed": "<green>Nová tímová truhla bola položená!",
+            "broken": "<red>Vaša tímová truhla bola zničená!"
+        },
+        "warp_powder": {
+            "canceled": "<red>Teleportácia na základňu bola ukončená!",
+            "multiuse": "<red>Ďalší WarpPowder je už aktivovaný!"
+        },
+        "tracker": {
+            "no_target_found": "<red>Nebol nájdený žiadny cieľ!"
+        },
+        "tntsheep": {
+            "no_target_found": "<red>Nebol nájdený žiadny cieľ!"
+        },
+        "rescue_platform": {
+            "created_unbreakable": "<green>Nezničiteľná platforma bola vytvorená!"
+        },
+        "golem": {
+            "created": "<green>Golem bol spawnutý."
+        },
+        "protection_wall": {
+            "created_unbreakable": "<green>Nezničiteľná ochranná stena bola vytvorená!"
+        },
+        "arrow_blocker": {
+            "already_activated": "<red>Blokovanie šípov je už aktivované!"
+        }
+    },
+    "admin": {
+        "arena": {
+            "error": {
+                "already_working_on_it": "<red>Aréna už existuje, ale nie je dokončená!",
+                "arena_must_be_in_edit_mode": "<red>Áréna musí byť v editovacom mode!",
+                "already_exists": "<red>Aréna už existuje!"
+            },
+            "success": {
+                "removed": "<red><b>Aréna bola odstránená!",
+                "added": "<green>Aréna pridaná!",
+                "edit_mode": "<green>Aréna prepnutá do režimu úprav!"
+            },
+            "edit": {
+                "errors": {
+                    "team_already_exists": "<red>Tento tím už existuje!",
+                    "team_does_not_exist": "<red>Tento tím neexistuje!",
+                    "store_does_not_exist": "<red>Obchod neexistuje!",
+                    "store_already_exist": "<red>Obchod už existuje!",
+                    "invalid_color": "<red>Farba je neplatná!",
+                    "invalid_bar_color": "<red>Nesprávna farba pre Boss Bar!"
+                },
+                "success": {
+                    "team_removed": "<green>Tím <gray><team><green> bol úspešne zmazaný!",
+                    "custom_prefix_disabled": "<green>Vlastný prefix bol úspešne vypnutý."
+                }
+            }
+        },
+        "info": {
+            "teams": "<gray>Tímy:",
+            "spawners": "<gray>Spawnery:",
+            "villagers": "<gray>Obchody:",
+            "constant_true": "<green>Pravda",
+            "constant_false": "<red>Nepravda",
+            "status_disabled": "<red>VYPNUTÁ",
+            "name": "<gray>Meno: <reset><name>",
+            "status": "<gray>Status: <reset><status>",
+            "status_running": "<green>HRA PREBIEHA",
+            "world": "<gray>Svet: <reset><world>",
+            "villager_entity_type": "  Typ: <green><type>",
+            "status_waiting": "<yellow>ČAKANIE NA HRÁČOV",
+            "team_target": "  <gray>Posteľ: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawner_no_team": "<red>Žiadny tím",
+            "file": "<gray><i>Súbor: <file>",
+            "constant": "- <gray><constant><reset>: <gray><value>",
+            "spec": "<gray>Pozícia sledovateľov: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_spawn": "  <gray>Spawn tímu: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "min_players": "<gray>Minimálny počet hráčov: <reset><minplayers>",
+            "villager_shop": "  Má vlastný obchod: <gray><bool>",
+            "villager_shop_dealer_has_no_name": "<red>Nie je nastavené žiadne meno",
+            "constant_inherit": "<yellow>Zdedené z konfigurácie plugina"
+        },
+        "holo": {
+            "removed": "<green>Hologram bol úspešne zmazaný!",
+            "added": "<green>Hologram bol pridaný na vašu pozíciu!"
+        },
+        "info_select": {
+            "config": "<green>Konfigurácia<white> - <gray><command>",
+            "click": "<aqua>Kliknite pre spustenie <gray><command><aqua>!",
+            "stores": "<green>Zoznam obchodov<white> - <gray><command>",
+            "teams": "<green>Zoznam tímov<white> - <gray><command>",
+            "base": "<green>Základné informácie<white> - <gray><command>",
+            "spawners": "<green>Zoznam spawnerov<white> - <gray><command>"
+        },
+        "team_join_entity": {
+            "entity_added": "<green>Entita pre pripojenie do tímu bola pridaná!"
+        }
+    },
+    "update": {
+        "new_release": [
+            "<green>K dispozícii je nová RELEASE verzia <version> DoorWars!",
+            "Stiahnete si ju z <url>"
+        ]
+    },
+    "help": {
+        "title": "DoorWars <version> - Pomocná strana",
+        "bw_join": "/dw join <pre><arena></pre> - <green>Pripojiť sa do hry",
+        "bw_leave": "/dw leave - <green>Opustiť hru",
+        "title_console": "DoorWars <version> - Pomocná strana pre Konzolu",
+        "bw_leaderboard": "/dw leaderboard - <green>Zobraziť najlepších hráčov tohto servera",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Pridá hologram na hráčovu pozíciu",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add - <yellow>Vytvoriť novú arénu",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>Nastaví krajný bod arény na tvoju pozíciu",
+        "bw_admin_pausecountdown": "/dw admin <pre><arena></pre> pausecountdown <pre><seconds></pre> - <yellow>Nastaví dĺžku pauzy kým sa spustí hra",
+        "bw_admin_team_color": "/dw admin <pre><arena></pre> team color <pre><team> <color></pre> - <yellow>Zmení farbu tímu",
+        "bw_autojoin": "/dw autojoin - <green>Pripojiť sa do prvej čakajúcej hry",
+        "bw_list": "/dw list - <green>Zoznam aktívnych hier",
+        "bw_stats": "/dw stats - <green>Zobraziť svoje štatistiky",
+        "bw_stats_other": "/dw stats [player] - <green>Zobraziť štatistiky ostatných hráčov",
+        "bw_reload": "/dw reload - <red>Reloadne plugin",
+        "bw_rejoin": "/dw rejoin - <green>Pripojiť sa znovu do poslednej hry",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Zapne hlavné lobby alebo nastaví lokáciu hlavného lobby",
+        "bw_admin_info": "/dw admin <pre><arena></pre> info [section] - <yellow>Zobrazí všetky informácie o aréne",
+        "bw_admin_lobby": "/dw admin <pre><arena></pre> lobby - <yellow>Nastaví pozíciu lobby na tvoju pozíciu",
+        "bw_admin_spec": "/dw admin <pre><arena></pre> spec - <yellow>Nastaví spawn divákov na tvoju pozíciu",
+        "bw_admin_pos2": "/dw admin <pre><arena></pre> pos2 - <yellow>Nastaví druhý krajný bod arény na tvoju pozíciu",
+        "bw_admin_minplayers": "/dw admin <pre><arena></pre> minplayers <pre><minimum></pre> - <yellow>Nastaví minimum hráčov potrebných k spusteniu hry",
+        "bw_admin_time": "/dw admin <pre><arena></pre> time <pre><seconds></pre> - <yellow>Nastaví dĺžku hry",
+        "bw_admin_team_add": "/dw admin <pre><arena></pre>team add <pre><team> <color> <max players></pre> - <yellow>Pridá tým do hry",
+        "bw_removeholo": "/dw removeholo - <yellow>Po spustení tohto príkazu, hráč môže kliknúť pravým tlačidlom myši na hologram so štatistikami aby ich odstránil.",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>Nastaví spawn tímu na tvoju pozíciu",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>Nastaví možnosť pripojiť sa do tímu pomocou entity",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [prvý level] [meno] [tím] [maximum naspawnovaných surovín]</pre> - <yellow>Pridá item spawner na tvoju pozíciu",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>Odstráni všetky spawnery",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>Odoberie obchodujúceho vesničana z tvojej pozície",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>Zmení maximum hráčov v tíme",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>Nastaví cieľový blok na tvoju cieľovú pozíciu (môže to byť akýkoľvek blok, nie len posteľ)",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [meno nad hlavou vesničana] [súbor s obchodom] [použiť hlavný obchod] - <yellow>Pridá obchodujúceho vesničana na tvoju pozíciu"
+    },
+    "dump": {
+        "failed": "<red>Výpis zlyhal!"
+    },
+    "unknown_usage": "<red>Počet argumentov neodpovedá správnemu množstvu alebo neznámym argumentov! Napíš <dark_red>/dw help <red>pre zobrazenie nápovedy!",
+    "safe_reload": "<green>Čakám 60 sekúnd na bezpečné zastavenie všetkých hier pred znovu načítaním!",
+    "safe_reload_failed_to_stop_game": "<red>Nejaké hry neskončili v časovom limite, takže ich aréna mohla byť poškodená!",
+    "leaderboard": {
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>"
+    }
+}

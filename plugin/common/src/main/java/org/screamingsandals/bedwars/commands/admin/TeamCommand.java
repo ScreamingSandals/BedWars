@@ -41,6 +41,7 @@ import org.screamingsandals.lib.particle.Particle;
 import org.screamingsandals.lib.particle.ParticleType;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.spectator.event.HoverEvent;
@@ -240,7 +241,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("yaw", loc.getYaw(), 5)
                                             .placeholder("pitch", loc.getPitch(), 5)
                             );
-                            var command = "/bw admin " + game.getName() + " team spawns " + team.getName() + " add";
+                            var command = "/dw admin " + game.getName() + " team spawns " + team.getName() + " add";
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_MULTIPLE_SPAWNS_AD)
@@ -430,7 +431,7 @@ public class TeamCommand extends BaseAdminSubCommand {
             TargetBlockSetModes mode = commandContext.get("mode");
 
             BlockPlacement block;
-            if (mode == TargetBlockSetModes.LOOKING_AT) {
+            if (mode == TargetBlockSetModes.STANDING_ON) {
                 block = sender.as(Player.class).getTargetBlock(null, 5);
             } else {
                 block = sender.as(Player.class).getLocation().subtract(0, 0.5, 0).getBlock();
@@ -500,17 +501,160 @@ public class TeamCommand extends BaseAdminSubCommand {
                 .literal("target")
                 .literal("block")
                 .argument(teamNameArgument)
-                .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
+                .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.STANDING_ON))
                 .handler(handleTargetBlock)
         );
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("bed")
+                        .literal("door")
                         .argument(teamNameArgument)
-                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
-                        .handler(handleTargetBlock)
-        );
+                        .handler((commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+
+                            BlockPlacement block;
+                            block = sender.as(Player.class).getLocation().subtract(0, 0.5, 0).getBlock();
+                            var loc = block.location();
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            if (game.getPos1() == null || game.getPos2() == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
+                                return;
+                            }
+                            if (!game.getWorld().equals(loc.getWorld())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
+                                return;
+                            }
+                            if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
+                                return;
+                            }
+
+                            var chosenLoc = loc;
+                            if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+                                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
+                            } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
+                                chosenLoc = loc.subtract(0, 1, 0);
+                            }
+
+                            if (!chosenLoc.getBlock().block().is("#doors")) {
+                                sender.sendMessage(Message.ofRichText("<red><bold>MUST BE DOOR!!!!").defaultPrefix());
+                                return;
+                            }
+
+                            team.setTarget(new TargetBlockImpl(chosenLoc));
+                            var particle = new Particle(
+                                    ParticleType.of("minecraft:happy_villager")
+                            );
+                            chosenLoc.add(0, 0, 0).sendParticle(particle);
+                            chosenLoc.add(0, 0, 1).sendParticle(particle);
+                            chosenLoc.add(1, 0, 0).sendParticle(particle);
+                            chosenLoc.add(1, 0, 1).sendParticle(particle);
+                            chosenLoc.add(0, 1, 0).sendParticle(particle);
+                            chosenLoc.add(0, 1, 1).sendParticle(particle);
+                            chosenLoc.add(1, 1, 0).sendParticle(particle);
+                            chosenLoc.add(1, 1, 1).sendParticle(particle);
+
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
+                                            .defaultPrefix()
+                                            .placeholderRaw("team", team.getName())
+                                            .placeholder("x", chosenLoc.getBlockX())
+                                            .placeholder("y", chosenLoc.getBlockY())
+                                            .placeholder("z", chosenLoc.getBlockZ())
+                                            .placeholderRaw("material", chosenLoc.getBlock().block().location().asString())
+                            );
+
+                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetBlockImpl))) {
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)
+                                                .defaultPrefix()
+                                );
+                            }
+                        }))
+        ));
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("door")
+                        .argument(teamNameArgument)
+                        .literal("yes")
+                        .literal("yes")
+                        .literal("yes")
+                        .literal("yes")
+                        .literal("yes")
+                        .handler((commandContext -> editMode(commandContext, (sender, game) -> {
+                                    String name = commandContext.get("team-name");
+
+                                    BlockPlacement block;
+                                    block = sender.as(Player.class).getLocation().subtract(0, 0.5, 0).getBlock();
+                                    var loc = block.location();
+
+                                    var team = game.getTeamFromName(name);
+                                    if (team == null) {
+                                        sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                        return;
+                                    }
+
+                                    if (game.getPos1() == null || game.getPos2() == null) {
+                                        sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
+                                        return;
+                                    }
+                                    if (!game.getWorld().equals(loc.getWorld())) {
+                                        sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
+                                        return;
+                                    }
+                                    if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
+                                        sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
+                                        return;
+                                    }
+
+                                    var chosenLoc = loc;
+                                    if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+                                        chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
+                                    } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
+                                        chosenLoc = loc.subtract(0, 1, 0);
+                                    }
+                                    team.setTarget(new TargetBlockImpl(chosenLoc));
+                                    var particle = new Particle(
+                                            ParticleType.of("minecraft:happy_villager")
+                                    );
+                                    chosenLoc.add(0, 0, 0).sendParticle(particle);
+                                    chosenLoc.add(0, 0, 1).sendParticle(particle);
+                                    chosenLoc.add(1, 0, 0).sendParticle(particle);
+                                    chosenLoc.add(1, 0, 1).sendParticle(particle);
+                                    chosenLoc.add(0, 1, 0).sendParticle(particle);
+                                    chosenLoc.add(0, 1, 1).sendParticle(particle);
+                                    chosenLoc.add(1, 1, 0).sendParticle(particle);
+                                    chosenLoc.add(1, 1, 1).sendParticle(particle);
+
+                                    sender.sendMessage(
+                                            Message
+                                                    .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
+                                                    .defaultPrefix()
+                                                    .placeholderRaw("team", team.getName())
+                                                    .placeholder("x", chosenLoc.getBlockX())
+                                                    .placeholder("y", chosenLoc.getBlockY())
+                                                    .placeholder("z", chosenLoc.getBlockZ())
+                                                    .placeholderRaw("material", chosenLoc.getBlock().block().location().asString())
+                                    );
+
+                                    if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetBlockImpl))) {
+                                        sender.sendMessage(
+                                                Message
+                                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)
+                                                        .defaultPrefix()
+                                        );
+                                    }
+                                }))
+                        ));
 
         manager.command(
                 commandSenderWrapperBuilder
@@ -587,7 +731,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("block-expirable")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
-                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
+                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.STANDING_ON))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
                             int countdown = commandContext.get("countdown");

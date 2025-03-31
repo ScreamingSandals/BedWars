@@ -84,6 +84,10 @@ public class RegionImpl implements Region {
         brokenOriginalBlocks.clear();
     }
 
+    public boolean isOriginalBlockSaved(Location loc) {
+        return brokenOriginalBlocks.containsKey(loc);
+    }
+
     public boolean isBedHead(BlockSnapshot block) {
         return isBedBlock(block) && "head".equals(block.block().get("part"));
     }

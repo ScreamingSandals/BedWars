@@ -8,7 +8,6 @@ dependencies {
     compileOnly(libs.parties.api)
 
     /* SHADED */
-    implementation("org.screamingsandals.language.bedwars:BedWarsLanguage:${Regex("^\\d+\\.\\d+").find(project.version.toString())?.value}-SNAPSHOT")
     implementation(libs.hikari)
 
     api(libs.configurate.gson) {
@@ -24,5 +23,5 @@ buildConfig {
 
     buildConfigField("String", "NAME", "\"${project.name}\"")
     buildConfigField("String", "VERSION", "\"${project.version}\"")
-    buildConfigField("String", "BUILD_NUMBER", "\"${System.getenv("BUILD_NUMBER") ?: "custom"}\"")
+    buildConfigField("String", "BUILD_NUMBER", "\"${System.getenv("BUILD_NUMBER") ?: "69-420-2"}\"")
 }

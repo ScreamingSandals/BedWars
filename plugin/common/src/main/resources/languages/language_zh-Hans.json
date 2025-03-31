@@ -1,0 +1,674 @@
+{
+    "help": {
+        "bw_admin_team_add": "/dw admin <pre><arena></pre>team add <pre><team> <color> <max players></pre> - <yellow>添加一个队伍",
+        "bw_admin_pos2": "/dw admin <pre><arena></pre> pos2 - <yellow>将当前位置设为该游戏房间的第二个端点",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>将当前位置设为队伍出生点",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>将当前位置设为该游戏房间的第一个端点",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>将当前位置设为目标方块的出现位置（它可以是除了床之外的方块）",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>设置通过实体来加入队伍",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources]</pre> - <yellow>在当前位置添加一个资源生成点",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>移除当前位置的商人",
+        "title": "DoorWars <version> - 帮助",
+        "title_console": "DoorWars <version> - 控制台帮助",
+        "bw_leave": "/dw leave - <green>离开游戏",
+        "bw_rejoin": "/dw rejoin - <green>加入之前的游戏",
+        "bw_autojoin": "/dw autojoin - <green>加入第一个等待中的游戏",
+        "bw_leaderboard": "/dw leaderboard - <green>查看本服务器的玩家排行榜",
+        "bw_stats": "/dw stats - <green>查看你的数据统计",
+        "bw_stats_other": "/dw stats [player] - <green>查看其他玩家的数据统计",
+        "bw_admin_minplayers": "/dw admin <pre><arena></pre> minplayers <pre><minimum></pre> - <yellow>设置最小玩家数量",
+        "bw_admin_time": "/dw admin <pre><arena></pre> time <pre><seconds></pre> - <yellow>设置游戏时长",
+        "bw_admin_team_color": "/dw admin <pre><arena></pre> team color <pre><team> <color></pre> - <yellow>修改队伍颜色",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>修改最大队伍人数",
+        "bw_removeholo": "/dw removeholo - <yellow>执行该命令后， 玩家可以通过右键一个全息显示来移除它。",
+        "bw_admin_info": "/dw admin <pre><arena></pre> info [section] - <yellow> 查看指定游戏房间的信息",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add [variant] - <yellow> 创建一个新的房间",
+        "bw_admin_lobby": "/dw admin <pre><arena></pre> lobby - <yellow> 设置某个房间的加入位置",
+        "bw_admin_lobby_pos1": "/dw admin <pre><arena></pre> lobbypos1 - <yellow>将当前位置设为该游戏房间大厅的第一个端点",
+        "bw_admin_lobby_pos2": "/dw admin <pre><arena></pre> lobbypos2 - <yellow>将当前位置设为该游戏房间大厅的第二个端点",
+        "bw_admin_pausecountdown": "/dw admin <pre><arena></pre> pausecountdown <pre><seconds></pre> - <yellow>设置开始游戏前的等待时间",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>移除所有的资源点",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [name above dealer head] [file with shop] [use main shop] - <yellow>在当前位置添加一个交易村民",
+        "bw_admin_store_type": "/dw admin <pre><arena></pre> store type <pre><living entity></pre> - <yellow>设置商人的实体类型 (Villager, Horse, Cow, Pig 等)",
+        "bw_admin_arena_time": "/dw admin <pre><arena></pre> arenatime <pre><type></pre> - <yellow>设置游戏房间内的时间 (DAY, NIGHT 等)",
+        "bw_admin_customprefix": "/dw admin <pre><arena></pre> customprefix <pre><name|off></pre> - <yellow>设置游戏房间的自定义前缀",
+        "bw_admin_remove": "/dw admin <pre><arena></pre> remove - <red>移除游戏房间",
+        "bw_admin_edit": "/dw admin <pre><arena></pre> edit - <yellow>关闭游戏房间并切换至编辑模式",
+        "bw_admin_save": "/dw admin <pre><arena></pre> save - <green>保存设置并开启该游戏！",
+        "bw_admin_spawner_remove": "/dw admin <pre><arena></pre> spawner remove - <yellow>移除当前位置的所有资源生成点",
+        "bw_admin_store_child": "/dw admin <pre><arena></pre> store child - <yellow>将商人的生物类型设置为幼年",
+        "bw_dump": "/dw dump - <yellow>存储服务器日志并生成链接。（ 该日志对排除故障有很大的用处）",
+        "bw_admin_config": "/dw admin <pre><arena></pre> config <pre><constant> <value></pre> - <yellow>设置该游戏的某个配置项",
+        "bw_admin_arena_weather": "/dw admin <pre><arena></pre> arenaweather <pre><type></pre> - <yellow>设置游戏房间内的天气 (default, CLEAN, DOWNFALL)",
+        "bw_admin_post_game_waiting": "/dw admin <pre><arena></pre> postgamewaiting <pre><seconds></pre> - <yellow>设置游戏结束后的等待时间",
+        "bw_alljoin": "/dw alljoin [arena] - <green>将服务器上的所有玩家加入起床战争",
+        "bw_admin_store_adult": "/dw admin <pre><arena></pre> store adult - <yellow>将商人的生物类型设置为成年",
+        "bw_admin_interactive": "/dw admin <pre><arena></pre> interactive - <yellow>如果该游戏在编辑模式下，该命令将开启交互模式",
+        "bw_join": "/dw join <pre><arena></pre> - <green> 加入一个游戏",
+        "bw_list": "/dw list - <green>游戏房间列表",
+        "bw_reload": "/dw reload - <red>重新加载该插件",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>在当前玩家的位置添加一个全息显示",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>开启游戏大厅或设置游戏大厅位置",
+        "bw_admin_spec": "/dw admin <pre><arena></pre> spec - <yellow>将当前位置设为旁观者的出生点",
+        "bw_cheat_give": "/dw cheat give <pre><resource></pre> [数量] [玩家] - <red>给予玩家指定数量的资源",
+        "bw_cheat_kill": "/dw cheat kill [玩家] - <red>杀死指定玩家",
+        "bw_admin_spawner_max_spawned_resources": "/dw admin <pre><arena></pre> spawner maxSpawnedResources <pre><value></pre> - <yellow>在您的位置限制可生成资源的最大值",
+        "bw_admin_spawner_rotation_mode": "/dw admin <pre><arena></pre> spawner rotationMode <pre><mode></pre> - <yellow>在你的位置设置资源生成点的全息显示为旋转模式",
+        "bw_admin_spawner_custom_name": "/dw admin <pre><arena></pre> spawner customName <pre><name></pre> - <yellow>在你当前位置的资源生成点自定义名称",
+        "bw_admin_spawner_hologram_type": "/dw admin <pre><arena></pre> spawner hologramType <pre><type></pre> - <yellow>设置你当前位置的资源生成点的全息显示类型",
+        "bw_admin_spawner_base_amount": "/dw admin <pre><arena></pre> spawner baseAmount <pre><amount></pre> - <yellow>设置资源生成点每个周期生成的基本资源数量",
+        "bw_admin_spawner_linked_team": "/dw admin <pre><arena></pre> spawner linkedTeam <pre><team|null></pre> - <yellow>将你所在位置的资源生成点与团队进行关联",
+        "bw_cheat_rebuild_region": "/dw cheat rebuildRegion [game] - <red>重建游戏区域",
+        "bw_cheat_build_pop_up_tower": "/dw cheat buildPopUpTower [game] - <red>建造弹射塔",
+        "bw_gamesinv": "/dw gamesinv <pre><inventory></pre> - <green>打开特定的游戏清单",
+        "bw_admin_spawner_change_type": "/dw admin <pre><arena></pre> spawner changeType <pre><type></pre> - <yellow>更改当前你的位置的资源生成点生成的类型",
+        "bw_admin_spawner_hologram": "/dw admin <pre><arena></pre> spawner hologram <pre><true|false></pre> - <yellow>开启/关闭资源生成点上方的全息显示",
+        "bw_admin_spawner_floating": "/dw admin <pre><arena></pre> spawner floating <pre><true|false></pre> - <yellow>开启/关闭资源生成点全息显示下方的浮空方块",
+        "bw_admin_fee": "/dw admin <pre><arena></pre> fee <pre><fee></pre> - <yellow>设置进入该游戏所需要的金币数额。",
+        "bw_admin_display_name": "/dw admin <pre><arena></pre> displayName <pre><name|off></pre> - <yellow>设置该游戏的显示名称",
+        "bw_migrate": "/dw migrate <pre><plugin></pre> - <yellow>从不同的DoorWars插件导入配置。",
+        "bw_admin_config_set": "/dw admin \\<arena> 修改配置文件 \\<data type> \\<constant> \\<value> - <yellow> 设置一个默认值",
+        "bw_admin_config_reset": "/dw admin \\<arena> 重置配置文件 \\<constant> - <yellow> 重置为默认值",
+        "bw_admin_config_list_set": "/dw admin \\<arena> 配置文件列表 \\<data type> \\<constant> set \\<position> \\<value> - <yellow>将该位置的值更改为常量列表",
+        "messages": {
+            "command": "指令",
+            "no_description": "没有介绍",
+            "description": "简介",
+            "arguments": "参数",
+            "optional": "可选",
+            "showing_results_for_query": "显示查询的搜索结果",
+            "no_results_for_query": "没有查询结果",
+            "available_commands": "可用指令",
+            "click_to_show_help": "点击显示关于此指令的帮助",
+            "page_out_of_range": "错误：不存在第 <page> 页，可用页数为[1-<max_pages>]",
+            "click_for_next_page": "点击转到下一页",
+            "click_for_previous_page": "点击返回上一页"
+        },
+        "bw_admin_config_list_add": "/dw admin \\<arena> 配置文件列表 \\<data type> \\<constant> add \\<value> - <yellow> 添加到常量列表",
+        "bw_admin_config_list_clear": "/dw admin \\<arena> 配置文件列表 \\<data type> \\<constant> clear - <yellow>重置常量列表",
+        "bw_admin_config_list_remove": "/dw admin\\<arena> 配置文件列表 \\<data type>\\<constant> remove \\<position>-<yellow>从常量列表中的位置移除此值"
+    },
+    "in_game": {
+        "target_block": {
+            "hologram": {
+                "destroy": {
+                    "anchor": "<teamcolor><bold>破坏这个重生锚！",
+                    "any": "<teamcolor><bold>破坏这个目标方块！",
+                    "bed": "<teamcolor><bold>破坏这张床！",
+                    "cake": "<teamcolor><bold>吃了这个蛋糕！"
+                },
+                "protect": {
+                    "any": "<teamcolor><bold>保护好我们的目标方块！",
+                    "anchor": "<teamcolor><bold>保护好我们的重生锚！",
+                    "cake": "<teamcolor><bold>保护好我们的蛋糕！",
+                    "bed": "<teamcolor><bold>保护好我们的床！",
+                    "door": "<teamcolor><bold>保护你的门！"
+                },
+                "destroyed": {
+                    "any": "<gray><bold>目标方块已被破坏。",
+                    "anchor": "<gray><bold>重生锚已被摧毁。",
+                    "cake": "<gray><bold>蛋糕已经被吃了。",
+                    "bed": "<gray><bold>床已被破坏。"
+                }
+            },
+            "destroyed": {
+                "any": "<team><reset> 的目标方块已被摧毁！",
+                "bed": "<team><reset>的床已被破坏！",
+                "cake": "<team><reset> 的蛋糕已经被吃了！",
+                "subtitle": "你现在可以击杀队友了！",
+                "subtitle_victim": "你将无法重生！",
+                "anchor": "<team><reset> 的重生锚已被摧毁！",
+                "all_beds": "所有床都被破坏了！",
+                "all_target_blocks": "所有目标方块都被破坏了！",
+                "cake_certain_popular_server": "<red><bold>蛋糕被吃了！",
+                "all_anchors": "所有锚都被破坏了！",
+                "any_certain_popular_server": "<red><bold>目标方块已被破坏！",
+                "bed_certain_popular_server": "<red><bold>床已被破坏！",
+                "anchor_certain_popular_server": "<red><bold>锚已被破坏！",
+                "all_cakes": "所有蛋糕都被神秘人吃了！",
+                "killable": "你现在可以击杀<team>的队伍成员了！",
+                "death_mode": "<dark_purple><bold>死斗模式！",
+                "door": "<team><reset>的门已被摧毁!",
+                "door_certain_popular_server": "<red><bold>门已被摧毁！"
+            }
+        },
+        "spawner": {
+            "not_enough_level": "<red>资源生成点无法使用！ 你需要升级到 <levels> 等级。",
+            "countdown": "<yellow><seconds> <aqua>秒",
+            "every_second": "<aqua>每秒",
+            "full": "<red><bold>资源生成点已耗尽",
+            "full_hypixel": "<red><bold>资源生成点已饱满！",
+            "tier": "<yellow>等级 <red><tier>",
+            "countdown_custom": "<yellow><value> <aqua><unit>",
+            "countdown_hypixel": "<yellow>在 <red><seconds>秒 <yellow>重生",
+            "countdown_custom_hypixel": "<yellow>生成在 <red><value> <yellow><unit>",
+            "reached_maximum_level": "<red>刷怪笼已达到最大等级！",
+            "full_certain_popular_server": "<red><bold>资源点生成的资源已到上限！",
+            "countdown_custom_certain_popular_server": "<yellow>将在 <red><value> <yellow><unit>秒后生成",
+            "countdown_certain_popular_server": "<yellow>资源生成点 将<red><seconds> <yellow>秒后生成"
+        },
+        "shop": {
+            "buy_success": "<green>你购买了<gray><item> <green>，花费<gray><material>！",
+            "name": "商店",
+            "page_forward": "下一页",
+            "page_back": "上一页",
+            "shop_back": "<red>返回分类页面",
+            "price": "价格：",
+            "amount": "数量：",
+            "buy_failed": "<red>你没有足够的资源购买<gray><item><red>，还需要 <gray><material><red>！",
+            "upgrade_translate": "升级",
+            "upgrade_success": "<green><name> 成功将资源点 <spawner> 升级至 <level>！"
+        },
+        "team_selection": {
+            "selected": "<green>选择队伍： <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full_no_change": "<red><team><red> 队伍已满，你将留在 <oldteam><red>！",
+            "inventory_name": "选择队伍 - <arena>",
+            "already_selected": "<green>你已经在队伍中：<team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red><team><red> 已满！",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>此队伍已满！",
+            "select_item_lore_join": "点击加入此队伍！"
+        },
+        "errors": {
+            "game_is_full": "<red>房间 <gray><arena> <red> 已满，请在游戏结束后再试！",
+            "game_not_found": "<red>没有找到此房间！",
+            "you_are_not_in_game": "<red>你不在任何游戏房间中！",
+            "game_is_rebuilding": "<red>房间 <gray><arena><red> 正在重置，请稍后…",
+            "already_in_game": "<red>你已经在游戏房间了。",
+            "command_is_not_allowed": "<red>你不能在游戏中执行此指令！",
+            "game_is_gone": "<red>你所在的游戏好像已被虚空吞噬。",
+            "game_kicked_by_vip": "<red>你被VIP玩家踢出游戏！",
+            "there_is_no_empty_game": "<red>所有房间都满人了！",
+            "game_already_running": "<red>房间 <gray><arena> <red> 中的游戏已开始，你不能加入一个已开始的游戏！",
+            "not_in_any_game_yet": "<red>你还没有参与过任何游戏。",
+            "vip_not_enough_players": "<red>游戏内玩家不足！",
+            "vip_game_is_full": "<red>游戏 <gray><arena> <red>内已经坐满了VIP玩家， 请等待游戏结束！"
+        },
+        "respawn_cooldown": {
+            "title": "<green><red><time> 后复活",
+            "title_cancel": "<red>一败涂地 :("
+        },
+        "resources": {
+            "netherite": "下界合金",
+            "bronze": "铜",
+            "iron": "铁锭",
+            "gold": "金锭",
+            "diamond": "钻石",
+            "emerald": "绿宝石"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>选择队伍",
+            "leave_from_game_item": "<red>离开游戏",
+            "start_game_item": "<dark_green>开始游戏"
+        },
+        "bossbar": {
+            "waiting": "<red>游戏即将开始！",
+            "running": "<green>游戏已开始，祝你好运！"
+        },
+        "end": {
+            "you_won": "<green>你赢了！",
+            "you_lost": "<red>你输了！",
+            "game_end": "<red>游戏结束，感谢游玩！",
+            "team_win": "<green>恭喜！<reset><team><green> 获得胜利，用时<gray><time>"
+        },
+        "respawn_protection": {
+            "end": "<red>无敌时间结束，小心行事！",
+            "remaining": "<red>重生保护将在 <white><time> <green> 秒后结束！"
+        },
+        "leave": "<name> <red>离开了游戏！",
+        "player_self_killed": "<red><victim> <red>已死亡！",
+        "player_killed": "<red><killer> <red>杀了 <victim><red>！",
+        "game_start_title": "<green>游戏开始！",
+        "game_start_subtitle": "<green>游戏<gray><arena><green> 已经开始！ 祝你好运！",
+        "vault_deposite": "<green>你获得了 <gray><coins> <currency><green> ！",
+        "join": "<name> <green>加入了游戏！<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "cheat": {
+            "please_provide_valid_cheat_type": "<red>描述的作弊类型不合语法或不存在！",
+            "invalid_player": "<red>指定的玩家不在任何一场游戏中或者为旁观者模式!",
+            "received_give": "<green>玩家<gray><player><green> 获得了 <gray><amount><green> 个 <gray><resource>",
+            "received_kill": "<green>玩家<gray><player><green> 被通过作弊杀死了!",
+            "game_not_running": "<red>你只能在已开始的游戏房间中作弊！",
+            "region_regenerated": "<green>房间 <gray><arena></gray> 已重置！",
+            "special_item_used": "<green>特殊道具 <gray><item></gray> 已经用过了！",
+            "game_forced": "<green>本局游戏将在有一个空队伍的情况下开始。每局游戏至少要有两支队伍，本插件才能正常运作。消灭你的敌人以获得胜利！<gray>但该要求不是强制的，所以对你来说应该很容易，对吧？",
+            "game_not_waiting": "<red>你不能在等待中的游戏房间中使用作弊！",
+            "team_does_not_exist": "<red>队伍<gray><team></gray> 不存在!",
+            "team_is_not_in_game": "<red>队伍 <gray><team></gray> 目前不在游戏里, 因此该作弊不能执行!",
+            "team_random_failed": "<red>算法无法随机选择一个队伍并消灭它。<gray>奇怪，不应该这样啊。",
+            "received_team_join": "<green>玩家<gray><player></gray> 成功加入了 <gray><team></gray>！",
+            "cheat_failed": "<red>由于未知原因，作弊失败。还是不要作弊了吧。",
+            "unknown_target": "<red>该指令找不到目标队伍：<gray><team></gray>！",
+            "target_is_not_valid": "<red>目标队伍 ：<gray><team></gray> 不能被作为该指令的对象，因为该队伍已经团灭了！",
+            "received_target_invalidated": "<green>目标队伍： <gray><team></gray> 已被强制消灭！<gray>该队玩家很讨厌你！o(╥﹏╥)o",
+            "received_targets_invalidated": "<green>所有队伍中可作为目标的玩家都已被消灭！ <gray>这会加快亿点点游戏进程。"
+        },
+        "economy_deposited": "<green>已添加 <gray><coins> <currency><green> 金币至你的钱包！",
+        "economy_missing_coins": "<red>你需要 <yellow><coins> <currency><red> 金币才能加入这个游戏！",
+        "messages": {
+            "game_start": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <white><bold>起床战争</bold>",
+                "    <yellow><bold>破坏敌方的床，保护你的床</bold>",
+                "    <yellow><bold>你可以通过升级变得更强</bold>",
+                "     <yellow>而升级需要<bold><resources></bold>",
+                "<yellow><bold><resources></bold>",
+                "            <yellow><bold>来获得强大升级。</bold>"
+            ],
+            "game_over_statistics": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <yellow><bold>起床战争</bold>",
+                "                             <team_color><win_team>",
+                "                             <winners>",
+                "                             <winners>",
+                "    <gold><bold>2nd<gray> - <white><second_killer_name> <gray>- <white><second_killer_score></bold>",
+                "    <red><bold>3rd<gray> - <white><third_killer_name> <gray>- <white><third_killer_score>/bold>",
+                "    <gold><bold>第二名<gray>—<white><second_killer_name> <gray>—<white><second_killer_score></bold>",
+                "    <red><bold>第三名<gray>—<white><third_killer_name> <gray>—<white><third_killer_score>/bold>"
+            ]
+        },
+        "scoreboard": {
+            "you": "<gray>你",
+            "state": {
+                "waiting": "<white>可加入...",
+                "countdown": "<white>将在 <green><countdown> 秒后开始"
+            },
+            "mode": {
+                "solo": "单挑",
+                "doubles": "双人",
+                "triples": "三人",
+                "squads": "四人"
+            }
+        },
+        "record": {
+            "no": "<aqua>这个房间是第一次结束游戏，要设置一个新纪录吗？",
+            "current": "<aqua>目前此房间的记录是 <gray><time><aqua> 队伍成员：<gray><team-members><aqua>！"
+        }
+    },
+    "unknown_usage": "<red>无效的参数！你可以使用<dark_red>/dw help <red>寻求帮助！",
+    "no_permissions": "<red>你没有权限这么做！",
+    "safe_reload_failed_to_stop_game": "<red>部分游戏没有及时结束，可能被损坏！",
+    "list_header": "<green>可用的游戏房间：",
+    "success": "<green>成功执行指令！",
+    "sign": {
+        "admin": {
+            "created": "<green>告示牌创建成功！",
+            "cannot_destroy": "<red>你无权破坏这个告示牌！",
+            "unknown_game": "<red>告示牌上的游戏并不存在！ 请联系管理员！",
+            "cannot_create": "<red>无法创建告示牌！ 请检查游戏的名称！"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>游戏",
+                "players": "<red>禁用"
+            },
+            "rebuilding": {
+                "status": "<gold>重置中",
+                "players": "<gold>房间"
+            },
+            "running": {
+                "status": "<green>已开始",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>可加入",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "disabled": "<red>数据统计功能已被管理员禁用！",
+        "player_does_not_exist": "<red>没有找到此玩家！",
+        "kills": "<gray>击杀数：<green><kills>",
+        "deaths": "<gray>死亡数：<yellow><deaths>",
+        "wins": "<gray>胜场：<green><wins>",
+        "loses": "<gray>败场：<red><loses>",
+        "beds": "<gray>挖床数：<green><beds>",
+        "games": "<gray>参与游戏次数：<aqua><games>",
+        "score": "<gray>分数：<green><score>",
+        "kd": "<gray>击杀/死亡比：<green><kd>",
+        "not_found": "<red>没有找到任何关于此玩家的数据！",
+        "header": "<green>关于<red><player><green>的统计数据："
+    },
+    "update": {
+        "new_release": [
+            "<green>起床战争有新版本 <version> 啦！",
+            "从 <url> 下载"
+        ],
+        "patch_release": [
+            "<yellow>起床战争 <version> 补丁上线啦！",
+            "你可以在 <url> 上下载"
+        ]
+    },
+    "admin": {
+        "arena": {
+            "error": {
+                "already_exists": "<red>游戏已经存在！",
+                "arena_must_be_in_edit_mode": "<red>该游戏在编辑模式中！",
+                "already_working_on_it": "<red>游戏存在但未结束！",
+                "arena_not_in_edit": "<red>游戏不存在或者正在游戏中！ 通过 <gray>/dw admin <pre><arena></pre> edit<red> 停用它， 然后通过 <gray>/dw admin <pre><arena></pre> save <red>重新激活它"
+            },
+            "success": {
+                "removed": "<red><b>游戏已移除！",
+                "added": "<green>游戏 <gray><arena><green> 已添加！",
+                "edit_mode": "<green>已切换当前游戏至编辑模式！",
+                "added_with_variant": "<green>游戏 <gray><arena><green> 已添加！ 使用的游戏变体: <gray><variant><green>！"
+            },
+            "edit": {
+                "errors": {
+                    "invalid_countdown": "<red>倒计时应介于 <lowest> < x < <highest> 之间！",
+                    "must_be_in_bounds": "<red>地点必须位于该游戏的两个端点坐标之间！",
+                    "must_be_in_same_world": "<red>对应命令必须在同一世界中执行！",
+                    "team_already_exists": "<red>这个队伍已存在！",
+                    "set_bounds_before_save": "<red>在保存这个游戏房间之前请先设置好两个端点（用于决定游戏房间的尺寸和位置）！",
+                    "set_spec_before_save": "<red>在保存游戏之前请先设置好旁观者的出生点！",
+                    "set_spawn_for_team_before_save": "<red>在保存游戏之前请先设置好队伍 <gray><team><red> 的出生点！",
+                    "invalid_time": "<red><gray><number><red> 是个无效的时间！",
+                    "set_bounds_first": "<red>在设置出生点之前， 请先设置游戏的两个端点（用于决定游戏的尺寸和位置）！",
+                    "npc_must_have_skin_name": "<red>如果你的实体类型是玩家， 那么你必须要为其设置一个皮肤， 使用以下格式： <gray>PLAYER:[skin's owner]",
+                    "store_already_exist": "<red>商店已经存在了！",
+                    "store_does_not_exist": "<red>商店并不存在！",
+                    "invalid_spawner_level": "<white>错误的等级数字， 默认等级数字 1 已经被使用了。",
+                    "invalid_color": "<red>这个颜色是无效的！",
+                    "max_players": "<red>最大玩家数量必须大于等于1！",
+                    "need_2_teams": "<red>游戏至少需要2支队伍！",
+                    "spawners_needed": "<red>游戏必须要有至少一个资源生成点！",
+                    "team_does_not_exist": "<red>这个队伍并不存在！",
+                    "set_lobby_before_save": "<red>在保存这个游戏大厅之前请先设置好房间大厅的出生点！",
+                    "set_stores_before_save": "<red>在保存游戏之前请先添加至少一个商人！",
+                    "set_spawners_before_save": "<red>在保存游戏之前请先添加至少一个资源生成点！",
+                    "set_target_block_for_team_before_save": "<red>在保存游戏之前请先为队伍 <gray><team><red> 设置好他们的目标方块！",
+                    "invalid_min_players": "<red>最小玩家数量必须大于等于2！",
+                    "invalid_constant_value": "<red>错误的数值！ 它应该是 <gray>true<red>, <gray>false<red> 或 <gray>inherit<red> ！",
+                    "invalid_constant_name": "<red>这是一个错误的常量名字！",
+                    "invalid_arena_time": "<red>游戏的世界时间类型错误！",
+                    "invalid_arena_weather": "<red>游戏的世界天气类型错误！",
+                    "invalid_bar_color": "<red>错误的BOSS条颜色！",
+                    "invalid_entity_type": "<red>错误的生物实体类型！",
+                    "invalid_bounds": "<red>两个端点之间的高度差太小了！ 至少间隔5个方块！",
+                    "invalid_spawner_type": "<red>资源生成点必须是铜、铁、金， 或者是自定义配置！",
+                    "no_spawner": "<red>当前位置没有资源生成点！",
+                    "multiple_spawners": {
+                        "line": "- <type> - <gray><command></gray>",
+                        "first_line": "<red>这里有太多的资源生成点在同一个地方，请选择具体的资源生成点："
+                    },
+                    "invalid_variant": "<red>游戏变体 <gray><variant><red> 不存在！",
+                    "cannot_rename_team": "<red>无法将队伍 <gray><team><red> 更名为 <gray><new-team><red>，此名字已被占用！",
+                    "missing_spawners": "<yellow>此房间没有设置任何资源点。",
+                    "weird_store_count": "<yellow>这个房间中的商店(商人)数量是 <gray><count><yelloy>，这不是双数，也许需要检查一下你是不是还没设置完？",
+                    "team_spawn_set_blocked": "<red>队伍 <gray><team><red>设置了多个重生点，所以不能用 set 设置重生点了。",
+                    "missing_stores": "<yellow>此房间没有设置任何商店(商人)。",
+                    "skip_warnings": "<yellow>如果你想保存房间 <gray><game><yellow>，请输入：<gray><command>",
+                    "invalid_constant_enum_value": "<gray><value></gray><red>是无效的值！请用 <gray><values>",
+                    "team_spawn_on_the_same_block": "<red>这个位置已经被设置成某个重生点了，如果要继续，请先移除这个重生点。",
+                    "team_no_spawn_there": "<red>此位置没有设置成任何重生点。",
+                    "invalid_constant_position": "<red>错误的常量列表位置！",
+                    "nothing_in_hand": "<red>你没有手持任何东西！",
+                    "invalid_item": "<red>你输入的 <gray><item><red> 不是可用的物品！"
+                },
+                "success": {
+                    "team_spawn_set": "<green>队伍 <gray><team><green> 的出生点已被成功设置为以下坐标 XYZ： <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "saved_and_started": "<green>游戏已经成功保存并且运行啦！ 你现在可以加入游戏并开始！",
+                    "target_block_set": "<green>队伍 <gray><team><green> 的目标方块 (<gray><material><green>) 被成功设置为以下坐标 XYZ： <gray><x>/<y>/<z>",
+                    "team_maxplayers_set": "<green>队伍 <gray><team><green> 的最大玩家数量已被成功设置为 <gray><maxplayers>",
+                    "team_color_set": "<green>队伍 <gray><team><green> 的颜色已被成功设置为 <teamcolor>",
+                    "team_removed": "<green>队伍 <gray><team><green> 已被成功删除！",
+                    "team_created": "<green>队伍 <gray><team><green> 已被成功创建！ 队伍颜色: <teamcolor><green> ， 队伍最大玩家数量: <gray><maxplayers>",
+                    "spawners_removed": "<green>游戏房间 <gray><arena><green> 的所有资源发生器均已被成功移除！",
+                    "spawner_added": "<gray><resource><green>的生成器已成功添加到坐标：<gray><x>/<y>/<z>",
+                    "store_removed": "<green>位于<gray><x>/<y>/<z><green>的商店(商人)已成功移除！",
+                    "store_added": "<green>已将商店添加到你的坐标：<gray><x>/<y>/<z> <green>YAW：<gray><yaw> <green>PITCH：<gray><pitch>",
+                    "lobby_spawn_set": "<green>大厅出生点被成功设置到XYZ：<gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "lobby_countdown_set": "<green>大厅的倒计时被设置为 <gray><countdown>",
+                    "game_time_set": "<green>游戏时间被设置为 <gray><time>",
+                    "spec_spawn_set": "<green>旁观者出生点被成功设置到 XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "min_players_set": "<green>最少玩家数已设置为 <gray><min><green>！",
+                    "display_name_disabled": "<green>玩家名称显示已成功关闭。",
+                    "fee_set": "<green>加入游戏所需要的金币已设置为: <gray><fee><green>.",
+                    "pos1_set": "<green>游戏的1号位置 <gray><arena><green> 被设置到 XYZ: <gray><x>/<y>/<z>",
+                    "pos2_set": "<green>游戏的2号位置 <gray><arena><green> 被设置在 XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos1_set": "<green> 大厅的1号位置 <gray><arena><green> 被设置在 XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos2_set": "<green> 大厅的2号位置 <gray><arena><green> 被设置在 XYZ: <gray><x>/<y>/<z>",
+                    "removed_spawners": "<gray><count> <green>已删除在 <gray><x>/<y>/<z><green>的资源生成点",
+                    "store_entity_type_set": "<green>商店的实体类型已被设置为 <gray><type><green>！",
+                    "weather_set": "<green>当前游戏的天气已设置为 <gray><weather><green>！",
+                    "bar_color_set": "<green>设置BOSS条颜色 <gray><color><green> 为 <gray><type><green>！",
+                    "post_game_waiting": "<green>游戏结束后的等待时间被设置为 <gray><number><green>！",
+                    "custom_prefix_enabled": "<green>自定义头衔已被设置为 <gray><prefix><green>。",
+                    "custom_prefix_disabled": "<green>自定义头衔已关闭。",
+                    "spawner_hologram_disabled": "<green><type> 生成点的全息显示 <gray>已关闭<green>。",
+                    "spawner_floating_enabled": "<green> <type> 生成点的浮动方块 <gray>已开启<green>。",
+                    "spawner_base_amount_set": "<green> <type> 的基本生成数量已被设置为 <gray><amount><green>。",
+                    "spawner_max_spawned_resources_set": "<green> <type> 的最大生成数量已被设置为 <gray><amount><green>。",
+                    "spawner_team_linked": "<green>该<type> 生成点已被链接至 <team> 团队。",
+                    "arena_time_set": "<green>当前游戏的时间已设置为 <gray><time><green>！",
+                    "spawner_hologram_enabled": "<green><type> 生成点的全息显示 <gray>已开启<green>。",
+                    "spawner_floating_disabled": "<green> <type> 生成点的浮动方块 <gray>已关闭<green>。",
+                    "spawner_team_unlinked": "<green>该<type> 生成点不再链接任何团队。",
+                    "spawner_rotation_mode_set": "<green> <type> 生成点的全息显示旋转模式已被设置为 <gray><rotation><green>。",
+                    "spawner_hologram_type_set": "<green><type> 生成点的全息显示类型已被设置为 <gray><type><green>。",
+                    "spawner_type_changed": "<green>该 <type> 生成点类型已被更改为 <new_type>。",
+                    "display_name_enabled": "<green>显示名称已被设置为 <gray><display_name><green>。",
+                    "constant_set": "<green>常量 <gray><config><green> 已被设置为 <gray><value><green>！",
+                    "child_state": "<green>商人的变量 isBaby 已更改为 <gray><value>",
+                    "spawner_custom_name_set": "<green><type> 生成点的自定义名称已被设置为 <gray><name><green>。",
+                    "team_multiple_spawns_ad": "<aqua>你要为一个队伍设置多个重生点吗？请输入 <gray><command>",
+                    "team_spawn_added": "<green>成功设置队伍 <gray><team><green> 的重生点，位置(XYZ): <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_reset": "<green>成功移除队伍 <gray><team><green> 的所有重生点。",
+                    "team_spawn_list_entry": "- <green>XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_list_no": "<red>队伍 <gray><team><red> 还没有设置任何重生点。",
+                    "team_renamed": "<green>成功将队伍 ><team><green> 更名为 <gray><new-team><green> ！",
+                    "target_none_set": "<green>队伍 <gray><team><green> 现在将没有任何目标， 这意味着他们不能再重生！",
+                    "target_not_properly_balanced": "<yellow>目标已经设置，但每个队伍的目标类型不一样，这可能导致游戏不平衡。",
+                    "team_spawn_removed": "<green>队伍 <gray><team><green> 的资源点(位于<gray><x>/<y>/<z>) 已被移除",
+                    "team_spawn_list": "<green>队伍 <gray><team><green> 有 <gray><count><green> 个重生点，在这些位置：",
+                    "store_name_set": "<green>位于<gray><x>/<y>/<z><green>的商店(商人) 已被更名为 <gray><name><green>！",
+                    "store_name_reset": "<green>T位于: <gray><x>/<y>/<z><green>的商人(商店)已失去自定义名字！",
+                    "target_block_countdown_set": "<gray><team><green> <green>的目标方块(<gray><material><green>)成功地被设置为坐标 XYZ：<gray><x>/<y>/<z><green> 并且它的倒计时被设置为 <gray><countdown><green> 秒！",
+                    "store_file_set": "<green>坐标为 XYZ: <gray><x>/<y>/<z><green> 的商店的配置文件现在是 <gray><file><green> 了！",
+                    "constant_list_added": "<green>你输入的 <gray><value><green> 已成功地在位置 <gray><position><green>被加入列表 <gray><config><green> ！",
+                    "spawner_initial_interval_set": "<green><type> 生成器的初始冷却已被设置为 <gray><interval> <unit><green>。",
+                    "spawner_initial_interval_reset": "<green><type> 生成器的初始冷却已被重置为在插件或变量中储存的默认值。",
+                    "target_countdown_set": "<gray><team><green> <green>的目标倒计时成功地被设置为 <gray><countdown><green> 秒!",
+                    "store_file_reset": "<green>坐标为 XYZ: <gray><x>/<y>/<z><green> 的商店不再使用自定义配置文件了！",
+                    "constant_list_removed": "<green>在位置 <gray><position><green> 出的值已被移出列表 <gray><config><green> ！",
+                    "constant_list_cleared": "<green>列表 <gray><config><green> 现在空了，但不会回到被继承的那个！",
+                    "constant_reset": "<green>常量 <gray><config><green> 已成功重置为继承的值！",
+                    "spawner_spread_reset": "<green>此 <type> 生成器的区域已被重置为在插件或变量中储存的默认值。",
+                    "spawner_spread_set": "<green>此 <type> 生成器的区域已被设置为 <gray><spread><green>。"
+                }
+            }
+        },
+        "usage": "<red>使用方式: /dw admin <pre><arena> <add|edit|remove|save|...> ...",
+        "info": {
+            "constant": "- <gray><constant><reset>: <gray><value>",
+            "world": "<gray>世界: <reset><world>",
+            "pos2": "<gray>2号点: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>大厅位置: <white>World: <gray><world> <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>团队:",
+            "team": "- <team><reset> (最大人数: <gray><maxplayers><reset>)",
+            "name": "<gray>玩家: <reset><name>",
+            "header": "<green>游戏详细:",
+            "status": "<gray>统计: <reset><status>",
+            "status_disabled": "<red>关闭",
+            "status_running": "<green>游戏正在运行",
+            "team_target": "  <gray>床的位置: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>资源生成点:",
+            "villagers": "<gray>商店:",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_entity_type": "  类型: <green><type>",
+            "villager_shop_dealer_has_no_name": "<red>未设置名称",
+            "lobby_countdown": "<gray>比赛将于 <white><time> s <gray>后开始",
+            "game_time": "<gray>游戏时长: <white><time> s",
+            "constant_true": "<green>True",
+            "constant_false": "<red>False",
+            "constant_inherit": "<yellow>继承自插件配置",
+            "spawner_no_team": "<red>没有团队",
+            "villager_shop_dealer_name": "  商店头顶自定义名称: <name><reset>",
+            "constants": "<gray>常量配置:",
+            "file": "<gray><i>文件: <file>",
+            "status_waiting": "<yellow>等待玩家中",
+            "status_rebuilding": "<yellow>游戏正在重置",
+            "status_disabled_in_edit": "<red>关闭<reset> (<yellow>编辑模式<reset>)",
+            "pos1": "<gray>1号点: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>旁观者位置: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_spawn": "  <gray>团队重生点: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>全息显示: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "min_players": "<gray>最小人数: <reset><minplayers>",
+            "post_game_waiting": "<gray>游戏结束后等待时间: <white><time> s",
+            "villager_shop": "  拥有自己的商店: <gray><bool>",
+            "villager_shop_name": "  商店名称: <gold><file><reset> (从主继承: <gray><bool><reset>)",
+            "value": "值",
+            "config": "关于<gray><configured-component>的配置",
+            "data_type": "数据类型",
+            "default_value": "<yellow>使用来自配置文件或变量文件的默认值",
+            "key": "键"
+        },
+        "holo": {
+            "click_to_remove": "<yellow>现在请点击你想移除的全息显示！",
+            "removed": "<green>全息显示成功移除！",
+            "not_enabled": "<red>全息显示已关闭。",
+            "added": "<green>全息显示已添加至你当前的位置！"
+        },
+        "npc": {
+            "not_editing": "<red>你不再编辑任何一个NPC！选择一个请使用 <gray>/dw npc select",
+            "should_look": "<green>NPC现在将看向玩家！",
+            "should_not_look": "<green>NPC将不再看向玩家！",
+            "requires_value": "<green>该操作需要指定的数值！",
+            "removed": "<green>该NPC已被移除！",
+            "now_click": "<yellow>右击你想要编辑的NPC。",
+            "added": "<green>新的NPC已被添加至坐标 XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+            "no_longer_editing": "<green>你不再编辑任何一个NPC了。 使用 <gray>/dw npc select<green> 来选择一个新的NPC。",
+            "skin_changed": "<green>此NPC的皮肤已修改！",
+            "editing": "<green>你现在正在编辑的NPC位置 XYZ: <gray><x>/<y>/<z>",
+            "skin_change_failed": "<red>无法更改此NPC的皮肤！",
+            "action_set": "<green>该NPC的动作已被设置为 <gray><action><green> 携带参数 \"<gray><value><green>\""
+        },
+        "mainlobby": {
+            "info": "<red>警告<white>: 你需要执行 /dw reload 才能让Mainlobby运作！"
+        },
+        "hologram": {
+            "reset": "<green>该全息显示已被重置。",
+            "invalid_number": "<red>该分割线的数字必须高于0！",
+            "theres_no_line_number": "<red>没有找到第 <linenumber> 行的分割线",
+            "line_removed": "<green>全息显示的第<gray><linenumber><green> 行分割线已被移除！",
+            "line_added": "<green>新的全息图已被创建到下一行：<white><line>",
+            "line_set": "<green>全息显示的第 <gray><linenumber><green> 行分割线已被设置在 <white><line>"
+        },
+        "team_join_entity": {
+            "entity_added": "<green>实体加入团队已添加！",
+            "click_right_on_entity": "<green>现在右击为其设置加入队伍的所需实体: <gray><team>",
+            "entity_not_compatible": "<red>当前使用的实体不可用！只能使用 生物 或 盔甲架 ！"
+        },
+        "info_select": {
+            "header": "<green>请选择 <gray><arena><green> 的信息部分:",
+            "base": "<green>基本信息<white> - <gray><command>",
+            "stores": "<green>商店列表<white> - <gray><command>",
+            "teams": "<green>团队列表<white> - <gray><command>",
+            "config": "<green>配置<white> - <gray><command>",
+            "click": "<aqua>点击执行 <gray><command><aqua>!",
+            "spawners": "<green>资源生成点列表<white> - <gray><command>"
+        },
+        "group": {
+            "invalid_group_name": "<red>组名<gray><group><red>不合语法！名称必须仅包含字母数字字符、破折号和下划线！",
+            "added": "<green>游戏 <gray><game><green> 已被成功添加至 <gray><group><green> 组！",
+            "removed": "<green>Game <gray><<green>游戏 <gray><game><green> 已被成功从 <gray><group><green> 组移除！",
+            "empty": "<red>组 <gray><group><red> 是空的！",
+            "list": "<green>在该组中的游戏有 <gray><group><green>："
+        }
+    },
+    "unknown_command": "<red>未知指令，你可以使用<dark_red>/dw help <red>寻求帮助！",
+    "safe_reload": "<green>正在等待所有游戏结束或等待60秒，然后重载插件。",
+    "language": {
+        "usage_bw_lang": "使用: /dw lang <pre><locale></pre> - <yellow>设置 <red>Bed<white>Wars 所使用的语言环境",
+        "success": "<green>成功将语言设置为 <white>[<lang>]",
+        "already_set": "语言: [<lang>] 已经是默认语言了！",
+        "invalid": "<red>无法加载指定的语言文件！"
+    },
+    "dump": {
+        "failed": "<red>转储失败！",
+        "success": "<green>成功转储服务器，链接: <dump>"
+    },
+    "games_inventory": {
+        "could_not_find_game": "<red>无法找到游戏！",
+        "unknown_inventory": "<red>未知的游戏清单 <gray><type><red>！"
+    },
+    "specials": {
+        "tntsheep": {
+            "no_target_found": "<red>没有找到目标！"
+        },
+        "trap": {
+            "caught_team": "<white><player><red> 触发了你的团队陷阱！",
+            "caught": "<red>你触发了团队陷阱 <white><team><red>!",
+            "built": "<green>你放置了一个陷阱！等他们自投罗网吧！"
+        },
+        "warp_powder": {
+            "multiuse": "<red>传送被激活！",
+            "canceled": "<red>传送已被取消！",
+            "started": "<green>传送开始！请等待 <gray><time><green> 秒，不要走动！"
+        },
+        "tracker": {
+            "no_target_found": "<red>没有找到目标！",
+            "target_found": "<white><target> <green>在距离<white><distance> <geen>方块外被发现！"
+        },
+        "protection_wall": {
+            "created_unbreakable": "<green>无法破坏的保护墙已生成！",
+            "not_usable_here": "<red>没有足够的空间建造保护墙。",
+            "destroy": "<red>保护墙将在<white><time> <red>秒内消失。",
+            "created": "<green>保护墙已生成，且将在 <white><time> <green>秒内消失。"
+        },
+        "rescue_platform": {
+            "created_unbreakable": "<green>无法破坏的救援平台已生成！",
+            "not_in_air": "<red>你只有在空中才能使用它。",
+            "destroy": "<red>救援平台将在<white><time> <red>秒内消失。",
+            "created": "<green>救援平台已生成并在 <white><time> <green> 秒内消失。"
+        },
+        "arrow_blocker": {
+            "started": "<green>弓弩拦截者已激活<white><time><green> 秒！",
+            "already_activated": "<red>弓弩拦截者已激活！",
+            "ended": "<red>弓弩拦截者已关闭！"
+        },
+        "team_chest": {
+            "placed": "<green>新的团队箱被放置！",
+            "broken": "<red>你的团队箱被破坏！",
+            "name": "<green><bold>团队箱",
+            "not_yours": "<yellow>这个团队箱不属于你！"
+        },
+        "golem": {
+            "created": "<green>魔像已部署。"
+        },
+        "item_delay": "<red>你需要等待 <time> 秒才能再一次使用这个物品！"
+    },
+    "leaderboard": {
+        "header": "<gold>DoorWars 排行榜 - Top <number> players",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>",
+        "no_scores": "<gray>暂无分数！",
+        "holo_added": "<green>全息显示排行榜已添加至你的位置！"
+    },
+    "party": {
+        "inform_game_join": "<green>队长加入了游戏",
+        "warped": "<green>队长传送至你的位置",
+        "command": {
+            "not_in_party": "<red>你应该进入一个小队才能使用这个命令！",
+            "not_party_leader": "<red>你不再是队长了！",
+            "is_empty": "<red>你的小队内没人，无法传送任何人！",
+            "warped": "<green>已传送小队队员。",
+            "help": "/dw party warp - <yellow>传送所有队员至你所在的游戏或看向您",
+            "invalid_arguments": "<red>参数数值无效！你可以尝试输入 /dw party help 获取帮助。"
+        }
+    },
+    "migrate": {
+        "success": "<green>成功迁移来自 <red><plugin><green>的配置！",
+        "failure": "<red>在导入配置时，发生了某些错误！请前往控制台查看更多细节。"
+    },
+    "unit": {
+        "tick": "游戏刻",
+        "minutes": "分钟",
+        "ticks": "游戏刻",
+        "second": "秒",
+        "seconds": "秒",
+        "minute": "分钟",
+        "hour": "小时",
+        "hours": "小时"
+    }
+}

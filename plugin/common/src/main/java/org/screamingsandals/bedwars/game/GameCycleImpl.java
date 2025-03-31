@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.ExpirableTargetBlockImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockDestroyedInfo;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -47,6 +48,7 @@ import org.screamingsandals.bedwars.utils.SignUtils;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.utils.TitleUtils;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.Component;
@@ -412,6 +414,41 @@ public class GameCycleImpl implements GameCycle {
             }
 
             for (var team : game.getTeamsInGame()) {
+                if (team.getTarget() instanceof TargetBlockImpl) {
+                    var block = ((TargetBlockImpl) team.getTarget()).getTargetBlock().getBlock();
+                    if (block.block().is("#doors")) {
+                        if (!game.getRegion().isOriginalBlockSaved(block.location())) {
+                            game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                        }
+                        var neighbour = block.location().add(0, "lower".equals(block.block().get("half")) ? 1 : -1, 0).getBlock();
+                        if (!game.getRegion().isOriginalBlockSaved(neighbour.location())) {
+                            game.getRegion().putOriginalBlock(neighbour.location(), neighbour.blockSnapshot());
+                        }
+
+                        List<String> doors = List.of(
+                                "oak_door",
+                                "spruce_door",
+                                "birch_door",
+                                "jungle_door",
+                                "acacia_door",
+                                "dark_oak_door",
+                                "mangrove_door",
+                                "cherry_door",
+                                "pale_oak_door",
+                                "bamboo_door",
+                                "crimson_door",
+                                "warped_door"
+                        );
+
+                        Block block1;
+                        do {
+                            block1 = Block.ofNullable(doors.get(MiscUtils.randInt(0, doors.size() - 1)));
+                        } while (block1 == null);
+
+                        block.alterBlockWithoutPhysics(block1.withStateData(block.block().stateData()));
+                        neighbour.alterBlockWithoutPhysics(block1.withStateData(neighbour.block().stateData()));
+                    }
+                }
                 team.start();
             }
 

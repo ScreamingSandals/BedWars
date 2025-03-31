@@ -35,13 +35,14 @@ subprojects {
 
     if (project.name != "BedWars-protocol") {
         configureShadowPlugin {
-            relocate("com.zaxxer", "org.screamingsandals.bedwars.lib.HikariCP")
-            relocate("org.bstats", "org.screamingsandals.bedwars.lib.ext.bstats")
-            relocate("org.spongepowered.configurate", "org.screamingsandals.bedwars.lib.ext.configurate")
-            relocate("org.yaml.snakeyaml", "org.screamingsandals.bedwars.lib.ext.snakeyaml")
-            relocate("io.leangen.geantyref", "org.screamingsandals.bedwars.lib.ext.geantyref")
-            relocate("cloud.commandframework", "org.screamingsandals.bedwars.lib.ext.cloud")
-            relocate("me.lucko.commodore", "org.screamingsandals.bedwars.lib.ext.commodore")
+            relocate("com.zaxxer", "nisan11.doorwars.lib.HikariCP")
+            relocate("org.bstats", "nisan11.doorwars.lib.ext.bstats")
+            relocate("org.spongepowered.configurate", "nisan11.doorwars.lib.ext.configurate")
+            relocate("org.yaml.snakeyaml", "nisan11.doorwars.lib.ext.snakeyaml")
+            relocate("io.leangen.geantyref", "nisan11.doorwars.lib.ext.geantyref")
+            relocate("cloud.commandframework", "nisan11.doorwars.lib.ext.cloud")
+            relocate("me.lucko.commodore", "nisan11.doorwars.lib.ext.commodore")
+            relocate("org.screamingsandals.bedwars", "nisan11.doorwars")
         }
     }
 
@@ -81,8 +82,9 @@ subprojects {
         multiModulePlatforms("BedWars-%s", "bukkit")
         multiModuleUniversalSubproject("BedWars") // custom name
         // This also means we cannot create class Wrapper and package types in package org.screamingsandals.bedwars.api
-        multiModuleApiSubproject("BedWars-API", "org.screamingsandals.bedwars.api")
+        multiModuleApiSubproject("BedWars-API", "nisan11.doorwars.api")
         useApiConfigurationInsteadOfImplementation(true)
+        customRelocatePath("nisan11.doorwars.lib")
 
         additionalContent {
             module("cloud")

@@ -46,7 +46,7 @@ public abstract class BaseCommand {
 
     @OnPostEnable
     public void construct(@ProvidedBy(CommandService.class) CommandManager<CommandSender> manager) {
-        var builder = manager.commandBuilder("bw")
+        var builder = manager.commandBuilder("dw", "doorwars")
                 .literal(name);
         if (possiblePermission != null) {
             builder = builder.permission(

@@ -1,0 +1,698 @@
+{
+    "unknown_command": "<red>不明なコマンドです！<dark_red>/dw help<red>を使ってヘルプをご覧ください！",
+    "no_permissions": "<red>あなたはそれを行うのに十分な権限がありません！",
+    "sign": {
+        "admin": {
+            "cannot_destroy": "<red>この看板を壊す権限がありません！",
+            "created": "<green>看板の作成に成功しました!",
+            "cannot_create": "<red>看板が生成されませんでした! アリーナの名前を確認してください!",
+            "unknown_game": "<red>看板に書かれているゲームが存在しません! 管理者に連絡してください!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>ゲーム",
+                "players": "<red>無効"
+            },
+            "rebuilding": {
+                "status": "<gold>再構築中",
+                "players": "<gold>アリーナ"
+            },
+            "running": {
+                "players": "<red><players><dark_gray>/<red><maxplayers>",
+                "status": "<green>起動中"
+            },
+            "waiting": {
+                "status": "<gold>待機中",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "success": "<green>コマンドは成功しました!",
+    "list_header": "<green>利用可能なアリーナ:",
+    "statistics": {
+        "player_does_not_exist": "<red>プレイヤーが見つかりません！",
+        "header": "<green>:<red><player><green>の統計情報です。",
+        "kd": "<gray>K/D: <green><kd>",
+        "not_found": "<red>このプレーヤーの統計情報が見つかりません!",
+        "kills": "<gray>Kills。 <green><kills>",
+        "wins": "<gray>Wins。<green><wins>",
+        "loses": "<gray>Loses. <red><loses>",
+        "beds": "<gray>破壊したベット: <green><beds>",
+        "disabled": "<red>このサーバーでは、プレーヤーの統計情報が無効になっています!",
+        "deaths": "<gray>Deaths。 <yellow><deaths>",
+        "games": "<gray>プレイしたゲーム: <aqua><games>",
+        "score": "<gray>総合スコア: <green><score>"
+    },
+    "in_game": {
+        "errors": {
+            "game_already_running": "<red>ゲーム <gray><arena> <red>はすでに進行中です。実行中のゲームには参加できません!",
+            "you_are_not_in_game": "<red>あなたはゲーム中ではありません!",
+            "game_is_rebuilding": "<red>ゲーム <gray><arena><red>が再構築されてます! お待ちください...",
+            "not_in_any_game_yet": "<red>あなたはまだゲームに参加していません。",
+            "vip_not_enough_players": "<red>アリーナのプレイヤーが足りません!",
+            "game_is_gone": "<red>あなたが参加していたゲームはもう終了したようです。",
+            "game_kicked_by_vip": "<red>VIPプレイヤーに退出させられました！",
+            "game_not_found": "<red>ゲームが見つかりませんでした!",
+            "game_is_full": "<red>ゲーム <gray><arena> <red>がいっぱいです! ゲーム終了までお待ちください!",
+            "already_in_game": "<red>あなたはすでに何かのゲームに参加しています。",
+            "vip_game_is_full": "<red>ゲーム <gray><arena> <red>はVIPプレイヤーでいっぱいです。ゲーム終了までお待ちください!",
+            "there_is_no_empty_game": "<red>待機中のゲームはありません。すべてのゲームはすでに実行されています！",
+            "command_is_not_allowed": "<red>このコマンドは、ゲームの実行中には使用できません!"
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "<team><reset>のターゲットブロックを破壊!",
+                "bed": "<team><reset>のベッドが破壊された!",
+                "anchor": "<team><reset>の リスポーンアンカー が破壊されました!",
+                "cake": "<team><reset>のケーキが食べられました!",
+                "subtitle": "チームのメンバーを殺すことができるようになりました!",
+                "subtitle_victim": "あなたはもうリスポーンすることができません！",
+                "any_certain_popular_server": "<red><bold>指定のブロックが壊されました！",
+                "bed_certain_popular_server": "<red><bold>ベッドが破壊されました！",
+                "cake_certain_popular_server": "<red><bold>ケーキを食べました！",
+                "killable": "<team>メンバー全員を倒すことができるようになりました！",
+                "death_mode": "<dark_purple><bold>デスモード！",
+                "all_beds": "全てのベッドが破壊されました！",
+                "all_anchors": "すべてのアンカーが破壊されました！",
+                "all_target_blocks": "すべてのターゲットブロックが破壊されました！",
+                "all_cakes": "ケーキは全部食べました！",
+                "anchor_certain_popular_server": "<red><bold>アンカーが破壊されました！",
+                "door": "<team><reset>のドアが破壊されました！",
+                "door_certain_popular_server": "<red><bold>ドアが破壊されました！"
+            },
+            "hologram": {
+                "protect": {
+                    "any": "<teamcolor><bold>あなたのターゲットブロックを守ってください!",
+                    "bed": "<teamcolor><bold>あなたのベッドを守れ!",
+                    "cake": "<teamcolor><bold>あなたのケーキを守れ！",
+                    "anchor": "<teamcolor><bold>あなたのリスポーンアンカーを守れ!",
+                    "door": "<teamcolor><bold>ドアを守ろう！"
+                },
+                "destroyed": {
+                    "bed": "<gray><bold>ベットが破壊された。",
+                    "anchor": "<gray><bold>リスポーンアンカーが破壊された。",
+                    "any": "<gray><bold>ターゲットブロックが破壊された。",
+                    "cake": "<gray><bold>ケーキが食べられました。",
+                    "door": "<gray><bold>ドアが破壊されています。"
+                },
+                "destroy": {
+                    "any": "<teamcolor><bold>このターゲットブロックを破壊せよ!",
+                    "bed": "<teamcolor><bold>このベッドを破壊せよ!",
+                    "cake": "<teamcolor><bold>このケーキを食べよう!",
+                    "anchor": "<teamcolor><bold>このリスポーンアンカーを破壊せよ!",
+                    "door": "<teamcolor><bold>この扉を破壊してください！"
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title": "<green>: <red><time>でリスポーンします",
+            "title_cancel": "<red>チームが全滅 :("
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <aqua>秒",
+            "countdown_custom": "<yellow><value> <aqua><unit>",
+            "every_second": "<aqua>毎秒",
+            "not_enough_level": "<red>スポナーが動作しません! <levels>レベルごとにアップグレードする必要があります。",
+            "countdown_custom_hypixel": "<red><value> <yellow><unit>でスポーンします",
+            "tier": "<yellow>Tier <red><tier>です",
+            "full": "<red><bold>スポナーが枯渇してます",
+            "full_hypixel": "<red><bold>スポナーがいっぱいです",
+            "countdown_hypixel": "<red><seconds> <yellow>秒ごとにスポーンします",
+            "full_certain_popular_server": "<red><bold>スポナーがいっぱいです！",
+            "countdown_custom_certain_popular_server": "<yellow>は<red><value> <yellow><unit> で出現",
+            "countdown_certain_popular_server": "<yellow>は<red><seconds> <yellow>秒で出現",
+            "reached_maximum_level": "<red>スポナーが最大レベルに達しました！"
+        },
+        "resources": {
+            "bronze": "ブロンズ",
+            "iron": "アイアン",
+            "gold": "ゴールド",
+            "netherite": "ネザライト",
+            "diamond": "ダイヤモンド",
+            "emerald": "エメラルド"
+        },
+        "shop": {
+            "page_back": "ページを戻す",
+            "page_forward": "ページ送り",
+            "price": "価格:",
+            "amount": "金額:",
+            "buy_success": "<green><gray><item><green>を<gray><material><green>で購入することに成功しました!",
+            "name": "店",
+            "shop_back": "<red> カテゴリ一覧へ戻る",
+            "buy_failed": "<gray><item><red><red>を買うためのアイテムがありません！ <gray><material><red>が必要です！",
+            "upgrade_success": "<green><name> は、「<spawner>」をレベル <level> にアップグレードしました！",
+            "upgrade_translate": "アップグレード"
+        },
+        "team_selection": {
+            "inventory_name": "チーム選択 - <arena>",
+            "full": "<red>チーム <team><red>は満員です！",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>チームは満員です!",
+            "select_item_lore_join": "クリックしてチームに参加してください!",
+            "selected": "<green>選択したチーム: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full_no_change": "<red>チーム<team><red>は満員です。あなたは<oldteam><red>に残りました!",
+            "already_selected": "<green>あなたはすでにチームに入っています。<team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]]となっています"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>チームを選択",
+            "leave_from_game_item": "<red>ゲームから退出",
+            "start_game_item": "<dark_green>ゲームスタート"
+        },
+        "bossbar": {
+            "waiting": "<red>まもなくゲームが始まります!",
+            "running": "<green>ゲームスタート! 頑張ってください！"
+        },
+        "end": {
+            "you_won": "<green>あなたのチームが勝ちました!",
+            "you_lost": "<red>あなたのチームは負けた!",
+            "game_end": "<red>ゲーム終了! お疲れ様でした!",
+            "team_win": "<green>チーム<reset><team><green>が<gray><time>で試合に勝ちました",
+            "game_ended_too_early": "<red>ゲーム終了が早すぎます。誰も勝てません。"
+        },
+        "respawn_protection": {
+            "end": "<red>リスポーンの保護がなくなりました!",
+            "remaining": "<red>リスポーンの保護は<white><time><green>秒でなくなります!"
+        },
+        "cheat": {
+            "invalid_player": "<red>指定されたプレイヤーは、どのゲームにも参加していないか、観客です!",
+            "received_kill": "<green>プレイヤー<gray><player><green>がチートで殺された!",
+            "special_item_used": "<green>スペシャルアイテム<gray><item></gray>が使用されました!",
+            "game_not_running": "<red>ゲームが起動しているときにしかチートはできません！",
+            "please_provide_valid_cheat_type": "<red>提供されたチート タイプが無効である、または存在しません！",
+            "received_give": "<green>プレイヤー<gray><player><green>が<gray><amount><green>の<gray><resource>を手に入れました",
+            "region_regenerated": "<green>アリーナの領域<gray><arena></gray>が再生されました!",
+            "game_forced": "<green>ゲームは１つの空のチームで開始されるため、プラグインが正しく機能するために少なくとも２つのチームがゲームに参加しています。勝つためにそのターゲットを無効にします！ <gray>保護されていないので、あなたにとっては簡単ではありませんよね？",
+            "received_target_invalidated": "<green>チーム <gray><team></gray> のターゲットが無効化されました！<gray>そのチームのプレイヤーはもうあなたを好きではありません:(",
+            "game_not_waiting": "<red>このチートは、ゲームが待機状態のときにのみ実行できます!",
+            "team_does_not_exist": "<red>チーム <gray><team></gray> は存在しません!",
+            "team_is_not_in_game": "<red>チーム <gray><team></gray> は現在ゲームに参加していないため、このチートは実行できません！",
+            "unknown_target": "<red>コマンドは、チーム <gray><team></gray> のターゲットを無効にする方法を知りません！",
+            "target_is_not_valid": "<red>チーム <gray><team></gray> のターゲットは既に無効になっているため、無効にできませんでした！",
+            "received_targets_invalidated": "<green>ゲーム内のすべてのチームのすべての可能なターゲットが無効になりました！<gray>これでゲームが少し速くなります。",
+            "team_random_failed": "<red>アルゴリズムがランダムなチームを選択できませんでした. <grey>それは奇妙なことです。",
+            "received_team_join": "<green>プレイヤーと<gray><プレイヤー></gray>がチーム <gray><team></gray> に参加しました！",
+            "cheat_failed": "<red>チートは不明な理由で失敗しました。"
+        },
+        "join": "<name> <green>がゲームに参加しました！<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "leave": "<name> <red>がゲームを退出した！",
+        "player_self_killed": "<red>プレイヤーが <victim> <red>死亡しました!",
+        "game_start_title": "<green>ゲームスタート!",
+        "economy_missing_coins": "<red>このゲームに参加するには<yellow><coins> <currency><red>が必要です!",
+        "game_start_subtitle": "<green>ゲーム<gray><arena><green>が始まりました! ゲームをお楽しみください！",
+        "player_killed": "<red>プレイヤー <killer><red>が <victim>を殺した!",
+        "economy_deposited": "<green>残高に<gray><coins> <currency><green>を追加しました!",
+        "messages": {
+            "game_start": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <white><bold>ベッドウォーズ</bold>",
+                "     <yellow><bold>を集めて、自分自身とチームをアップグレードしましょう。</bold>",
+                "    <yellow><bold>ベッドを守り、敵のベッドを破壊してください。</bold>",
+                "     <yellow><bold>強力なアップグレードにアクセスできます。</bold>",
+                "<yellow><bold><resources></bold>",
+                "            <yellow><bold>強力なアップグレードに参加可能です。</bold>",
+                "None",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+            ],
+            "game_over_statistics": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <yellow><bold>ベッドウォーズ</bold>",
+                "                             <team_color><win_team>",
+                "                             <winners>",
+                "                             <winners>",
+                "    <gold><bold>2位<gray> - <white><second_killer_name> <gray>- <white><second_killer_score></bold>",
+                "    <red><bold>3位<gray> - <white><third_killer_name> <gray>- <white><third_killer_score>/bold>",
+                "    <gold><bold>2番目<gray> - <white><second_killer_name> <gray>- <white><second_killer_score></bold>",
+                "    <red><bold>3番目<gray> - <white><third_killer_name> <gray>- <white><third_killer_score>/bold>",
+                "None",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+            ]
+        },
+        "scoreboard": {
+            "you": "<gray>あなた",
+            "state": {
+                "waiting": "<white>ちょっと待ってね...",
+                "countdown": "<white>と<green>を<countdown>秒後に開始"
+            },
+            "mode": {
+                "solo": "ソロ",
+                "doubles": "ダブルス",
+                "triples": "トリプル",
+                "squads": "スクワッド"
+            }
+        },
+        "record": {
+            "no": "<aqua>このゲームをプレイするのはこれが初めてです。新記録を飾るのはどうですか？",
+            "current": "<aqua>このゲームの現在の記録は、<gray><time><aqua> が <gray><team-members><aqua> によって達成されました！"
+        },
+        "kicking_in": "<red>アリーナから出る場合：<gray><time>"
+    },
+    "help": {
+        "title": "DoorWars <version> - ヘルプ",
+        "title_console": "DoorWars <version> - コンソール用ヘルプ",
+        "bw_join": "/dw join\\<arena> - <green>ゲームに参加",
+        "bw_stats": "/dw stats - <green>自分の統計情報を表示する",
+        "bw_rejoin": "/dw rejoin - <green>前回参加したゲームに再度参加する",
+        "bw_autojoin": "/dw autojoin - <green>最初の待ち受けに参加する",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>メインロビーを有効にするか、メインロビーの位置を設定します",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add [variant] - <yellow>新しいエリアを作成",
+        "bw_admin_lobby": "/dw admin \\<arena> lobby - <yellow>ロビーの位置を自分の位置に設定します",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>アリーナの1個目の端を自分の位置に設定します",
+        "bw_admin_pos2": "/dw admin \\<arena> pos2 - <yellow>アリーナの2個目の端を自分の位置に設定します",
+        "bw_admin_lobby_pos2": "/dw admin \\<arena> lobbypos2 - <yellow>ロビーの2個目の端を自分の位置に設定する",
+        "bw_admin_pausecountdown": "/dw admin \\<arena> pausecountdown \\<seconds> - <yellow>ゲーム開始前の一時停止時間を設定します",
+        "bw_admin_minplayers": "/dw admin \\<arena> minplayers \\<minimum> - <yellow>ゲーム開始に必要な最低人数の設定",
+        "bw_admin_team_add": "/dw admin \\<arena>team add \\<team> \\<color> \\<max players> - <yellow>ゲームにチームを追加する",
+        "bw_admin_team_color": "/dw admin \\<arena> team color \\<team> \\<color> - <yellow>チームカラーの変更",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>チームのスポーンを自分の位置に設定",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>エンティティを使ってチームに接続する機能を設定する",
+        "bw_admin_spawner_change_type": "/dw admin <pre><arena></pre> spawner changeType <pre><type></pre> - <yellow>自分の位置にあるスポナーのタイプを変更する",
+        "bw_admin_spawner_custom_name": "/dw admin <pre><arena></pre> spawner customName <pre><name></pre> - <yellow>自分の位置にあるスポナーのカスタム名を設定する",
+        "bw_admin_spawner_hologram": "/dw admin <pre><arena></pre> spawner hologram <pre><true|false></pre> - <yellow>スポナー上部のホログラムの有効/無効",
+        "bw_admin_spawner_floating": "/dw admin <pre><arena></pre> spawner floating <pre><true|false></pre> - <yellow>スポナーのホログラムの下にあるフローティングブロックを有効/無効にします",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>すべてのスポナーを削除",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>店員を自分の位置から削除する",
+        "bw_admin_fee": "/dw admin <pre><arena></pre> fee <pre><fee></pre> - <yellow>アリーナに入るために必要なエコノミー料金を設定します。",
+        "bw_admin_arena_time": "/dw admin <pre><arena></pre> arenatime <pre><type></pre> - <yellow>アリーナでの時間設定（昼、夜など）",
+        "bw_admin_display_name": "/dw admin <pre><arena></pre> displayName <pre><name|off></pre> - <yellow>アリーナの表示名の設定",
+        "bw_admin_remove": "/dw admin <pre><arena></pre> remove - <red>アリーナを削除する",
+        "bw_admin_save": "/dw admin <pre><arena></pre> save - <green>ゲームを保存して起動します!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>サーバー上のすべてのプレイヤーをベッドウォーズのゲームに参加させる",
+        "bw_admin_store_child": "/dw admin <pre><arena></pre> store child - <yellow>この店員を子供としてマークします",
+        "bw_migrate": "/dw migrate <pre><plugin></pre> - <yellow>別のDoorWarsプラグインから設定を移行します。",
+        "bw_cheat_give": "/dw cheat give <pre><resource></pre> [amount] [player] - <red>プレイヤーに指定した量のリソースを与える",
+        "bw_cheat_kill": "/dw cheat kill [player] - <red>指定したプレイヤーを殺す",
+        "bw_cheat_build_pop_up_tower": "/dw cheat buildPopUpTower [game] - <red>ポップアップタワーを構築します",
+        "bw_cheat_rebuild_region": "/dw cheat rebuildRegion [game] - <red>ゲーム領域を再構築します",
+        "bw_leave": "/dw leave - <green>ゲームを退出します",
+        "bw_list": "/dw list - <green>アクティブなゲームのリスト",
+        "bw_leaderboard": "/dw leaderboard - <green>このサーバーのトッププレイヤーを表示します",
+        "bw_stats_other": "/dw stats [player] - <green>他のプレーヤーの統計情報を表示する",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>実行したプレイヤーのいる場所にホログラムを追加する",
+        "bw_removeholo": "/dw removeholo - <yellow>このコマンドを実行した後、プレイヤーはホログラフィック・スタティスティックを右クリックして削除することができます。",
+        "bw_admin_info": "/dw admin <pre><arena></pre> info [section] - <yellow>アリーナに関するすべての情報を表示します",
+        "bw_admin_spec": "/dw admin \\<arena> spec - <yellow>スペクテイターモードになったときののスポーンを自分の位置に設定します",
+        "bw_admin_lobby_pos1": "/dw admin \\<arena> lobbypos1 - <yellow>ロビーの1個目の端を自分の位置に設定する",
+        "bw_admin_time": "/dw admin \\<arena> time \\<seconds> - <yellow>ゲームの継続時間を設定",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>最大のチームプレーヤーの変更",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>チームのターゲットブロックを自分の目標位置に設定する（ベッドだけでなく、他のブロックでも可）",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources]</pre> - <yellow>自分の位置にアイテムスポナーを追加する",
+        "bw_admin_spawner_max_spawned_resources": "/dw admin <pre><arena></pre> spawner maxSpawnedResources <pre><value></pre> - <yellow>自分の位置にあるスポナーの最大スポーンリソース制限を設定します",
+        "bw_admin_spawner_rotation_mode": "/dw admin <pre><arena></pre> spawner rotationMode <pre><mode></pre> - <yellow>自分の位置にあるスポーンナーのフローティングホログラムの回転モードを設定します",
+        "bw_admin_spawner_hologram_type": "/dw admin <pre><arena></pre> spawner hologramType <pre><type></pre> - <yellow>自分の位置にあるスポーンナーのホログラムのタイプを設定します",
+        "bw_admin_spawner_linked_team": "/dw admin <pre><arena></pre> spawner linkedTeam <pre><team|null></pre> - <yellow>自分の位置のスポナーを指定したチームとリンクさせる",
+        "bw_admin_spawner_base_amount": "/dw admin <pre><arena></pre> spawner baseAmount <pre><amount></pre> - <yellow>スポナーが1サイクルあたりにスポーンするリソースの基本量を設定します",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [name above dealer head] [file with shop] [use main shop] - <yellow>自分の位置に店員を追加する",
+        "bw_admin_store_type": "/dw admin <pre><arena></pre> store type <pre><living entity></pre> - <yellow>お店のエンティティタイプを設定します（村人、馬、牛、豚など）",
+        "bw_admin_config": "/dw admin <pre><arena></pre> config <pre><constant> <value></pre> - <yellow>ゲーム用の定数変数の値を設定",
+        "bw_admin_arena_weather": "/dw admin <pre><arena></pre> arenaweather <pre><type></pre> - <yellow>アリーナの天候を設定する（デフォルト、晴れ、雨など）",
+        "bw_admin_post_game_waiting": "/dw admin <pre><arena></pre> postgamewaiting <pre><seconds></pre> - <yellow>プレイヤーがアリーナからテレポートされるまでの待ち時間を設定します",
+        "bw_admin_customprefix": "/dw admin <pre><arena></pre> customprefix <pre><name|off></pre> - <yellow>アリーナのカスタムプレフィックスを有効にする",
+        "bw_admin_edit": "/dw admin <pre><arena></pre> edit - <yellow>ゲームをオフにして、アリーナを編集モードに切り替えます",
+        "bw_admin_spawner_remove": "/dw admin <pre><arena></pre> spawner remove - <yellow>その場所のすべてのスポナーを削除します",
+        "bw_admin_store_adult": "/dw admin <pre><arena></pre> store adult - <yellow>この店員を大人としてマークします",
+        "bw_dump": "/dw dump - <yellow>サーバーをダンプして、そのダンプへのリンクを提供します。このリンクはサポートに役立ちます",
+        "bw_admin_interactive": "/dw admin <pre><arena></pre> interactive - <yellow>アリーナが編集モードの場合、このコマンドはインタラクティブモードを有効にします",
+        "bw_gamesinv": "/dw gamesinv <pre><inventory></pre> - <green>特定のゲームのインベントリを開きます",
+        "bw_reload": "/dw reload - <red>プラグインをリロードする",
+        "messages": {
+            "arguments": "引数",
+            "optional": "設定",
+            "showing_results_for_query": "クエリの検索結果を表示しています",
+            "no_results_for_query": "クエリの結果がありません",
+            "available_commands": "利用可能なコマンド",
+            "click_to_show_help": "クリックすると、このコマンドのヘルプが表示されます",
+            "page_out_of_range": "エラー:ページ <page> は範囲外です。 [1, <max_pages>] の範囲内である必要があります",
+            "click_for_next_page": "クリックして次のページへ",
+            "click_for_previous_page": "前のページへ",
+            "command": "コマンド",
+            "description": "説明",
+            "no_description": "説明なし"
+        },
+        "bw_admin_config_set": "/dw admin \\<arena> config set \\<data type> \\<constant> \\<value> - <yellow>ゲームの定数値を設定します",
+        "bw_admin_config_list_add": "/dw admin \\<arena> config list \\<data type> \\<constant> add \\<value> - <yellow>定数リストに新しい値を追加します",
+        "bw_admin_config_reset": "/dw admin \\<arena> config reset \\<constant> - <yellow>定数が変更された値にリセットします",
+        "bw_admin_config_list_set": "/dw admin \\<arena> config list \\<data type> \\<constant> set \\<position> \\<value> - <yellow>定数リストの位置の値を変更します",
+        "bw_admin_config_list_remove": "/dw admin \\<arena> config list \\<data type> \\<constant> remove \\<position> - <yellow>定数リスト内の位置から値を削除します",
+        "bw_admin_config_list_clear": "/dw admin \\<arena> config list \\<data type> \\<constant> clear - <yellow>継承するように設定せずに、定数のリストをきれイにします"
+    },
+    "games_inventory": {
+        "could_not_find_game": "<red>ゲームが見つかりませんでした！",
+        "unknown_inventory": "<red>未知のゲームのインベントリ<gray><type><red>!"
+    },
+    "update": {
+        "new_release": [
+            "<green>DoorWarsの新RELEASEバージョン<version>を公開しました!",
+            "<url>からダウンロードしてください"
+        ],
+        "patch_release": [
+            "<yellow>DoorWars<version>の新パッチリリースです!",
+            "<url> からダウンロードすることが可能です"
+        ]
+    },
+    "admin": {
+        "usage": "<red>使用法: /dw admin \\<arena> \\<add|edit|remove|save|...> ...",
+        "arena": {
+            "error": {
+                "already_exists": "<red>アリーナはすでに存在しています!",
+                "already_working_on_it": "<red>アリーナはすでに存在するが、完成していません!",
+                "arena_must_be_in_edit_mode": "<red>アリーナを編集モードにしてください!",
+                "arena_not_in_edit": "<red>アリーナが存在しないか、実行されています! <gray>/dw admin <pre><arena></pre> edit<red>で非アクティブにして、<gray>/dw admin <pre><arena></pre> saveでアクティブにしてください"
+            },
+            "success": {
+                "removed": "<red><b>アリーナ撤去!",
+                "added": "<green>アリーナ <gray><arena><green>を追加しました！",
+                "edit_mode": "<green>アリーナが編集モードに切り替わりました!",
+                "added_with_variant": "<green>アリーナ<gray><arena><green>追加! 古いゲームのバラエティ。<gray><variant><green>!"
+            },
+            "edit": {
+                "errors": {
+                    "invalid_countdown": "<red>カウントダウンは<lowest><×<highest>秒以内にしてください!",
+                    "set_bounds_first": "<red>スポーンを設定する前に、pos1とpos2の座標を設定してください（アリーナのサイズと位置を決める）!",
+                    "invalid_bounds": "<red>pos1とpos2の高さの差が小さすぎます。最小は5ブロックです!",
+                    "store_does_not_exist": "<red>Storeが存在しない!",
+                    "store_already_exist": "<red>Storeは既に存在しています！",
+                    "invalid_color": "<red>この色は無効です!",
+                    "max_players": "<red>最大プレイヤー数は>=1でなければなりません!",
+                    "team_does_not_exist": "<red>このチームは存在しない!",
+                    "team_already_exists": "<red>このチームはすでに存在しています!",
+                    "set_bounds_before_save": "<red>ゲームを保存する前に、pos1とpos2の座標を設定してください（アリーナのサイズと位置を決定する）!",
+                    "set_spec_before_save": "<red>ゲームを保存する前に、スペクテイターのスポーンを設定してください！",
+                    "set_target_block_for_team_before_save": "<red>ゲームを保存する前に、チーム<gray><team><red>のターゲットブロックを設定してください!",
+                    "set_spawn_for_team_before_save": "<red>ゲームを保存する前に、<gray><team><red>チームのスポーンを設定してください!",
+                    "invalid_min_players": "<red>最小のプレーヤーは2人以上でなければなりません!",
+                    "invalid_arena_time": "<red>アリーナのワールドタイムのタイプが違います！",
+                    "invalid_arena_weather": "<red>アリーナの世界の天気のタイプが違います!",
+                    "invalid_bar_color": "<red>BOSS BARの色が違います!",
+                    "invalid_time": "<red>時間<gray><number><red>が無効です!",
+                    "no_spawner": "<red>この位置にはスポナーがありません!",
+                    "multiple_spawners": {
+                        "first_line": "<red>同じ場所に複数のスポナーがありますので、特定のスポナーを選択してください。",
+                        "line": "- <type> - <gray><command></gray>"
+                    },
+                    "must_be_in_same_world": "<red>すべてのコマンドは同じ世界で実行されなければなりません！",
+                    "must_be_in_bounds": "<red>場所はアリーナ内に置かなければなりません（pos1とpos2の座標）!",
+                    "invalid_spawner_type": "<red>スポナーはブロンズ、アイアン、ゴールド、またはカスタム設定でなければなりません!",
+                    "invalid_spawner_level": "<white>間違ったレベル番号です。デフォルトのレベル1が使用されました。",
+                    "need_2_teams": "<red>ゲームには2つ以上のチームが必要です!",
+                    "spawners_needed": "<red>ゲームには少なくとも1つのアイテムスポナーが必要です!",
+                    "set_lobby_before_save": "<red>ゲームを保存する前に、ロビーのスポーンを設定してください!",
+                    "set_stores_before_save": "<red>ゲームを保存する前に、最低でも1つの店舗を追加してください！",
+                    "set_spawners_before_save": "<red>ゲームを保存する前に、少なくとも1つのスポナーを追加してください！",
+                    "invalid_constant_value": "<red>間違った値! <gray>true<red>、<gray>false<red>、<gray>inherit<red>のいずれかです!",
+                    "invalid_constant_name": "<red>定数の名前が違います!",
+                    "invalid_entity_type": "<red>エンティティータイプが違います！",
+                    "npc_must_have_skin_name": "<red>エンティティタイプが「PLAYER」の場合、スキン名を<gray>PLAYER:[スキンの所有者]の形式で指定する必要があります",
+                    "invalid_variant": "<red>ゲームバリアント<gray><variant><red>が存在しません!",
+                    "invalid_constant_position": "<red>定数リストに載っている、メンバーの位置が間違っています！",
+                    "invalid_constant_enum_value": "<red>無効な値です。<gray><value></gray>！ 以下のいずれかの文を選んでください：<gray><values>",
+                    "cannot_rename_team": "<red>チーム名を変更できません。( <gray><team><red> から <gray><new-team><red>へ！ ) この名前はすでに使われています！",
+                    "missing_spawners": "<yellow>ゲームにはスポナーはありません。",
+                    "missing_stores": "<yellow>ゲームにはお店がありません。",
+                    "weird_store_count": "<yellow>このゲームのお店数は、「<gray><count><yellow>」です。これはチーム数の倍数ではないです。数は正しいですか？",
+                    "skip_warnings": "<yellow>このゲームを保存したい場合は、(ゲーム名：<gray><game><yellow>) このコマンドを実行してください：<gray><command>",
+                    "team_spawn_set_blocked": "<red>チーム「<gray><team><red>」は、複数のスポーンポイントを持っているため、setコマンドの使用は許可されていません。",
+                    "team_spawn_on_the_same_block": "<red>この位置にはすでにスポーンポイントがあります。回転場所を変更したい場合は、まずはスポーンポイントを外してください。",
+                    "team_no_spawn_there": "<red>この位置にはスポーンポイントはありません。",
+                    "nothing_in_hand": "<red>あなたの手には何もアイテムを持っていません！",
+                    "invalid_item": "<red>値<gray><item><red>は、有効なアイテムではありません！",
+                    "invalid_prefab": "<red><gray><name><red> というプレハブが変数<gray><variant><red>に設定されていません！",
+                    "overlapping_arenas": "<red>選択した場所によりアリーナが、別のアリーナと重なり、エラーが発生する可能性があります。別の場所を選択してください。この場所を使用したい場合は、<gray><command>を実行してください"
+                },
+                "success": {
+                    "team_spawn_set": "<green>チーム<gray><team><green>のスポーンを位置XYZに設定することに成功しました。<gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_maxplayers_set": "<green>チーム<gray><team><green>に所属するプレイヤーの最大数を<gray><maxplayers>に設定することに成功しました",
+                    "team_color_set": "<green> <gray><team><green>の色を<teamcolor>に設定することに成功しました",
+                    "team_removed": "<green>チーム<gray><team><green>の削除に成功しました！",
+                    "spawners_removed": "<green>ゲーム<gray><arena><green>のスポナーをすべて削除しました!",
+                    "store_removed": "<green>位置XYZのビレッジアイテム。<gray><x>/<y>/<z><green>の削除に成功しました!",
+                    "lobby_spawn_set": "<green>ロビースポーンをXYZの位置に設定しました。<gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos2_set": "<green>アリーナ<gray><arena><green>のポジション2をXYZ<gray><x>/<y>/<z>に設定されました",
+                    "pos1_set": "<green>アリーナ<gray><arena><green>のポジション1をXYZ<gray><x>/<y>/<z>に設定されました",
+                    "lobby_pos1_set": "<green> アリーナ<gray><arena><green>のロビー位置1をXYZ<gray><x>/<y>/<z>に設定されました",
+                    "lobby_countdown_set": "<green>ロビーのカウントダウンが<gray><countdown>に設定されました",
+                    "game_time_set": "<green>ゲームタイムが<gray><time>に設定されました",
+                    "arena_time_set": "<green>アリーナのワールドタイムが<gray><time><green>に設定されました!",
+                    "weather_set": "<green>アリーナのワールドの天気が<gray><weather><green>に設定されました!",
+                    "store_entity_type_set": "<green>ストアのエンティティ・タイプが<gray><type><green>に設定されました!",
+                    "removed_spawners": "<gray><count> <green>スポナーが<gray><x>/<y>/<z>から削除されました",
+                    "post_game_waiting": "<green>ゲーム後の待ち時間を<gray><number><green>に設定することに成功しました!",
+                    "custom_prefix_enabled": "<green>カスタムプレフィックスを<gray><prefix><green>に設定することに成功しました。",
+                    "custom_prefix_disabled": "<green>Custom prefixの無効化に成功しました。",
+                    "spawner_hologram_disabled": "<green>この<type>のスポナーのホログラムは<gray>無効<green>になりました。",
+                    "spawner_floating_enabled": "<green>この<type>のスポナーのフローティングブロックが<gray>有効<green>になりました。",
+                    "spawner_base_amount_set": "<green>この<type>スポナーのリソースのベース量が<gray><amount><green>に設定されました。",
+                    "spawner_team_linked": "<green>この<type>のスポナーは<team>チームにリンクされています。",
+                    "spawner_team_unlinked": "<green>この<type>のスポナーはどのチームにもリンクしていません。",
+                    "spawner_rotation_mode_set": "<green>この<タイプ>のスポナーのホログラムの回転モードが<gray><rotation><green>に設定されました。",
+                    "spawner_custom_name_set": "<green>この<type>のスポナーのカスタムネームが<gray><name><green>に設定されました。",
+                    "spawner_type_changed": "<green>この<type>のスポナーのタイプが<new_type>に変更されました。",
+                    "display_name_enabled": "<green>表示名を<gray><display_name><green>に設定することに成功しました。",
+                    "fee_set": "<green>アリーナの入場料を<gray><fee><green>に設定することに成功しました。",
+                    "saved_and_started": "<green>ゲームの保存に成功し、起動しています! これで、アリーナに参加してプレイできるようになりました!",
+                    "target_block_set": "<green>チーム<gray><material><green>のターゲットブロック(<gray><material><green>)を位置XYZに設定することに成功しました。<gray><x>/<y>/<z>となります",
+                    "team_created": "<green>チーム<gray><team><green>の作成に成功しました。色は<teamcolor><green>、選手数は最大です。<gray><maxplayers>です",
+                    "spawner_added": "<green>スポナー<gray><resource><green>をポジションXYZに追加することに成功しました。<gray><x>/<y>/<z>となります",
+                    "store_added": "<green>自分の位置に店舗が追加されました。<gray><x>/<y>/<z> <green>YAW：<gray><yaw> <green>PITCH：<gray><pitch>",
+                    "spec_spawn_set": "<green>スペクテイターのスポーンをXYZの位置に設定しました。 <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "lobby_pos2_set": "<green> アリーナ<gray><arena><green>のロビー位置2をXYZ<gray><x>/<y>/<z>に設定されました",
+                    "min_players_set": "<green>最小のプレーヤーを<gray><min><green>に設定することに成功しました!",
+                    "constant_set": "<green>定数<gray><config><green>を<gray><value><green>に設定することに成功しました!",
+                    "bar_color_set": "<green>ボスバー<gray><type><green>の色を<gray><color><green>に設定しました!",
+                    "child_state": "<green>この店員さんの変数isBabyは<gray><value>に変更されました",
+                    "spawner_hologram_enabled": "<green>この<type>のスポナーのホログラムが<gray>有効<green>になりました。",
+                    "spawner_floating_disabled": "<green>この<type>のスポナーのフローティングブロックが<gray>無効<green>になりました。",
+                    "spawner_max_spawned_resources_set": "<green>この<type>スポナーの最大スポーンリソース制限が<gray><amount><green>に設定されました。",
+                    "spawner_hologram_type_set": "<green>この<type>スポナーのホログラムタイプが<gray><type><green>に設定されました。",
+                    "display_name_disabled": "<green>表示名の無効化に成功しました。",
+                    "target_none_set": "<green>チーム「<gray><team><green>」は、ターゲットなしでプレイします。つまり、彼らはリスポーンできません！",
+                    "target_not_properly_balanced": "<yellow>ターゲットは設定されましたが、すべてのチームが同じターゲットタイプを持っていないため、ゲームがバランスを欠いている可能性があります。変更を検討してください。",
+                    "target_countdown_set": "<green>チーム「<gray><team><green>」の目標カウントダウンは、「<gray><countdown><green>秒」に正常に設定されました！",
+                    "target_block_countdown_set": "<green>指定ブロック (<gray><material><green>) のチーム「<gray><team><green>」は、位置に正常に設定されました。 座標(XYZ): <gray><x>/<y>/<z><green> カウントダウンは、「<gray><countdown><green>秒」に設定されました！",
+                    "team_multiple_spawns_ad": "<aqua>チームに複数のスポーンポイントを設定しますか？もしそうであるなら、以下のコマンドを実行してください。<gray><command>",
+                    "team_spawn_added": "<green>チーム「<gray><team><green>」のスポーンが座標(XYZ): <gray><x>/<y>/<z> <green>位置: <gray><yaw> <green>目線: <gray><pitch>は正常に追加されました",
+                    "team_spawn_removed": "<green>チーム「<gray><team><green>」のスポーンが位置XYZ: <gray><x>/<y>/<z>から正常に削除されました",
+                    "team_spawn_reset": "<green>チーム「<gray><team><green>」のすべてのスポーンを削除しました。",
+                    "team_spawn_list": "<green>チーム「<gray><team><green>」は、以下の位置に<gray><count><green>個のスポーンポイントを持っています：",
+                    "team_spawn_list_entry": "- <green>XYZ: <gray><x>/<y>/<z> <green>位置: <gray><yaw> <green>視点: <gray><pitch>",
+                    "team_spawn_list_no": "<red>チーム「<gray><team><red>」にはまだスポーンポイントがありません。",
+                    "team_renamed": "<green>チーム「<gray><team><green>」は、「<gray><new-team><green>」に正常に名前が変更されました！",
+                    "store_name_set": "<green>座標(XYZ)：<gray><x>/<y>/<z><green>にある、お店の名前は、「<gray><name><green>」に変更されました！",
+                    "store_name_reset": "<green>お店がある位置座標(XYZ): <gray><x>/<y>/<z><green> これ以上のカスタム名はもうありません！",
+                    "store_file_set": "<green>座標XYZ：<gray><x>/<y>/<z><green>にあるお店のファイルは、「<gray><file><green>」に変更されました！",
+                    "store_file_reset": "<green>お店がある座標(XYZ): <gray><x>/<y>/<z><green> これ以上カスタムファイルはありません！",
+                    "constant_list_added": "<green>値「<gray><value><green>」が、「<gray><config><green>」リストの位置「<gray><position><green>」に正常に追加されました！",
+                    "constant_list_removed": "<green>位置「<gray><position><green>」の値が、「<gray><config><green>」リストから削除されました！",
+                    "constant_list_cleared": "<green>リスト「<gray><config><green>」は空になりましたが、継承されたものには戻りません！",
+                    "constant_reset": "<green>定数「<gray><config><green>」は継承された値に正常にリセットされました！",
+                    "spawner_initial_interval_reset": "<green>この「<type>」スポナーの初期間隔が、設定またはカスタムで定義されたデフォルト値にリセットされました。",
+                    "spawner_spread_set": "<green>この<type>スポナーの広がりは、<gray><spread><green>に設定されました。",
+                    "spawner_spread_reset": "<green>この<type>スポナーの広がりは、設定ファイルまたはカスタムで定義されたデフォルト値にリセットされました。",
+                    "spawner_initial_interval_set": "<green>この「<type>」スポナーの初期間隔が、「<gray><interval> <unit><green>」に設定されました。"
+                }
+            }
+        },
+        "mainlobby": {
+            "info": "<red>WARNING<white>: Mainlobbyを動作させるには、/dw reloadを実行する必要があります!"
+        },
+        "holo": {
+            "added": "<green>ホログラフィックがあなたのポジションに追加されました!",
+            "not_enabled": "<red>Holographicは無効です。",
+            "click_to_remove": "<yellow>削除したいホログラムをクリックしてください!",
+            "removed": "<green>ホログラフィックの削除に成功しました！"
+        },
+        "team_join_entity": {
+            "entity_not_compatible": "<red>使用しようとしているエンティティーは互換性がありません。エンティティかアーマースタンドしか使えません!",
+            "entity_added": "<green>チームへの参加が追加されました!",
+            "click_right_on_entity": "<green>次に、チームへの参加を設定したいエンティティの上で右クリックします。<gray><team>の場合"
+        },
+        "npc": {
+            "now_click": "<yellow>編集したいNPCの上で右クリックします。",
+            "no_longer_editing": "<green>どのNPCも編集できなくなりました。<gray>/dw npc select<green>で新しいNPCを選択してください。",
+            "should_not_look": "<green>NPCがプレイヤーを見ないようになりました！",
+            "requires_value": "<green>このアクションは、値を指定する必要があります！",
+            "added": "<green>新しいnpcが追加されました。位置XYZ<gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+            "editing": "<green>あなたは今、XYZの位置<gray><x>/<y>/<z>でNPCを編集しています",
+            "not_editing": "<red>あなたはどのNPCも編集していません!<gray>/dw npc select で選択してください",
+            "should_look": "<green>NPCがプレイヤーを見るようになりました！",
+            "action_set": "<green>このNPCのアクションは、引数\"<gray><value><green>\"で<gray><action><green>に設定されました",
+            "removed": "<green>NPCが削除されました!",
+            "skin_changed": "<green>スキンを変更しました！",
+            "skin_change_failed": "<red>スキンの変更ができませんでした!"
+        },
+        "hologram": {
+            "line_added": "<緑>ホログラムの端に新しいラインが追加されました。<white> <line>",
+            "line_removed": "<green>ホログラムの行番号<gray><linenumber><green>が削除されました!",
+            "theres_no_line_number": "<red>番号<linenumber>の行がありません",
+            "reset": "<green>ホログラムがリセットされました。",
+            "line_set": "<green>ホログラムのライン番号<gray><linenumber><green>が<white><line>に設定されました",
+            "invalid_number": "<red>ライン番号は0より大きい必要があります!"
+        },
+        "info": {
+            "header": "<green>競技場の詳細です。",
+            "status": "<gray>ステータス: <reset><status>",
+            "status_disabled": "<red>無効化",
+            "status_waiting": "<yellow>プレイヤーを待っています",
+            "status_running": "<green>ゲーム実行中",
+            "status_rebuilding": "<yellow>再構築中",
+            "world": "<gray>ワールド: <reset><world>",
+            "pos2": "<gray>ポジション2：<white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>スペクタイターの位置。<white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>チーム:",
+            "team": "- <team><reset>（最大プレイヤー数：<gray><maxplayers><reset>）",
+            "team_spawn": "  <gray>チームスポーン。<white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_target": "  <gray>ベッド：<white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>スポナー:",
+            "name": "<gray>名前: <reset><name>",
+            "status_disabled_in_edit": "<red>無効<reset> (<yellow>編集モード<reset>)",
+            "pos1": "<gray>ポジション1：<white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>ロビーのポジション。<white>ワールド<gray><world> <white>XYZ<gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_shop_name": "  店名: <gold><file><reset> (メインからの継承: <gray><bool><reset>)",
+            "constants": "<gray>コンスタントな設定。",
+            "post_game_waiting": "<gray>ゲーム後の待ち時間<white><time> s",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>ホログラム: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villagers": "<gray>店:",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>です",
+            "villager_entity_type": "  タイプ: <green><type>",
+            "villager_shop": "  ひとつの店があります: <gray><bool>",
+            "villager_shop_dealer_name": "  頭上にディーラーのカスタムネーム<name><reset>を表示します",
+            "villager_shop_dealer_has_no_name": "<red>名前が設定されてないです",
+            "lobby_countdown": "<gray>ゲーム開始前のカウントダウン<white><time>s",
+            "game_time": "<gray>ゲームの長さ<white><time> s",
+            "constant": "- <gray><constant><reset>: <gray><value>です",
+            "constant_true": "<green>有効",
+            "constant_false": "<red>無効",
+            "constant_inherit": "<yellow>プラグインの設定を継承しています",
+            "spawner_no_team": "<red>チームがありません",
+            "file": "<gray><i>ファイル: <file>",
+            "min_players": "<gray>最小プレイヤー数: <reset><minplayers>",
+            "value": "値",
+            "data_type": "データ種類",
+            "default_value": "<yellow>設定ファイルまたは値ファイルのデフォルト値を使用します",
+            "config": "<gray><configured-component>の構成",
+            "key": "Key(キー)"
+        },
+        "info_select": {
+            "header": "<green> <gray><arena><green>の情報欄を選択してください。",
+            "base": "<green>基本情報<white> - <gray><command>",
+            "stores": "<green>店舗一覧<white> - <gray><command>",
+            "spawners": "<green>スポナー一覧<white> - <gray><command> - <gray><command>",
+            "teams": "<green>チーム一覧<white> - <gray><command>",
+            "config": "<green>構成<white> - <gray><command>",
+            "click": "<aqua>クリックで<gray><command><aqua>を実行!"
+        },
+        "group": {
+            "invalid_group_name": "<red>無効なグループ名です。「<gray><group><red>」！名前には英数字、-(ハイフン)、_(アンダーバー)のみを入れる必要があります！",
+            "empty": "<red>グループ「<gray><group><red>」は空いてますよ！",
+            "list": "<green>グループ内のゲームのリスト「<gray><group><green>」：",
+            "added": "<green>ゲーム「<gray><game><green>」が、グループ「<gray><group><green>」に追加されました！",
+            "removed": "<green>ゲーム「<gray><game><green>」が、グループ「<gray><group><green>」から削除されました！"
+        },
+        "remote": {
+            "does_not_exist": "<red>リモートゲーム<gray><name><red>は存在しません！",
+            "list": "<green>リモートゲームのリスト:",
+            "empty": "<red>設定されたリモート ゲームがありません！",
+            "list_format": "<gray><name><green>/<gray><uuid><green> - サーバー名: <gray><server><green>, ゲーム名: <gray><game>",
+            "list_format_no_game": "古いBungeeモード",
+            "deleted": "<green>リモートゲーム「<gray><name><green>」が正常に削除されました！",
+            "name_already_exists": "<red>「<gray><name><red>」はリモート ゲームまたはローカルゲームですでに使用されています",
+            "added_server": "<green>サーバー名「<gray><server><green>」に新しいリモートゲーム「<gray><name><green>」が正常に追加されました (古いBungeeモード)",
+            "added_server_game": "<green>サーバー名「<gray><server><green>」に識別子「<gray><game><green>」の下にある新しいリモートゲーム「<gray><name><green>」が正常に追加されました",
+            "set_server": "<green>リモートゲーム「<gray><name><green>」をサーバー名「<gray><server><green>」に正常に設定しました (古いBungeeモード)",
+            "set_server_game": "<green>リモートゲーム「<gray><name><green>」をサーバー名「<gray><server><green>」にあるゲーム「<gray><game><green>」に正常に設定しました",
+            "hub_did_not_send_packet": "<red>ハブサーバーからの参加パケットが10秒以内に受信されませんでした！サーバー管理者に連絡してください！"
+        }
+    },
+    "unknown_usage": "<red>引数が無効です！<dark_red>/dw help<red>を使ってヘルプをご覧ください！",
+    "safe_reload": "<green>すべてのゲームが停止するか、60秒待ってからプラグインを再読み込みしてください。",
+    "safe_reload_failed_to_stop_game": "<red>いくつかのゲームは時間内に停止できなかったので、アリーナが破損されている可能性があります！",
+    "specials": {
+        "trap": {
+            "caught": "<red>チーム<white><team><red>の罠にかかってしまった!",
+            "caught_team": "<white><player><red>が自分のチームの罠にかかりました!",
+            "built": "<green>罠を作りました! あとは誰かが引っかかるのを待ちましょう!"
+        },
+        "warp_powder": {
+            "multiuse": "<red>もう一つのWarpPowderはすでに起動されてます！",
+            "canceled": "<red>WarpPowderはキャンセルされました!",
+            "started": "<green>WarpPowderを開始しました! <gray><time><green>秒の間、動かないでください!"
+        },
+        "tracker": {
+            "target_found": "<white><target> <green>が発見されました<white><distance> <geen>ブロック離れています!",
+            "no_target_found": "<red>ターゲットが見つかりません！"
+        },
+        "rescue_platform": {
+            "not_in_air": "<red>これを使うには、空中にいる必要があります。",
+            "created_unbreakable": "<green>破壊不可のプラットフォームが生成されました！",
+            "created": "<green>プラットフォームが作成され、<white><time> <green>秒後に破壊されます。",
+            "destroy": "<red>プラットフォームは<white><time><red>秒後に破壊されます。"
+        },
+        "protection_wall": {
+            "not_usable_here": "<red>「プロテクションウォール」を作成するためのスペースがありません。",
+            "destroy": "<red>プロテクションウォールは<white><time><red>秒で破壊されます。",
+            "created_unbreakable": "<green>破れないプロテクションウォールができました!",
+            "created": "<green>プロテクションウォールが作成され、<white><time> <green>秒後に破壊されます。"
+        },
+        "tntsheep": {
+            "no_target_found": "<red>ターゲットが見つかりません!"
+        },
+        "arrow_blocker": {
+            "started": "<green>アローブロッカーが<white><time><green>秒間発動しました!",
+            "already_activated": "<赤>アローブロッカーがすでに起動しています!",
+            "ended": "<red>アローブロッカーが作動しなくなりました!"
+        },
+        "golem": {
+            "created": "<green>ゴーレムが召喚されました。"
+        },
+        "team_chest": {
+            "name": "<green><bold>チームチェスト",
+            "placed": "<green>新しいチームチェストを設置しました！",
+            "broken": "<red>あなたのチームチェストが壊れた!",
+            "not_yours": "<yellow>このチームのチェストはあなたのチームのものではありません!"
+        },
+        "item_delay": "<red>このアイテムを再度使用するには、<time>秒待つ必要があります!"
+    },
+    "leaderboard": {
+        "no_scores": "<gray>まだスコアはありません!",
+        "header": "<gold>DoorWars リーダーボード - トップ<nuber>プレイヤー",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>",
+        "holo_added": "<green>リーダーボードのホログラムがあなたのポジションに追加されました！"
+    },
+    "party": {
+        "inform_game_join": "<green>パーティーリーダーのゲームに参加する",
+        "warped": "<green>パーティーリーダーがあなたをここにワープさせました",
+        "command": {
+            "help": "/dw party warp - <yellow>すべてのプレイヤーを自分のゲームに、または自分の方にワープさせます",
+            "not_in_party": "<red>このコマンドはパーティーに参加していないとできません！",
+            "is_empty": "<red>パーティーにプレイヤーがいませんなので、誰もワープできません！",
+            "warped": "<green>パーティーのメンバーがワープしてしました。",
+            "invalid_arguments": "<red>引数の数が無効です! 詳細を知りたい場合は、/dw party help と入力してください。",
+            "not_party_leader": "<red>あなたはこのパーティーのリーダーではありません!"
+        }
+    },
+    "dump": {
+        "success": "<green>サーバーのダンプに成功しました。リンクです<dump>",
+        "failed": "<red>ダンプに失敗しました!",
+        "unknown_service": "<red>不明なサービス<gray><unknown_service><red>。許可される値は次のとおりです：<gray><allowed_values>"
+    },
+    "language": {
+        "invalid": "<red>指定された言語ファイルが読み込めませんでした！",
+        "success": "<green>言語の設定を<white>[<lang>]にすることに成功しました",
+        "usage_bw_lang": "使用法です。/dw lang <pre><locale></pre> - <yellow><red>Bed<white>Warsで使用するロケールを設定します",
+        "already_set": "言語です[<lang>]はすでにデフォルトの言語として設定されています!"
+    },
+    "migrate": {
+        "success": "<green><red><plugin><green>からの設定の移行に成功しました!",
+        "failure": "<red>設定の移行中に何か問題が発生しました。詳細は、コンソールをご覧ください。"
+    },
+    "unit": {
+        "hours": "時間",
+        "ticks": "ticks(ティックス)",
+        "tick": "tick(ティック)",
+        "second": "秒",
+        "seconds": "秒",
+        "minute": "分",
+        "minutes": "分",
+        "hour": "時間"
+    }
+}

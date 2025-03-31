@@ -415,11 +415,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .of(LangKeys.ADMIN_INFO_SELECT_BASE)
                                     .placeholder("command", Component
                                             .text()
-                                            .content("/bw admin " + gameName + " info base")
-                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info base"))
+                                            .content("/dw admin " + gameName + " info base")
+                                            .clickEvent(ClickEvent.runCommand("/dw admin " + gameName + " info base"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
-                                                    .placeholder("command", "/bw admin " + gameName + " info base")
+                                                    .placeholder("command", "/dw admin " + gameName + " info base")
                                                     .asComponent(sender)
                                             )
                                     )
@@ -429,11 +429,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .of(LangKeys.ADMIN_INFO_SELECT_STORES)
                                     .placeholder("command", Component
                                             .text()
-                                            .content("/bw admin " + gameName + " info stores")
-                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info stores"))
+                                            .content("/dw admin " + gameName + " info stores")
+                                            .clickEvent(ClickEvent.runCommand("/dw admin " + gameName + " info stores"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
-                                                    .placeholder("command", "/bw admin " + gameName + " info stores")
+                                                    .placeholder("command", "/dw admin " + gameName + " info stores")
                                                     .asComponent(sender)
                                             )
                                     )
@@ -443,11 +443,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .of(LangKeys.ADMIN_INFO_SELECT_SPAWNERS)
                                     .placeholder("command", Component
                                             .text()
-                                            .content("/bw admin " + gameName + " info spawners")
-                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info spawners"))
+                                            .content("/dw admin " + gameName + " info spawners")
+                                            .clickEvent(ClickEvent.runCommand("/dw admin " + gameName + " info spawners"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
-                                                    .placeholder("command", "/bw admin " + gameName + " info spawners")
+                                                    .placeholder("command", "/dw admin " + gameName + " info spawners")
                                                     .asComponent(sender)
                                             )
                                     )
@@ -457,11 +457,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .of(LangKeys.ADMIN_INFO_SELECT_TEAMS)
                                     .placeholder("command", Component
                                             .text()
-                                            .content("/bw admin " + gameName + " info teams")
-                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info teams"))
+                                            .content("/dw admin " + gameName + " info teams")
+                                            .clickEvent(ClickEvent.runCommand("/dw admin " + gameName + " info teams"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
-                                                    .placeholder("command", "/bw admin " + gameName + " info teams")
+                                                    .placeholder("command", "/dw admin " + gameName + " info teams")
                                                     .asComponent(sender)
                                             )
                                     )
@@ -471,11 +471,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .of(LangKeys.ADMIN_INFO_SELECT_CONFIG)
                                     .placeholder("command", Component
                                             .text()
-                                            .content("/bw admin " + gameName + " info config")
-                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info config"))
+                                            .content("/dw admin " + gameName + " info config")
+                                            .clickEvent(ClickEvent.runCommand("/dw admin " + gameName + " info config"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
-                                                    .placeholder("command", "/bw admin " + gameName + " info config")
+                                                    .placeholder("command", "/dw admin " + gameName + " info config")
                                                     .asComponent(sender)
                                             )
                                     )

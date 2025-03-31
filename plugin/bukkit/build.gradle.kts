@@ -53,3 +53,18 @@ runTestServer {
         }
     }
 }
+
+tasks.register("rewriteGeneratedFile") {
+    doLast {
+        val generatedFile = file("build/classes/java/main/plugin.yml")
+        if (generatedFile.exists()) {
+            val content = generatedFile.readText()
+            val updatedContent = content.replace("org.screamingsandals.bedwars.BedWarsPlugin_BukkitImpl", "nisan11.doorwars.BedWarsPlugin_BukkitImpl")
+            generatedFile.writeText(updatedContent)
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    finalizedBy("rewriteGeneratedFile")
+}

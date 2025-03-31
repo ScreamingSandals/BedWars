@@ -1,0 +1,492 @@
+{
+    "admin": {
+        "arena": {
+            "edit": {
+                "success": {
+                    "removed_spawners": "<gray><count> <green>spawner(y/ů) bylo smazáno z <gray><x>/<y>/<z>",
+                    "custom_prefix_disabled": "<green>Vlastní prefix byl úspěšně vypnut.",
+                    "saved_and_started": "<green>Hra byla úspěšně uložena a běží! Nyní se můžete připojit a hrát v aréně!",
+                    "target_block_set": "<green>Cílový blok (<gray><material><green>) týmu <gray><team><green> byl úspěšně nastaven na pozici XYZ: <gray><x>/<y>/<z>",
+                    "team_maxplayers_set": "<green>Maximální počet hráčů v týmu <gray><team><green> byl úspěšně nastaven na <gray><maxplayers>",
+                    "team_color_set": "<green>Barva týmu <gray><team><green> byla úspěšně nastavena na <teamcolor>",
+                    "team_removed": "<green>Tým <gray><team><green> byl úspěšně odebrán!",
+                    "spawners_removed": "<green>Všechny spawnery pro hru <gray><arena><green> byly odstraněny!",
+                    "spawner_added": "<green>Spawner <gray><resource><green> byl úspěšně přidán na pozici XYZ: <gray><x>/<y>/<z>",
+                    "store_added": "<green>Obchod byl přidán na vaši pozici: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "store_removed": "<green>Vesničan na pozici XYZ: <gray><x>/<y>/<z><green> byl úspěšně odstraněn!",
+                    "bar_color_set": "<green>Barva <gray><color><green> byla nastavena pro bossbar <gray><type><green>!",
+                    "store_entity_type_set": "<green>Entita obchodu byla nastavena na <gray><type><green>!",
+                    "child_state": "<green>Hodnota isBaby pro tohoto obchodníka byla nastavena na <gray><value>",
+                    "post_game_waiting": "<green>Čekací čas po hře byl nastaven na <gray><number><green>!",
+                    "custom_prefix_enabled": "<green>Vlastní prefix byl nastaven na <gray><prefix><green>.",
+                    "pos1_set": "<green>Pozice 1 arény <gray><arena><green> byla nastavena na pozici XYZ: <gray><x>/<y>/<z>",
+                    "pos2_set": "<green>Pozice 2 arény <gray><arena><green> byla nastavena na pozici XYZ: <gray><x>/<y>/<z>",
+                    "lobby_countdown_set": "<green>Lobby odpočet byl nastaven na <gray><countdown>",
+                    "game_time_set": "<green>Čas trvání hry byl nastaven na <gray><time>",
+                    "min_players_set": "<green>Úspěšně nastaveno minimum hráčů na <gray><min><green>!",
+                    "arena_time_set": "<green>Čas v aréně byl nastaven na <gray><time><green>!",
+                    "weather_set": "<green>Počasí v aréně bylo nastaveno na <gray><weather><green>!",
+                    "team_spawn_set": "<green>Spawn týmu <gray><team><green> byl úspěšně nastaven na: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_created": "<green>Tým <gray><team><green> byl úspěšně vytvořen pod barvou <teamcolor><green> a maximálním počtem hráčů: <gray><maxplayers>",
+                    "lobby_spawn_set": "<green>Lobby spawn byl úspěšně nastaven na pozici XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "spec_spawn_set": "<green>Spectator spawn byl úspěšně nastaven na pozici XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "constant_set": "<green>Konstanta <gray><config><green> byla úspěšně nastavena na <gray><value><green>!",
+                    "spawner_team_unlinked": "<green>Tento spawner na <type> již není propojen s žádným týmem.",
+                    "spawner_hologram_type_set": "<green>Typ hologramu pro tento spawner na <type> byl nastaven na <gray><type><green>.",
+                    "lobby_pos1_set": "<green>Krajní bod lobby pro arénu <gray><arena><green> byl nastaven na XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos2_set": "<green>Druhý krajní bod lobby pro arénu <gray><arena><green> byl nastaven na XYZ: <gray><x>/<y>/<z>",
+                    "spawner_hologram_enabled": "<green>Hologram tohoto spawneru na <type> byl <gray>povolen<green>.",
+                    "spawner_hologram_disabled": "<green>Hologram tohoto spawneru na <type> byl <gray>zakázán<green>.",
+                    "spawner_floating_enabled": "<green>Rotující blok tohoto spawneru na <type> byl <gray>povolen<green>.",
+                    "spawner_floating_disabled": "<green>Rotující blok tohoto spawneru na <type> byl <gray>zakázán<green>.",
+                    "spawner_base_amount_set": "<green>Základní množství vyrobených surovin pro tento spawner na <type> byl nastaven na <gray><amount><green>.",
+                    "spawner_max_spawned_resources_set": "<green>Maximální počet vyrobených surovin pro tento spawner na <type> byl nastaven na <gray><amount><green>.",
+                    "spawner_team_linked": "<green>Tento spawner na <type> byl propojen s týmem <team>.",
+                    "spawner_rotation_mode_set": "<green>Mód rotace hologramu pro tento spawner na <type> byl nastaven na <gray><rotation><green>.",
+                    "spawner_custom_name_set": "<green>Vlastní jméno pro tento spawner na <type> bylo nastaveno na <gray><name><green>.",
+                    "spawner_type_changed": "<green>Typ tohoto spawneru na <type> byl změněn na <new_type>."
+                },
+                "errors": {
+                    "must_be_in_same_world": "<red>Všechny přikazy musí být spuštěny ve stejném světě!",
+                    "invalid_countdown": "<red>Odpočet musí být mezi <lowest> a <highest> sekundy!",
+                    "must_be_in_bounds": "<red>Lokace musí být položena v aréně (pos1 a pos2 souřadnice)!",
+                    "set_bounds_first": "<red>Před nastavením spawnu, prosím nastavte pos1 a pos2 souřadnice (Určení velikosti a polohy arény)!",
+                    "store_already_exist": "<red>Obchod již existuje!",
+                    "store_does_not_exist": "<red>Obchod neexistuje!",
+                    "invalid_spawner_level": "<white>Chybné číslo úrovně, byla použita výchozí úroveň 1.",
+                    "invalid_color": "<red>Tato barva je neplatná!",
+                    "max_players": "<red>Maximální počet hráčů musí být >= 1!",
+                    "need_2_teams": "<red>Hra potřebuje 2 nebo více týmů!",
+                    "team_does_not_exist": "<red>Tento tým neexistuje!",
+                    "team_already_exists": "<red>Tento tým již existuje!",
+                    "set_lobby_before_save": "<red>Před uložením hry prosím nastavte lobby spawn!",
+                    "set_spec_before_save": "<red>Před uložením hry prosím nastavte spawn spectatorů!",
+                    "set_stores_before_save": "<red>Před uložením hry přidejte alespoň 1 obchod!",
+                    "set_spawners_before_save": "<red>Před uložením hry přidejte alespoň 1 spawner!",
+                    "set_target_block_for_team_before_save": "<red>Před uložením hry prosím nastavte cílový blok týmu <gray><team><red>!",
+                    "invalid_min_players": "<red>Minimální počet hráčů musí být 2 nebo vyšší!",
+                    "invalid_constant_value": "<red>Neplatná hodnota! Může to být <gray>true<red>, <gray>false<red> nebo <gray>inherit<red>!",
+                    "invalid_constant_name": "<red>Chybný název konstanty!",
+                    "invalid_arena_time": "<red>Nesprávný typ času arény!",
+                    "invalid_arena_weather": "<red>Špatný typ počasí v aréně!",
+                    "invalid_bar_color": "<red>Nesprávná barva pro Boss Bar!",
+                    "invalid_time": "<red>Čas <gray><number><red> je neplatný!",
+                    "invalid_bounds": "<red>Výškový rozdíl mezi pos1 a pos2 je příliš malý! Minimum je 5 bloků!",
+                    "invalid_spawner_type": "<red>Spawner musí být bronz, železo, zlato nebo podle vlastní konfigurace!",
+                    "spawners_needed": "<red>Ve hře musí být alespoň jeden spawner!",
+                    "set_bounds_before_save": "<red>Před uložením hry prosím nastavte souřadnice pos1 a pos2 (Určení velikosti a polohy arény)!",
+                    "set_spawn_for_team_before_save": "<red>Před uložením hry prosím nastavte spawn týmu <gray><team><red>!",
+                    "invalid_entity_type": "<red>Špatný typ entity!",
+                    "npc_must_have_skin_name": "<red>Pokud používáte typ entity PLAYER, musíte zadat název skinu ve formátu <gray>PLAYER:[vlastník skinu]",
+                    "no_spawner": "<red>Na této pozici není žádný spawner!",
+                    "multiple_spawners": {
+                        "first_line": "<red>Na této pozici je více spawnerů, prosím vyber jeden konkrétní:",
+                        "line": "- <type> - <gray><command></gray>"
+                    }
+                }
+            },
+            "error": {
+                "already_exists": "<red>Aréna již existuje!",
+                "arena_must_be_in_edit_mode": "<red>Aréna musí být v režimu úprav!",
+                "already_working_on_it": "<red>Aréna existuje, ale není dokončená!",
+                "arena_not_in_edit": "<red>Aréna neexistuje nebo běží! Deaktivujte ji s <gray>/dw admin <pre><arena></pre> edit<red> a poté ji aktivujte s <gray>/dw admin <pre><arena></pre> save"
+            },
+            "success": {
+                "removed": "<red><b>Aréna odstraněna!",
+                "added": "<green>Aréna <gray><arena><green> přidána!",
+                "edit_mode": "<green>Aréna přepnuta do režimu úprav!"
+            }
+        },
+        "holo": {
+            "click_to_remove": "<yellow>Teď klikněte na hologram který chcete odstranit!",
+            "not_enabled": "<red>Hologramy jsou vypnuté.",
+            "added": "<green>Hologram přidán na vaši pozici!",
+            "removed": "<green>Hologram úspěšně odebrán!"
+        },
+        "team_join_entity": {
+            "entity_not_compatible": "<red>Entita kterou jste zvolili, není kompatibilní! Jenom žijící entity nebo stojany na brnění mohou být použity!",
+            "click_right_on_entity": "<green>Teď klikněte pravým tlačítkem na entitu se kterou se chcete připojovat do týmu: <gray><team>",
+            "entity_added": "<green>Entita pro připojení do týmu byla přidána!"
+        },
+        "usage": "<red>Použití: /dw admin \\<arena> \\<add|edit|remove|save|...> ...",
+        "mainlobby": {
+            "info": "<red>UPOZORNĚNÍ<white>: Musíte spustit /dw reload aby hlavní lobby začalo fungovat!"
+        },
+        "info": {
+            "header": "<green>Detaily arény:",
+            "name": "<gray>Jméno: <reset><name>",
+            "status": "<gray>Status: <reset><status>",
+            "status_disabled": "<red>VYPNUTO",
+            "status_waiting": "<yellow>ČEKÁ NA HRÁČE",
+            "status_running": "<green>HRA BĚŽÍ",
+            "status_rebuilding": "<yellow>OBNOVOVÁNÍ",
+            "status_disabled_in_edit": "<red>VYPNUTO<reset> (<yellow>V REŽIMU ÚPRAV<reset>)",
+            "world": "<gray>Svět: <reset><world>",
+            "pos2": "<gray>Pozice 2: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>Pozice spectatorů: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>Týmy:",
+            "team": "- <team><reset> (Maximální počet hráčů: <gray><maxplayers><reset>)",
+            "team_target": "  <gray>Postel: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>Spawnery:",
+            "min_players": "<gray>Minimální počet hráčů: <reset><minplayers>",
+            "villagers": "<gray>Obchody:",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_entity_type": "  Typ: <green><type>",
+            "villager_shop": "  Má vlastní obchod: <gray><bool>",
+            "villager_shop_dealer_name": "  Vlastní jméno nad hlavou obchodníka: <name><reset>",
+            "villager_shop_dealer_has_no_name": "<red>Není nastaveno žádné jméno",
+            "lobby_countdown": "<gray>Odpočet před startem hry: <white><time> s",
+            "game_time": "<gray>Délka hry: <white><time> s",
+            "constants": "<gray>Konfigurace konstant:",
+            "constant": "- <gray><constant><reset>: <gray><value>",
+            "constant_true": "<green>True",
+            "constant_false": "<red>False",
+            "post_game_waiting": "<gray>Čekací čas po hře: <white><time> s",
+            "spawner_no_team": "<red>Žádný tým",
+            "file": "<gray><i>Soubor: <file>",
+            "pos1": "<gray>Pozice 1: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>Pozice lobby: <white>Svět: <gray><world> <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_spawn": "  <gray>Spawn týmu: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>Hologram: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_shop_name": "  Jméno obchodu: <gold><file><reset> (dědí z hlavního: <gray><bool><reset>)",
+            "constant_inherit": "<yellow>Zděděno z konfigurace pluginu"
+        },
+        "info_select": {
+            "base": "<green>Základní informace<white> - <gray><command>",
+            "stores": "<green>Seznam obchodů<white> - <gray><command>",
+            "spawners": "<green>Seznam spawnerů<white> - <gray><command>",
+            "teams": "<green>Seznam týmů<white> - <gray><command>",
+            "config": "<green>Konfigurace<white> - <gray><command>",
+            "header": "<green>Prosím zvolte informační sekci arény <gray><arena><green>:",
+            "click": "<aqua>Klikněte pro spuštění <gray><command><aqua>!"
+        }
+    },
+    "sign": {
+        "admin": {
+            "created": "<green>Cedule byla úspěšně vytvořena!",
+            "cannot_create": "<red>Cedule nemohla být vytvořena! Prosím, zkontroluj jméno arény!",
+            "unknown_game": "<red>Hra, která je napsaná na ceduli neexistuje! Prosím kontaktuj administrátory!",
+            "cannot_destroy": "<red>Nemáš oprávnění na zničení této cedule!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Hra",
+                "players": "<red>vypnuta"
+            },
+            "rebuilding": {
+                "players": "<gold>aréna",
+                "status": "<gold>Obnovování"
+            },
+            "running": {
+                "status": "<green>Běží",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>Čekání",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "disabled": "<red>Na tomto serveru jsou statistiky hráčů vypnuty!",
+        "player_does_not_exist": "<red>Hráč nenalezen!",
+        "not_found": "<red>Statistiky nebyly pro tohoto hráče nalezeny!",
+        "header": "<green>Statistiky <red><player><green>:",
+        "deaths": "<gray>Smrti: <yellow><deaths>",
+        "kd": "<gray>K/D: <green><kd>",
+        "wins": "<gray>Výhry: <green><wins>",
+        "loses": "<gray>Prohry: <red><loses>",
+        "games": "<gray>Hrané hry: <aqua><games>",
+        "score": "<gray>Celkové skóre: <green><score>",
+        "beds": "<gray>Zničené postele: <green><beds>",
+        "kills": "<gray>Zabití: <green><kills>"
+    },
+    "in_game": {
+        "errors": {
+            "game_is_full": "<red>Hra <gray><arena> <red>je plná! Prosím, počkej až skončí!",
+            "game_not_found": "<red>Hra nenalezena!",
+            "you_are_not_in_game": "<red>Nejsi ve hře!",
+            "game_is_rebuilding": "<red>Hra <gray><arena><red> se obnovuje! Prosím počkej...",
+            "already_in_game": "<red>Už jsi v nějaké hře.",
+            "not_in_any_game_yet": "<red>Ještě jsi nebyl v žádné hře.",
+            "vip_not_enough_players": "<red>Není dostatek hráčů v aréně!",
+            "vip_game_is_full": "<red>Hra <gray><arena> <red>je plná VIP hráčů. Prosím, počkej na konec hry!",
+            "game_is_gone": "<red>Vypadá to, že hra ve které jsi byl, už není v tomto světě.",
+            "game_kicked_by_vip": "<red>Byl jsi vyhozen VIP hráčem!",
+            "game_already_running": "<red>Hra <gray><arena> <red>již běží! Do běžící hry se nemůžeš připojit!",
+            "there_is_no_empty_game": "<red>Bohužel, žádná hra není v čekající fázi. Všechny hry už běží!",
+            "command_is_not_allowed": "<red>Tento příkaz je zablokován když hra běží!"
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "Cílový blok týmu <team><reset> je zničen!",
+                "bed": "Postel týmu <team><reset> je zničena!",
+                "anchor": "Respawn Anchor týmu <team><reset> je zničen!",
+                "subtitle": "Teď můžeš zabít členy týmu!",
+                "subtitle_victim": "Odteď se už nemůžeš znovu respawnout!",
+                "cake": "Koláč týmu <team><reset> byl sněden!"
+            },
+            "hologram": {
+                "protect": {
+                    "bed": "<teamcolor><bold>Chraň svou postel!",
+                    "anchor": "<teamcolor><bold>Chraň svůj anchor!",
+                    "cake": "<teamcolor><bold>Chraň svůj koláč!",
+                    "any": "<teamcolor><bold>Chraň svůj cílový blok!"
+                },
+                "destroyed": {
+                    "any": "<gray><bold>Cílový blok byl zničen.",
+                    "bed": "<gray><bold>Postel byla zničena.",
+                    "cake": "<gray><bold>Koláč byl sněden.",
+                    "anchor": "<gray><bold>Anchor byl zničen."
+                },
+                "destroy": {
+                    "any": "<teamcolor><bold>Znič tento cílový blok!",
+                    "bed": "<teamcolor><bold>Znič tuto postel!",
+                    "anchor": "<teamcolor><bold>Znič tento anchor!",
+                    "cake": "<teamcolor><bold>Sněz tento koláč!"
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title": "<green>Respawn za: <red><time>",
+            "title_cancel": "<red>Tým je mrtev :("
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <aqua>sekund(y)",
+            "every_second": "<aqua>každou sekundu",
+            "full": "<red><bold>Spawner je vyčerpán",
+            "not_enough_level": "<red>Spawner nemůže pracovat! Musíš upgradovat o <levels> level(y).",
+            "countdown_custom": "<yellow><value> <aqua><unit>",
+            "full_hypixel": "<red><bold>Spawner je plný!",
+            "tier": "<yellow>Úroveň <red><tier>",
+            "countdown_hypixel": "<yellow>Spawn za <red><seconds> <yellow>sekund",
+            "countdown_custom_hypixel": "<yellow>Spawn za <red><value> <yellow><unit>"
+        },
+        "resources": {
+            "bronze": "Bronz",
+            "iron": "Železo",
+            "gold": "Zlato",
+            "netherite": "Netherite",
+            "diamond": "Diamant",
+            "emerald": "Smaragd"
+        },
+        "shop": {
+            "name": "Obchod",
+            "page_back": "O stranu zpět",
+            "page_forward": "O stranu dále",
+            "shop_back": "<red>Zpět na seznam kategorií",
+            "price": "Cena:",
+            "amount": "Množství:",
+            "buy_failed": "<red>Nedostatek materiálu na zakoupení <gray><item><red>! Je potřeba <gray><material><red>!",
+            "buy_success": "<green>Úspěšně koupeno <gray><item><green> za <gray><material><green>!",
+            "upgrade_translate": "vylepšení"
+        },
+        "team_selection": {
+            "inventory_name": "Zvol tým - <arena>",
+            "selected": "<green>Zvolený tým: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>Tým <team><red> je plný!",
+            "full_no_change": "<red>Tým <team><red> je plný, zůstáváš v týmu <oldteam><red>!",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>Tým je plný!",
+            "select_item_lore_join": "Klikni pro připojení se k týmu!",
+            "already_selected": "<green>Už jsi v týmu: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]"
+        },
+        "lobby_items": {
+            "leave_from_game_item": "<red>Opustit hru",
+            "start_game_item": "<dark_green>Spustit hru",
+            "compass_selector_team": "<green>Volba týmu"
+        },
+        "bossbar": {
+            "waiting": "<red>Hra za chvíli začne!",
+            "running": "<green>Hra začala! Hodně štěstí!"
+        },
+        "end": {
+            "you_won": "<green>Váš tým vyhrál!",
+            "you_lost": "<red>Váš tým prohrál!",
+            "team_win": "<green>Tým <reset><team><green> vyhrál hru v čase <gray><time>",
+            "game_end": "<red>Hra skončila! Děkujeme za zahrání!"
+        },
+        "respawn_protection": {
+            "end": "<red>Respawn ochrana vypršela!",
+            "remaining": "<red>Respawn ochrana vyprší za <white><time> <green>sekund!"
+        },
+        "join": "<name> <green>se připojil do hry!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "leave": "<name> <red>opustil hru!",
+        "player_self_killed": "<red>Hráč <victim> <red>zemřel!",
+        "player_killed": "<red>Hráč <killer> <red>zabil hráče <victim><red>!",
+        "game_start_title": "<green>Hra začala!",
+        "game_start_subtitle": "<green>Hra <gray><arena><green> začala! Užijte si hru!",
+        "vault_deposite": "<gray><coins> <currency><green> přidáno do tvého Vault účtu!",
+        "cheat": {
+            "game_not_running": "<red>Můžete cheatovat pouze, pokud hra běží!",
+            "please_provide_valid_cheat_type": "<red>Zadaný cheat není zadán správně nebo neexistuje!",
+            "invalid_player": "<red>Zadaný hráč není v žádné hře nebo je pouze pozorovatel!",
+            "received_give": "<green>Hráč <gray><player><green> získal <gray><amount><green> <gray><resource>",
+            "received_kill": "<green>Hráč <gray><player><green> byl zabit cheatem!",
+            "region_regenerated": "<green>Region arény <gray><arena></grey> byl regenerován!",
+            "special_item_used": "<green>Speciální item <gray><item></gray> byl použit!"
+        },
+        "economy_deposited": "<green>Bylo přidáno <gray><coins> <currency><green> k tvému zůstatku!",
+        "economy_missing_coins": "<red>Potřebuješ <yellow><coins> <currency><red> pro připojení do této hry!"
+    },
+    "no_permissions": "<red>Nemáš dostatečné oprávnění!",
+    "safe_reload_failed_to_stop_game": "<red>Některé hry neskončily v časovém limitu, takže jejich aréna mohla být poškozena!",
+    "list_header": "<green>Dostupné arény:",
+    "help": {
+        "title": "DoorWars <version> - Nápověda",
+        "title_console": "DoorWars <version> - Nápověda pro konzoli",
+        "bw_join": "/dw join <pre><arena></pre> - <green>Připojit se do hry",
+        "bw_leave": "/dw leave - <green>Opustit hru",
+        "bw_rejoin": "/dw rejoin - <green>Připojit se znovu do poslední hry",
+        "bw_list": "/dw list - <green>Seznam aktivních her",
+        "bw_leaderboard": "/dw leaderboard - <green>Zobraz nejlepší hráče tohoto serveru",
+        "bw_stats": "/dw stats - <green>Zobraz svoje statistiky",
+        "bw_reload": "/dw reload - <red>Reloadne plugin",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Přidá hologram na hráčovu pozici",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Zapne hlavní lobby nebo nastaví lokaci hlavního lobby",
+        "bw_admin_info": "/dw admin <pre><arena></pre> info [section] - <yellow>Zobrazí všechny informace o aréně",
+        "bw_admin_add": "/dw admin <pre><arena></pre> add [variant] - <yellow>Vytvořit novou arénu",
+        "bw_admin_spec": "/dw admin <pre><arena></pre> spec - <yellow>Nastaví spawn diváků na tvoji pozici",
+        "bw_admin_pos1": "/dw admin <pre><arena></pre> pos1 - <yellow>Nastaví krajní bod arény na tvoji pozici",
+        "bw_admin_pausecountdown": "/dw admin <pre><arena></pre> pausecountdown <pre><seconds></pre> - <yellow>Nastaví délku pauzy než se spustí hra",
+        "bw_admin_time": "/dw admin <pre><arena></pre> time <pre><seconds></pre> - <yellow>Nastaví délku hry",
+        "bw_admin_team_add": "/dw admin <pre><arena></pre>team add <pre><team> <color> <max players></pre> - <yellow>Přidá tým do hry",
+        "bw_admin_team_color": "/dw admin <pre><arena></pre> team color <pre><team> <color></pre> - <yellow>Změní barvu týmu",
+        "bw_admin_team_spawn": "/dw admin <pre><arena></pre> team spawn <pre><team></pre> - <yellow>Nastaví spawn týmu na tvoji pozici",
+        "bw_admin_jointeam": "/dw admin <pre><arena></pre> jointeam <pre><team></pre> - <yellow>Nastaví možnost připojit se do týmu pomocí entity",
+        "bw_admin_spawner_reset": "/dw admin <pre><arena></pre> spawner reset - <yellow>Odstraní všechny spawnery",
+        "bw_admin_store_add": "/dw admin <pre><arena></pre> store add [jméno nad hlavou vesničana] [soubor s obchodem] [použít hlavní obchod] - <yellow>Přidá obchodujícího vesničana na tvoji pozici",
+        "bw_admin_store_type": "/dw admin <pre><arena></pre> store type <pre><living entity></pre> - <yellow>Nastaví typ entity obchodu (vesničan, kůň, kráva, prase atd.)",
+        "bw_admin_config": "/dw admin <pre><arena></pre> config <pre><constant> <value></pre> - <yellow>Nastaví hodnotu konstanty pro hru",
+        "bw_admin_arena_weather": "/dw admin <pre><arena></pre> arenaweather <pre><type></pre> - <yellow>Nastaví počasí v aréně (default, CLEAN, DOWNFALL)",
+        "bw_admin_customprefix": "/dw admin <pre><arena></pre> customprefix <pre><name|off></pre> - <yellow>Zapne vlastní prefix pro arénu",
+        "bw_admin_remove": "/dw admin <pre><arena></pre> remove - <red>Odstraní arénu",
+        "bw_admin_edit": "/dw admin <pre><arena></pre> edit - <yellow>Vypne hru a přepne arénu do režimu úprav",
+        "bw_admin_save": "/dw admin <pre><arena></pre> save - <green>Uloží hru a aktivuje ji!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>Připojí všechny hráče na serveru do DoorWars hry",
+        "bw_admin_store_child": "/dw admin <pre><arena></pre> store child - <yellow>Označí tohoto obchodníka jako dítě",
+        "bw_admin_store_adult": "/dw admin <pre><arena></pre> store adult - <yellow>Označí tohoto obchodníka jako dospělého",
+        "bw_admin_interactive": "/dw admin <pre><arena></pre> interactive - <yellow>Pokud je aréna v režimu úprav, tento příkaz zapne interaktivní mód",
+        "bw_autojoin": "/dw autojoin - <green>Připojit se do první čekající hry",
+        "bw_removeholo": "/dw removeholo - <yellow>Po spuštění tohoto příkazu, hráč může kliknout pravým tlačítkem na hologram se statistikou aby jej odstranil.",
+        "bw_admin_lobby": "/dw admin <pre><arena></pre> lobby - <yellow>Nastaví pozici lobby na tvoji pozici",
+        "bw_admin_pos2": "/dw admin <pre><arena></pre> pos2 - <yellow>Nastaví druhý krajní bod arény na tvoji pozici",
+        "bw_admin_store_remove": "/dw admin <pre><arena></pre> store remove - <yellow>Odebere obchodujícího vesničana z tvé pozice",
+        "bw_stats_other": "/dw stats [player] - <green>Zobraz statistiky ostatních hráčů",
+        "bw_admin_minplayers": "/dw admin <pre><arena></pre> minplayers <pre><minimum></pre> - <yellow>Nastaví minimum hráčů potřeba ke spuštění hry",
+        "bw_admin_team_maxplayers": "/dw admin <pre><arena></pre> team maxplayers <pre><team> <max players></pre> - <yellow>Změní maximum hráčů v týmu",
+        "bw_admin_team_bed": "/dw admin <pre><arena></pre> team bed <pre><team></pre> - <yellow>Nastaví cílový blok na tvoji cílovou pozici (může to být jakýkoliv blok, ne jenom postel)",
+        "bw_admin_spawner_add": "/dw admin <pre><arena></pre> spawner add <pre><bronze|gold|iron> [hologram] [první level] [jméno] [tým] [maximum naspawnovaných surovin]</pre> - <yellow>Přidá item spawner na tvoji pozici",
+        "bw_admin_arena_time": "/dw admin <pre><arena></pre> arenatime <pre><type></pre> - <yellow>Nastaví čas v aréně (DAY, NIGHT, atd.)",
+        "bw_admin_post_game_waiting": "/dw admin <pre><arena></pre> postgamewaiting <pre><seconds></pre> - <yellow>Nastaví čekací čas než bude hráč teleportován pryč z arény",
+        "bw_admin_spawner_remove": "/dw admin <pre><arena></pre> spawner remove - <yellow>Odstraní všechny spawnery na lokaci",
+        "bw_dump": "/dw dump - <yellow>Vypíše podrobnosti o serveru a poskytne vám odkaz na výpis. Tento odkaz může být užitečný pro podporu",
+        "bw_admin_lobby_pos1": "/dw admin <pre><arena></pre> lobbypos1 - <yellow>Nastaví krajní bod lobby na tvojí pozici",
+        "bw_admin_lobby_pos2": "/dw admin <pre><arena></pre> lobbypos2 - <yellow>Nastaví druhý krajní bod lobby na tvoji pozici",
+        "bw_admin_spawner_max_spawned_resources": "/dw admin <pre><arena></pre> spawner maxSpawnedResources <pre><value></pre> - <yellow>Nastaví maximální počet vygenerovaných surovin pro spawner na tvojí pozici",
+        "bw_admin_spawner_rotation_mode": "/dw admin <pre><arena></pre> spawner rotationMode <pre><mode></pre> - <yellow>Nastaví mód rotace hologramu pro spawner na tvojí pozici",
+        "bw_admin_spawner_change_type": "/dw admin <pre><arena></pre> spawner changeType <pre><type></pre> - <yellow>Změní typ spawneru na tvojí pozici",
+        "bw_admin_spawner_custom_name": "/dw admin <pre><arena></pre> spawner customName <pre><name></pre> - <yellow>Nastaví vlastní jméno pro spawner na tvojí pozici",
+        "bw_admin_spawner_hologram_type": "/dw admin <pre><arena></pre> spawner hologramType <pre><type></pre> - <yellow>Nastaví typ hologramu pro spawner na tvojí pozici",
+        "bw_admin_spawner_linked_team": "/dw admin <pre><arena></pre> spawner linkedTeam <pre><team|null></pre> - <yellow>Propojí spawner na tvojí pozici se zadaným týmem",
+        "bw_admin_spawner_base_amount": "/dw admin <pre><arena></pre> spawner baseAmount <pre><amount></pre> - <yellow>Nastaví základní množství vygenerovaných surovin, které by měl spawner vyrobit za určitý čas",
+        "bw_admin_spawner_hologram": "/dw admin <pre><arena></pre> spawner hologram <pre><true|false></pre> - <yellow>Povolí/Zakáže hologram pro spawner na tvojí pozici",
+        "bw_admin_spawner_floating": "/dw admin <pre><arena></pre> spawner floating <pre><true|false></pre> - <yellow>Povolí/Zakáže rotující blok pod hologramem pro spawner na tvojí pozici",
+        "bw_cheat_give": "/dw cheat give <pre><resource></pre> [amount] [player] - <red>Dá hráči určité množství zadané suroviny",
+        "bw_cheat_kill": "/dw cheat kill [player] - <red>Zabije zadaného hráče",
+        "bw_admin_display_name": "/dw admin \\<arena> displayName \\<name|off> - <yellow>Nastaví jméno arény, které se bude zobrazovat",
+        "bw_migrate": "/dw migrate \\<plugin> - <yellow>Převezme konfiguraci z jiného DoorWars pluginu."
+    },
+    "update": {
+        "new_release": [
+            "<green>Nová VYDANÁ verze <version> DoorWars je dostupná!",
+            "Stáhněte ji z <url>"
+        ],
+        "patch_release": [
+            "<yellow>Nová záplatující verze DoorWars <version> je tu!",
+            "Můžete si ji stáhnout z <url>"
+        ]
+    },
+    "specials": {
+        "trap": {
+            "caught": "<red>Chytil jste se do pasti týmu <white><team><red>!",
+            "caught_team": "<white><player><red> se chytil do pasti vašeho týmu!",
+            "built": "<green>Udělal(a) jste past! Teď jenom počkejte než se někdo do ní chytí!"
+        },
+        "warp_powder": {
+            "multiuse": "<red>Další WarpPowder je již aktivován!",
+            "canceled": "<red>WarpPowder byl zrušen!",
+            "started": "<green>WarpPowder byl spuštěn! Prosím, nehýbejte se <gray><time><green> sekund!"
+        },
+        "tracker": {
+            "no_target_found": "<red>Nebyl nalezen žádný cíl!",
+            "target_found": "<white><target> <green>byl nalezen <white><distance> <geen>bloků pryč!"
+        },
+        "rescue_platform": {
+            "not_in_air": "<red>Abyste to mohli použít, musíte být ve vzduchu.",
+            "destroy": "<red>Platforma bude zničena za <white><time> <red>sekund.",
+            "created_unbreakable": "<green>Nezničitelná platforma byla vytvořena!",
+            "created": "<green>Platforma byla vytvořena a bude zničena za <white><time> <green>sekund."
+        },
+        "protection_wall": {
+            "not_usable_here": "<red>Není tu místo pro vytvoření ochranné zdi.",
+            "destroy": "<red>Ochranná zeď bude zničena za <white><time> <red>sekund.",
+            "created_unbreakable": "<green>Nezničitelná ochranná zeď byla vytvořena!",
+            "created": "<green>Ochranná zeď byla vytvořena a bude zničena za <white><time> <green>sekund."
+        },
+        "tntsheep": {
+            "no_target_found": "<red>Nebyl nalezen žádný cíl!"
+        },
+        "arrow_blocker": {
+            "started": "<green>Blokování šípů bylo aktivováno na <white><time><green> sekund!",
+            "ended": "<red>Blokování šípů již není aktivní!",
+            "already_activated": "<red>Blokování šípů je již aktivováno!"
+        },
+        "golem": {
+            "created": "<green>Golem byl spawnut."
+        },
+        "team_chest": {
+            "name": "<green><bold>Týmová truhla",
+            "not_yours": "<yellow>Tato týmová truhla není vaše!",
+            "placed": "<green>Nová týmová truhla byla položena!",
+            "broken": "<red>Vaše týmová truhla byla zničena!"
+        },
+        "item_delay": "<red>Musíte počkat <time> sekund před opětovným použitím tohoto itemu!"
+    },
+    "leaderboard": {
+        "no_scores": "<gray>Dosud nejsou k dispozici žádné výsledky!",
+        "header": "<gold>DoorWars Žebříček - Nejlepších <number> hráčů",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>",
+        "holo_added": "<green>Na vaši pozici byl přidán hologram žebříčku!"
+    },
+    "party": {
+        "inform_game_join": "<green>Připojování se do hry vedoucího party",
+        "warped": "<green>Vedoucí party vás sem teleportoval",
+        "command": {
+            "help": "/dw party warp - <yellow>Teleportuje všechny hráče v party do vaší hry nebo směrem k vám",
+            "not_in_party": "<red>Musíte být v party, abyste mohli provést tento příkaz!",
+            "not_party_leader": "<red>Nejste vedoucí party!",
+            "warped": "<green>Členové party byli teleportováni.",
+            "invalid_arguments": "<red>Neplatný počet argumentů! Zadejte /dw party help pro více informací.",
+            "is_empty": "<red>Vaše party je prázdná, nemůžeme nikoho teleportovat!"
+        }
+    },
+    "dump": {
+        "success": "<green>Výpis podrobností o serveru byl úspěšně proveden. Link: <dump>",
+        "failed": "<red>Výpis podrobností o serveru selhal!"
+    },
+    "language": {
+        "invalid": "<red>Zadaný jazykový soubor nelze načíst!",
+        "already_set": "Jazyk: [<lang>] je již nastaven jako výchozí jazyk!",
+        "success": "<green>Jazyk byl úspěšně nastaven na <white>[<lang>]",
+        "usage_bw_lang": "Použití: /dw lang <pre><locale></pre> - <yellow>Nastaví jazyk, který má být použit v <red>Bed<white>Wars"
+    },
+    "unknown_command": "<red>Neznámý příkaz! Zkus zadat <dark_red>/dw help <red>pro nápovědu!",
+    "success": "<green>Příkaz byl úspěšně proveden!",
+    "safe_reload": "<green>Čekám než budou všechny arény vypnuty nebo 60 sekund před reloadem pluginu.",
+    "unknown_usage": "<red>Nesprávné argumenty! Zkus zadat <dark_red>/dw help <red>pro nápovědu!",
+    "games_inventory": {
+        "could_not_find_game": "<red> Nemohli jsme najít hru!"
+    }
+}

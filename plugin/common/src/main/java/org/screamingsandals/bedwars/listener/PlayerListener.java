@@ -56,6 +56,7 @@ import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.projectile.Fireball;
 import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
@@ -1051,11 +1052,32 @@ public class PlayerListener {
                         }
                     } else if (clickedBlock.block().is("dragon_egg") && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
                         event.cancelled(true); // Fix - #432
+                    } else if (clickedBlock.block().isSameType("birch_door", "mangrove_door", "crimson_door")) {
+                        for (var team : game.getActiveTeams()) {
+                            if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(clickedBlock.location())) {
+                                if (MiscUtils.randInt(0, 4) == 1) {
+                                    event.cancelled(true);
+                                    if (game.internalProcessInvalidation(team, team.getTarget(), player, TargetInvalidationReason.TARGET_BLOCK_EXPLODED)) {
+                                        EntityType.of("tnt").spawn(clickedBlock.location(), en -> {
+                                            var tnt1 = (PrimedTnt) en;
+                                            tnt1.yield(15);
+                                            tnt1.fuseTicks(2);
+                                        });
+                                    }
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
             }
 
             if (clickedBlock != null) {
+                if (clickedBlock.block().isSameType("jungle_door", "cherry_door", "warped_door")) {
+                    double offsetX = (Math.random() * 10) - 5;
+                    double offsetZ = (Math.random() * 10) - 5;
+                    player.teleport(player.getLocation().add(offsetX, 0, offsetZ));
+                }
                 if (game.getRegion().isBedBlock(clickedBlock.blockSnapshot()) || clickedBlock.block().isSameType("respawn_anchor")) {
                     // prevent Essentials to set home in arena
                     event.cancelled(true);
@@ -1146,6 +1168,12 @@ public class PlayerListener {
                 clickedBlock.breakNaturally();
             } else {
                 clickedBlock.block(Block.air());
+            }
+        } else if (event.action() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && clickedBlock != null && !gPlayer.isSpectator() && game.getStatus() == GameStatus.RUNNING) {
+            if (clickedBlock.block().isSameType("jungle_door", "cherry_door", "warped_door")) {
+                double offsetX = (Math.random() * 10) - 5;
+                double offsetZ = (Math.random() * 10) - 5;
+                player.teleport(player.getLocation().add(offsetX, 0, offsetZ));
             }
         }
     }

@@ -1,0 +1,636 @@
+{
+    "unknown_usage": "<red>Невідомі аргументи! Спробуй використати <dark_red>/dw help <red>для допомоги!",
+    "no_permissions": "<red>У вас недостатньо прав на це!",
+    "safe_reload_failed_to_stop_game": "<red>Деякі ігри не були зупинені вчасно, арена могла бути пошкоджена!",
+    "list_header": "<green>Доступні арени:",
+    "success": "<green>Команду виконано успішно!",
+    "sign": {
+        "admin": {
+            "cannot_create": "<red>Не вдалося створити знак! Будь ласка, перевірте назву арени!",
+            "created": "<green>Знак успішно створено!",
+            "cannot_destroy": "<red>У вас немає дозволу знищити цей знак!",
+            "unknown_game": "<red>Гра, яка написана на табличці, не існує! Будь ласка, зверніться до адміністратора!"
+        },
+        "status": {
+            "disabled": {
+                "status": "<red>Гра",
+                "players": "<red>вимкнено"
+            },
+            "rebuilding": {
+                "status": "<gold>Перебудова",
+                "players": "<gold>арена"
+            },
+            "running": {
+                "status": "<green>В процесі",
+                "players": "<red><players><dark_gray>/<red><maxplayers>"
+            },
+            "waiting": {
+                "status": "<gold>Очікування",
+                "players": "<green><players><dark_gray>/<green><maxplayers>"
+            }
+        }
+    },
+    "statistics": {
+        "player_does_not_exist": "<red>Гравця не знайдено!",
+        "not_found": "<red>Статистика для цього гравця не знайдена!",
+        "header": "<green>Статистика <red><player><green>:",
+        "kills": "<gray>Вбивств: <green><kills>",
+        "kd": "<gray>К/Д: <green><kd>",
+        "wins": "<gray>Перемог: <green><wins>",
+        "loses": "<gray>Програши: <red><loses>",
+        "games": "<gray>Зіграно ігор: <aqua><games>",
+        "score": "<gray>Загальний рахунок: <green><score>",
+        "disabled": "<red>Статистика гравців вимкнена на цьому сервері!",
+        "deaths": "<gray>Смертей: <yellow><deaths>",
+        "beds": "<gray>Знищено ліжок: <green><beds>"
+    },
+    "in_game": {
+        "errors": {
+            "game_is_full": "<red>Гра <gray><arena> <red>заповнена! Зачекайте кінця гри!",
+            "game_not_found": "<red>Гра не знайдена!",
+            "you_are_not_in_game": "<red>Ти не в грі!",
+            "already_in_game": "<red>Ти вже в грі.",
+            "game_is_gone": "<red>Схоже, гри, в якій ви були, більше немає в цьому світі.",
+            "game_kicked_by_vip": "<red>Ти був викинутий ВІП гравцем!",
+            "there_is_no_empty_game": "<red>Немає жодної гри в стані очікування. Всі ігри вже запущені!",
+            "game_already_running": "<red>Гра <gray><arena> <red>вже в процесі! Не можливо під'єднатися до гри!",
+            "game_is_rebuilding": "<red>Гра <gray><arena><red> в процесі перебудови! Зачекайте...",
+            "not_in_any_game_yet": "<red>Ти ще не був ні в одній грі.",
+            "command_is_not_allowed": "<red>Ця команда заблокована під час гри!",
+            "vip_not_enough_players": "<red>Не достатньо гравців в арені!",
+            "vip_game_is_full": "<red>Гра <gray><arena> <red>заповнена ВІП гравцями. Зачекайте кінця гри!"
+        },
+        "target_block": {
+            "destroyed": {
+                "any": "Цільовий блок <team><reset> знищено!",
+                "bed": "Ліжко <team><reset> знищено!",
+                "bed_certain_popular_server": "<red><bold>ЛІЖКО ЗНИЩЕНО!",
+                "anchor": "Якір відродження <team><reset> знищено!",
+                "anchor_certain_popular_server": "<red><bold>ЯКІР ЗНИЩЕНО!",
+                "cake_certain_popular_server": "<red><bold>ТОРТ З'ЇДЕНО!",
+                "killable": "Тепер ви можете вбити всіх членів команди <team>!",
+                "subtitle": "Тепер ви можете вбивати членів команди!",
+                "subtitle_victim": "Ви більше не відродитесь!",
+                "death_mode": "<dark_purple><bold>Режим смерті!",
+                "all_beds": "Всі ліжка знищені!",
+                "all_anchors": "Всі якоря знищено!",
+                "any_certain_popular_server": "<red><bold>ЦІЛЬОВИЙ БЛОК ЗНИЩЕНО!",
+                "cake": "Торт <team><reset> з'їдено!",
+                "all_target_blocks": "Усі цільові блоки знищено!",
+                "all_cakes": "Всі тортики з'їдені!"
+            },
+            "hologram": {
+                "protect": {
+                    "any": "<teamcolor><bold>Захистіть свій цільовий блок!",
+                    "bed": "<teamcolor><bold>Захистіть своє ліжко!",
+                    "anchor": "<teamcolor><bold>Захистіть свій якір!",
+                    "cake": "<teamcolor><bold>Захистіть свій торт!"
+                },
+                "destroyed": {
+                    "any": "<сірий><болд>Цільовий блок знищено.",
+                    "bed": "<gray><bold>Ліжко знищено.",
+                    "cake": "<gray><bold>Торт з'їдено.",
+                    "anchor": "<сірий><болд>Якір знищено."
+                },
+                "destroy": {
+                    "any": "<teamcolor><bold>Знищіть цей цільовий блок!",
+                    "cake": "<teamcolor><bold>З'їжте цей торт!",
+                    "bed": "<teamcolor><bold>Знищи це ліжко!",
+                    "anchor": "<teamcolor><bold>Знищити цей якір!"
+                }
+            }
+        },
+        "respawn_cooldown": {
+            "title_cancel": "<red>Команда мертва :(",
+            "title": "<green>Відродження через: <red><time>"
+        },
+        "spawner": {
+            "countdown": "<yellow><seconds> <aqua>секунд",
+            "countdown_custom": "<yellow><value> <aqua><unit>",
+            "every_second": "<aqua>кожну секунду",
+            "full": "<red><bold>Спаунер вичерпано",
+            "reached_maximum_level": "<red>Спавнер досяг максимального рівня!",
+            "tier": "<yellow>Рівень <red><tier>",
+            "countdown_certain_popular_server": "<yellow>З'являється через <red><seconds> <yellow>секунд",
+            "full_certain_popular_server": "<red><bold>Спавнер повний!",
+            "not_enough_level": "<red>Spawner не працює! Вам потрібно оновити на рівні <levels>.",
+            "countdown_custom_certain_popular_server": "<yellow>З'являється в <red><value> <yellow><unit>"
+        },
+        "resources": {
+            "bronze": "Бронза",
+            "iron": "Залізо",
+            "gold": "Золото",
+            "diamond": "Діамант",
+            "netherite": "Незеріт",
+            "emerald": "Смарагд"
+        },
+        "shop": {
+            "name": "Магазин",
+            "page_forward": "Сторінка вперед",
+            "shop_back": "<red>Назад до списку категорій",
+            "price": "Ціна:",
+            "amount": "Кількість:",
+            "buy_failed": "<red>Не вистачає матеріалу для покупки <grey><item><red>! Потрібен <gray><material><red>!",
+            "page_back": "Сторінка назад",
+            "buy_success": "<green>Успішно придбано <grey><item><green> за <gray><material><green>!",
+            "upgrade_success": "<green><name> успішно оновив <spawner> до рівня <level>!",
+            "upgrade_translate": "оновлення"
+        },
+        "team_selection": {
+            "inventory_name": "Виберіть команду - <arena>",
+            "selected": "<green>Вибрана команда: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "already_selected": "<green>Ви вже в команді: <team><reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+            "full": "<red>Команда <team><red> повна!",
+            "select_item_lore": "<white>---------------------",
+            "select_item_lore_full": "<white>Команда повна!",
+            "full_no_change": "<red>Команда <team><red> повна, Ви залишаєтеся в <oldteam><red>!",
+            "select_item": "<team> <gray>(<yellow><inteam> <white>/ <yellow><maxinteam><gray>)",
+            "select_item_lore_join": "Натисніть, щоб приєднатися до команди!"
+        },
+        "lobby_items": {
+            "compass_selector_team": "<green>Виберіть команду",
+            "leave_from_game_item": "<red>Вийти з гри",
+            "start_game_item": "<dark_green>Почати гру"
+        },
+        "bossbar": {
+            "waiting": "<red>Гра незабаром розпочнеться!",
+            "running": "<green>Гру розпочато! Удачі!"
+        },
+        "end": {
+            "you_lost": "<red>Ваша команда програла!",
+            "team_win": "<green>Команда <reset><team><green> виграла гру за <gray><time>",
+            "you_won": "<green>Ваша команда перемогла!",
+            "game_end": "<red>Гру закінчено! Дякуємо за гру!"
+        },
+        "respawn_protection": {
+            "remaining": "<червоний>Захист від відродження зникне через <білий><час> <зелений>секунд!",
+            "end": "<red>Захист від відродження зник!"
+        },
+        "cheat": {
+            "please_provide_valid_cheat_type": "<red>Наданий тип чіт-коду недійсний або відсутній!",
+            "invalid_player": "<red>Вказаний гравець не бере участі в жодній грі або є глядачем!",
+            "game_not_running": "<red>Шахрувати можна лише під час роботи гри!",
+            "region_regenerated": "<green>Регіон арени <gray><arena></gray> було відновлено!",
+            "received_give": "<green>Гравець <gray><player><green> отримав <gray><amount><green> з <gray><resource>",
+            "received_kill": "<green>Гравець <gray><player><green> убитий через чит!",
+            "special_item_used": "<green>Використано спеціальний предмет <grey><item></gray>!",
+            "game_not_waiting": "<red>Ви можете виконати цей чіт, лише коли гра знаходиться в стані очікування!",
+            "game_forced": "<green>Гра розпочнеться з однією порожньою командою, тому в грі є принаймні дві команди, щоб плагін працював належним чином. Скасуйте його ціль, щоб виграти! (Він не захищений, тож вам буде легко, чи не так?)"
+        },
+        "scoreboard": {
+            "you": "<gray>ТИ",
+            "state": {
+                "waiting": "<white>Очікування...",
+                "countdown": "<white>Початок через <green><countdown>с"
+            },
+            "mode": {
+                "solo": "Соло",
+                "doubles": "Двоє",
+                "triples": "Троє",
+                "squads": "Четверо"
+            }
+        },
+        "messages": {
+            "game_start": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "    <yellow><bold>Захистіть своє ліжко та знищуйте ворожі ліжка.</bold>",
+                "     <yellow><bold>Покращуйте себе та свою команду, збираючи</bold>",
+                "            <yellow><bold>для доступу до потужних оновлень.</bold>",
+                "<yellow><bold><resources></bold>",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+            ],
+            "game_over_statistics": [
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+                "                             <yellow><bold>Бед Варс</bold>",
+                "    <gold><bold>2-гий<gray> - <white><second_killer_name> <gray>- <white><second_killer_score></bold>",
+                "    <yellow><bold>1-ший<gray> - <white><first_killer_name> <gray>- <white><first_killer_score></bold>",
+                "    <red><bold>3-ій<gray> - <white><third_killer_name> <gray>- <white><third_killer_score>/bold>",
+                "<green>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+            ]
+        },
+        "record": {
+            "current": "<aqua>Поточний рекорд цієї гри становить <gray><time><aqua>, досягнутий <gray><team-members><aqua>!",
+            "no": "<aqua>Ця гра грається вперше. А як щодо встановлення нового рекорду?"
+        },
+        "leave": "<name> <red>залишив гру!",
+        "player_self_killed": "<red>Гравець <victim> <red>помер!",
+        "game_start_title": "<green>Гру розпочато!",
+        "economy_deposited": "<green>Додано <gray><coins> <currency><green> на ваш баланс!",
+        "join": "<name> <green>приєднався до гри!<reset> <gray>[<green><players><gray>/<green><maxplayers><gray>]",
+        "player_killed": "<red>Гравець <killer> <red>убитий <victim><red>!",
+        "game_start_subtitle": "<green>Гра <gray><arena><green> почалася! Насолоджуйтесь грою!",
+        "economy_missing_coins": "<red>Щоб увійти в гру, вам потрібні <yellow><coins> <currency><red>!"
+    },
+    "unknown_command": "<red>Невідома команда! Спробуй використати <dark_red>/dw help <red>для допомоги!",
+    "safe_reload": "<green>Очікуйте поки всі ігри будуть зупинені, або 60 секунд перед перезавантаженням плагіна.",
+    "help": {
+        "title": "DoorWars <version> - Довідка",
+        "messages": {
+            "command": "Команда",
+            "no_description": "Без опису",
+            "arguments": "Аргументи",
+            "optional": "Додатково",
+            "no_results_for_query": "Немає результатів для запиту",
+            "available_commands": "Доступні команди",
+            "page_out_of_range": "Помилка: Сторінка <page> не в діапазоні. Має бути в діапазоні [1, <max_pages>]",
+            "click_for_next_page": "Натисніть для наступної сторінки",
+            "description": "Опис",
+            "showing_results_for_query": "Показ результатів пошуку за запитом",
+            "click_to_show_help": "Натисніть, щоб показати довідку для цієї команди",
+            "click_for_previous_page": "Натистінь для перегляду минулої сторінки"
+        },
+        "title_console": "DoorWars <version> - Допомога для Консолі",
+        "bw_join": "/dw join \\<arena> - <green> Приїднатися до гри",
+        "bw_leave": "/dw leave - <green>Покинути гру",
+        "bw_rejoin": "/dw rejoin - <green>Зайти знову в останю гру",
+        "bw_autojoin": "/dw autojoin - <green>Війти до кімнати що чекає початку гри",
+        "bw_list": "/dw list - <green>Список активних ігор",
+        "bw_leaderboard": "/dw leaderboard - <green>Показати топ гравців на цьому сервері",
+        "bw_stats_other": "/dw stats [player] - <green>Показати статистику інших гравців",
+        "bw_reload": "/dw reload - <red>Перзавантажити плагін",
+        "bw_mainlobby": "/dw mainlobby [enable|set] - <yellow>Вмикає головне лоббі або ставить позицію головного лоббі",
+        "bw_admin_info": "/dw admin \\<arena> info [section] - <yellow>Показує всю інформацію про арену",
+        "bw_admin_add": "/dw admin \\<arena> add [variant] - <yellow>Створити нову арену",
+        "bw_admin_lobby": "/dw admin \\<arena> lobby - <yellow>Встановити позицію лоббі в твоїй позиції",
+        "bw_admin_pos2": "/dw admin \\<arena> pos2 - <yellow>Встановлює другу крайню точку арени в вашій позиції",
+        "bw_admin_lobby_pos1": "/dw admin \\<arena> lobbypos1 - <yellow>Встановлює крайню точку лоббі в вашій позиції",
+        "bw_admin_lobby_pos2": "/dw admin \\<arena> lobbypos2 - <yellow>Встановлює другу крайню точку лоббі в вашій позиції",
+        "bw_admin_minplayers": "/dw admin \\<arena> minplayers \\<minimum> - <yellow>Встановити мінімум гравців скільки потрібно для початку гри",
+        "bw_admin_time": "/dw admin \\<arena> time \\<seconds> - <yellow>Встановити тривалість гри",
+        "bw_admin_team_color": "/dw admin \\<arena> team color \\<team> \\<color> - <yellow>Змінити колір команди",
+        "bw_admin_team_spawn": "/dw admin \\<arena> team spawn \\<team> - <yellow>Встановити спавн команди в вашу позиції",
+        "bw_admin_spawner_max_spawned_resources": "/dw admin \\<arena> spawner maxSpawnedResources \\<value> - <yellow>Встановлює максимальний ліміт спавну ресурсів в вашій позиції",
+        "bw_admin_spawner_rotation_mode": "/dw admin \\<arena> spawner rotationMode \\<mode> - <yellow>Встановлює режим обертання голограми спавнеру в вашій позиції",
+        "bw_admin_spawner_change_type": "/dw admin \\<arena> spawner changeType \\<type> - <yellow>Змінює тип спавну в вашій позиції",
+        "bw_admin_spawner_hologram_type": "/dw admin \\<arena> spawner hologramType \\<type> - <yellow>Встановлює тип голограми спавнера в вашій позиції",
+        "bw_stats": "/dw stats - <green>Показати твою статистику",
+        "bw_addholo": "/dw addholo [leaderboard|stats]- <yellow>Додати голограму на позицію",
+        "bw_removeholo": "/dw removeholo - <yellow>Після цієї команди натисніть правої клавішою миші по голограмі щоб видалити її.",
+        "bw_admin_spec": "/dw admin \\<arena> spec - <yellow>Встановити спавн спостерігача в вашій позиції",
+        "bw_admin_pos1": "/dw admin \\<arena> pos1 - <yellow>Встановлює крайню точку арени в вашій позиції",
+        "bw_admin_pausecountdown": "/dw admin \\<arena> pausecountdown \\<seconds> - <yellow>Встановлює час паузи перед початком гри",
+        "bw_admin_team_add": "/dw admin \\<arena>team add \\<team> \\<color> \\<max players> - <yellow>Додати команду до гри",
+        "bw_admin_team_maxplayers": "/dw admin \\<arena> team maxplayers \\<team> \\<max players> - <yellow>Змінити максимальну кількість гравців в команді",
+        "bw_admin_team_bed": "/dw admin \\<arena> team bed \\<team> - <yellow>Встановити блок-ціль команди, в вашу позицію(Це може бути інший блок, не тільки ліжко)",
+        "bw_admin_jointeam": "/dw admin \\<arena> jointeam \\<team> - <yellow>Встановлює можливість приєднатися до команди за допомогою створіння",
+        "bw_admin_spawner_add": "/dw admin \\<arena> spawner add \\<bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources] - <yellow>Створити спавн предметів в вашій позиції",
+        "bw_admin_spawner_custom_name": "/dw admin \\<arena> spawner customName \\<name> - <yellow>Встановити своє імя спавнеру в вашій позиції",
+        "bw_admin_spawner_hologram": "/dw admin \\<arena> spawner hologram \\<true|false> - <yellow>Вмикає/вимикає голограму над спаунером",
+        "bw_admin_spawner_reset": "/dw admin \\<arena> spawner reset - <yellow>Видалити всі спаунери",
+        "bw_admin_store_remove": "/dw admin \\<arena> store remove - <yellow>Видаліть торгового селянина зі своєї посади",
+        "bw_admin_store_type": "/dw admin \\<arena> store type \\<living entity> - <yellow>Встановлює тип сутності магазину (селянин, кінь, корова, свиня тощо)",
+        "bw_admin_config_list_add": "/dw admin \\<arena> config list \\<data type> \\<constant> add \\<value> - <yellow>Додає нове значення до списку констант",
+        "bw_admin_config_list_clear": "/dw admin \\<arena> config list \\<data type> \\<constant> clear - <yellow>Очищає список констант, не встановлюючи його для успадкування",
+        "bw_admin_fee": "/dw admin \\<arena> fee \\<fee> - <yellow>Встановлює економічну комісійну плату, необхідну для входу на арену.",
+        "bw_admin_post_game_waiting": "/dw admin \\<arena> postgamewaiting \\<seconds> - <yellow>Встановлює час очікування перед телепортацією гравця з арени",
+        "bw_admin_customprefix": "/dw admin \\<arena> customprefix \\<name|off> - <yellow>Вмикає спеціальний префікс для арени",
+        "bw_admin_display_name": "/dw admin \\<arena> displayName \\<name|off> - <yellow>Встановлює відображувану назву арени",
+        "bw_admin_remove": "/dw admin \\<arena> remove - <red>Видалити арену",
+        "bw_admin_spawner_linked_team": "/dw admin \\<arena> spawner linkedTeam \\<team|null> - <yellow>Пов’язує спаунер на вашій позиції з указаною командою",
+        "bw_admin_spawner_base_amount": "/dw admin \\<arena> spawner baseAmount \\<amount> - <yellow>Встановлює базову кількість ресурсів, які породжувач має створювати за цикл",
+        "bw_admin_spawner_floating": "/dw admin \\<arena> spawner floating \\<true|false> - <yellow>Вмикає/вимикає плаваючий блок під голограмою спаунера",
+        "bw_admin_store_add": "/dw admin \\<arena> store add [name above dealer head] [file with shop] [use main shop] - <yellow>Додайте на свою позицію торгового селянина",
+        "bw_admin_config_set": "/dw admin \\<arena> config set \\<data type> \\<constant> \\<value> - <yellow>Встановлює значення константи для гри",
+        "bw_admin_config_reset": "/dw admin \\<arena> config reset \\<constant> - <yellow>Скидає константу до успадкованого значення",
+        "bw_admin_config_list_set": "/dw admin \\<arena> config list \\<data type> \\<constant> set \\<position> \\<value> - <yellow>Змінює значення в позиції списку констант",
+        "bw_admin_config_list_remove": "/dw admin \\<arena> config list \\<data type> \\<constant> remove \\<position> - <yellow>Видаляє значення з позиції в списку констант",
+        "bw_admin_arena_time": "/dw admin \\<arena> arenatime \\<type> - <yellow>Встановлює час на арені (ДЕНЬ, НІЧ тощо)",
+        "bw_admin_arena_weather": "/dw admin \\<arena> arenaweather \\<type> - <yellow>Встановлює погоду на арені (default, CLEAN, DOWNFALL)",
+        "bw_cheat_rebuild_region": "/dw cheat rebuildRegion [game] - <red>Перебудовує область гри",
+        "bw_gamesinv": "/dw gamesinv \\<inventory> - <green>Відкриває інвентар певних ігор",
+        "bw_admin_edit": "/dw admin \\<arena> edit - <yellow>Вимикає гру, та змінює арену в режим редагування",
+        "bw_admin_save": "/dw admin \\<arena> save - <green>Зберігає гру та активує її!",
+        "bw_alljoin": "/dw alljoin [arena] - <green>Приєднує всіх гравців на сервері в DoorWars",
+        "bw_admin_spawner_remove": "/dw admin \\<arena> spawner remove - <yellow>Видалити всі локації спавнерів",
+        "bw_admin_store_child": "/dw admin \\<arena> store child - <yellow>Зробити з продавця дитину",
+        "bw_dump": "/dw dump - <yellow>Скидує сервер і кидає вам повідомленя на скидане. Це повідомленя може бути корисним для підтримки",
+        "bw_admin_store_adult": "/dw admin \\<arena> store adult - <yellow>Зробити з торговця дорослого",
+        "bw_migrate": "/dw migrate \\<plugin> - <yellow>Переміщає конфігурацію з іношого DoorWars плагіну.",
+        "bw_admin_interactive": "/dw admin \\<arena> interactive - <yellow>Якщо арена в режимі редагуваня то ця команда вмикає інтерактивний режим",
+        "bw_cheat_give": "/dw cheat give \\<resource> [amount] [player] - <red>Дає гравцеві певну кількість ресурсу",
+        "bw_cheat_kill": "/dw cheat kill [player] - <red>Вбивств вказаного гравця",
+        "bw_cheat_build_pop_up_tower": "/dw cheat buildPopUpTower [game] - <red>Будує спливаючу вежу"
+    },
+    "language": {
+        "success": "<green>Успішно встановлено мову на <white>[<lang>]",
+        "already_set": "Мова: [<lang>] уже встановлено як мову за умовчанням!",
+        "invalid": "<red>Вказаний мовний файл не може бути підгружений!",
+        "usage_bw_lang": "Використаня: /dw lang \\<locale> - <yellow>Встановлює локалізацію для <red>Bed<white>Wars"
+    },
+    "migrate": {
+        "success": "<green>Конфігурацію успішно переміщено з <red><plugin><green>!",
+        "failure": "<red>Під час міграції конфігурації сталася помилка! Подробиці дивіться на консолі."
+    },
+    "admin": {
+        "arena": {
+            "edit": {
+                "errors": {
+                    "set_spawners_before_save": "<red>Перед збереженням гри додайте принаймні 1 спавнер!",
+                    "set_target_block_for_team_before_save": "<red>Перед збереженням гри будь ласка встановіть цільовий блок команди <grey><team><red>!",
+                    "missing_spawners": "<yellow>У грі немає спавнерів.",
+                    "missing_stores": "<yellow>У грі немає магазинів.",
+                    "skip_warnings": "<yellow>Якщо ви все одно хочете зберегти <gray><game><yellow>, виконайте цю команду: <gray><command>",
+                    "invalid_min_players": "<red>Мінімальна кількість гравців має бути 2 або більше!",
+                    "invalid_constant_name": "<red>Неправильна назва константи!",
+                    "invalid_constant_position": "<red>Неправильна позиція постійного члена списку!",
+                    "invalid_arena_time": "<red>Неправильний тип світового часу арени!",
+                    "invalid_bar_color": "<red>Неправильний колір для Boss Bar!",
+                    "invalid_entity_type": "<red>Неправильний тип живої істоти!",
+                    "no_spawner": "<red>На цій позиції немає спаунера!",
+                    "multiple_spawners": {
+                        "first_line": "<red>У тому самому місці є ,більше спавнерів, виберіть конкретний:",
+                        "line": "- <type> - <gray><command></gray>"
+                    },
+                    "team_spawn_on_the_same_block": "<red>На цій позиції вже є точка появи. Якщо ви хочете змінити обертання, спочатку видаліть його.",
+                    "team_no_spawn_there": "<red>На цій позиції немає точки появи.",
+                    "set_spec_before_save": "<red>Перед збереженням гри будь ласка встановіть специфікацію появи!",
+                    "set_stores_before_save": "<red>Перед збереженням гри додайте принаймні 1 магазин!",
+                    "set_spawn_for_team_before_save": "<red>Перед збереженням гри будь ласка встановіть точку появи команди <grey><team><red>!",
+                    "weird_store_count": "<yellow>У цій грі кількість магазинів дорівнює <gray><count><yellow>, що не є множником кількості команд. Це правильно?",
+                    "invalid_constant_value": "<red>Неправильне значення! Це може бути <gray>true<red>, <gray>false<red> або <gray>inherit<red>!",
+                    "invalid_constant_enum_value": "<red>Недійсне значення <gray><value></gray>! Має бути одне з таких: <сірий><значення>",
+                    "invalid_arena_weather": "<red>Неправильний тип погоди на арені!",
+                    "invalid_time": "<red>Час <gray><number><red> недійсний!",
+                    "npc_must_have_skin_name": "<red>Якщо ви використовуєте тип сутності PLAYER, ви повинні вказати назву скіна у форматі <gray>PLAYER:[skin's owner]",
+                    "invalid_variant": "<red>Ігровий варіант <gray><variant><red> не існує!",
+                    "team_spawn_set_blocked": "<red>Команда <grey><team><red> має більше однієї точки спавну, тому використовувати команду set заборонено.",
+                    "must_be_in_same_world": "<red>Усі команди мають виконуватися в одному світі!",
+                    "invalid_bounds": "<red>Різниця у висоті між поз.1 і поз.2 надто мала! Мінімум 5 блоків!",
+                    "store_already_exist": "<red>Магазин вже існує!",
+                    "store_does_not_exist": "<red>Магазину не існує!",
+                    "invalid_spawner_type": "<red>Спаунер має бути бронзовим, залізним, золотим або мати спеціальну конфігурацію!",
+                    "need_2_teams": "<red>Для гри потрібні 2 або більше команд!",
+                    "team_does_not_exist": "<red>Цієї команди не існує!",
+                    "set_bounds_before_save": "<red>Перед збереженням гри встановіть координати pos1 і pos2 (визначення розміру та положення арени)!",
+                    "set_lobby_before_save": "<red>Перед збереженням гри встановіть спавн лобі!",
+                    "invalid_countdown": "<red>Зворотний відлік має бути в межах <lowest> < x < <highest> секунд!",
+                    "must_be_in_bounds": "<red>Місце має бути розміщене всередині арени (координати позиції1 та позиції2)!",
+                    "set_bounds_first": "<red>Перед встановленням spawnу, будь ласка, встановіть координати pos1 і pos2 (визначаючи розмір і положення арени)!",
+                    "invalid_spawner_level": "<white>Неправильний номер рівня, використано стандартний рівень 1.",
+                    "invalid_color": "<red>Цей колір недійсний!",
+                    "max_players": "<red>Максимальна кількість гравців має бути >= 1!",
+                    "spawners_needed": "<red>Гра повинна мати принаймні один спавнер предметів!",
+                    "team_already_exists": "<red>Ця команда вже існує!",
+                    "cannot_rename_team": "<red>Неможливо перейменувати команду <gray><team><red> на <grey><new-team><red>! Ця назва вже зайнята!"
+                },
+                "success": {
+                    "target_block_set": "<green>Цільовий блок (<gray><material><green>) команди <gray><team><green> успішно встановлено на позицію XYZ: <gray><x>/<y>/<z>",
+                    "target_none_set": "<green>Команда <grey><team><green> тепер гратиме без жодної мішені. Це означає, що вони не зможуть відродитися!",
+                    "team_multiple_spawns_ad": "<aqua>Ви бажаєте встановити більше однієї точки спавну для команди? Використовуйте <gray><command>",
+                    "team_spawn_removed": "<green>Відродження команди <grey><team><green> успішно видалено з позиції XYZ: <gray><x>/<y>/<z>",
+                    "team_spawn_reset": "<green>Усі точки відродження команди <grey><team><green> видалено.",
+                    "team_maxplayers_set": "<green>Максимальну кількість гравців у команді <grey><team><green> успішно встановлено на <gray><maxplayers>",
+                    "team_removed": "<green>Команду <gray><team><green> успішно видалено!",
+                    "spawner_added": "<green>Спавнер <gray><resource><green> успішно додано до позиції XYZ: <gray><x>/<y>/<z>",
+                    "store_removed": "<green>Магазин з позиції XYZ: <gray><x>/<y>/<z><green> успішно видалено!",
+                    "store_name_set": "<green>Назва магазину на позиції XYZ: <gray><x>/<y>/<z><green> тепер <gray><name><green>!",
+                    "store_file_reset": "<green>Магазин на позиції XYZ: <gray><x>/<y>/<z><green> більше не має спеціального файлу!",
+                    "spec_spawn_set": "<green>Оглядач успішно встановлено в позицію XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos1_set": "<green>Позиція 1 арени <gray><arena><green> була встановлена на XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos2_set": "<green> Позиція лобі 2 арени <gray><arena><green> була встановлена на XYZ: <gray><x>/<y>/<z>",
+                    "lobby_countdown_set": "<green>Зворотний відлік у лобі встановлено на <gray><countdown>",
+                    "saved_and_started": "<green>Гра була успішно збережена та запущена! Тепер ви можете приєднатися та грати на арені!",
+                    "target_not_properly_balanced": "<yellow>Мета встановлена, однак тепер не кожна команда має однаковий тип цілі, це може зробити гру незбалансованою. Подумайте про те, щоб це змінити.",
+                    "target_countdown_set": "<green>Цільовий відлік команди <grey><team><green> успішно встановлено на <gray><countdown><green> секунд!",
+                    "target_block_countdown_set": "<green>Цільовий блок (<gray><material><green>) команди <gray><team><green> успішно встановлено на позицію XYZ: <gray><x>/<y>/<z><green > і його зворотний відлік було встановлено на <gray><countdown><green> секунди!",
+                    "team_spawn_set": "<green>Відродження команди <grey><team><green> успішно встановлено на позицію XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_added": "<green>Відродження команди <grey><team><green> успішно додано на позицію XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "team_spawn_list": "<green>Команда <grey><team><green> має <gray><count><green> точок спавну на цих позиціях:",
+                    "team_spawn_list_no": "<red>Команда <grey><team><red> ще не має точок спавну.",
+                    "team_color_set": "<green>Колір <grey><team><green> успішно встановлено на <teamcolor>",
+                    "team_created": "<green>Команду <grey><team><green> успішно створено кольором <teamcolor><green> і максимальною кількістю гравців: <gray><maxplayers>",
+                    "team_renamed": "<green>Команду <grey><team><green> успішно перейменовано на <grey><new-team><green>!",
+                    "spawners_removed": "<green>Усі спавнери для гри <gray><arena><green> видалено!",
+                    "store_added": "<green>До вашої позиції додано магазин: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "store_name_reset": "<green>Магазин на позиції XYZ: <gray><x>/<y>/<z><green> більше не має спеціальної назви!",
+                    "store_file_set": "<green>Файл магазину в позиції XYZ: <gray><x>/<y>/<z><green> тепер <gray><file><green>!",
+                    "lobby_spawn_set": "<green>Створення лобі було успішно встановлено на позицію XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "pos2_set": "<green>Позиція 2 арени <gray><arena><green> була встановлена на XYZ: <gray><x>/<y>/<z>",
+                    "lobby_pos1_set": "<green> Позиція лобі 1 арени <gray><arena><green> була встановлена на XYZ: <gray><x>/<y>/<z>",
+                    "game_time_set": "<green>Час гри було встановлено<gray><time>",
+                    "constant_set": "<green>Константу <gray><config><green> було успішно встановлено на <gray><value><green>!",
+                    "constant_list_removed": "<green>Значення в позиції <gray><position><green> видалено зі списку <gray><config><green>!",
+                    "constant_list_cleared": "<green>Список <gray><config><green> тепер порожній, але не повертається до успадкованого!",
+                    "weather_set": "<green>Світову погоду на Арені встановлено на <gray><weather><green>!",
+                    "team_spawn_list_entry": "- <green>XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+                    "min_players_set": "<green>Успішно встановлено мінімальну кількість гравців на <gray><min><green>!",
+                    "constant_list_added": "<green>Значення <gray><value><green> успішно додано до списку <gray><config><green> у позицію <gray><position><green>!",
+                    "constant_reset": "<green>Константу <gray><config><green> успішно скинуто до успадкованого значення!",
+                    "arena_time_set": "<green>Світовий час Арени встановлено на <gray><time><green>!",
+                    "store_entity_type_set": "<green>Тип магазину встановлений на <gray><type><green>!",
+                    "removed_spawners": "<gray><count> <green>спавнер видалений з <gray><x>/<y>/<z>",
+                    "child_state": "<green>Варіація дитини торговця тепер змінена на <gray><value>",
+                    "custom_prefix_enabled": "<green>Користувацький префікс успішно встановлено на <gray><prefix><green>.",
+                    "spawner_hologram_disabled": "<green>Голограму цього спавнера <type> було <gray>вимкнено<green>.",
+                    "spawner_floating_enabled": "<green>Плаваючий блок цього спаунера <type> було <gray>увімкнено<green>.",
+                    "spawner_base_amount_set": "<green>Базова кількість ресурсів цього спаунера <type> встановлена на <gray><amount><green>.",
+                    "spawner_custom_name_set": "<green>Спеціальна назва цього спавнера <type> встановлена на <gray><name><green>.",
+                    "spawner_type_changed": "<green>Тип цього спавнера <type> змінено на <new_type>.",
+                    "spawner_team_unlinked": "<green>Цей спаунер <type> більше не пов'язаний з жодною командою.",
+                    "bar_color_set": "<green>Колір встановлено <gray><color><green> для bossbar <gray><type><green>!",
+                    "spawner_hologram_type_set": "<green>Тип голограми цього спавнера <type> встановлено на <gray><type><green>.",
+                    "display_name_enabled": "<green>Відображуване ім'я успішно встановлено на <gray><display_name><green>.",
+                    "display_name_disabled": "<green>Відображуване ім'я успішно вимкнено.",
+                    "fee_set": "<green>Плата за вхід на арену була успішно встановлена на <gray><fee><green>.",
+                    "post_game_waiting": "<green>Час очікування після успішного встановлення гри на <gray><number><green>!",
+                    "custom_prefix_disabled": "<green>Користувацький префікс успішно вимкнено.",
+                    "spawner_hologram_enabled": "<green>Голограму цього спавнера <type> було <gray>активовано<green>.",
+                    "spawner_floating_disabled": "<green>Плаваючий блок цього спаунера <type> було <gray>вимкнено<green>.",
+                    "spawner_max_spawned_resources_set": "<green>Максимальний ліміт створених ресурсів для цього спавнера <type> встановлено на <gray><amount><green>.",
+                    "spawner_team_linked": "<green>Цей спаунер <type> було пов’язано з командою <team>.",
+                    "spawner_rotation_mode_set": "<green>Режим обертання голограми цього спаунера <type> встановлено на <gray><rotation><green>."
+                }
+            },
+            "error": {
+                "already_exists": "<red>Арена вже існує!",
+                "already_working_on_it": "<red>Арена вже існує, але ще не завершена!",
+                "arena_must_be_in_edit_mode": "<red>Арена має бути в режимі редагування!",
+                "arena_not_in_edit": "<red>Арена не існує або працює! Деактивуйте його за допомогою <gray>/dw admin \\<arena> edit<red>, а потім активуйте за допомогою <gray>/dw admin \\<arena> save"
+            },
+            "success": {
+                "added": "<green>Арену <gray><arena><green> додано!",
+                "edit_mode": "<green>Арена перейшла в режим редагування!",
+                "removed": "<red><b>Арену видалено!",
+                "added_with_variant": "<green>Арену <gray><arena><green> додано! Використані варіанти гри: <gray><variant><green>!"
+            }
+        },
+        "usage": "<red>Використання: /dw admin \\<arena> \\<add|edit|remove|save|...> ...",
+        "mainlobby": {
+            "info": "<red>УВАГА<white>: вам потрібно виконати /dw reload, щоб Mainlobby працював!"
+        },
+        "holo": {
+            "not_enabled": "<red>Голографія вимкнена.",
+            "added": "<green>Голографія додана до вашої позиції!",
+            "removed": "<green>Голограму успішно видалено!",
+            "click_to_remove": "<yellow>Тепер клацніть голографічний малюнок, який потрібно видалити!"
+        },
+        "group": {
+            "added": "<green>Гру <gray><game><green> додано до групи <gray><group><green>!",
+            "empty": "<red>Група <gray><group><red> порожня!",
+            "list": "<green>Список ігор у групі <gray><group><green>:",
+            "removed": "<green>Гру <gray><game><green> видалено з групи <gray><group><green>!",
+            "invalid_group_name": "<red>Недійсна назва групи <gray><group><red>! Назва має містити лише буквено-цифрові символи, тире та підкреслення!"
+        },
+        "team_join_entity": {
+            "entity_added": "<green>Додано особу для приєднання до команди!",
+            "click_right_on_entity": "<green>Тепер клацніть правою кнопкою миші на бажаній сутності, для якої ви хочете налаштувати приєднання до команди: <gray><team>",
+            "entity_not_compatible": "<red>Об'єкт, який ви намагаєтеся використати, несумісний! Можна використовувати лише живі істоти або стійки для броні!"
+        },
+        "npc": {
+            "added": "<green>Новий npc додано до позиції XYZ: <gray><x>/<y>/<z> <green>YAW: <gray><yaw> <green>PITCH: <gray><pitch>",
+            "now_click": "<yellow>Тепер клацніть правою кнопкою миші на NPC, якого ви хочете редагувати.",
+            "editing": "<green>Зараз ви редагуєте NPC у позиції XYZ: <gray><x>/<y>/<z>",
+            "should_look": "<green>Тепер NPC має дивитися на гравців!",
+            "should_not_look": "<green>NPC більше не повинен дивитися на гравців!",
+            "requires_value": "<green>Для цієї дії потрібно вказати значення!",
+            "removed": "<green>NPC видалено!",
+            "skin_changed": "<green>Скіна була змінена!",
+            "skin_change_failed": "<red>Скіна не може бути змінена!",
+            "not_editing": "<red>Ви не редагуєте жодного NPC! Виберіть один за допомогою <gray>/dw npc select",
+            "action_set": "<green>Дію цього NPC встановлено на <gray><action><green> з аргументом \"<gray><value><green>\"",
+            "no_longer_editing": "<green>Ви більше не редагуєте жодного NPC. Використовуйте <gray>/dw npc select<green>, щоб вибрати новий."
+        },
+        "hologram": {
+            "invalid_number": "<red>Номер рядка має бути вищим за 0!",
+            "line_added": "<green>Новий рядок додано в кінець голограми: <white><line>",
+            "line_removed": "<green>Номер рядка <gray><linenumber><green> голограми видалено!",
+            "theres_no_line_number": "<red>Немає рядка з номером <linenumber>",
+            "reset": "<green>Голограму скинуто.",
+            "line_set": "<green>Номер рядка <gray><linenumber><green> голограми встановлено на <white><line>"
+        },
+        "info": {
+            "name": "<gray>Ім'я: <reset><name>",
+            "status": "<gray>Статус: <reset><status>",
+            "status_disabled": "<red>ВИМКНЕНО",
+            "status_waiting": "<yellow>ЧЕКАЄМО НА ГРАВЦІВ",
+            "status_rebuilding": "<yellow>РЕКОНСТРУКЦІЯ",
+            "status_disabled_in_edit": "<red>ВИМКНЕНО<reset> (<yellow>В РОЗРОБЦІ<reset>)",
+            "world": "<gray>Світ: <reset><world>",
+            "pos2": "<gray>Позиція 2: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spec": "<gray>Позиція глядача: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "teams": "<gray>Команди:",
+            "team": "- <team><reset> (Максимальна кількість гравців: <gray><maxplayers><reset>)",
+            "team_spawn": "  <gray>Спавн команди: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "min_players": "<gray>Мінімальна кількість гравців: <reset><minplayers>",
+            "villagers": "<gray>Магазини:",
+            "villager_pos": "- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_entity_type": "  Тип: <green><type>",
+            "villager_shop": "  Має власний магазин: <gray><bool>",
+            "villager_shop_dealer_name": "  Спеціальне ім’я дилера над головою: <name><reset>",
+            "game_time": "<gray>Тривалість гри:<white><time> s",
+            "constants": "<gray>Конфігурація констант:",
+            "constant": "- <gray><constant><reset>: <gray><value>",
+            "constant_true": "<green>Правда",
+            "constant_false": "<red>Брехня",
+            "spawner_no_team": "<red>Немає команди",
+            "file": "<gray><i>Файл: <file>",
+            "config": "Конфігурація<gray><configured-component>",
+            "key": "Ключ",
+            "value": "Значення",
+            "data_type": "Ти дати",
+            "header": "<green>Деталі арени:",
+            "status_running": "<green>ГРА ЗАПУСКАЄТЬСЯ",
+            "pos1": "<gray>Позиція 1: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "lobby": "<gray>Позиція лобі: <white>World: <gray><world> <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "team_target": "  <gray>Ліжко: <white>XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "spawners": "<gray>Спавнери:",
+            "spawner": "- <resource> <gray>- <team> <gray>- <yellow>Голограма: <white><holo> <gray>- XYZ: <gray><x><white>/<gray><y><white>/<gray><z>",
+            "villager_shop_name": "  Назва магазину: <gold><file><reset> (успадковано від main: <gray><bool><reset>)",
+            "villager_shop_dealer_has_no_name": "<red>Ім'я не встановлено",
+            "lobby_countdown": "<gray>Зворотний відлік перед початком гри:<white><time> с",
+            "constant_inherit": "<yellow>Успадковано від конфігурації плагіна",
+            "post_game_waiting": "<gray><gray>Час очікування після гри: <white><time> с",
+            "default_value": "<yellow>Використовує значення за умовчанням із файлу конфігурації або файлу варіанту"
+        },
+        "info_select": {
+            "header": "<green>Будь ласка, виберіть інформаційний розділ <gray><arena><green>:",
+            "stores": "<green>Список магазинів<white> - <gray><command>",
+            "spawners": "<green>Список спавнерів<white> - <gray><command>",
+            "config": "<green>Конфігурація<white> - <gray><command>",
+            "click": "<aqua>Натисніть, щоб виконати <gray><command><aqua>!",
+            "base": "<green>Базова інформація\n<white> - <gray><command>",
+            "teams": "<green>Список команд<white> - <gray><command>"
+        }
+    },
+    "games_inventory": {
+        "unknown_inventory": "<red>Інвентар невідомих ігор <gray><type><red>!",
+        "could_not_find_game": "<red>Не вдалося знайти гру!"
+    },
+    "update": {
+        "new_release": [
+            "<green>Доступна нова версія <version> DoorWars!"
+        ],
+        "patch_release": [
+            "<yellow>Новий випуск патча для DoorWars <version> тут!",
+            "Ви можете завантажити його з <url>"
+        ]
+    },
+    "specials": {
+        "team_chest": {
+            "not_yours": "<yellow>Ця скринька не вашої команди!",
+            "name": "<green><bold>Скринька команди",
+            "broken": "<red>Скриня вашої команди зруйнована!",
+            "placed": "<green>Нова скриння команди поставлена!"
+        },
+        "golem": {
+            "created": "<green>Голем створений."
+        },
+        "arrow_blocker": {
+            "already_activated": "<red>Блокуватор стріл працює!",
+            "started": "<green>Блокуватор стріл активований на <white><time><green> секунд!",
+            "ended": "<red>Блокуватор стріл більше не працює!"
+        },
+        "tntsheep": {
+            "no_target_found": "<red>Ціль не знайдена!"
+        },
+        "protection_wall": {
+            "created_unbreakable": "<green>Не зруйновна захисна стіна збудована!",
+            "destroy": "<red>Захисна стіна буде зруйнована через <white><time> <red>секунд.",
+            "created": "<green>Захисна стіна створена і буде зруйнована через <white><time> <green>секунд.",
+            "not_usable_here": "<red>Тут нема місця для будуваня Захисної стіни."
+        },
+        "rescue_platform": {
+            "created_unbreakable": "<green>Незруйновна платформа збудована!",
+            "created": "<green>Платформа збудована і буде зруйнована через <white><time> <green>секунд.",
+            "not_in_air": "<red>Щоб скористатися цим, вам потрібно бути в повітрі.",
+            "destroy": "<red>Платформу буде знищено через <white><time> <red>секунд."
+        },
+        "item_delay": "<red>Ви маєте почекати <time> секунд перед тим як використувувати цей предмет знов!",
+        "trap": {
+            "caught": "<red>Ви потрапили в пастку команди <white><team><red>!",
+            "caught_team": "<white><player><red> потрапив у пастку вашої команди!",
+            "built": "<green>Ви створили пастку! Тепер чекайте, щоб хтось потрапив у нього!"
+        },
+        "warp_powder": {
+            "multiuse": "<red>Ще один WarpPowder уже активовано!",
+            "canceled": "<red>WarpPowder скасовано!",
+            "started": "<green>WarpPowder розпочато! Будь ласка, не рухайтеся <gray><time><green> секунд!"
+        },
+        "tracker": {
+            "target_found": "<white><target> <green>знайдено <white><distance> <geen>за квартали!",
+            "no_target_found": "<red>Мета не знайдена!"
+        }
+    },
+    "party": {
+        "command": {
+            "not_party_leader": "<red>Ви не лідер в вашій команді!",
+            "not_in_party": "<red>Ви маєте бути в команді щоб використовувати цю команду!",
+            "invalid_arguments": "<red>Невірне число або аргумент! Напишість /dw party help щоб дізнатися більше.",
+            "warped": "<green>Участники команди були перміщені.",
+            "is_empty": "<red>В вас нема команди! Нема кого перемістити!",
+            "help": "/dw party warp - <yellow>Переміщює всіх гравців в твоїй команді в твою гру до тебе"
+        },
+        "warped": "<green>Голова команди перемістив вас сюди",
+        "inform_game_join": "<green>Приєднання до гри лідера"
+    },
+    "dump": {
+        "success": "<green>Сервер успішно скинувся. Посилання: <dump>",
+        "failed": "<red>Скидування не вдалося!"
+    },
+    "leaderboard": {
+        "holo_added": "<green>Голограма таблиці лідерів додана в вашу позицію!",
+        "no_scores": "<gray>Поки що нема результатів!",
+        "line": "<bold><order>.</bold> <gray><player> - <green><score>",
+        "header": "<gold>Таблиця лідерів DoorWars - топ <number> гравців"
+    }
+}

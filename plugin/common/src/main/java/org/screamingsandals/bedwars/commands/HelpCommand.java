@@ -37,7 +37,7 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
-        var minecraftHelp = MinecraftHelp.createNative("/bw help", manager)
+        var minecraftHelp = MinecraftHelp.createNative("/dw help", manager)
                 .commandFilter((command, sender) -> {
                     if ((command.getSenderType().isPresent() && !command.getSenderType().get().isInstance(sender)) || command.isHidden()) {
                         return false; // Cloud for some reason doesn't check sender type and hidden
@@ -69,7 +69,7 @@ public class HelpCommand extends BaseCommand {
         );
 
         // special case: help command
-        manager.command(manager.commandBuilder("bw")
+        manager.command(manager.commandBuilder("dw", "doorwars")
                 .hidden()
                 .handler(context -> minecraftHelp.queryCommands("", context.getSender()))
         );
