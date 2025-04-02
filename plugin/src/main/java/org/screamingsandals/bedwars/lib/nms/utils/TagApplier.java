@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class TagApplier {
-    public static @NotNull ItemStack applyTag(@NotNull ItemStack stack, @NotNull String tag) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static @NotNull ItemStack applyTag(@NotNull ItemStack stack, @NotNull String tag, int dataVersion) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         Object parsedTag = ClassStorage.getMethod(TagParserAccessor.METHOD_PARSE_COMPOUND_FULLY.get()).invokeStatic(tag);
 
         if (parsedTag == null) {
@@ -22,6 +22,9 @@ public class TagApplier {
         if (!ClassStorage.CB.CraftItemStack.isInstance(stack)) {
             stack = ClassStorage.asCBStack(stack);
         }
+
+        // TODO: use DFU in case DataVersion is provided
+
         if (ItemStackAccessor.METHOD_PARSE.get() != null) {
             // 1.20.5+
             if (stack.getType().isAir()) {
