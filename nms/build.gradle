@@ -36,6 +36,7 @@ accessors {
         method void, 'putInt', String, int
         method void, 'putString', String, String
         method 'net.minecraft.nbt.Tag', 'put', String, 'net.minecraft.nbt.Tag'
+        method('net.minecraft.nbt.Tag', 'get', String)
     }
     mapClass('net.minecraft.nbt.TagParser') {
         methodChain {
@@ -317,6 +318,23 @@ accessors {
      }
 
     mapClass('net.minecraft.server.MinecraftServer') {
+        field('com.mojang.datafixers.DataFixer', 'fixerUpper')
+        field('net.minecraft.server.VVV.DataConverterManager', 'dataConverterManager')
         method('net.minecraft.core.RegistryAccess$Frozen', 'registryAccess')
+    }
+
+    // Datafixer
+    mapClass('net.minecraft.util.datafix.fixes.References') {
+        fieldChain {
+            it.item('com.mojang.datafixers.DSL$TypeReference', 'ITEM_STACK')
+            it.item('net.minecraft.server.VVV.DataConverterTypes', 'ITEM_INSTANCE')
+        }
+    }
+    mapClass('net.minecraft.server.VVV.DataConverterManager') {
+        field(int, 'field_188262_d')
+        method('net.minecraft.nbt.NBTTagCompound', 'func_188251_a', 'net.minecraft.util.datafix.IFixType', 'net.minecraft.nbt.NBTTagCompound', int)
+    }
+    mapClass('net.minecraft.nbt.NbtOps') {
+        field(it.name, 'INSTANCE')
     }
 }
