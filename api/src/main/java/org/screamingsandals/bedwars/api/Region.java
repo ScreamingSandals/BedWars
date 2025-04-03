@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.lib.api.types.server.BlockHolder;
 import org.screamingsandals.lib.api.types.server.BlockPlacementHolder;
 import org.screamingsandals.lib.api.types.server.BlockSnapshotHolder;
@@ -41,6 +42,15 @@ public interface Region {
      * @since 0.3.0
      */
     boolean isLocationModifiedDuringGame(LocationHolder loc);
+
+    /**
+     * <p>Determines if the supplied location has an original block stored for restoration after the BedWars game.</p>
+     *
+     * @param loc the location
+     * @return is the block stored for rollback?
+     * @since 0.3.0
+     */
+    boolean isStoredForRollback(@NotNull LocationHolder loc);
 
     /**
      * <p>Marks a location for rollback.</p>

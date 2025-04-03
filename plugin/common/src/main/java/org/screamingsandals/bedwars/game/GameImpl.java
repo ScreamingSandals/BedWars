@@ -301,7 +301,7 @@ public class GameImpl implements LocalGame {
             if (region.isLocationModifiedDuringGame(replaced.location())) {
                 return true;
             } else if (BedWarsPlugin.isBreakableBlock(replaced.block()) || region.isLiquid(replaced.block())) {
-                region.putOriginalBlock(block.location(), replaced);
+                region.putOriginalBlockIfAbsent(block.location(), replaced);
             } else {
                 return false;
             }
@@ -394,7 +394,7 @@ public class GameImpl implements LocalGame {
             }
         }
         if (BedWarsPlugin.isBreakableBlock(block.block())) {
-            region.putOriginalBlock(block.location(), block.blockSnapshot());
+            region.putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
             return true;
         }
         return false;
@@ -454,12 +454,12 @@ public class GameImpl implements LocalGame {
                 }
 
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.blockSnapshot());
+                    region.putOriginalBlockIfAbsent(loc, block.blockSnapshot());
                     if (block.location().equals(loc)) {
                         var neighbor = region.getBedNeighbor(block);
-                        region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
+                        region.putOriginalBlockIfAbsent(neighbor.location(), neighbor.blockSnapshot());
                     } else {
-                        region.putOriginalBlock(loc, region.getBedNeighbor(block).blockSnapshot());
+                        region.putOriginalBlockIfAbsent(block.location(), region.getBedNeighbor(block).blockSnapshot());
                     }
                 }
 
@@ -470,17 +470,17 @@ public class GameImpl implements LocalGame {
                 var neighbourBlock = neighbour.getBlock();
                 if (neighbourBlock.block().is("#doors", "#tall_flowers")) {
                     if (putOriginalBlocks) {
-                        region.putOriginalBlock(neighbour, neighbourBlock.blockSnapshot());
+                        region.putOriginalBlockIfAbsent(neighbour, neighbourBlock.blockSnapshot());
                     }
                     neighbourBlock.alterBlockWithoutPhysics(Block.air());
                 }
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.blockSnapshot());
+                    region.putOriginalBlockIfAbsent(loc, block.blockSnapshot());
                 }
                 loc.getBlock().block(Block.air());
             } else {
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.blockSnapshot());
+                    region.putOriginalBlockIfAbsent(loc, block.blockSnapshot());
                 }
                 loc.getBlock().block(Block.air());
             }
