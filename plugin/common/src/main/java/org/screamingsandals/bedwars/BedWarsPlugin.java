@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -76,7 +76,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.ByteArrayInputStream;
@@ -168,7 +168,7 @@ public class BedWarsPlugin implements BedwarsAPI {
     @ConfigFile("serverName.txt")
     private final Path serverNameFile;
     @Getter
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
     private static BedWarsPlugin instance;
 
     private boolean isDisabling = false;
@@ -402,6 +402,12 @@ public class BedWarsPlugin implements BedwarsAPI {
         Server.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
 
         HologramManager.setPreferDisplayEntities(MainConfig.getInstance().node("prefer-1-19-4-display-entities").getBoolean());
+        if (!Server.isVersion(1, 9)) {
+            // 1.8.8 boss bars
+            var backend = MainConfig.getInstance().node("bossbar", "backend-entity").getString("dragon");
+            Server.preferEnderDragonBossBar("dragon".equalsIgnoreCase(backend) || "ender_dragon".equalsIgnoreCase(backend));
+            Server.enableViaHooksForBossBar(MainConfig.getInstance().node("bossbar", "allow-via-hooks").getBoolean());
+        }
     }
 
     @OnDisable

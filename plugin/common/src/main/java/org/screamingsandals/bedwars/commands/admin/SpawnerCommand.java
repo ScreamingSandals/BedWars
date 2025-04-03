@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -34,6 +34,7 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -80,7 +81,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             loc = loc.withYaw(0).withPitch(0);
                             var spawnerType = game.getGameVariant().getItemSpawnerType(type);
                             if (spawnerType != null) {
-                                game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType));
+                                game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType.toHolder()));
                                 sender.sendMessage(
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED)
@@ -145,7 +146,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setMaxSpawnedResources(amount);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_MAX_SPAWNED_RESOURCES_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("amount", amount)
                                     .defaultPrefix()
                             );
@@ -162,7 +163,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setRotationMode(rotationMode);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ROTATION_MODE_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("rotation", rotationMode.name())
                                     .defaultPrefix()
                             );
@@ -183,9 +184,9 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             var spawnerType = game.getGameVariant().getItemSpawnerType(type);
                             if (spawnerType != null) {
                                 var old = itemSpawner.getItemSpawnerType();
-                                itemSpawner.setItemSpawnerType(spawnerType);
+                                itemSpawner.setItemSpawnerType(spawnerType.toHolder());
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_TYPE_CHANGED)
-                                        .placeholder("type", old.getItemName())
+                                        .placeholder("type", old.toSpawnerType(game).getItemName())
                                         .placeholder("new_type", spawnerType.getItemName())
                                         .defaultPrefix()
                                 );
@@ -208,7 +209,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                 itemSpawner.setCustomName(customName);
                             }
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_CUSTOM_NAME_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("name", customName)
                                     .defaultPrefix()
                             );
@@ -225,7 +226,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setHologramType(type);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_TYPE_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("type", type.name())
                                     .defaultPrefix()
                             );
@@ -255,12 +256,12 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             itemSpawner.setTeam(team);
                             if (team == null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_TEAM_UNLINKED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                         .defaultPrefix()
                                 );
                             } else {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_TEAM_LINKED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                         .placeholder("team", team.getName())
                                         .defaultPrefix()
                                 );
@@ -278,7 +279,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setBaseAmountPerSpawn(amount);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_BASE_AMOUNT_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("amount", amount)
                                     .defaultPrefix()
                             );
@@ -296,10 +297,10 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             itemSpawner.setFloatingBlockEnabled(enabled);
                             if (enabled) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_FLOATING_ENABLED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName()).defaultPrefix());
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName()).defaultPrefix());
                             } else {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_FLOATING_DISABLED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName()).defaultPrefix());
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName()).defaultPrefix());
                             }
                         }))
         );
@@ -316,10 +317,10 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             itemSpawner.setHologramEnabled(enabled);
                             if (enabled) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_ENABLED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName()).defaultPrefix());
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName()).defaultPrefix());
                             } else {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_DISABLED)
-                                        .placeholder("type", itemSpawner.getItemSpawnerType().getItemName()).defaultPrefix());
+                                        .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName()).defaultPrefix());
                             }
                         }))
         );
@@ -336,7 +337,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setInitialInterval(Pair.of(value, unit));
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("interval", value)
                                     .placeholder("unit", Message.of(LangKeys.toUnitLangKey(unit, value != 1)))
                                     .defaultPrefix()
@@ -352,7 +353,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
                             itemSpawner.setInitialInterval(null);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_RESET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .defaultPrefix());
                         }))
         );
@@ -367,7 +368,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
                             itemSpawner.setCustomSpread(spread);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_SET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .placeholder("spread", spread)
                                     .defaultPrefix());
                         }))
@@ -381,7 +382,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
                             itemSpawner.setCustomSpread(null);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_RESET)
-                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().toSpawnerType(game).getItemName())
                                     .defaultPrefix());
                         }))
         );
@@ -424,7 +425,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                     .filter(spawner -> spawner.getLocation().getBlock().equals(loc.getBlock()))
                     .collect(Collectors.toList());
 
-            if (spawners.size() == 0) {
+            if (spawners.isEmpty()) {
                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NO_SPAWNER).defaultPrefix());
             } else if (spawners.size() == 1) {
                 var itemSpawner = spawners.get(0);
@@ -441,8 +442,9 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         var rawInput = new ArrayList<>(commandContext.getRawInput());
                         rawInput.remove(rawInput.size() - 1);
                         var command = String.join(" ", rawInput) + " " + number.getAndIncrement();
+                        var type = itemSpawner.getItemSpawnerType().toSpawnerType(game);
                         Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_LINE)
-                                .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                .placeholder("type", type == null ? Component.text(itemSpawner.getItemSpawnerType().configKey(), Color.RED) : type.getItemName())
                                 .placeholder("command", Component.text().content(command).clickEvent(ClickEvent.runCommand(command)))
                                 .send(sender);
                     });
@@ -452,8 +454,9 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                 AtomicInteger number = new AtomicInteger(1);
                 spawners.forEach(itemSpawner -> {
                     var command = commandContext.getRawInputJoined() + " " + number.getAndIncrement();
+                    var type = itemSpawner.getItemSpawnerType().toSpawnerType(game);
                     Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_LINE)
-                            .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                            .placeholder("type", type == null ? Component.text(itemSpawner.getItemSpawnerType().configKey(), Color.RED) : type.getItemName())
                             .placeholder("command", Component.text().content(command).clickEvent(ClickEvent.runCommand(command)))
                             .send(sender);
                 });

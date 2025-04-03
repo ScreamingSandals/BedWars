@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -85,7 +85,7 @@ public class DumpCommand extends BaseCommand {
                         .argument(
                                 StringArgument.<CommandSender>newBuilder("service")
                                         .withSuggestionsProvider((objectCommandContext, s) -> SERVICES)
-                                        .asOptionalWithDefault(SERVICES.get(0))
+                                        .asOptionalWithDefault(SERVICES.get(1))
                                         .build()
                         )
                         .handler(commandContext -> {
@@ -170,7 +170,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "pos2", locationToMap(game.getPos2()),
                                                                                     "weather", game.getArenaWeather() != null ? game.getArenaWeather().location().asString() : null,
                                                                                     "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
-                                                                                            "type", itemSpawner.getItemSpawnerType().getConfigKey(),
+                                                                                            "type", itemSpawner.getItemSpawnerType().configKey(),
                                                                                             "location", locationToMap(itemSpawner.getLocation()),
                                                                                             "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
                                                                                             "startLevel", itemSpawner.getBaseAmountPerSpawn(),

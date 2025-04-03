@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -37,7 +37,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 public class GamesInventory {
     @DataFolder("games_inventory")
     private final Path gamesInventoryFolder;
-    private final LoggerWrapper logger;
+    private final Logger logger;
     private final GameManagerImpl gameManager;
     private final PlayerManagerImpl playerManager;
 

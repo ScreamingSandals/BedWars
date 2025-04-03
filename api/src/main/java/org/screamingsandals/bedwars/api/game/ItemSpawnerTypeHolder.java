@@ -17,20 +17,42 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.events;
+package org.screamingsandals.bedwars.api.game;
 
-import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.events.PlayerJoinedEvent;
-import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.Event;
+import org.screamingsandals.bedwars.api.variants.Variant;
 
-@Data
-public class PlayerJoinedEventImpl implements PlayerJoinedEvent, Event {
-    private final GameImpl game;
-    private final BedWarsPlayer player;
-    @Nullable
-    private final TeamImpl team;
+/**
+ * @since 0.3.0
+ */
+public interface ItemSpawnerTypeHolder {
+    /**
+     * @since 0.3.0
+     */
+    @NotNull String configKey();
+
+    /**
+     * @since 0.3.0
+     */
+    @Nullable ItemSpawnerType toSpawnerType(@NotNull LocalGame variant);
+
+    /**
+     * @since 0.3.0
+     */
+    @Nullable ItemSpawnerType toSpawnerType(@Nullable Variant variant);
+
+    /**
+     * @since 0.3.0
+     */
+    default boolean isValid(@NotNull LocalGame game) {
+        return toSpawnerType(game) != null;
+    }
+
+    /**
+     * @since 0.3.0
+     */
+    default boolean isValid(@Nullable Variant variant) {
+        return toSpawnerType(variant) != null;
+    }
 }

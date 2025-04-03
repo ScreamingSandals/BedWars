@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -22,7 +22,6 @@ package org.screamingsandals.bedwars.statistics;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -32,14 +31,13 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.player.OfflinePlayer;
 import org.screamingsandals.lib.player.Players;
-import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -55,7 +53,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
     private final DatabaseManager databaseManager;
-    private final LoggerWrapper logger;
+    private final Logger logger;
 
     private ConfigurationNode fileDatabase;
     private StatisticType statisticType;

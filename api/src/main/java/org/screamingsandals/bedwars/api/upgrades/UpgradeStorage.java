@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -222,7 +222,8 @@ public final class UpgradeStorage {
                     }
 
                     final var name = itemSpawner.getTeam();
-                    if (name != null && team.getName().equals(name.getName()) && itemSpawnerType.getName().equals(itemSpawner.getItemSpawnerType().getName())) {
+                    final var type = itemSpawner.getItemSpawnerType().toSpawnerType(game);
+                    if (name != null && type != null && team.getName().equals(name.getName()) && itemSpawnerType.getName().equals(type.getName())) {
                         upgrades.add(upgrade);
                     }
                 }

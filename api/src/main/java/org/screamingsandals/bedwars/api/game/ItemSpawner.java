@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -33,9 +33,9 @@ public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    ItemSpawnerType getItemSpawnerType();
+    ItemSpawnerTypeHolder getItemSpawnerType();
 
-    void setItemSpawnerType(ItemSpawnerType spawnerType);
+    void setItemSpawnerType(ItemSpawnerTypeHolder spawnerType);
 
     /**
      * @return

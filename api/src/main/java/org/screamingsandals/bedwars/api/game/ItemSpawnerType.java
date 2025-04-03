@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -79,4 +79,9 @@ public interface ItemSpawnerType {
      * @return
      */
     ItemStackHolder getItem(int amount);
+
+    /**
+     * @since 0.3.0
+     */
+    ItemSpawnerTypeHolder toHolder();
 }

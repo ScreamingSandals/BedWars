@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -648,6 +648,7 @@ public class MainConfig {
 
             if (!Server.isVersion(1, 9)) {
                 generator.start().key("bossbar", "backend-entity").defValue("dragon");
+                generator.start().key("bossbar", "allow-via-hooks").defValue(true);
             }
 
             generator.start()

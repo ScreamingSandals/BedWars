@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -88,6 +88,10 @@ public class PlayerListener {
 
     @OnEvent(order = EventExecutionOrder.LAST)
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.cancelled()) {
+            return;
+        }
+
         final var victim = event.player();
 
         if (PlayerManagerImpl.getInstance().isPlayerInGame(victim)) {

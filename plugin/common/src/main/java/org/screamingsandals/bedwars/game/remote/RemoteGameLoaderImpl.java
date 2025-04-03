@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -33,7 +33,7 @@ import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.logger.LoggerWrapper;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RemoteGameLoaderImpl implements RemoteGameLoader {
-    private final @NotNull LoggerWrapper logger;
+    private final @NotNull Logger logger;
 
     public static @NotNull RemoteGameLoaderImpl getInstance() {
         return ServiceManager.get(RemoteGameLoaderImpl.class);

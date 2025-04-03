@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 ScreamingSandals
+ * Copyright (C) 2025 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -76,6 +76,11 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
 
     public ItemStack getItem(int amount) {
         return Objects.requireNonNull(ItemStackFactory.build(itemType, builder -> builder.name(getItemName()).amount(amount)));
+    }
+
+    @Override
+    public ItemSpawnerTypeHolderImpl toHolder() {
+        return new ItemSpawnerTypeHolderImpl(configKey);
     }
 
     public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {
