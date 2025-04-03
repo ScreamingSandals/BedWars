@@ -5,7 +5,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.lib.nms.accessors.CompoundTagAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.DataConverterManagerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ItemAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.ItemStackAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.MappedRegistryAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.MinecraftServerAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.NbtOpsAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.ReferencesAccessor;
@@ -81,7 +83,7 @@ public class TagApplier {
 
                 // 1.9-1.12.2
                 Object compound = CompoundTagAccessor.CONSTRUCTOR_0.get().newInstance();
-                ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_STRING.get()).invoke("id", stack.getType().getKey().toString());
+                ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_STRING.get()).invoke("id", ClassStorage.getMethod(ItemAccessor.FIELD_REGISTRY.get(), MappedRegistryAccessor.METHOD_FUNC_177774_C.get()).invoke(ClassStorage.getMethod(ClassStorage.getHandleOfItemStack(stack), ItemStackAccessor.METHOD_GET_ITEM.get()).invoke()).toString());
                 ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT_INT.get()).invoke("Count", stack.getAmount());
                 ClassStorage.getMethod(compound, CompoundTagAccessor.METHOD_PUT.get()).invoke("tag", parsedTag);
 

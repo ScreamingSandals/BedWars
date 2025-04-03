@@ -35,7 +35,10 @@ accessors {
         constructor()
         method void, 'putInt', String, int
         method void, 'putString', String, String
-        method 'net.minecraft.nbt.Tag', 'put', String, 'net.minecraft.nbt.Tag'
+        methodChain {
+            it.item('net.minecraft.nbt.Tag', 'put', String, 'net.minecraft.nbt.Tag')
+            it.item(void, 'set', String, 'net.minecraft.server.VVV.NBTBase') // Spigot mapped
+        }
         method('net.minecraft.nbt.Tag', 'get', String)
     }
     mapClass('net.minecraft.nbt.TagParser') {
@@ -312,6 +315,7 @@ accessors {
     }
     mapClass('net.minecraft.world.item.ItemStack') {
         method(void, 'setTag', CompoundTag)
+        getter('net.minecraft.world.item.Item', 'item')
 
         // 1.20.5+
         method(java.util.Optional, 'parse', 'net.minecraft.core.HolderLookup$Provider', 'net.minecraft.nbt.Tag')
@@ -336,5 +340,12 @@ accessors {
     }
     mapClass('net.minecraft.nbt.NbtOps') {
         field(it.name, 'INSTANCE')
+    }
+    mapClass('net.minecraft.world.item.Item') {
+        field('net.minecraft.server.VVV.RegistryMaterials', 'REGISTRY') // <= 1.13
+    }
+
+    mapClass('net.minecraft.core.MappedRegistry') {
+        method(Object, 'func_177774_c', Object) // < 1.13
     }
 }
