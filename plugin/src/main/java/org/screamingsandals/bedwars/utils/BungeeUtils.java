@@ -55,19 +55,23 @@ public class BungeeUtils {
     }
 
     private static void internalMove(Player player, boolean restart) {
-        String server = Main.getConfigurator().config.getString("bungee.server");
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        try {
+            String server = Main.getConfigurator().config.getString("bungee.server");
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
-        out.writeUTF("Connect");
-        out.writeUTF(server);
+            out.writeUTF("Connect");
+            out.writeUTF(server);
 
-        player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
-        if (!restart && Main.getConfigurator().config.getBoolean("bungee.kick-when-proxy-too-slow")) {
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                if (player.isOnline()) {
-                    player.kickPlayer("Bedwars can't properly transfer player through bungee network. Contact server admin.");
-                }
-            }, 20L);
+            player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
+            if (!restart && Main.getConfigurator().config.getBoolean("bungee.kick-when-proxy-too-slow")) {
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                    if (player.isOnline()) {
+                        player.kickPlayer("Bedwars can't properly transfer player through bungee network. Contact server admin.");
+                    }
+                }, 20L);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
