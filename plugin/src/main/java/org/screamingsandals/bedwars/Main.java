@@ -511,9 +511,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Iamceph, Pronze>");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Iamceph, Pronze, ZlataOvce>");
         Bukkit.getConsoleSender()
-                .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + ChatColor.GREEN + "FREE");
+                .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version);
         Bukkit.getConsoleSender()
                 .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
         if (isVault) {
@@ -535,7 +535,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
             if (javaVer < 55) {
                 getLogger().warning("Bedwars 0.3.0 will require at least Java 11. Your server is not prepared for it. Update your Java or contact your hosting. ");
-                getLogger().warning("https://docs.screamingsandals.org/Other/java11.html");
+                getLogger().warning("https://docs.papermc.io/misc/java-install");
             }
         } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D
         }

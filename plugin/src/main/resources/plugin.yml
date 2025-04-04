@@ -21,7 +21,7 @@ main: org.screamingsandals.bedwars.Main
 name: BedWars
 version: "@version@"
 authors:
-  - "ScreamingSandals <Misat11, Iamceph, Pronze>"
+  - "ScreamingSandals <Misat11, Iamceph, Pronze, ZlataOvce>"
 api-version: 1.13
 load: POSTWORLD
 softdepend:
