@@ -224,8 +224,9 @@ Like `linebreak`, `pagebreak` accepts three values:
 * `both` - Applies both `before` and `after`
 
 ```yaml
+- stack: ender_chest for 5 iron
+  pagebreak: after
 - stack: gunpowder for 5 iron
-  pagebreak: before
   row: 3
 ```
 
