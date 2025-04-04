@@ -232,7 +232,7 @@ Like `linebreak`, `pagebreak` accepts three values:
 
 ![Showcase of pagebreak](assets/positioning/pagebreak-1.png)
 
-### absolute (not recommended)
+### `absolute` (not recommended)
 
 Places an item at an exact slot index (starting from `0`). This bypasses all automatic positioning logic and should only be used if you need full manual control.
 
