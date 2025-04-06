@@ -153,7 +153,7 @@ Now you've got a valid value for the `tag` key.
 
 ### Upgrading items with tag
 
-Because tags are version-specific, upgrading the server may break older tags. Since Screaming BedWars 0.2.27, you can add a `DataVersion` field to let the game upgrade the tag:
+Because tags are version-specific, upgrading the server may break older tags. Since Screaming BedWars 0.2.37, you can add a `DataVersion` field to let the game upgrade the tag:
 
 ```yaml
 - stack:

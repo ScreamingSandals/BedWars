@@ -90,6 +90,20 @@ When using these placeholders, replace `<game>` with the specific game identifie
     
     You can create custom leaderboards using placeholders to display player statistics in various ways. To achieve this, consider using the [ajLeaderboards](https://www.spigotmc.org/resources/ajleaderboards.85548/) plugin with the placeholders listed below. This allows for greater flexibility beyond what the BedWars plugin offers.
 
+    Need help setting it up? See the [ajLeaderboards Setup Guide](https://wiki.ajg0702.us/ajLeaderboards/setup/) for detailed instructions.
+
+    For example, after adding a new board for kills using:
+    ```
+    /ajlb add %bedwars_stats_kills%
+    ```
+    you can display the top player’s name and value using:
+    ```
+    %ajlb_lb_bedwars_stats_kills_1_alltime_name%
+    %ajlb_lb_bedwars_stats_kills_1_alltime_value%
+    ```
+
+    If you want to use a leaderboard ordered by total score, you can use the [built-in placeholders](#score-leaderboard-placeholders) instead of ajLeaderboards.
+
 The placeholders in this section are specific to a player, based on the context in which they are used, most commonly the viewer of a message, hologram, etc.
 
 * `%bedwars_stats_deaths%` - Returns the number of deaths.
@@ -113,3 +127,21 @@ When using these placeholders, replace `<player>` with the specific player's nam
 * `%bedwars_otherstats_<player>_wins%` - Returns the number of wins.
 * `%bedwars_otherstats_<player>_games%` - Returns the total number of games played.
 * `%bedwars_otherstats_<player>_kd%` - Returns the kill/death ratio.
+
+### Score leaderboard placeholders
+
+These placeholders are used to access the built-in score-based leaderboard. Replace `<position>` with a number indicating the ranking spot you want to access. 
+
+For example, to get the name of the player in 3rd place:
+`%bedwars_leaderboard_score_3_name%`
+
+* `%bedwars_leaderboard_score_<position>_name%` - Returns the name of the player.
+* `%bedwars_leaderboard_score_<position>_uuid%` - Returns the UUID of the player.
+* `%bedwars_leaderboard_score_<position>_deaths%` - Returns the number of deaths.
+* `%bedwars_leaderboard_score_<position>_destroyed_beds%` - Returns the number of destroyed beds.
+* `%bedwars_leaderboard_score_<position>_kills%` - Returns the number of kills.
+* `%bedwars_leaderboard_score_<position>_loses%` - Returns the number of losses.
+* `%bedwars_leaderboard_score_<position>_score%` - Returns the total score.
+* `%bedwars_leaderboard_score_<position>_wins%` - Returns the number of wins.
+* `%bedwars_leaderboard_score_<position>_games%` - Returns the total number of games played.
+* `%bedwars_leaderboard_score_<position>_kd%` - Returns the kill/death ratio.
