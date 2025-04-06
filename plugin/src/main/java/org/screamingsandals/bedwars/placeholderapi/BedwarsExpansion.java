@@ -25,6 +25,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
@@ -239,9 +240,75 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             }
         }
 
+        if (identifier.startsWith("leaderboard_score_")) {
+            if (!Main.isPlayerStatisticsEnabled()) {
+                return null;
+            }
+
+            String remainder = identifier.substring(18);
+            String[] split = remainder.split("_", 2);
+            if (split.length != 2) {
+                return null;
+            }
+
+            int index;
+            try {
+                index = Integer.parseInt(split[0]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            index--; // 1 -> 0
+            if (index < 0) {
+                return null;
+            }
+
+            LeaderboardEntry entry = Main.getPlayerStatisticsManager().getLeaderboardEntry(index);
+
+            if (entry == null) {
+                switch (split[1].toLowerCase(Locale.ROOT)) {
+                    case "uuid":
+                    case "name":
+                        return "---";
+                    case "score":
+                    case "deaths":
+                    case "destroyed_beds":
+                    case "kills":
+                    case "loses":
+                    case "wins":
+                    case "games":
+                    case "kd":
+                        return "0";
+                }
+            } else {
+                switch (split[1].toLowerCase(Locale.ROOT)) {
+                    case "uuid":
+                        return entry.getPlayer().getUniqueId().toString();
+                    case "name":
+                        return entry.getLatestKnownName();
+                    case "score":
+                        return Integer.toString(entry.getTotalScore());
+                    case "deaths":
+                        return Integer.toString(entry.fetchStatistics().getDeaths());
+                    case "destroyed_beds":
+                        return Integer.toString(entry.fetchStatistics().getDestroyedBeds());
+                    case "kills":
+                        return Integer.toString(entry.fetchStatistics().getKills());
+                    case "loses":
+                        return Integer.toString(entry.fetchStatistics().getLoses());
+                    case "wins":
+                        return Integer.toString(entry.fetchStatistics().getWins());
+                    case "games":
+                        return Integer.toString(entry.fetchStatistics().getGames());
+                    case "kd":
+                        return Double.toString(entry.fetchStatistics().getKD());
+                }
+            }
+        }
+
         // Player
         if (player == null) {
-            return "";
+            return null;
         }
 
         if (identifier.startsWith("current_")) {
