@@ -65,6 +65,7 @@ public class GameCreator {
     public boolean cmd(Player player, String action, String[] args) {
         boolean isArenaSaved = false;
         String response = null;
+        String response2 = null;
         if (action.equalsIgnoreCase("lobby")) {
             response = setLobbySpawn(player.getLocation());
         } else if (action.equalsIgnoreCase("spec")) {
@@ -228,6 +229,7 @@ public class GameCreator {
                 response = setCustomPrefix(String.join(" ", args));
             }
         } else if (action.equalsIgnoreCase("save")) {
+            boolean force = args.length >= 1 && "force".equalsIgnoreCase(args[0]);
             List<GameStore> gamestores = new ArrayList<>();
             for (Map.Entry<String, GameStore> vloc : villagerstores.entrySet()) {
                 gamestores.add(vloc.getValue());
@@ -254,10 +256,12 @@ public class GameCreator {
                     response = i18n("admin_command_set_lobby_before_save");
                 } else if (game.getSpecSpawn() == null) {
                     response = i18n("admin_command_set_spec_before_save");
-                } else if (game.getGameStoreList().isEmpty()) {
+                } else if (!force && game.getGameStoreList().isEmpty()) {
                     response = i18n("admin_command_set_stores_before_save");
-                } else if (game.getSpawners().isEmpty()) {
+                    response2 = i18n("admin_arena_force_save").replace("%game%", game.getName()).replace("%command%", "/bw admin " + game.getName() + " save force");
+                } else if (!force && game.getSpawners().isEmpty()) {
                     response = i18n("admin_command_set_spawners_before_save");
+                    response2 = i18n("admin_arena_force_save").replace("%game%", game.getName()).replace("%command%", "/bw admin " + game.getName() + " save force");
                 } else {
                     game.saveToConfig();
                     game.start();
@@ -272,6 +276,9 @@ public class GameCreator {
             response = i18n("unknown_command");
         }
         player.sendMessage(response);
+        if (response2 != null) {
+            player.sendMessage(response2);
+        }
         return isArenaSaved;
     }
 

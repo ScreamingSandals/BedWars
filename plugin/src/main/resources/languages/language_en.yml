@@ -374,3 +374,4 @@ help_bw_cheatin_destroybed: "/bw cheatIn <game> destroybed <team> - &cDestroys b
 help_bw_cheatin_destroyallbeds: "/bw cheatIn <game> destroyallbeds - &cDestroys all beds in the game"
 admin_arena_overlaps: "&cThe chosen location causes the arena to overlap with another arena, which can lead to errors! Please choose a different location. If you insist on using this location, execute &7/bw admin %arena% %position% force"
 waiting_placeholder_lobby_scoreboard: "Waiting..."
+admin_arena_force_save: "&eIf you want to save &7%game%&e anyway, please execute this command: &7%command%"
