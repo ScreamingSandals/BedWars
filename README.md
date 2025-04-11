@@ -7,7 +7,7 @@ This branch includes bugfixes for Minecraft: Java Edition 1.17, 1.18, 1.19, 1.20
 Complete rewrite of the BedWarsRel plugin.
 This project is now under complete rewrite and we don't have much time, so be patient :)
 
-Supported versions: \[1.8.8 - 1.21\]. Recommended version: \[1.20.6\]
+Supported versions: \[1.8.8 - 1.21.5\]. Recommended version: \[1.21.5\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
