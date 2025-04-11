@@ -285,9 +285,75 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             }
         }
 
+        if (identifier.startsWith("leaderboard_score_")) {
+            if (!PlayerStatisticManager.isEnabled()) {
+                return null;
+            }
+
+            String remainder = identifier.substring(18);
+            String[] split = remainder.split("_", 2);
+            if (split.length != 2) {
+                return null;
+            }
+
+            int index;
+            try {
+                index = Integer.parseInt(split[0]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+
+            index--; // 1 -> 0
+            if (index < 0) {
+                return null;
+            }
+
+            var entry = PlayerStatisticManager.getInstance().getLeaderboardEntry(index);
+
+            if (entry == null) {
+                switch (split[1].toLowerCase(Locale.ROOT)) {
+                    case "uuid":
+                    case "name":
+                        return Component.text("---");
+                    case "score":
+                    case "deaths":
+                    case "destroyed_beds":
+                    case "kills":
+                    case "loses":
+                    case "wins":
+                    case "games":
+                    case "kd":
+                        return Component.text("0");
+                }
+            } else {
+                switch (split[1].toLowerCase(Locale.ROOT)) {
+                    case "uuid":
+                        return Component.text(entry.getPlayer().getUuid().toString());
+                    case "name":
+                        return Component.text(entry.getLastKnownName() != null ? entry.getLastKnownName() : entry.getPlayer().getUuid().toString());
+                    case "score":
+                        return Component.text(entry.getTotalScore());
+                    case "deaths":
+                        return Component.text(entry.fetchStatistics().getDeaths());
+                    case "destroyed_beds":
+                        return Component.text(entry.fetchStatistics().getDestroyedBeds());
+                    case "kills":
+                        return Component.text(entry.fetchStatistics().getKills());
+                    case "loses":
+                        return Component.text(entry.fetchStatistics().getLoses());
+                    case "wins":
+                        return Component.text(entry.fetchStatistics().getWins());
+                    case "games":
+                        return Component.text(entry.fetchStatistics().getGames());
+                    case "kd":
+                        return Component.text(entry.fetchStatistics().getKD());
+                }
+            }
+        }
+
         // Player
         if (player == null) {
-            return Component.empty();
+            return null;
         }
 
         if (identifier.startsWith("current_")) {

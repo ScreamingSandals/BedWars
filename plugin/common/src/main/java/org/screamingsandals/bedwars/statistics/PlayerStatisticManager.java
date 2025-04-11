@@ -207,6 +207,16 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 .collect(Collectors.toList());
     }
 
+    public @Nullable LeaderboardEntryImpl getLeaderboardEntry(int index) {
+        return allScores.entrySet()
+                .stream()
+                .sorted((c1, c2) -> Comparator.<Integer>reverseOrder().compare(c1.getValue().getValue(), c2.getValue().getValue()))
+                .skip(index)
+                .findFirst()
+                .map(entry -> new LeaderboardEntryImpl(Players.getOfflinePlayer(entry.getKey()), entry.getValue().getValue(), entry.getValue().getKey()))
+                .orElse(null);
+    }
+
     private PlayerStatisticImpl loadDatabaseStatistic(UUID uuid) {
         if (this.playerStatistic.containsKey(uuid)) {
             return this.playerStatistic.get(uuid);

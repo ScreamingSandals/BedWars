@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.region;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.lib.api.types.server.BlockHolder;
@@ -45,7 +47,18 @@ public class RegionImpl implements Region {
         return builtBlocks.contains(loc);
     }
 
+    public boolean isOriginalBlockStored(@NotNull Location loc) {
+        return brokenOriginalBlocks.containsKey(loc);
+    }
+
     public void putOriginalBlock(Location loc, BlockSnapshot block) {
+        brokenOriginalBlocks.put(loc, block);
+    }
+
+    public void putOriginalBlockIfAbsent(@NotNull Location loc, @NotNull BlockSnapshot block) {
+        if (brokenOriginalBlocks.containsKey(loc)) {
+            return;
+        }
         brokenOriginalBlocks.put(loc, block);
     }
 
@@ -119,67 +132,73 @@ public class RegionImpl implements Region {
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isLocationModifiedDuringGame(LocationHolder loc) {
         return isLocationModifiedDuringGame(loc.as(Location.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
+    public boolean isStoredForRollback(@NotNull LocationHolder loc) {
+        return isOriginalBlockStored(loc.as(Location.class));
+    }
+
+    @Override
+    @ApiStatus.Obsolete
     public void markForRollback(LocationHolder loc, BlockSnapshotHolder blockSnapshot) {
         putOriginalBlock(loc.as(Location.class), blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public void addBuiltDuringGame(LocationHolder loc) {
         addBuiltDuringGame(loc.as(Location.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public void removeBuiltDuringGame(LocationHolder loc) {
         removeBlockBuiltDuringGame(loc.as(Location.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isLiquid(BlockHolder blockHolder) {
         return isLiquid(blockHolder.as(Block.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isBedBlock(BlockSnapshotHolder blockSnapshot) {
         return isBedBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isBedHead(BlockSnapshotHolder blockSnapshot) {
         return isBedHead(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public BlockPlacement getBedNeighbor(BlockPlacementHolder blockHead) {
         return getBedNeighbor(blockHead.as(BlockPlacement.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isChunkUsed(ChunkHolder chunk) {
         return isChunkUsed(chunk.as(Chunk.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isDoorBlock(BlockSnapshotHolder blockSnapshot) {
         return isDoorBlock(blockSnapshot.as(BlockSnapshot.class));
     }
 
     @Override
-    @Deprecated
+    @ApiStatus.Obsolete
     public boolean isDoorBottomBlock(BlockSnapshotHolder blockSnapshot) {
         return isDoorBottomBlock(blockSnapshot.as(BlockSnapshot.class));
     }

@@ -166,7 +166,7 @@ public class WorldListener {
                                 }
                             }
                             if (breakableExplosions && BedWarsPlugin.isBreakableBlock(block.block())) {
-                                game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                                game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
                                 return false;
                             } else {
                                 return true;
@@ -281,7 +281,7 @@ public class WorldListener {
                         if (!event.block().block().equals(event.to())) {
                             if (!game.isBlockAddedDuringGame(event.block().location())) {
                                 if (!event.block().block().isAir()) {
-                                    game.getRegion().putOriginalBlock(event.block().location(), Objects.requireNonNull(event.block().blockSnapshot()));
+                                    game.getRegion().putOriginalBlockIfAbsent(event.block().location(), Objects.requireNonNull(event.block().blockSnapshot()));
                                 }
                                 game.getRegion().addBuiltDuringGame(event.block().location());
                             }
