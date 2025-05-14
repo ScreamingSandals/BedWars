@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api;
 
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
@@ -27,7 +28,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
