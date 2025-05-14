@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars;
 
 import org.bstats.charts.SimplePie;
+import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -843,6 +845,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     @Override
     public PlayerStatisticsManager getStatisticsManager() {
         return isPlayerStatisticsEnabled() ? playerStatisticsManager : null;
+    }
+
+    @Override
+    public void openCustomStore(Player player, @Nullable String fileName, boolean useParent) {
+        if (fileName == null) {
+            instance.menu.show(player, null);
+        } else {
+            instance.menu.show(player, new GameStore(null, fileName, useParent, null, false, false));
+        }
     }
 
     public static boolean isDisabling() {

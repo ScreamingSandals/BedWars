@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -144,6 +145,16 @@ public interface BedwarsAPI {
      * @return PlayerStatisticsManager if statistics are enabled; otherwise null
      */
     PlayerStatisticsManager getStatisticsManager();
+
+    default void openDefaultStore(Player player) {
+        openCustomStore(player, null, false);
+    }
+
+    default void openCustomStore(Player player, @Nullable String fileName) {
+        openCustomStore(player, fileName, false);
+    }
+
+    void openCustomStore(Player player, @Nullable String fileName, boolean useParent);
 
     /**
      * @return Bedwars instance
