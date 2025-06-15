@@ -63,7 +63,7 @@ public class TagApplier {
                 if (ItemStackAccessor.METHOD_PARSE.get() != null || Version.isVersion(1, 21, 6)) {
                     Object optional;
                     if (Version.isVersion(1, 21, 6)) {
-                        Object codecRes = ClassStorage.getMethod(ItemStackAccessor.FIELD_CODEC.get(), "parse", DYNAMIC_OPS, Object.class).invokeStatic(
+                        Object codecRes = ClassStorage.getMethod(ItemStackAccessor.FIELD_CODEC.get(), "parse", DYNAMIC_OPS, Object.class).invoke(
                                 ClassStorage
                                         .getMethod(
                                                 ClassStorage.getMethod(ClassStorage.getMethod(Bukkit.getServer(), "getServer").invoke(), MinecraftServerAccessor.METHOD_REGISTRY_ACCESS.get()).invoke(),
@@ -129,7 +129,7 @@ public class TagApplier {
 
             Object optional;
             if (Version.isVersion(1, 21, 6)) {
-                Object codecRes = ClassStorage.getMethod(ItemStackAccessor.FIELD_CODEC.get(), "parse", DYNAMIC_OPS, Object.class).invokeStatic(
+                Object codecRes = ClassStorage.getMethod(ItemStackAccessor.FIELD_CODEC.get(), "parse", DYNAMIC_OPS, Object.class).invoke(
                         ClassStorage
                                 .getMethod(
                                         ClassStorage.getMethod(ClassStorage.getMethod(Bukkit.getServer(), "getServer").invoke(), MinecraftServerAccessor.METHOD_REGISTRY_ACCESS.get()).invoke(),
