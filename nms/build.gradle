@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.5"
+//    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.21.5"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -15,7 +15,7 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.21.5') {
+    versionRange('1.8.8', '1.21.5') {
         // exclude 1.20, 1.20.3, 1.20.5 and 1.21.2 - hotfixed versions
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
@@ -24,7 +24,8 @@ accessors {
 
         // include only releases, no snapshots
         includeTypes 'release'
-    }*/
+    }
+    version('1.21.6-rc1')
 
     basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
     namespaces 'mojang', 'spigot'
@@ -50,6 +51,7 @@ accessors {
     var Component = mapClass('net.minecraft.network.chat.Component') {
         getter String, 'coloredString'
         getter String, 'string'
+        method('net.minecraft.network.chat.MutableComponent', 'literal', String)
     }
     var Attribute = mapClass 'net.minecraft.world.entity.ai.attributes.Attribute'
     mapClass('net.minecraft.core.RegistryAccess') {
@@ -74,8 +76,10 @@ accessors {
     }
     var Entity = mapClass('net.minecraft.world.entity.Entity') {
         field Level, 'level'
-        getter Level, 'commandSenderWorld'
-        method boolean, 'saveAsPassenger', CompoundTag
+        methodChain {
+            it.item(Level, 'getCommandSenderWorld')
+            it.item(Level, 'level')
+        }
         method void, 'load', CompoundTag
         method void, 'absSnapTo', double, double, double, float, float
         getter int, 'id'
@@ -317,8 +321,9 @@ accessors {
         method(void, 'setTag', CompoundTag)
         getter('net.minecraft.world.item.Item', 'item')
 
-        // 1.20.5+
+        // 1.20.5-1.21.5
         method(java.util.Optional, 'parse', 'net.minecraft.core.HolderLookup$Provider', 'net.minecraft.nbt.Tag')
+        field('com.mojang.serialization.Codec', 'CODEC')
      }
 
     mapClass('net.minecraft.server.MinecraftServer') {
@@ -347,5 +352,8 @@ accessors {
 
     mapClass('net.minecraft.core.MappedRegistry') {
         method(Object, 'func_177774_c', Object) // < 1.13
+    }
+    mapClass('net.minecraft.core.HolderLookup$Provider') {
+        method('net.minecraft.resources.RegistryOps', 'createSerializationContext', 'com.mojang.serialization.DynamicOps')
     }
 }

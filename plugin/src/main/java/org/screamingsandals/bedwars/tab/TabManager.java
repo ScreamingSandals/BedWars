@@ -25,10 +25,10 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundTabListPacketAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ComponentAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.RegistryAccessAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,16 +56,16 @@ public class TabManager {
             try {
                 Object headerComponent;
                 if (header != null) {
-                    headerComponent = serialize("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}");
+                    headerComponent = serialize(ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))));
                 } else {
-                    headerComponent = serialize("{\"text\": \"\"}");
+                    headerComponent = serialize("");
                 }
 
                 Object footerComponent;
                 if (footer != null) {
-                    footerComponent = serialize("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}");
+                    footerComponent = serialize(ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))));
                 } else {
-                    footerComponent = serialize("{\"text\": \"\"}");
+                    footerComponent = serialize("");
                 }
 
                 Object packet;
@@ -120,6 +120,16 @@ public class TabManager {
     }
 
     public static Object serialize(String text) {
+        if (ComponentAccessor.METHOD_LITERAL.get() != null) {
+            return ClassStorage.getMethod(ComponentAccessor.METHOD_LITERAL.get()).invokeStatic(text);
+        }
+
+        if (text.isEmpty()) {
+            text = "{\"text\": \"\"}";
+        } else {
+            text = "{\"text\": \"" + text.replace("\"", "\\\"") + "\"}";
+        }
+
         if (Component$SerializerAccessor.METHOD_FROM_JSON.get() != null) {
             return ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON.get()).invokeStatic(text);
         }

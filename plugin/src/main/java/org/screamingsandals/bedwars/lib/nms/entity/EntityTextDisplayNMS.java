@@ -43,7 +43,7 @@ public class EntityTextDisplayNMS extends EntityNMS implements DisplayAccessor, 
 
     public void setText(String name) {
         InstanceMethod method = ClassStorage.getMethod(handler, METHOD_SET_TEXT.get());
-        method.invoke(TabManager.serialize("{\"text\": \"" + name + "\"}"));
+        method.invoke(TabManager.serialize(name));
     }
 
     public String getText() {
