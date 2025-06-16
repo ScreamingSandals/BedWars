@@ -164,6 +164,7 @@ public class Configurator {
         checkOrSetConfig(modify, "use-chunk-tickets-if-available", true);
         checkOrSetConfig(modify, "reset-full-spawner-countdown-after-picking", true);
         checkOrSetConfig(modify, "players-can-win-game-only-after-seconds", 0);
+        checkOrSetConfig(modify, "disable-locator-bars-in-arena-worlds", true);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);

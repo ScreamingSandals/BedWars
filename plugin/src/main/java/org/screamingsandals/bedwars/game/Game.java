@@ -72,6 +72,7 @@ import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
@@ -994,6 +995,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             if (Main.getVersionNumber() >= 115) {
                 game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            }
+            if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
+                game.world.setGameRule((GameRule<Boolean>) GameRule.getByName("locatorBar"), false);
             }
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
@@ -2124,6 +2128,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                    }
+                    if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
+                        world.setGameRule((GameRule<Boolean>) GameRule.getByName("locatorBar"), false);
                     }
                     preparing = false;
 
