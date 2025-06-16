@@ -13,12 +13,12 @@ parties-api = "3.2.6"
 perworldinventory-old = "1.11.5"
 perworldinventory-kt = "2.3.1"
 multiverse = "4.0.0"
-jetbrains-annotations = "26.0.1"
+jetbrains-annotations = "26.0.2"
 
 # plugins
 screaming-plugin-builder = "2.0.0-SNAPSHOT"
-buildconfig = "5.5.1"
-lombok = "8.11"
+buildconfig = "5.6.6"
+lombok = "8.13.1"
 
 configurate = "4.1.2"
 configurate-patched-gson = "4.1.2-sandals-patch"

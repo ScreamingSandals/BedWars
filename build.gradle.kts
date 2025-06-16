@@ -47,10 +47,10 @@ subprojects {
 
     configureLicenser()
     if (project.name != "BedWars-common") { // do not publish the common artifact, only API, protocol, platform artifacts and universal artifact
-        // TODO: figure out how to relocate api-utils in Javadoc and sourceJar of BedWars-API (to the package defined in SLibExtension)
+        // TODO: figure out how to relocate api-utils in Javadoc of BedWars-API (to the package defined in SLibExtension)
         val buildSources = project.name == "BedWars-API" || project.name == "BedWars-protocol"
         if (buildSources) {
-            configureSourcesJar()
+            configureSourcesJar(configureShadedSourcesInclude=(project.name == "BedWars-API"))
         }
         val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
         if (buildJavadoc) {
