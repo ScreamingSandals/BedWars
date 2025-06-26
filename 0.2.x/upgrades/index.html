@@ -476,17 +476,35 @@
         <li class="md-nav__item">
   <a href="#spawner-resource-quantity-upgrade" class="md-nav__link">
     <span class="md-ellipsis">
-      Spawner resource quantity upgrade
+      Spawner Resource Quantity Upgrade
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Spawner resource quantity upgrade">
+    <nav class="md-nav" aria-label="Spawner Resource Quantity Upgrade">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#modes" class="md-nav__link">
+  <a href="#configuration-fields" class="md-nav__link">
     <span class="md-ellipsis">
-      Modes
+      Configuration Fields
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#targeting-spawners" class="md-nav__link">
+    <span class="md-ellipsis">
+      Targeting Spawners
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
     </span>
   </a>
   
@@ -610,8 +628,51 @@
 
 
 <h1 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h1>
-<h2 id="spawner-resource-quantity-upgrade">Spawner resource quantity upgrade<a class="headerlink" href="#spawner-resource-quantity-upgrade" title="Permanent link">&para;</a></h2>
-<p>This is how it should look in you shop.yml file:</p>
+<p>Upgrades allow teams to enhance specific in-game elements, giving them a competitive advantage.</p>
+<div class="admonition warning">
+<p class="admonition-title">Available upgrades</p>
+<p>The base plugin includes only a spawner resource quantity upgrade.<br />
+To access additional upgrades, you will need an addon.<br />
+We recommend checking out <a href="https://www.spigotmc.org/resources/sba-screaming-bedwars-addon-1-8-8-1-20-1.99149/">SBA</a>.</p>
+</div>
+<h2 id="spawner-resource-quantity-upgrade">Spawner Resource Quantity Upgrade<a class="headerlink" href="#spawner-resource-quantity-upgrade" title="Permanent link">&para;</a></h2>
+<p>This upgrade improves team spawners by increasing their level, which affects the number of resources generated per spawn.</p>
+<p>The upgrade is configured under the <code>upgrade</code> -&gt; <code>entities</code> section in the shop item definition.<br />
+You can define multiple upgrades here, as the section accepts a list of entities.</p>
+<h3 id="configuration-fields">Configuration Fields<a class="headerlink" href="#configuration-fields" title="Permanent link">&para;</a></h3>
+<p>For this type of upgrade, the <code>type</code> must be set to <code>spawner</code>.</p>
+<ul>
+<li><strong><code>add-levels</code></strong>:<br />
+  The number of levels to add when the upgrade is purchased once.<br />
+  This value can be fractional, e.g. <code>0.2</code> means a 20% chance for an extra resource per spawn.<br />
+  On the fifth purchase, this would guarantee one additional resource per spawn.
+  By default, spawners start at level <code>1</code>, though this can be customized for individual spawners.<br />
+  See <a href="../commands/#arena-editing">Arena Editing Commands</a> (<code>/bw admin &lt;arena&gt; spawner add &lt;type&gt; [holo enabled] [start level] [name] [team]</code>).</li>
+<li><strong><code>max-level</code></strong> (optional):<br />
+  The maximum level a spawner can reach through upgrades. Once reached, the upgrade becomes unavailable.  </li>
+<li><strong><code>shop-name</code></strong> (optional):<br />
+  The name displayed in chat when the upgrade is purchased. Defaults to <code>UPGRADE</code>.</li>
+<li><strong><code>notify-team</code></strong> (optional):<br />
+  If <code>true</code>, all team members will be notified when the upgrade is purchased.</li>
+</ul>
+<h3 id="targeting-spawners">Targeting Spawners<a class="headerlink" href="#targeting-spawners" title="Permanent link">&para;</a></h3>
+<p>There are three ways to specify which spawners the upgrade affects:</p>
+<ol>
+<li><strong>Using named spawners</strong></li>
+<li>Assign a name when creating the spawner.</li>
+<li>Use the <code>spawner-name</code> field to target it.</li>
+<li>If multiple spawners share the same name, they will all be upgraded.</li>
+<li><strong>Using type</strong></li>
+<li>When creating a spawner, set its <code>team</code>.</li>
+<li>Use <code>spawner-type</code> to define which spawner type to upgrade.</li>
+<li>All matching spawners of that type belonging to the team purchasing the upgrade will be upgraded.</li>
+<li><strong>Using all linked spawners</strong></li>
+<li>Link the spawners as in the previous mode.</li>
+<li>Set <code>team-upgrade</code> to <code>true</code>.</li>
+<li>All team-linked spawners will be upgraded, regardless of name or type.</li>
+</ol>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Below is an example of how this upgrade might be defined in your shop configuration:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -640,20 +701,6 @@
 <span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bronze</span><span class="nv"> </span><span class="s">upgrade</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">%team%&quot;</span>
 </code></pre></div></td></tr></table></div>
-<p>Let's get into it.</p>
-<ul>
-<li>You <strong>must</strong> define the variables <code>upgrade</code>, <code>entities</code> and <code>type: spawner</code>. If any of these will be missing, upgrades won't work.</li>
-<li>We got these spawner modes: <code>spawner-name</code>, <code>spawner-type</code> and <code>team-upgrade</code></li>
-<li><code>add-levels</code> parameter defines how much levels we are going to add. (Default start level for the spawner is 1)</li>
-<li><code>max-level</code> defines the maximum level you can upgrade to. (default is no limit)</li>
-<li><code>shop-name</code> is displayed after you buy the upgrade. That's all.</li>
-<li><code>notify-team</code> if this is true, information will be send to all the players of the team.</li>
-</ul>
-<h3 id="modes">Modes<a class="headerlink" href="#modes" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>spawner-name</code>: You need to have your spawner name defined in arena.yml file or while creating arena (<code>/bw admin arenaName spawner add &lt;spawnerType&gt; &lt;holoEnabled&gt; &lt;startLevel (default: 1)&gt; &lt;customName&gt; &lt;team&gt;</code>). </li>
-<li><code>spawner-type</code> &amp; <code>team-upgrade</code>: You need to have team defined with the spawner.</li>
-</ul>
 
 
 
@@ -674,7 +721,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    2025-06-19
+    2025-06-26
   </span>
 
     
