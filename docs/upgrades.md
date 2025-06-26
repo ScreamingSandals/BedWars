@@ -20,17 +20,17 @@ You can define multiple upgrades here, as the section accepts a list of entities
 
 For this type of upgrade, the `type` must be set to `spawner`.
 
-* **`add-levels`**:  
+* **`add-levels`**  
   The number of levels to add when the upgrade is purchased once.  
   This value can be fractional, e.g. `0.2` means a 20% chance for an extra resource per spawn.  
   On the fifth purchase, this would guarantee one additional resource per spawn.
   By default, spawners start at level `1`, though this can be customized for individual spawners.  
   See [Arena Editing Commands](commands.md#arena-editing) (`/bw admin <arena> spawner add <type> [holo enabled] [start level] [name] [team]`).
-* **`max-level`** (optional):  
+* **`max-level`** (optional)  
   The maximum level a spawner can reach through upgrades. Once reached, the upgrade becomes unavailable.  
-* **`shop-name`** (optional):  
+* **`shop-name`** (optional)  
   The name displayed in chat when the upgrade is purchased. Defaults to `UPGRADE`.
-* **`notify-team`** (optional):  
+* **`notify-team`** (optional)  
   If `true`, all team members will be notified when the upgrade is purchased.
 
 
@@ -39,17 +39,17 @@ For this type of upgrade, the `type` must be set to `spawner`.
 There are three ways to specify which spawners the upgrade affects:
 
 1. **Using named spawners**
-   * Assign a name when creating the spawner.
-   * Use the `spawner-name` field to target it.
-   * If multiple spawners share the same name, they will all be upgraded.
+     * Assign a name when creating the spawner.
+     * Use the `spawner-name` field to target it.
+     * If multiple spawners share the same name, they will all be upgraded.
 2. **Using type**
-   * When creating a spawner, set its `team`.
-   * Use `spawner-type` to define which spawner type to upgrade.
-   * All matching spawners of that type belonging to the team purchasing the upgrade will be upgraded.
+     * When creating a spawner, set its `team`.
+     * Use `spawner-type` to define which spawner type to upgrade.
+     * All matching spawners of that type belonging to the team purchasing the upgrade will be upgraded.
 3. **Using all linked spawners**
-   * Link the spawners as in the previous mode.
-   * Set `team-upgrade` to `true`.
-   * All team-linked spawners will be upgraded, regardless of name or type.
+     * Link the spawners as in the previous mode.
+     * Set `team-upgrade` to `true`.
+     * All team-linked spawners will be upgraded, regardless of name or type.
 
 ### Example
 
