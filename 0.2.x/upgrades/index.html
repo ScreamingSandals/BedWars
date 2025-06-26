@@ -642,34 +642,40 @@ You can define multiple upgrades here, as the section accepts a list of entities
 <h3 id="configuration-fields">Configuration Fields<a class="headerlink" href="#configuration-fields" title="Permanent link">&para;</a></h3>
 <p>For this type of upgrade, the <code>type</code> must be set to <code>spawner</code>.</p>
 <ul>
-<li><strong><code>add-levels</code></strong>:<br />
+<li><strong><code>add-levels</code></strong><br />
   The number of levels to add when the upgrade is purchased once.<br />
   This value can be fractional, e.g. <code>0.2</code> means a 20% chance for an extra resource per spawn.<br />
   On the fifth purchase, this would guarantee one additional resource per spawn.
   By default, spawners start at level <code>1</code>, though this can be customized for individual spawners.<br />
   See <a href="../commands/#arena-editing">Arena Editing Commands</a> (<code>/bw admin &lt;arena&gt; spawner add &lt;type&gt; [holo enabled] [start level] [name] [team]</code>).</li>
-<li><strong><code>max-level</code></strong> (optional):<br />
+<li><strong><code>max-level</code></strong> (optional)<br />
   The maximum level a spawner can reach through upgrades. Once reached, the upgrade becomes unavailable.  </li>
-<li><strong><code>shop-name</code></strong> (optional):<br />
+<li><strong><code>shop-name</code></strong> (optional)<br />
   The name displayed in chat when the upgrade is purchased. Defaults to <code>UPGRADE</code>.</li>
-<li><strong><code>notify-team</code></strong> (optional):<br />
+<li><strong><code>notify-team</code></strong> (optional)<br />
   If <code>true</code>, all team members will be notified when the upgrade is purchased.</li>
 </ul>
 <h3 id="targeting-spawners">Targeting Spawners<a class="headerlink" href="#targeting-spawners" title="Permanent link">&para;</a></h3>
 <p>There are three ways to specify which spawners the upgrade affects:</p>
 <ol>
-<li><strong>Using named spawners</strong></li>
+<li><strong>Using named spawners</strong><ul>
 <li>Assign a name when creating the spawner.</li>
 <li>Use the <code>spawner-name</code> field to target it.</li>
 <li>If multiple spawners share the same name, they will all be upgraded.</li>
-<li><strong>Using type</strong></li>
+</ul>
+</li>
+<li><strong>Using type</strong><ul>
 <li>When creating a spawner, set its <code>team</code>.</li>
 <li>Use <code>spawner-type</code> to define which spawner type to upgrade.</li>
 <li>All matching spawners of that type belonging to the team purchasing the upgrade will be upgraded.</li>
-<li><strong>Using all linked spawners</strong></li>
+</ul>
+</li>
+<li><strong>Using all linked spawners</strong><ul>
 <li>Link the spawners as in the previous mode.</li>
 <li>Set <code>team-upgrade</code> to <code>true</code>.</li>
 <li>All team-linked spawners will be upgraded, regardless of name or type.</li>
+</ul>
+</li>
 </ol>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>Below is an example of how this upgrade might be defined in your shop configuration:</p>
