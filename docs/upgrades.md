@@ -4,8 +4,8 @@ Upgrades allow teams to enhance specific in-game elements, giving them a competi
 
 !!! warning "Available upgrades"
     
-    The base plugin includes only a spawner resource quantity upgrade.  
-    To access additional upgrades, you will need an addon.  
+    The base plugin includes only a spawner resource quantity upgrade.
+    To access additional upgrades, you will need an addon.
     We recommend checking out [SBA](https://www.spigotmc.org/resources/sba-screaming-bedwars-addon-1-8-8-1-20-1.99149/).
 
 
