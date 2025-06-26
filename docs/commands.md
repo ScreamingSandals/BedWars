@@ -72,7 +72,7 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> team spawn <team>` - Sets team spawn to your position
 * `/bw admin <arena> team bed <team> [looking_at|standing_on]` - Sets team target block to your target position (it can be any block, not just bed)
 * `/bw admin <arena> jointeam <team>` - Sets the ability to connect to a team using an entity
-* `/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources]` - Add item spawner to your position (alternatively you can specify max spawned resources without specifying team)
+* `/bw admin <arena> spawner add <bronze|gold|iron|...> [hologram] [first level] [name] [team] [max spawned resources]` - Add item spawner to your position (alternatively you can specify max spawned resources without specifying team)
 * `/bw admin <arena> spawner reset` - Remove all spawners
 * `/bw admin <arena> spawner remove` - Removes all spawners at location
 * `/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop]` - Add trading villager to your position
