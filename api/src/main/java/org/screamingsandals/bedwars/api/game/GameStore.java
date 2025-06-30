@@ -22,6 +22,8 @@ package org.screamingsandals.bedwars.api.game;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.Team;
 
 /**
  * @author Bedwars Team
@@ -71,4 +73,9 @@ public interface GameStore {
      * @return if type is PLAYER, than returns skin, otherwise null
      */
     String getSkinName();
+
+    /**
+     * @return team linked to the GameStore or null
+     */
+    @Nullable Team getTeam();
 }

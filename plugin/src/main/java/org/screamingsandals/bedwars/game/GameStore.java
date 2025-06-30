@@ -27,7 +27,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
 
 public class GameStore implements org.screamingsandals.bedwars.api.game.GameStore {
@@ -36,16 +38,17 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
     private final String shopName;
     private final boolean enableCustomName;
     private final boolean useParent;
+    private Team team;
     private LivingEntity entity;
     private EntityType type;
     private boolean isBaby;
     private String skinName;
 
     public GameStore(Location loc, String shop, boolean useParent, String shopName, boolean enableCustomName, boolean isBaby) {
-        this(loc, shop, useParent, EntityType.VILLAGER, shopName, enableCustomName, isBaby, null);
+        this(loc, shop, useParent, EntityType.VILLAGER, shopName, enableCustomName, isBaby, null, null);
     }
 
-    public GameStore(Location loc, String shop, boolean useParent, EntityType type, String shopName, boolean enableCustomName, boolean isBaby, String skinName) {
+    public GameStore(Location loc, String shop, boolean useParent, EntityType type, String shopName, boolean enableCustomName, boolean isBaby, String skinName, Team team) {
         if (type == null || !type.isAlive()) {
             type = EntityType.VILLAGER;
         }
@@ -57,6 +60,7 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
         this.enableCustomName = enableCustomName;
         this.isBaby = isBaby;
         this.skinName = skinName;
+        this.team = team;
     }
 
     public LivingEntity spawn() {
@@ -177,5 +181,14 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
 
     public String getSkinName() {
         return skinName;
+    }
+
+    @Override
+    public @Nullable Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(@Nullable Team team) {
+        this.team = team;
     }
 }

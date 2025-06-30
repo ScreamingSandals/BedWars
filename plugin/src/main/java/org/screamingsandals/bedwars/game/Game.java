@@ -1073,13 +1073,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 for (Object store : stores) {
                     if (store instanceof Map) {
                         Map<String, String> map = (Map<String, String>) store;
-                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
-                                map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
+                        game.gameStore.add(new GameStore(
+                                MiscUtils.readLocationFromString(game.world, map.get("loc")),
+                                map.get("shop"),
+                                "true".equals(map.getOrDefault("parent", "true")),
                                 EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false")), map.get("skin")));
+                                map.getOrDefault("name", ""), map.containsKey("name"),
+                                "true".equals(map.getOrDefault("isBaby", "false")), map.get("skin"),
+                                game.getTeamFromName(map.get("team")))
+                        );
                     } else if (store instanceof String) {
                         game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                                true, EntityType.VILLAGER, "", false, false, null));
+                                true, EntityType.VILLAGER, "", false, false, null, null));
                     }
                 }
             }
@@ -1260,6 +1265,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
                 map.put("isBaby", store.isBaby() ? "true" : "false");
                 map.put("skin", store.getSkinName());
+                if (store.getTeam() != null) {
+                    map.put("team", store.getTeam().getName());
+                } else {
+                    map.put("team", null);
+                }
                 nL.add(map);
             }
             configMap.set("stores", nL);
