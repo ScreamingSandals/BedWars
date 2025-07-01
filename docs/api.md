@@ -4,7 +4,7 @@ Use the BedWars API to interact with and extend the functionality of the BedWars
 
 !!! warning
 
-        The API is still evolving. Breaking changes will be introduced in future versions, starting from `0.3.0`.
+    The API is still evolving. Breaking changes will be introduced in future versions, starting from `0.3.0`.
 
 ## Installation
 

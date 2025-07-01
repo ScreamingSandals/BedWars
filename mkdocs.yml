@@ -49,6 +49,8 @@ markdown_extensions:
   - pymdownx.snippets
   - toc:
       permalink: true
+  - pymdownx.tabbed:
+      alternate_style: true
 
 edit_uri: ""
 repo_url: https://github.com/ScreamingSandals/BedWars
