@@ -201,7 +201,7 @@ public interface BedwarsAPI {
      * Tries opening a store using the provided GameStore instance.
      * <p>
      * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
-     * cancel the request or replace the store.
+     * cancel the request or replace the shop system.
      * <p>
      * The player must be in a game, otherwise this method simply returns null.
      *
@@ -216,7 +216,7 @@ public interface BedwarsAPI {
      * Tries opening a default store.
      * <p>
      * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
-     * cancel the request or replace the store.
+     * cancel the request or replace the shop system.
      * <p>
      * The player must be in a game, otherwise this method simply returns null.
      *
@@ -232,7 +232,7 @@ public interface BedwarsAPI {
      * Tries opening a custom store.
      * <p>
      * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
-     * cancel the request or replace the store.
+     * cancel the request or replace the shop system.
      * <p>
      * The player must be in a game, otherwise this method simply returns null.
      *
@@ -249,7 +249,7 @@ public interface BedwarsAPI {
      * Tries opening a custom store.
      * <p>
      * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
-     * cancel the request or replace the store.
+     * cancel the request or replace the shop system.
      * <p>
      * The player must be in a game, otherwise this method simply returns null.
      *

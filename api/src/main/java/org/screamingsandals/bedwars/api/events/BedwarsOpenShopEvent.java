@@ -125,7 +125,8 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
         ALLOW,
         DISALLOW_THIRD_PARTY_SHOP,
         DISALLOW_LOCKED_FOR_THIS_PLAYER,
-        DISALLOW_UNKNOWN;
+        DISALLOW_UNKNOWN,
+        DISALLOW_WRONG_TEAM;
     }
 
 }

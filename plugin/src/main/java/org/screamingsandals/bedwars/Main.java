@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars;
 import org.bstats.charts.SimplePie;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
+import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -868,6 +869,13 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game, player, gameStore, null);
+
+        if (Main.getConfigurator().config.getBoolean("disable-opening-stores-of-other-teams")
+                && gameStore.getTeam() != null
+                && gameStore.getTeam() != ((CurrentTeam) game.getTeamOfPlayer(player)).teamInfo) {
+            openShopEvent.setResult(BedwarsOpenShopEvent.Result.DISALLOW_WRONG_TEAM);
+        }
+
         Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
 
         if (openShopEvent.getResult() != BedwarsOpenShopEvent.Result.ALLOW) {

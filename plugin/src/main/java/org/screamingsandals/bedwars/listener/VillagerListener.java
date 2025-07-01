@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.listener;
 import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
@@ -66,6 +67,13 @@ public class VillagerListener implements Listener {
     public void open(GameStore store, PlayerInteractEntityEvent event, Game game) {
         BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game,
                 event.getPlayer(), store, event.getRightClicked());
+
+        if (Main.getConfigurator().config.getBoolean("disable-opening-stores-of-other-teams")
+                && store.getTeam() != null
+                && store.getTeam() != ((CurrentTeam) game.getTeamOfPlayer(event.getPlayer())).teamInfo) {
+            openShopEvent.setResult(Result.DISALLOW_WRONG_TEAM);
+        }
+
         Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
 
         if (openShopEvent.getResult() != Result.ALLOW) {

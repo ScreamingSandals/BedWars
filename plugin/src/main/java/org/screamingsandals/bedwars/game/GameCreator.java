@@ -190,15 +190,30 @@ public class GameCreator {
                     if (args.length >= 2) {
                         if (args.length >= 3) {
                             if (args.length >= 4) {
-                                response = addStore(player.getLocation(), args[2], Boolean.parseBoolean(args[3]), args[1]);
+                                if (!"true".equalsIgnoreCase(args[3]) && !"false".equalsIgnoreCase(args[3])) {
+                                    Team newTeam = null;
+                                    for (Team team : game.getTeams()) {
+                                        if (team.name.equals(args[3])) {
+                                            newTeam = team;
+                                        }
+                                    }
+
+                                    if (args.length >= 5) {
+                                        response = addStore(player.getLocation(), args[2], Boolean.parseBoolean(args[4]), args[1], newTeam);
+                                    } else {
+                                        response = addStore(player.getLocation(), args[2], false, args[1], newTeam);
+                                    }
+                                } else {
+                                    response = addStore(player.getLocation(), args[2], Boolean.parseBoolean(args[3]), args[1], null);
+                                }
                             } else {
-                                response = addStore(player.getLocation(), args[2], false, args[1]);
+                                response = addStore(player.getLocation(), args[2], false, args[1], null);
                             }
                         } else {
-                            response = addStore(player.getLocation(), null, true, args[1]);
+                            response = addStore(player.getLocation(), null, true, args[1], null);
                         }
                     } else {
-                        response = addStore(player.getLocation(), null, true, null);
+                        response = addStore(player.getLocation(), null, true, null, null);
                     }
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     response = removeStore(player.getLocation());
@@ -793,7 +808,7 @@ public class GameCreator {
                 .replace("%z%", Integer.toString(loc.getBlockZ()));
     }
 
-    public String addStore(Location loc, String shop, boolean useParent, String name) {
+    public String addStore(Location loc, String shop, boolean useParent, String name, Team team) {
         if (game.getPos1() == null || game.getPos2() == null) {
             return i18n("admin_command_set_pos1_pos2_first");
         }
@@ -810,7 +825,11 @@ public class GameCreator {
         if (name != null) {
             name = ChatColor.translateAlternateColorCodes('&', name);
         }
-        villagerstores.put(location, new GameStore(loc, shop, useParent, name, name != null, false));
+        GameStore gameStore = new GameStore(loc, shop, useParent, name, name != null, false);
+        if (team != null) {
+            gameStore.setTeam(team);
+        }
+        villagerstores.put(location, gameStore);
         return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
                 .replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));

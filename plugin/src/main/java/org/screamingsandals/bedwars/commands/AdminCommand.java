@@ -562,6 +562,13 @@ public class AdminCommand extends BaseCommand {
                 // TODO scan files for this :D
             }
             if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {
+                if (gc.containsKey(args.get(0))) {
+                    for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+                        completion.add(t.name);
+                    }
+                }
+            }
+            if (args.size() == 7 && args.get(2).equalsIgnoreCase("add")) {
                 completion.addAll(Arrays.asList("true", "false"));
             }
         } else if (args.get(1).equalsIgnoreCase("config")) {

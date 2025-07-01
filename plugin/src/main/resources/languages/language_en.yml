@@ -304,7 +304,7 @@ help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eSets the ability to connect to a team using an entity"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources] - &eAdd item spawner to your position"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eRemove all spawners"
-help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop] - &eAdd trading villager to your position"
+help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file with shop] [team] [use main shop] - &eAdd trading villager to your position"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &eRemove trading villager from your position"
 help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eSets entity type of store (Villager, Horse, Cow, Pig etc.)"
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eSets value of constant variable for game"
