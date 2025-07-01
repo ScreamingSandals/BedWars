@@ -75,7 +75,7 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> spawner add <bronze|gold|iron|...> [hologram] [first level] [name] [team] [max spawned resources]` - Add item spawner to your position (alternatively you can specify max spawned resources without specifying team)
 * `/bw admin <arena> spawner reset` - Remove all spawners
 * `/bw admin <arena> spawner remove` - Removes all spawners at location
-* `/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop]` - Add trading villager to your position
+* `/bw admin <arena> store add [name above dealer head] [file with shop] [team name] [use main shop]` - Add trading villager to your position (alternatively you can also specify `use main shop` without specifying `team name`)
 * `/bw admin <arena> store remove` - Remove trading villager from your position
 * `/bw admin <arena> store type <living entity>` - Sets entity type of store (Villager, Horse, Cow, Pig etc.)
 * `/bw admin <arena> store child` - Mark this shopkeeper as child
