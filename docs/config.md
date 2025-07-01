@@ -72,6 +72,8 @@ remember-what-scoreboards-players-had-before: false
 use-chunk-tickets-if-available: true
 reset-full-spawner-countdown-after-picking: true
 players-can-win-game-only-after-seconds: 0
+disable-locator-bars-in-arena-worlds: true
+disable-opening-stores-of-other-teams: false
 kick-players-upon-final-death:
   enabled: false
   delay: 5

@@ -41,7 +41,7 @@ Use the BedWars API to interact with and extend the functionality of the BedWars
 === "Gradle (Kotlin DSL)"
     ```kotlin
     repositories {
-        maven(url = "https://repo.screamingsandals.org/public/")
+        maven(url = uri("https://repo.screamingsandals.org/public/"))
     }
 
     dependencies {
