@@ -20,8 +20,8 @@
 package org.screamingsandals.bedwars;
 
 import org.bstats.charts.SimplePie;
-import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -854,6 +854,33 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         } else {
             instance.menu.show(player, new GameStore(null, fileName, useParent, null, false, false));
         }
+    }
+
+    @Override
+    public BedwarsOpenShopEvent.@Nullable Result tryOpenStore(Player player, org.screamingsandals.bedwars.api.game.GameStore gameStore) {
+        if (!(gameStore instanceof GameStore) || !Main.isPlayerInGame(player)) {
+            return null;
+        }
+
+        Game game = getPlayerGameProfile(player).getGame();
+        if (game == null) {
+            return null;
+        }
+
+        BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game, player, gameStore, null);
+        Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+
+        if (openShopEvent.getResult() != BedwarsOpenShopEvent.Result.ALLOW) {
+            return openShopEvent.getResult();
+        }
+
+        instance.menu.show(player, (GameStore) gameStore);
+        return BedwarsOpenShopEvent.Result.ALLOW;
+    }
+
+    @Override
+    public BedwarsOpenShopEvent.@Nullable Result tryOpenCustomStore(Player player, String fileName, boolean useParent) {
+        return tryOpenStore(player, new GameStore(null, fileName, useParent, null, false, false));
     }
 
     public static boolean isDisabling() {

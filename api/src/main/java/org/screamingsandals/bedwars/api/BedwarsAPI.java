@@ -20,7 +20,9 @@
 package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
@@ -146,15 +148,118 @@ public interface BedwarsAPI {
      */
     PlayerStatisticsManager getStatisticsManager();
 
+    /**
+     * Opens the default store using the built-in shop system. It does not fire any event.
+     * <p>
+     * The player should be in a game, otherwise the behaviour of this method is undefined.
+     * This method does not verify whether the player is playing BedWars.
+     * <p>
+     * Unless you have a specific reason, you should use {@link #tryOpenDefaultStore(Player)}.
+     *
+     * @param player the player
+     * @see #openDefaultStore(Player)
+     * @since 0.2.38
+     */
     default void openDefaultStore(Player player) {
         openCustomStore(player, null, false);
     }
 
+    /**
+     * Opens a custom store using the built-in shop system. It does not fire any event.
+     * <p>
+     * The player should be in a game, otherwise the behaviour of this method is undefined.
+     * This method does not verify whether the player is playing BedWars.
+     * <p>
+     * Unless you have a specific reason, you should use {@link #tryOpenCustomStore(Player, String)}.
+     *
+     * @param fileName the file name
+     * @param player the player
+     * @see #tryOpenCustomStore(Player, String)
+     * @since 0.2.38
+     */
     default void openCustomStore(Player player, @Nullable String fileName) {
         openCustomStore(player, fileName, false);
     }
 
+    /**
+     * Opens a custom store using the built-in shop system. It does not fire any event.
+     * <p>
+     * The player should be in a game, otherwise the behaviour of this method is undefined.
+     * This method does not verify whether the player is playing BedWars.
+     * <p>
+     * Unless you have a specific reason, you should use {@link #tryOpenCustomStore(Player, String, boolean)}.
+     *
+     * @param fileName the file name
+     * @param player the player
+     * @param useParent whether should the parent be used
+     * @see #tryOpenCustomStore(Player, String, boolean)
+     * @since 0.2.38
+     */
     void openCustomStore(Player player, @Nullable String fileName, boolean useParent);
+
+    /**
+     * Tries opening a store using the provided GameStore instance.
+     * <p>
+     * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
+     * cancel the request or replace the store.
+     * <p>
+     * The player must be in a game, otherwise this method simply returns null.
+     *
+     * @param player the player
+     * @param gameStore the game store
+     * @return result of the fired event or null on failure
+     * @since 0.2.39
+     */
+    BedwarsOpenShopEvent.@Nullable Result tryOpenStore(Player player, GameStore gameStore);
+
+    /**
+     * Tries opening a default store.
+     * <p>
+     * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
+     * cancel the request or replace the store.
+     * <p>
+     * The player must be in a game, otherwise this method simply returns null.
+     *
+     * @param player the player
+     * @return result of the fired event or null on failure
+     * @since 0.2.39
+     */
+    default BedwarsOpenShopEvent.@Nullable Result tryOpenDefaultStore(Player player) {
+        return tryOpenCustomStore(player, null, false);
+    }
+
+    /**
+     * Tries opening a custom store.
+     * <p>
+     * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
+     * cancel the request or replace the store.
+     * <p>
+     * The player must be in a game, otherwise this method simply returns null.
+     *
+     * @param player the player
+     * @param fileName the file name
+     * @return result of the fired event or null on failure
+     * @since 0.2.39
+     */
+    default BedwarsOpenShopEvent.@Nullable Result tryOpenCustomStore(Player player, String fileName) {
+        return tryOpenCustomStore(player, fileName, false);
+    }
+
+    /**
+     * Tries opening a custom store.
+     * <p>
+     * It fires the {@link org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent}, giving plugins the ability to
+     * cancel the request or replace the store.
+     * <p>
+     * The player must be in a game, otherwise this method simply returns null.
+     *
+     * @param player the player
+     * @param fileName the file name
+     * @param useParent whether should the parent be used
+     * @return result of the fired event or null on failure
+     * @since 0.2.39
+     */
+    BedwarsOpenShopEvent.@Nullable Result tryOpenCustomStore(Player player, String fileName, boolean useParent);
 
     /**
      * @return Bedwars instance

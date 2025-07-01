@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api.events;
 
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.bukkit.entity.Entity;
@@ -32,7 +33,7 @@ import org.bukkit.event.HandlerList;
  */
 public class BedwarsOpenShopEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private Entity clickedEntity;
+    private @Nullable Entity clickedEntity;
     private Game game;
     private Player player;
     private GameStore store;
@@ -44,7 +45,7 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
      * @param store
      * @param clickedEntity
      */
-    public BedwarsOpenShopEvent(Game game, Player player, GameStore store, Entity clickedEntity) {
+    public BedwarsOpenShopEvent(Game game, Player player, GameStore store, @Nullable Entity clickedEntity) {
         this.player = player;
         this.game = game;
         this.clickedEntity = clickedEntity;
@@ -61,7 +62,7 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
     /**
      * @return
      */
-    public Entity getEntity() {
+    public @Nullable Entity getEntity() {
         return this.clickedEntity;
     }
 
