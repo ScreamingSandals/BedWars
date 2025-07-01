@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.screamingsandals.bedwars.api.Team;
 
 /**
@@ -32,7 +33,7 @@ public interface GameStore {
     /**
      * @return shop entity
      */
-    LivingEntity getEntity();
+    @Nullable LivingEntity getEntity();
 
     /**
      * @return entity type used for the shop
@@ -42,17 +43,18 @@ public interface GameStore {
     /**
      * @return location of this store
      */
+    @UnknownNullability("Would be null only if created using one BedWarsAPI#tryOpenDefaultStore or BedWarsAPI#tryOpenCustomStore")
     Location getStoreLocation();
 
     /**
      * @return shop file
      */
-    String getShopFile();
+    @Nullable String getShopFile();
 
     /**
      * @return shopkeeper's name
      */
-    String getShopCustomName();
+    @Nullable String getShopCustomName();
 
     /**
      * @return true if shop file should be merged with custom shop file
@@ -72,10 +74,11 @@ public interface GameStore {
     /**
      * @return if type is PLAYER, than returns skin, otherwise null
      */
-    String getSkinName();
+    @Nullable String getSkinName();
 
     /**
      * @return team linked to the GameStore or null
+     * @since 0.2.39
      */
     @Nullable Team getTeam();
 }

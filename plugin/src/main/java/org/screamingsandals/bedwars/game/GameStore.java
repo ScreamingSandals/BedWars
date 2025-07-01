@@ -64,7 +64,7 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
     }
 
     public LivingEntity spawn() {
-        if (entity == null) {
+        if (entity == null && loc != null) {
             EntityType typ = type;
             if (typ == EntityType.PLAYER) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
@@ -132,7 +132,7 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
         return livingEntity;
     }
 
-    public LivingEntity getEntity() {
+    public @Nullable LivingEntity getEntity() {
         return entity;
     }
 
@@ -155,11 +155,11 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
         return loc;
     }
 
-    public String getShopFile() {
+    public @Nullable String getShopFile() {
         return shop;
     }
 
-    public String getShopCustomName() {
+    public @Nullable String getShopCustomName() {
         return shopName;
     }
 
@@ -179,7 +179,7 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
         this.isBaby = isBaby;
     }
 
-    public String getSkinName() {
+    public @Nullable String getSkinName() {
         return skinName;
     }
 

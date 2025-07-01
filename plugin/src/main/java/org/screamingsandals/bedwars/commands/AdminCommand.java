@@ -205,6 +205,8 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_villagers", false));
                             for (GameStore store : game.getGameStoreList()) {
 
+                                org.screamingsandals.bedwars.api.Team team = store.getTeam();
+
                                 Location loc_store = store.getStoreLocation();
                                 String storeM = i18n("arena_info_villager_pos", false)
                                         .replace("%x%", Double.toString(loc_store.getX()))
@@ -235,6 +237,16 @@ public class AdminCommand extends BaseCommand {
                                         store.isShopCustomName() ? store.getShopCustomName()
                                                 : i18nonly("arena_info_villager_shop_dealer_has_no_name"));
                                 player.sendMessage(storeM5);
+
+                                String storeTeam;
+
+                                if (team != null) {
+                                    storeTeam = TeamColor.fromApiColor(team.getColor()).chatColor + team.getName();
+                                } else {
+                                    storeTeam = i18nonly("arena_info_spawner_no_team");
+                                }
+
+                                player.sendMessage(i18n("arena_info_villager_shop_team", false).replace("%team%", storeTeam));
                             }
                         } else if (args.get(2).equalsIgnoreCase("config")) {
                             player.sendMessage(i18n("arena_info_header"));
@@ -560,8 +572,10 @@ public class AdminCommand extends BaseCommand {
             }
             if (args.size() == 5 && args.get(2).equalsIgnoreCase("add")) {
                 // TODO scan files for this :D
+                completion.add("shop.yml");
             }
             if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Arrays.asList("true", "false"));
                 if (gc.containsKey(args.get(0))) {
                     for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
                         completion.add(t.name);
