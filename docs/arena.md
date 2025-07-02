@@ -2,7 +2,7 @@
 
 !!! warning "World"
     
-    This guide assumes you already have a world with your BedWars map.  
+    This guide assumes you already have a world with your BedWars map.
     You should load it using a plugin like Multiverse or SlimeWorldManager, and you should already be inside that world.
 
 ## Creating the Arena
@@ -19,14 +19,14 @@ Then go to the diagonally opposite corner and run: `/bw admin <arena name> pos2`
 
 !!! note "Positions"
     
-    These two points define a box around your arena.  
+    These two points define a box around your arena.
     It is like setting a region with WorldEdit.
 
 <img alt="Arena bounds" src="../assets/arena_bounds.png" width="400"/>
 
 ## Adding Teams
 
-Now it's time to add the teams. To add a team, use this command:  
+Now it is time to add the teams. To add a team, use this command:  
 `/bw admin <arena name> team add <team name> <team color> <team size>`
 
 Example: `/bw admin MyArena team add Red RED 2`
