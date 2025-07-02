@@ -2,50 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>http://localhost:8000/0.2.x/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/api/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/arena/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/bungee/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/commands/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/config/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/language/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/placeholderapi/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/shop/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/specials/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/troubleshooting/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
     <url>
          <loc>http://localhost:8000/0.2.x/upgrades/</loc>
-         <lastmod>2025-07-01</lastmod>
+         <lastmod>2025-07-02</lastmod>
     </url>
 </urlset>
