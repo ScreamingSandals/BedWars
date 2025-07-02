@@ -29,3 +29,17 @@ If you encounter any bugs, feel free to report them on [GitHub Issues](https://g
 * Special items (RescuePlatform, TNTSheep, ...) with global and local configuration in shop
 * High configurability and configuration per arena
 * and many more
+
+## Installation
+
+You can download Screaming BedWars from one of the following official sources. Simply place the jar to the `plugins` folder and start your server.
+
+* **[Hangar](https://hangar.papermc.io/ScreamingSandals/ScreamingBedWars)**
+* **[Modrinth](https://modrinth.com/plugin/screamingbedwars)**
+* **[SpigotMC Forums](https://www.spigotmc.org/resources/screaming-bedwars.63714/)**
+* **[Bukkit Dev (CurseForge)](https://dev.bukkit.org/projects/screamingbedwars)**
+* [GitHub Actions](https://github.com/ScreamingSandals/BedWars/actions/workflows/build-0-2-x.yml) – Includes development snapshots, requires GitHub account
+* [Discord Server](https://screamingsandals.org/discord) – Access stable releases and snapshots in dedicated channels
+
+!!! note
+    These are the **only official distribution channels**. For your security, do **not** download the plugin from third-party websites or shady rehosters — we cannot guarantee the safety or authenticity of such files.

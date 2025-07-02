@@ -1,97 +1,143 @@
-# Making an arena
+# Making an Arena
 
 !!! warning "World"
     
-    This tutorial presumes that you already have a world with your desired BedWars map, loaded with a plugin like Multiverse or SlimeWorldManager and that you already are in the world with your BedWars map.
+    This guide assumes you already have a world with your BedWars map.  
+    You should load it using a plugin like Multiverse or SlimeWorldManager, and you should already be inside that world.
 
-## Creating the arena
+## Creating the Arena
 
-Create the arena by executing this command: `/bw admin <arena name> add`.
+To create the arena, run this command:  
+`/bw admin <arena name> add`
 
-## Setting the arena positions
+Replace `<arena name>` with the name you want for your arena. Each arena must have a unique name.
 
-To set the **first** position, go into the **first** corner of your map and execute this command: `/bw admin <arena name> pos1`.
-To set the **second** position, go into the **second** corner of your map and execute this command: `/bw admin <arena name> pos2`.
+## Setting Arena Positions
+
+First, go to one corner of your map and run: `/bw admin <arena name> pos1`    
+Then go to the diagonally opposite corner and run: `/bw admin <arena name> pos2`
 
 !!! note "Positions"
     
-    `pos1` is one corner of the arena and `pos2` is the corner of the arena, that is opposing to `pos1`!
+    These two points define a box around your arena.  
+    It is like setting a region with WorldEdit.
 
 <img alt="Arena bounds" src="../assets/arena_bounds.png" width="400"/>
 
-## Adding teams
+## Adding Teams
 
-Now it's time to add the teams. To add a team, do `/bw admin <arena> team add <team name> <team colour> <team size>`.
+Now it's time to add the teams. To add a team, use this command:  
+`/bw admin <arena name> team add <team name> <team color> <team size>`
 
-For the colors, you can use this [TeamColor](https://docs.screamingsandals.org/BedWars/javadoc/LATEST_VERSION_HERE/org/screamingsandals/bedwars/api/TeamColor.html) enum: `RED`, `BLUE`, `GREEN`, `YELLOW`, `MAGENTA`, `PINK`, `LIME`, `BLACK`, `WHITE`, `ORANGE`, `LIGHT_GRAY`, `GRAY`, `LIGHT_BLUE`, `CYAN` and `BROWN`.
+Example: `/bw admin MyArena team add Red RED 2`
+
+You can use these colors: `RED`, `BLUE`, `GREEN`, `YELLOW`, `MAGENTA`, `PINK`, `LIME`, `BLACK`, `WHITE`, `ORANGE`, `LIGHT_GRAY`, `GRAY`, `LIGHT_BLUE`, `CYAN` and `BROWN`.
 
 !!! warning
 
-    You must create at least 2 teams.
+    You must add **at least 2 teams** for the arena to work.
 
-## Setting team spawns
+### Setting Team Spawns
 
-Stand where you would like to have the team spawn, and look in the direction that you want your players to be oriented when they spawn, as the yaw will also be taken into account. Set the team's spawn with this command: `/bw admin <arena> team spawn <team>` and repeat until all teams have a spawn.
+Go to the place where players from a team should appear when they spawn.
+Look in the direction you want players to look when they spawn, then run:  
+ `/bw admin <arena name> team spawn <team name>`
 
-## Setting the team bed
+ Repeat this for every team.
 
-Stand on top of the bed, look down on the **head** of the bed and execute this command to set the bed location: `/bw admin <arena name> team bed <team name>`. Repeat until all teams have a bed.
+### Setting Team Beds
+
+Look at the **head** of the team's bed (the side with the pillow), and run:  
+ `/bw admin <arena name> team bed <team name>`
+
+  Repeat this for every team.
 
 !!! tip "Target blocks"
 
-    The team's target block isn't limited to a bed, in fact BedWars has support for any block (the Dragon Egg, cakes and the Respawn Anchor have special support to allow BedWars to operate as EggWars, AnchorWars or CakeWars out of the box).
+    Beds are just one of several target block options. You can also use blocks like the **Dragon Egg**, **Cake**, or **Respawn Anchor** to create alternative modes (EggWars, CakeWars, AnchorWars). Most of the vanilla blocks are supported, with the exception of container-like blocks and complex block entities.
 
-## Adding resource generators
+## Adding Spawners (Resource Generators)
 
-Stand at the block where you want the generator to be and execute this command: `/bw admin <arena name> spawner add <resource> <true/false>`.
+Stand where you want the spawner (also known as resource generator) to be and run:  
+`/bw admin <arena name> spawner add <resource> <true/false>`
 
-Valid default resources: `bronze`, `iron` and `gold` (diamond and emerald is not included out of the box, you will have to add it yourself in the [configuration](config.md)).
+Default supported resources: `bronze`, `iron` and `gold`. For additional resources like `diamond` or `emerald`, you need to configure them manually in your [config file](config.md).
 
-The **true/false** part of the command means if there should **be** a hologram (true) or if there should be **no** hologram (false).
+The `true/false` parameter controls whether a hologram is shown above the spawner.
 
-## Adding merchants
+## Adding Merchants
 
-Now it's time to add the shops. Stand where you would like your shop entity to be, look forward and execute this command: `/bw admin <arena> store add <name of villager entity> [file with shop] [use main shop]` (last two command parts can be omitted).
+To add shop entities, stand where you want the shop to appear, face the direction you want the shopkeeper to look, and run:  
+ `/bw admin <arena name> store add [name above shopkeeper's head] [file with shop]`
 
-Example: `/bw admin <arena> store add &aStore shop.yml false`, `/bw admin <arena> store add &aStore`
+Example:  
+`/bw admin <arena name> store add &aStore shop.yml`  
+`/bw admin <arena name> store add &aStore`  
+`/bw admin <arena name> store add`  
 
-!!! info "Store entity types"
+!!! info "Custom Shop Entities"
 
-    If you would like to have a different entity as the store, do the following:  
-    `/bw admin <arena> store type <living entity>`.
-    This sets entity type of store (Villager, Horse, Cow, etc.).  
-    If you would like to have a player with a skin as the shop keeper, use this command: `/bw admin <arena> store type Player:skinname`.
+    To change the shop entity type, use:
 
-## Final steps
+    `/bw admin <arena name> store type <entity type>`
 
-Add the lobby location for the arena by executing this command: `/bw admin <arena> lobby`.
+    Example:
 
-Add the spectator location for the arena by executing this command: `/bw admin <arena> spec`.
+    `/bw admin <arena name> store type Villager`
 
-Last but not least, remember to save the arena with `/bw admin <arena> save`.
+    To use a player skin:
 
-## Join signs
+    `/bw admin <arena name> store type Player:skinname`
 
-You can use signs to join the arena. Follow these steps to create such sign.
+    Citizens plugin must be installed to use a player skin.
 
-* On the first line write [BedWars] or [BWGame]
-* On the second line write the name of arena for join.
-* For the first sign update join to game.
+## Final Steps
 
-Alternatively, you can create a leave sign by writing word `leave` instead of arena name.
+Set the lobby and spectator locations:
 
-## Team entities
+* `/bw admin <arena name> lobby`
+* `/bw admin <arena name> spec`
 
-These entities allow players to select their team by right clicking at them. There are two ways how these entities can be created.
+**Finally, don’t forget to save the arena:**  
+`/bw admin <arena name> save`
 
-### Creation by jointeam command
+!!! note "Edit Mode"
 
-* Go to your bedwars lobby and place the entity
-* Switch your arena to edit mode
-* Run command `/bw admin <arena> jointeam <team>`
-* Right click the entity that you want to change to team entity
-* Now the entity gets name same as team and if the entity is Armor Stand it gets leather armor in team color. And it makes your entity persistent.
-* Now save your arena and you can play
+    After saving the arena, you can switch to **edit mode** to make changes by running:
 
-### Manual creation
-Create any living entity with custom name same as team name and place it in your lobby. The plugin will use the name to determine the team.
+    `/bw admin <arena> edit`
+
+    When you are done editing the arena, save it.
+
+## Join Signs
+
+To create a join sign, place a sign with the following content:
+
+- **Line 1**: `[BedWars]` or `[BWGame]`
+- **Line 2**: Name of the arena
+
+After placing it, the plugin will update the sign.
+
+To create a **leave sign**, simply write `leave` instead of an arena name.
+
+### Team Entities
+
+Team entities allow players to pick their team by right-clicking on a specific entity.
+
+There are two ways to set this up:
+
+### Using `jointeam` command
+
+1. Go to your BedWars lobby and place the entity (e.g., Armor Stand).
+2. Switch the arena to edit mode.
+3. Run:  
+   `/bw admin <arena name> jointeam <team name>`
+4. Right-click the entity to bind it to the team.
+    * Armor Stands will automatically receive leather armor in the team’s color.
+    * The entity is made persistent automatically.
+
+Save the arena afterward.
+
+### Manual Creation
+
+Place any **living entity** in your lobby with a **custom name matching the team name** (e.g., `Red`), and the plugin will recognize it as a team selector.
