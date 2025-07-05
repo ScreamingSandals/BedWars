@@ -2,6 +2,7 @@ site_name: ScreamingBedWars
 site_url: https://docs.screamingsandals.org/BedWars
 
 theme:
+  language: en
   name: material
 #  custom_dir: ./overrides
   logo: assets/icon.png
