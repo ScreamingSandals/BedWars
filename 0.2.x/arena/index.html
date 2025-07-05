@@ -726,7 +726,109 @@ It is like setting a region with WorldEdit.</p>
 <p>Now it is time to add the teams. To add a team, use this command:<br />
 <code>/bw admin &lt;arena name&gt; team add &lt;team name&gt; &lt;team color&gt; &lt;team size&gt;</code></p>
 <p>Example: <code>/bw admin MyArena team add Red RED 2</code></p>
-<p>You can use these colors: <code>RED</code>, <code>BLUE</code>, <code>GREEN</code>, <code>YELLOW</code>, <code>MAGENTA</code>, <code>PINK</code>, <code>LIME</code>, <code>BLACK</code>, <code>WHITE</code>, <code>ORANGE</code>, <code>LIGHT_GRAY</code>, <code>GRAY</code>, <code>LIGHT_BLUE</code>, <code>CYAN</code> and <code>BROWN</code>.</p>
+<p>Available colors can be found in the following table:</p>
+<table>
+<thead>
+<tr>
+<th>Team Color</th>
+<th>Chat Color</th>
+<th>Blocks</th>
+<th>Armor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>BLACK</code></strong></td>
+<td><img src="assets/team_color/text-black.png" alt="Black" /></td>
+<td><img src="https://minecraft.wiki/images/Black_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Black_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Black_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-black.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>BLUE</code></strong></td>
+<td><img src="assets/team_color/text-dark-blue.png" alt="Dark Blue" /></td>
+<td><img src="https://minecraft.wiki/images/Blue_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Blue_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Blue_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-blue.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>GREEN</code></strong></td>
+<td><img src="assets/team_color/text-dark-green.png" alt="Dark Green" /></td>
+<td><img src="https://minecraft.wiki/images/Green_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Green_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Green_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-green.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>RED</code></strong></td>
+<td><img src="assets/team_color/text-red.png" alt="Red" /></td>
+<td><img src="https://minecraft.wiki/images/Red_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Red_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Red_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-red.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>MAGENTA</code></strong></td>
+<td><img src="assets/team_color/text-dark-purple.png" alt="Dark Purple" /></td>
+<td><img src="https://minecraft.wiki/images/Magenta_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Magenta_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Magenta_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-magenta.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>ORANGE</code></strong></td>
+<td><img src="assets/team_color/text-gold.png" alt="Gold" /></td>
+<td><img src="https://minecraft.wiki/images/Orange_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Orange_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Orange_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-orange.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>LIGHT_GRAY</code></strong></td>
+<td><img src="assets/team_color/text-gray.png" alt="Gray" /></td>
+<td><img src="https://minecraft.wiki/images/Light_Gray_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Light_Gray_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Light_Gray_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-light-gray.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>GRAY</code></strong></td>
+<td><img src="assets/team_color/text-dark-gray.png" alt="Dark Gray" /></td>
+<td><img src="https://minecraft.wiki/images/Gray_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Gray_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Gray_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-gray.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>LIGHT_BLUE</code></strong></td>
+<td><img src="assets/team_color/text-blue.png" alt="Blue" /></td>
+<td><img src="https://minecraft.wiki/images/Light_Blue_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Light_Blue_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Light_Blue_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-light-blue.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>LIME</code></strong></td>
+<td><img src="assets/team_color/text-green.png" alt="Green" /></td>
+<td><img src="https://minecraft.wiki/images/Lime_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Lime_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Lime_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-lime.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>CYAN</code></strong></td>
+<td><img src="assets/team_color/text-aqua.png" alt="Aqua" /></td>
+<td><img src="https://minecraft.wiki/images/Cyan_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Cyan_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Cyan_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-cyan.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>PINK</code></strong></td>
+<td><img src="assets/team_color/text-light-purple.png" alt="Light Purple" /></td>
+<td><img src="https://minecraft.wiki/images/Pink_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Pink_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Pink_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-pink.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>YELLOW</code></strong></td>
+<td><img src="assets/team_color/text-yellow.png" alt="Yellow" /></td>
+<td><img src="https://minecraft.wiki/images/Yellow_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Yellow_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Yellow_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-yellow.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>WHITE</code></strong></td>
+<td><img src="assets/team_color/text-white.png" alt="White" /></td>
+<td><img src="https://minecraft.wiki/images/White_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/White_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/White_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-white.png" width="25" /></td>
+</tr>
+<tr>
+<td><strong><code>BROWN</code></strong></td>
+<td><img src="assets/team_color/text-dark-red.png" alt="Dark Red" /></td>
+<td><img src="https://minecraft.wiki/images/Brown_Wool_JE2_BE2.png" width="25"/> • <img src="https://minecraft.wiki/images/Brown_Terracotta_JE1_BE1.png" width="25"/> • <img src="https://minecraft.wiki/images/Brown_Stained_Glass_JE3_BE3.png" width="25"/></td>
+<td><img src="assets/team_color/armor-brown.png" width="25" /></td>
+</tr>
+</tbody>
+</table>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>You must add <strong>at least 2 teams</strong> for the arena to work.</p>
@@ -826,7 +928,7 @@ Look in the direction you want players to look when they spawn, then run:<br />
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_datetime" title="July 2, 2025 20:06:56 UTC">2025-07-02 20:06:56</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_datetime" title="July 5, 2025 12:24:20 UTC">2025-07-05 12:24:20</span>
   </span>
 
     
