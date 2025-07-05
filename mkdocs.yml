@@ -3,7 +3,7 @@ site_url: https://docs.screamingsandals.org/BedWars
 
 theme:
   name: material
-  custom_dir: ./overrides
+#  custom_dir: ./overrides
   logo: assets/icon.png
   favicon: assets/icon.png
   features:
