@@ -203,6 +203,7 @@ For `column`, you can also use special values: `left`, `center`, and `right` ins
 Forces the next item to be placed on a new row. Think of it as pressing  "Enter" after an item.
 
 There are three valid values for `linebreak`:
+
 * `before` - Breaks the line before the item is rendered
 * `after` - Breaks the line after the item is rendered
 * `both` - Applies both `before` and `after`
@@ -219,6 +220,7 @@ There are three valid values for `linebreak`:
 Forces the next item to be placed on a new page.
 
 Like `linebreak`, `pagebreak` accepts three values:
+
 * `before` - Breaks the page before the item is rendered
 * `after` - Breaks the page after the item is rendered
 * `both` - Applies both `before` and `after`

@@ -1,5 +1,5 @@
 site_name: ScreamingBedWars
-site_url: http://localhost:8000
+site_url: https://docs.screamingsandals.org/BedWars
 
 theme:
   name: material
@@ -13,6 +13,7 @@ theme:
     - navigation.indexes
     - toc.integrate
     - navigation.top
+    - content.action.edit
     # - navigation.tabs
   palette:
     - scheme: slate
@@ -27,6 +28,8 @@ theme:
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
+  icon:
+    repo: fontawesome/brands/github
 
 extra:
   social:
@@ -38,7 +41,7 @@ extra:
     provider: mike
     default: latest
 
-copyright: Copyright &copy; 2024 ScreamingSandals
+copyright: Copyright &copy; 2025 ScreamingSandals
 
 markdown_extensions:
   - admonition
@@ -52,13 +55,12 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
 
-edit_uri: ""
+edit_uri: "https://github.com/ScreamingSandals/BedWars/blob/docs/0.2.x"
 repo_url: https://github.com/ScreamingSandals/BedWars
 repo_name: ScreamingSandals/BedWars
 
 plugins:
-  - git-revision-date:
-      enabled_if_env: CI
+  - git-revision-date
   - search
 
 nav:
