@@ -8,6 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
+      FORCE_JAVADOC: true
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -28,13 +32,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew clean checkLicenses build publish --stacktrace --warning-mode all
+        run: ./gradlew clean checkLicenses build javadocJar --stacktrace --warning-mode all
+      - name: Publish with Gradle
+        run: ./gradlew publish --stacktrace --warning-mode all
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
       - name: Upload the final artifact
         uses: actions/upload-artifact@v4
         with:

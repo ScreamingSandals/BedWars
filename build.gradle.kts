@@ -47,16 +47,21 @@ subprojects {
 
     configureLicenser()
     if (project.name != "BedWars-common") { // do not publish the common artifact, only API, protocol, platform artifacts and universal artifact
-        // TODO: figure out how to relocate api-utils in Javadoc of BedWars-API (to the package defined in SLibExtension)
         val buildSources = project.name == "BedWars-API" || project.name == "BedWars-protocol"
         if (buildSources) {
             configureSourcesJar(configureShadedSourcesInclude=(project.name == "BedWars-API"))
         }
-        val buildJavadoc = !version.toString().endsWith("-SNAPSHOT") && project.name == "BedWars-API"
+        val buildJavadoc = buildSources && project.name == "BedWars-API"
         if (buildJavadoc) {
-            configureJavadocTasks()
+            configureJavadocTasks(useSourcesJarAsInput=true) {
+                // TODO: fix javadocs in Slib and then remove the following line
+                (options as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+            }
         }
-        setupMavenPublishing(addSourceJar=buildSources, addJavadocJar=buildJavadoc)
+        setupMavenPublishing(
+            addSourceJar=buildSources,
+            addJavadocJar=(buildJavadoc && (!version.toString().endsWith("-SNAPSHOT") || System.getenv("FORCE_JAVADOC") == "true")),
+        )
         setupMavenRepositoriesFromProperties()
     }
 
