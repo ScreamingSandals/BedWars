@@ -55,12 +55,14 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
 
-edit_uri: "https://github.com/ScreamingSandals/BedWars/blob/docs/0.2.x"
+edit_uri: "https://github.com/ScreamingSandals/BedWars/blob/docs/0.2.x/docs"
 repo_url: https://github.com/ScreamingSandals/BedWars
 repo_name: ScreamingSandals/BedWars
 
 plugins:
-  - git-revision-date
+  - git-revision-date-localized:
+      enabled: !ENV [CI, false]
+      type: iso_datetime
   - search
 
 nav:
