@@ -127,6 +127,9 @@ public interface BedwarsAPI {
         return Internal.bedwarsAPI;
     }
 
+    /**
+     * @hidden
+     */
     @ApiStatus.Internal
     class Internal {
         protected static BedwarsAPI bedwarsAPI;

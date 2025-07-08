@@ -32,7 +32,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew clean checkLicenses build javadocJar --stacktrace --warning-mode all
+        run: ./gradlew clean checkLicenses build :BedWars-API:javadocJar --stacktrace --warning-mode all
       - name: Publish with Gradle
         run: ./gradlew publish --stacktrace --warning-mode all
         env:

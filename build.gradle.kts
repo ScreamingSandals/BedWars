@@ -29,6 +29,8 @@ subprojects {
         "compileOnly"(rootProject.libs.jetbrains.annotations)
     }
 
+    configureJavac(JavaVersion.VERSION_11)
+
     tasks.withType<Jar> {
         archiveClassifier.set(System.getenv("BUILD_NUMBER") ?: "dev")
     }
@@ -53,10 +55,7 @@ subprojects {
         }
         val buildJavadoc = buildSources && project.name == "BedWars-API"
         if (buildJavadoc) {
-            configureJavadocTasks(useSourcesJarAsInput=true) {
-                // TODO: fix javadocs in Slib and then remove the following line
-                (options as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
-            }
+            configureJavadocTasks(useSourcesJarAsInput=true)
         }
         setupMavenPublishing(
             addSourceJar=buildSources,
@@ -64,8 +63,6 @@ subprojects {
         )
         setupMavenRepositoriesFromProperties()
     }
-
-    configureJavac(JavaVersion.VERSION_11)
 
     // TODO: check if this is needed (and probably remove it later)
     configurations.all {
