@@ -31,8 +31,10 @@ subprojects {
 
     configureJavac(JavaVersion.VERSION_11)
 
+    val buildNumber = System.getenv("BUILD_NUMBER") ?: "dev"
+
     tasks.withType<Jar> {
-        archiveClassifier.set(System.getenv("BUILD_NUMBER") ?: "dev")
+        archiveClassifier.set(buildNumber)
     }
 
     if (project.name != "BedWars-protocol") {
@@ -60,7 +62,21 @@ subprojects {
         setupMavenPublishing(
             addSourceJar=buildSources,
             addJavadocJar=(buildJavadoc && (!version.toString().endsWith("-SNAPSHOT") || System.getenv("FORCE_JAVADOC") == "true")),
-        )
+        ) {
+            pom {
+                name.set("BedWars")
+                description.set("Flexible BedWars minigame plugin for Minecraft: Java Edition")
+                url.set("https://github.com/ScreamingSandals/BedWars")
+                licenses {
+                    license {
+                        name.set("GNU Lesser General Public License v3.0")
+                        url.set("https://github.com/ScreamingSandals/BedWars/blob/master/LICENSE")
+                    }
+                }
+
+                properties.put("build.number", buildNumber)
+            }
+        }
         setupMavenRepositoriesFromProperties()
     }
 

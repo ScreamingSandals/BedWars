@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
       FORCE_JAVADOC: true
+      GIT_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
 
     steps:
       - name: Checkout Repository
@@ -33,6 +33,8 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew clean checkLicenses build :BedWars-API:javadocJar --stacktrace --warning-mode all
+        env:
+          BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
       - name: Publish with Gradle
         run: ./gradlew publish --stacktrace --warning-mode all
         env:
@@ -40,6 +42,7 @@ jobs:
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
       - name: Upload the final artifact
         uses: actions/upload-artifact@v4
         with:
