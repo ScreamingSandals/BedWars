@@ -166,6 +166,7 @@ public class Configurator {
         checkOrSetConfig(modify, "players-can-win-game-only-after-seconds", 0);
         checkOrSetConfig(modify, "disable-locator-bars-in-arena-worlds", true);
         checkOrSetConfig(modify, "disable-opening-stores-of-other-teams", false);
+        checkOrSetConfig(modify, "disable-waterlogging-of-original-blocks", false);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);

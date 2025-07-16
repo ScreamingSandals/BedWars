@@ -1222,7 +1222,12 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
-                if (!Main.isLegacy() && event.getBucket() == Material.WATER_BUCKET && event.getBlockClicked().getBlockData() instanceof Waterlogged) {
+                if (
+                    !Main.isLegacy()
+                    && event.getBucket() == Material.WATER_BUCKET
+                    && event.getBlockClicked().getBlockData() instanceof Waterlogged
+                    && !Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks")
+                ) {
                     block = event.getBlockClicked();
                     game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
                     game.getRegion().addBuiltDuringGame(block.getLocation());
@@ -1270,6 +1275,7 @@ public class PlayerListener implements Listener {
                         && event.getBucket() == Material.WATER_BUCKET
                         && Main.isBreakableBlock(Material.valueOf("WATER")) // Require breakable water
                         && block.getBlockData() instanceof Waterlogged
+                        && !Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks")
                     )
                 ) {
                     game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
