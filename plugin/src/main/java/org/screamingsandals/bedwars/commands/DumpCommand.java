@@ -87,6 +87,7 @@ public class DumpCommand extends BaseCommand {
                                 "edition", "free"
                         ),
                         "server", nullValuesAllowingMap(
+                                "impl", Bukkit.getName(),
                                 "version", Bukkit.getVersion(),
                                 "javaVersion", System.getProperty("java.version"),
                                 "os", System.getProperty("os.name")

@@ -67,6 +67,7 @@ import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
+import org.screamingsandals.bedwars.utils.VersionFallback;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
@@ -122,6 +123,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         autoColoredMaterials.add("STAINED_GLASS_PANE");
 
         StackParser.tagParser = TagApplier::applyTag;
+
+        VersionFallback.applyFallbackIfNeeded();
     }
 
     public static Main getInstance() {
