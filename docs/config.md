@@ -74,6 +74,7 @@ reset-full-spawner-countdown-after-picking: true
 players-can-win-game-only-after-seconds: 0
 disable-locator-bars-in-arena-worlds: true
 disable-opening-stores-of-other-teams: false
+disable-waterlogging-of-original-blocks: false
 kick-players-upon-final-death:
   enabled: false
   delay: 5
