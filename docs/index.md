@@ -1,7 +1,7 @@
 # ScreamingBedWars
 
 Flexible BedWars plugin, formerly coded as a replacement for BedwarsRel.  
-Supported versions: \[1.8.8 - 1.21.7\], recommended versions: \[1.21.7\].
+Supported versions: \[1.8.8 - 1.21.8\], recommended versions: \[1.21.8\].
 
 ## Unofficial translations
 
