@@ -52,6 +52,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
@@ -3782,6 +3783,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public String getCustomPrefix() {
         return customPrefix;
+    }
+
+    @Override
+    public boolean isSpectator(@NotNull Player player) {
+        if (!Main.isPlayerInGame(player)) {
+            return false;
+        }
+
+        GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+
+        return gamePlayer.getGame() == this && gamePlayer.isSpectator;
     }
 
     public void setCustomPrefix(String customPrefix) {

@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.api.game;
 
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.*;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -713,4 +714,13 @@ public interface Game {
     }
 
     String getCustomPrefix();
+
+    /**
+     * Checks if the player is spectator in this game
+     *
+     * @param player spectating player
+     * @return true if player is spectating the game
+     * @since 0.2.40
+     */
+    boolean isSpectator(@NotNull Player player);
 }
