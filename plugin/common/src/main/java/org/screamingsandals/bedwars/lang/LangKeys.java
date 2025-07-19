@@ -359,6 +359,8 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_REMOVED = {"admin", "arena", "edit", "success", "store_removed"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_SET = {"admin", "arena", "edit", "success", "store_name_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_RESET = {"admin", "arena", "edit", "success", "store_name_reset"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_TEAM_SET = {"admin", "arena", "edit", "success", "store_team_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_TEAM_RESET = {"admin", "arena", "edit", "success", "store_team_reset"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_SET = {"admin", "arena", "edit", "success", "store_file_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_RESET = {"admin", "arena", "edit", "success", "store_file_reset"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_LOBBY_SPAWN_SET = {"admin", "arena", "edit", "success", "lobby_spawn_set"};
@@ -473,6 +475,8 @@ public class LangKeys {
     public final String[] ADMIN_INFO_VILLAGER_SHOP_NAME = {"admin", "info", "villager_shop_name"};
     public final String[] ADMIN_INFO_VILLAGER_SHOP_DEALER_NAME = {"admin", "info", "villager_shop_dealer_name"};
     public final String[] ADMIN_INFO_VILLAGER_SHOP_DEALER_HAS_NO_NAME = {"admin", "info", "villager_shop_dealer_has_no_name"};
+    public final String[] ADMIN_INFO_VILLAGER_SHOP_TEAM = {"admin", "info", "villager_shop_team"};
+    public final String[] ADMIN_INFO_VILLAGER_SHOP_NO_TEAM = {"admin", "info", "villager_shop_no_team"};
     public final String[] ADMIN_INFO_LOBBY_COUNTDOWN = {"admin", "info", "lobby_countdown"};
     public final String[] ADMIN_INFO_GAME_TIME = {"admin", "info", "game_time"};
     public final String[] ADMIN_INFO_CONSTANTS = {"admin", "info", "constants"};

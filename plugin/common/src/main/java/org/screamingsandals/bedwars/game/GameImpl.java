@@ -263,7 +263,10 @@ public class GameImpl implements LocalGame {
     }
 
     @Override
-    public TeamImpl getTeamFromName(String name) {
+    public @Nullable TeamImpl getTeamFromName(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
         return teams.stream().filter(team1 -> team1.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 

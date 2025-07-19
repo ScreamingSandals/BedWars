@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.api.game;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.lib.api.types.server.EntityHolder;
 import org.screamingsandals.lib.api.types.server.EntityTypeHolder;
 import org.screamingsandals.lib.api.types.server.LocationHolder;
@@ -30,36 +31,26 @@ import org.screamingsandals.lib.api.types.server.LocationHolder;
  * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface GameStore {
+public interface GameStore extends OpenShopEvent.StoreLike {
     /**
      * @return shop entity
      */
-    @Nullable
-    EntityHolder getEntity();
+    @Nullable EntityHolder getEntity();
 
     /**
      * @return entity type used for the shop
      */
-    @NotNull
-    EntityTypeHolder getEntityType();
+    @NotNull EntityTypeHolder getEntityType();
 
     /**
      * @return location of this store
      */
-    @NotNull
-    LocationHolder getStoreLocation();
-
-    /**
-     * @return shop file
-     */
-    @Nullable
-    String getShopFile();
+    @NotNull LocationHolder getStoreLocation();
 
     /**
      * @return shopkeeper's name
      */
-    @Nullable
-    String getShopCustomName();
+    @Nullable String getShopCustomName();
 
     /**
      * @return true if shopkeeper is baby
@@ -67,8 +58,7 @@ public interface GameStore {
     boolean isBaby();
 
     /**
-     * @return if type is PLAYER, than returns skin, otherwise null
+     * @return if type is PLAYER, then returns skin, otherwise null
      */
-    @Nullable
-    String getSkinName();
+    @Nullable String getSkinName();
 }

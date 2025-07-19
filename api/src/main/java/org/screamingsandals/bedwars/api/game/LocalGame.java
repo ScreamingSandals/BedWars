@@ -123,7 +123,7 @@ public interface LocalGame extends Game {
     /**
      * @return Team instance from the name
      */
-    Team getTeamFromName(String name);
+    @Nullable Team getTeamFromName(@Nullable String name);
 
     /**
      * @return

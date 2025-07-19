@@ -30,6 +30,13 @@ import java.util.UUID;
 public interface BWPlayer extends Wrapper {
     UUID getUuid();
 
+
+    /**
+     * Checks if the player is a spectator
+     *
+     * @return true if player is spectating a game
+     * @since 0.3.0
+     */
     boolean isSpectator();
 
     @Nullable

@@ -62,6 +62,8 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Boolean> ALLOW_FAKE_DEATH = ConfigurationKey.of(Boolean.class, "allow-fake-death");
     ConfigurationKey<Boolean> RESET_FULL_SPAWNER_COUNTDOWN_AFTER_PICKING = ConfigurationKey.of(Boolean.class, "reset-full-spawner-countdown-after-picking");
     ConfigurationKey<Integer> PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS = ConfigurationKey.of(Integer.class, "players-can-win-game-only-after-seconds");
+    ConfigurationKey<Boolean> DISABLE_OPENING_STORES_OF_OTHER_TEAMS = ConfigurationKey.of(Boolean.class, "disable-opening-stores-of-other-teams");
+    ConfigurationKey<Boolean> DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS = ConfigurationKey.of(Boolean.class, "disable-waterlogging-of-original-blocks");
 
     ConfigurationKey<String> PREFIX = ConfigurationKey.of(String.class, "prefix");
     ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");

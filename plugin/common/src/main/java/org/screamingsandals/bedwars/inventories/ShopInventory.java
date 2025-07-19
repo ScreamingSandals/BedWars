@@ -19,11 +19,17 @@
 
 package org.screamingsandals.bedwars.inventories;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.events.OpenShopEvent;
+import org.screamingsandals.bedwars.api.game.StoreManager;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
@@ -34,6 +40,7 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -75,7 +82,7 @@ import java.util.stream.Collectors;
         SimpleInventoriesCore.class
 })
 @RequiredArgsConstructor
-public class ShopInventory {
+public class ShopInventory implements StoreManager {
     private final Map<String, InventorySet> shopMap = new HashMap<>();
     @DataFolder("shop")
     private final Path shopFolder;
@@ -121,7 +128,7 @@ public class ShopInventory {
         loadNewShop("default", null);
     }
 
-    public void show(BedWarsPlayer player, GameStoreImpl store) {
+    public void show(BedWarsPlayer player, OpenShopEvent.@Nullable StoreLike store) {
         try {
             String fileName = null;
             if (store != null) {
@@ -724,5 +731,61 @@ public class ShopInventory {
                         .send(event.getPlayer());
             }
         }
+    }
+
+    @Override
+    public void openCustomStore(@NotNull BWPlayer player, @Nullable String fileName) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("This BWPlayer is not constructed by the plugin!");
+        }
+
+        if (fileName == null) {
+            show((BedWarsPlayer) player, null);
+        } else {
+            show((BedWarsPlayer) player, new DummyStore(fileName, null));
+        }
+    }
+
+    @Override
+    public OpenShopEvent.@Nullable Result tryOpenStore(@NotNull BWPlayer player, OpenShopEvent.@NotNull StoreLike gameStore) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("This BWPlayer is not constructed by the plugin!");
+        }
+
+        var game = ((BedWarsPlayer) player).getGame();
+
+        if (game == null) {
+            return null;
+        }
+
+        var openShopEvent = new OpenShopEventImpl(game, null, (BedWarsPlayer) player, gameStore);
+
+        if (
+            game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_OPENING_STORES_OF_OTHER_TEAMS, false)
+            && gameStore.getTeam() != null
+            && gameStore.getTeam() != game.getPlayerTeam((BedWarsPlayer) player)
+        ) {
+            openShopEvent.setResult(OpenShopEvent.Result.DISALLOW_WRONG_TEAM);
+        }
+
+        EventManager.fire(openShopEvent);
+
+        if (openShopEvent.getResult() != OpenShopEvent.Result.ALLOW) {
+            return openShopEvent.getResult();
+        }
+
+        show((BedWarsPlayer) player, gameStore);
+        return OpenShopEvent.Result.ALLOW;
+    }
+
+    @Override
+    public OpenShopEvent.@Nullable Result tryOpenCustomStore(@NotNull BWPlayer player, @Nullable String fileName) {
+        return tryOpenStore(player, new DummyStore(fileName, null));
+    }
+
+    @Data
+    public static class DummyStore implements OpenShopEvent.StoreLike {
+        private final @Nullable String shopFile;
+        private final @Nullable TeamImpl team;
     }
 }

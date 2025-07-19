@@ -1430,7 +1430,12 @@ public class PlayerListener {
                 }
 
                 if (event.action() == PlayerBucketEvent.Action.EMPTY) {
-                    if (Server.isVersion(1, 13) && event.bucket().is("minecraft:water_bucket") && event.blockClicked().block().getBoolean("waterlogged") != null) {
+                    if (
+                        Server.isVersion(1, 13)
+                        && event.bucket().is("minecraft:water_bucket")
+                        && event.blockClicked().block().getBoolean("waterlogged") != null
+                        && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
+                    ) {
                         block = event.blockClicked();
                         game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
                         game.getRegion().addBuiltDuringGame(block.location());
@@ -1450,6 +1455,7 @@ public class PlayerListener {
                                 && event.bucket().is("minecraft:water_bucket")
                                 && event.blockClicked().block().getBoolean("waterlogged") != null
                                 && BedWarsPlugin.isBreakableBlock(Block.of("minecraft:water")) // Require breakable water
+                                && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
                         )
                     ) {
                         game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());

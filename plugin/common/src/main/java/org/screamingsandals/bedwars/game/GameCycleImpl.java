@@ -418,6 +418,9 @@ public class GameCycleImpl implements GameCycle {
             if (Server.isVersion(1, 15) && (!configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
                 game.getWorld().setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
             }
+            if (Server.isVersion(1, 21, 6) && MainConfig.getInstance().node("disable-locator-bars-in-arena-worlds").getBoolean(true)) {
+                game.getWorld().setGameRuleValue(GameRuleType.of("locatorBar"), false);
+            }
 
             game.setPreparing(false);
 

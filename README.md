@@ -5,11 +5,11 @@
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
 [![Spigot](https://img.shields.io/spiget/downloads/63714)](https://www.spigotmc.org/resources/screaming-bedwars-1-9-4-1-17-1.63714/)
 
-**If you are using version 0.2.x (which you probably are), you are probably looking for the [ver/0.2.x](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x) branch instead.**
+**If you are using version 0.2.x (which you probably are), you are probably looking for the [ver/0.2.x](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x) branch instead. This version of readme does NOT apply to 0.2.x!**
 
-Flexible BedWars plugin formerly coded as a replacement for BedwarsRel.
+A highly flexible BedWars plugin with wide Minecraft version support, originally inspired by BedwarsRel.
 
-Supported versions: \[1.8.8 - 1.21.1\]. Recommended version: \[1.21.1\]
+Supported versions: \[1.8.8 - 1.21.8\]. Recommended version: \[1.21.8\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
@@ -37,4 +37,24 @@ If you have found any bug, feel free to report it into [Issues](https://github.c
 -   Resource Spawners (you can have as much as you want)
 -   Player statistics
 -   In fact everything is customizable
--   And many more useful features..
+-   And many more useful features.
+
+## Compiling
+
+This project uses **Gradle** and requires **JDK 11** or newer. To build it, clone the repository and run:
+
+```bash
+./gradlew clean build
+```
+
+On Windows, use:
+
+```bat
+gradlew.bat clean build
+```
+
+The compiled JAR file will be located in the `plugin/{platform}/build/libs` directory (e.g. `plugin/bukkit/build/libs`).
+
+## License
+
+This project is licensed under the **GNU Lesser General Public License v3.0** License - see the [LICENSE](LICENSE) file for details.

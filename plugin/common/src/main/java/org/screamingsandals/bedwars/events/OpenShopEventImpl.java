@@ -35,7 +35,7 @@ public class OpenShopEventImpl implements OpenShopEvent, Event {
     @Nullable
     private final Entity entity;
     private final BedWarsPlayer player;
-    private final GameStoreImpl gameStore;
+    private final StoreLike gameStore;
     @NotNull
     private OpenShopEvent.Result result = OpenShopEvent.Result.ALLOW;
 }

@@ -20,11 +20,12 @@ dependencies {
 }
 
 runTestServer {
-    pluginJar(tasks.shadowJar.get().archiveFile)
+    pluginJar(tasks.shadowJar.flatMap { it.archiveFile })
 
     versions(
         org.screamingsandals.gradle.run.config.Platform.PAPER,
         listOf(
+            "1.21.8",
             "1.21.4",
             "1.21.3",
             "1.21.1",
