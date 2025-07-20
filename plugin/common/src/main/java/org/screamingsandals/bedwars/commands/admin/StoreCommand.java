@@ -22,7 +22,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.entity.type.EntityType;
@@ -350,6 +352,84 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_RESET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                );
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("linked-team")
+                        .literal("set")
+                        .argument(StringArgument
+                                .<CommandSender>newBuilder("team")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game"))
+                                                .getTeams()
+                                                .stream()
+                                                .map(TeamImpl::getName)
+                                                .collect(Collectors.toList());
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            var loc = sender.as(Player.class).getLocation();
+
+                            var team = game.getTeamFromName(commandContext.get("team"));
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setTeam(team);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_TEAM_SET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                                .placeholder("team", team.getName())
+                                );
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("linked-team")
+                        .literal("reset")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            var loc = sender.as(Player.class).getLocation();
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setTeam(null);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_TEAM_RESET)
                                                 .defaultPrefix()
                                                 .placeholder("x", loc.getX(), 2)
                                                 .placeholder("y", loc.getY(), 2)

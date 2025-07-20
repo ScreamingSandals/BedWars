@@ -325,6 +325,15 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                                         )
                                         .send(sender);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_TEAM)
+                                        .placeholder("team",
+                                                store.getTeam() != null
+                                                        ? Component.text(store.getTeam().getName(), store.getTeam().getColor().getTextColor())
+                                                        : Message.of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_NO_TEAM).asComponent(sender)
+
+                                        )
+                                        .send(sender);
                             });
                         })
         );

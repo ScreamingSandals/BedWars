@@ -113,6 +113,7 @@ public class DumpCommand extends BaseCommand {
                                                                     "edition", "free"
                                                             ),
                                                             "server", Map.of(
+                                                                    "impl", Server.getServerSoftwareName(),
                                                                     "version", Server.getServerSoftwareVersion(),
                                                                     "javaVersion", System.getProperty("java.version"),
                                                                     "os", System.getProperty("os.name")
@@ -322,7 +323,7 @@ public class DumpCommand extends BaseCommand {
                                                         .POST(HttpRequest.BodyPublishers.ofString(textBuilder.toString())).build(), HttpResponse.BodyHandlers.ofString())
                                                 .thenAccept(stringHttpResponse -> {
                                                     if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
-                                                        var location = stringHttpResponse.headers().firstValue("Location");
+                                                        var location = stringHttpResponse.headers().firstValue("Location").orElseThrow();
                                                         org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
                                                                 .defaultPrefix()
                                                                 .placeholder("dump", Component

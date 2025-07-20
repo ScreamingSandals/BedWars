@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
+import org.screamingsandals.bedwars.api.game.StoreManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
@@ -438,6 +439,11 @@ public class BedWarsPlugin implements BedwarsAPI {
     @Override
     public EntitiesManagerImpl getEntitiesManager() {
         return EntitiesManagerImpl.getInstance();
+    }
+
+    @Override
+    public @NotNull ShopInventory getStoreManager() {
+        return ShopInventory.getInstance();
     }
 
     @Override

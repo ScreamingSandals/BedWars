@@ -50,21 +50,16 @@ import java.util.Optional;
 public class GameStoreImpl implements GameStore, SerializableGameComponent {
     private static final EntityType VILLAGER = EntityType.of("villager");
 
-    @NotNull
-    private final Location storeLocation;
-    @Nullable
-    private String shopFile = null;
-    @Nullable
-    private String shopCustomName = null;
-    @Nullable
-    private LivingEntity entity;
+    private final @NotNull Location storeLocation;
+    private @Nullable String shopFile = null;
+    private @Nullable String shopCustomName = null;
+    private @Nullable LivingEntity entity;
     @Getter
-    private NPC npc;
-    @NotNull
-    private EntityType entityType = VILLAGER;
+    private @Nullable NPC npc;
+    private @NotNull EntityType entityType = VILLAGER;
     private boolean isBaby = false;
-    @Nullable
-    private String skinName = null;
+    private @Nullable String skinName = null;
+    private @Nullable TeamImpl team;
 
     public GameStoreImpl(@NotNull Location storeLocation) {
         this.storeLocation = storeLocation;
@@ -164,6 +159,7 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
         }
         node.node("isBaby").set(isBaby ? "true" : "false");
         node.node("skin").set(skinName);
+        node.node("team").set(team != null ? team.getName() : null);
     }
 
     public static class Loader implements SerializableGameComponentLoader<GameStoreImpl> {
@@ -183,6 +179,7 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
                 store.setShopCustomName(oldStr != null ? oldStr : node.node("custom-name").getString());
                 store.setBaby(node.node("isBaby").getBoolean());
                 store.setSkinName(node.node("skin").getString());
+                store.setTeam(game.getTeamFromName(node.node("team").getString()));
                 return Optional.of(store);
             } else {
                 return Optional.of(new GameStoreImpl(Locations.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.getString())))));

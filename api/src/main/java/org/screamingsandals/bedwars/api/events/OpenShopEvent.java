@@ -20,8 +20,10 @@
 package org.screamingsandals.bedwars.api.events;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
@@ -38,7 +40,13 @@ public interface OpenShopEvent extends BWCancellable {
 
     BWPlayer getPlayer();
 
-    GameStore getGameStore();
+    /**
+     * An object representing an opened store. Can be an instance of {@link GameStore} if opened using an entity.
+     *
+     * @return opened store
+     * @since 0.3.0
+     */
+    @NotNull StoreLike getGameStore();
 
     Result getResult();
 
@@ -56,11 +64,31 @@ public interface OpenShopEvent extends BWCancellable {
         setResult(cancelled ? Result.DISALLOW_UNKNOWN : Result.ALLOW);
     }
 
+    /**
+     * An interface representing a store.
+     *
+     * @since 0.3.0
+     */
+    interface StoreLike {
+        /**
+         * @return shop file
+         * @since 0.3.0
+         */
+        @Nullable String getShopFile();
+
+        /**
+         * @return team linked to the store or null
+         * @since 0.3.0
+         */
+        @Nullable Team getTeam();
+    }
+
     enum Result {
         ALLOW,
         DISALLOW_THIRD_PARTY_SHOP,
         DISALLOW_LOCKED_FOR_THIS_PLAYER,
-        DISALLOW_UNKNOWN;
+        DISALLOW_UNKNOWN,
+        DISALLOW_WRONG_TEAM;
     }
 
     static void handle(Object plugin, Consumer<OpenShopEvent> consumer) {

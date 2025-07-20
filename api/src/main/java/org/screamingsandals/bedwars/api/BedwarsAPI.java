@@ -20,10 +20,12 @@
 package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.GroupManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.api.game.StoreManager;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
@@ -73,6 +75,13 @@ public interface BedwarsAPI {
      * @return the entities manager instance
      */
     EntitiesManager getEntitiesManager();
+
+    /**
+     * <p>Retrieves the store manager instance.</p>
+     *
+     * @return the store manager instance
+     */
+    @NotNull StoreManager getStoreManager();
 
     /**
      * @return Event utils used for registering handlers for bedwars' events
@@ -127,6 +136,9 @@ public interface BedwarsAPI {
         return Internal.bedwarsAPI;
     }
 
+    /**
+     * @hidden
+     */
     @ApiStatus.Internal
     class Internal {
         protected static BedwarsAPI bedwarsAPI;

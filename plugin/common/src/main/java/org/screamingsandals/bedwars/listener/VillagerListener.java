@@ -20,6 +20,9 @@
 package org.screamingsandals.bedwars.listener;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.OpenShopEventImpl;
@@ -29,7 +32,6 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
@@ -42,11 +44,11 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 @RequiredArgsConstructor
 public class VillagerListener {
-    private final PlayerManagerImpl playerManager;
-    private final ShopInventory shopInventory;
+    private final @NotNull PlayerManagerImpl playerManager;
+    private final @NotNull ShopInventory shopInventory;
 
     @OnEvent
-    public void onVillagerInteract(PlayerInteractEntityEvent event) {
+    public void onVillagerInteract(@NotNull PlayerInteractEntityEvent event) {
         final var player = event.player();
 
         if (playerManager.isPlayerInGame(player)) {
@@ -68,7 +70,7 @@ public class VillagerListener {
     }
 
     @OnEvent
-    public void onNPCInteract(NPCInteractEvent event) {
+    public void onNPCInteract(@NotNull NPCInteractEvent event) {
         if (playerManager.isPlayerInGame(event.player())) {
             var gPlayer = playerManager.getPlayer(event.player()).orElseThrow();
             var game = gPlayer.getGame();
@@ -83,8 +85,17 @@ public class VillagerListener {
         }
     }
 
-    public void open(GameStoreImpl store, BedWarsPlayer player, Entity clickedEntity, GameImpl game) {
+    public void open(@NotNull GameStoreImpl store, @NotNull BedWarsPlayer player, @Nullable Entity clickedEntity, @NotNull GameImpl game) {
         var openShopEvent = new OpenShopEventImpl(game, clickedEntity, player, store);
+
+        if (
+            game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_OPENING_STORES_OF_OTHER_TEAMS, false)
+            && store.getTeam() != null
+            && store.getTeam() != game.getPlayerTeam(player)
+        ) {
+            openShopEvent.setResult(OpenShopEvent.Result.DISALLOW_WRONG_TEAM);
+        }
+
         EventManager.fire(openShopEvent);
 
         if (openShopEvent.getResult() != OpenShopEvent.Result.ALLOW) {

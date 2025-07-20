@@ -1032,7 +1032,7 @@ public class PlayerListener {
                                         event.cancelled(true);
                                         var cake = clickedBlock.block();
                                         if ("0".equals(cake.get("bites"))) {
-                                            game.getRegion().putOriginalBlock(clickedBlock.location(), clickedBlock.blockSnapshot());
+                                            game.getRegion().putOriginalBlockIfAbsent(clickedBlock.location(), clickedBlock.blockSnapshot());
                                         }
                                         var bites = Objects.requireNonNullElse(cake.getInt("bites"), 0) + 1;
                                         cake = cake.with("bites", String.valueOf(bites));
@@ -1430,9 +1430,14 @@ public class PlayerListener {
                 }
 
                 if (event.action() == PlayerBucketEvent.Action.EMPTY) {
-                    if (Server.isVersion(1, 13) && event.bucket().is("minecraft:water_bucket") && event.blockClicked().block().getBoolean("waterlogged") != null) {
+                    if (
+                        Server.isVersion(1, 13)
+                        && event.bucket().is("minecraft:water_bucket")
+                        && event.blockClicked().block().getBoolean("waterlogged") != null
+                        && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
+                    ) {
                         block = event.blockClicked();
-                        game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                        game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
                         game.getRegion().addBuiltDuringGame(block.location());
                         Debug.info(player.getName() + " placed liquid");
                     } else if (block.block().isAir()) {
@@ -1450,9 +1455,10 @@ public class PlayerListener {
                                 && event.bucket().is("minecraft:water_bucket")
                                 && event.blockClicked().block().getBoolean("waterlogged") != null
                                 && BedWarsPlugin.isBreakableBlock(Block.of("minecraft:water")) // Require breakable water
+                                && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
                         )
                     ) {
-                        game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                        game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
                         game.getRegion().addBuiltDuringGame(block.location());
                         Debug.info(player.getName() + " broken liquid");
                     } else {
