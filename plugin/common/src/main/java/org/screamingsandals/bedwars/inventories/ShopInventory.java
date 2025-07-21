@@ -33,7 +33,6 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
-import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -618,7 +617,7 @@ public class ShopInventory implements StoreManager {
 
                     var teamUpgrade = team.getUpgrade(upgradeName);
                     if (teamUpgrade == null) {
-                        logger.warn("Upgrade configuration is invalid, team upgrade name is not registered!");
+                        logger.warn("Upgrade configuration is invalid, team upgrade name {} is not registered!", upgradeName);
                         return;
                     }
 
@@ -645,6 +644,7 @@ public class ShopInventory implements StoreManager {
 
                     if (changeEvent.isCancelled()) {
                         teamUpgrade.setLevel(level);
+                        // TODO: error message
                         return;
                     }
 
@@ -655,6 +655,7 @@ public class ShopInventory implements StoreManager {
                     EventManager.fire(changedEvent);
                 }
 
+                // TODO: refactor the rest to the new API
                 var upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
                 if (upgradeStorage != null) {
 

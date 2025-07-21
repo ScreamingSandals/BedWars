@@ -131,18 +131,29 @@ upgrades:
     type: enchantment
     enchantment: minecraft:sharpness
     max-level: 1
+    apply-to:
+      - "#minecraft:swords"
   knockback:
     type: enchantment
     enchantment: minecraft:knockback
     max-level: 1
+    apply-to:
+      - "#minecraft:swords"
   efficiency:
     type: enchantment
     enchantment: minecraft:efficiency
     max-level: 2
+    apply-to:
+      - "#minecraft:pickaxes"
   protection:
     type: enchantment
     enchantment: minecraft:protection
     max-level: 4
+    apply-to:
+      - "#minecraft:head_armor"
+      - "#minecraft:foot_armor"
+      - "#minecraft:chest_armor"
+      - "#minecraft:leg_armor"
 
 # TODO: prefabs (already done shops with skin, shop file etc.)
 prefabs:

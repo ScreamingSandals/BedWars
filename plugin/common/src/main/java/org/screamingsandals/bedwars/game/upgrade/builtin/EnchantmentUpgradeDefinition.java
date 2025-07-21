@@ -29,16 +29,18 @@ import org.screamingsandals.lib.item.meta.EnchantmentType;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
-import java.util.Objects;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
 public class EnchantmentUpgradeDefinition implements BuiltInUpgradeDefinition {
     private static final @NotNull String ENCHANTMENT_KEY = "enchantment";
     private static final @NotNull String MAX_LEVEL_KEY = "max-level";
+    private static final @NotNull String APPLY_TO_KEY = "apply-to";
 
     private final @NotNull EnchantmentType type;
     private final int maxLevel;
+    private final @NotNull List<@NotNull String> applyTo;
 
     @Override
     public double getInitialLevel() {
@@ -60,9 +62,20 @@ public class EnchantmentUpgradeDefinition implements BuiltInUpgradeDefinition {
 
         @Override
         public @NotNull EnchantmentUpgradeDefinition load(@NotNull ConfigurationNode node) throws ConfigurateException {
+            var enchantmentName = node.node(ENCHANTMENT_KEY).get(String.class);
+            if (enchantmentName == null) {
+                throw new ConfigurateException("Missing enchantment type on upgrade");
+            }
+
+            var list = node.node(APPLY_TO_KEY).getList(String.class);
+            if (list == null) {
+                throw new ConfigurateException("Missing " + APPLY_TO_KEY + " list for enchantment upgrade " + enchantmentName);
+            }
+
             return new EnchantmentUpgradeDefinition(
-                EnchantmentType.of(Objects.requireNonNull(node.node(ENCHANTMENT_KEY).get(String.class))),
-                node.node(MAX_LEVEL_KEY).getInt(1)
+                EnchantmentType.of(enchantmentName),
+                node.node(MAX_LEVEL_KEY).getInt(1),
+                list
             );
         }
     }
