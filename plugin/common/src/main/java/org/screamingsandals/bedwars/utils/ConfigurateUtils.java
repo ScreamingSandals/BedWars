@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.lib.configurate.SLibSerializers;
 import org.screamingsandals.lib.utils.config.ConfigurationLoaderBuilderSupplier;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -59,6 +60,7 @@ public class ConfigurateUtils {
         return configurationLoaderBuilder
                 .get()
                 .file(file)
+                .defaultOptions(options -> options.serializers(SLibSerializers::appendSerializers))
                 .build();
     }
 }

@@ -154,6 +154,53 @@ upgrades:
       - "#minecraft:foot_armor"
       - "#minecraft:chest_armor"
       - "#minecraft:leg_armor"
+  healpool:
+    type: trap
+    name: Healpool
+    detection-range: 7
+    effects:
+      - effect: minecraft:regeneration
+        duration: 30
+        amplifier: 1
+    enemies: false
+    team: true
+    singular-use: false
+  blindtrap:
+    type: trap
+    name: Blindtrap
+    detection-range: 7
+    effects:
+      - effect: minecraft:regeneration
+        duration: 30
+        amplifier: 1
+    enemies: true
+    team: false
+    singular-use: true
+    message: "@in_game.trap.blind_trap_triggered.message"
+    team-title: "@in_game.trap.blind_trap_triggered.title"
+    team-subtitle: "@in_game.trap.blind_trap_triggered.subtitle"
+    trigger-sound:
+      name: entity.ender_dragon.growl
+      pitch: 1
+      volume: 1
+  minertrap:
+    type: trap
+    name: Minertrap
+    detection-range: 7
+    effects:
+      - effect: minecraft:mining_fatigue
+        duration: 200
+        amplifier: 2
+    enemies: true
+    team: false
+    singular-use: true
+    message: "@in_game.trap.miner_trap_triggered.message"
+    team-title: "@in_game.trap.miner_trap_triggered.title"
+    team-subtitle: "@in_game.trap.miner_trap_triggered.subtitle"
+    trigger-sound:
+      name: entity.ender_dragon.growl
+      pitch: 1
+      volume: 1
 
 # TODO: prefabs (already done shops with skin, shop file etc.)
 prefabs:

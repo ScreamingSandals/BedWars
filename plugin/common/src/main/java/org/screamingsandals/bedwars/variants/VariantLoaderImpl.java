@@ -26,6 +26,7 @@ import org.screamingsandals.bedwars.api.variants.VariantLoader;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.game.upgrade.builtin.BuiltInUpgradeDefinition;
 import org.screamingsandals.bedwars.game.upgrade.builtin.EnchantmentUpgradeDefinition;
+import org.screamingsandals.bedwars.game.upgrade.builtin.TrapUpgradeDefinition;
 import org.screamingsandals.bedwars.utils.ConfigurateUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.prefab.CommandPrefab;
@@ -112,6 +113,9 @@ public class VariantLoaderImpl implements VariantLoader {
                         switch (upgradeType) {
                             case "enchantment":
                                 definition = EnchantmentUpgradeDefinition.Loader.INSTANCE.load(node);
+                                break;
+                            case "trap":
+                                definition = TrapUpgradeDefinition.Loader.INSTANCE.load(node);
                                 break;
                             default:
                                 logger.error("Unknown built-in upgrade type: {}", upgradeType);

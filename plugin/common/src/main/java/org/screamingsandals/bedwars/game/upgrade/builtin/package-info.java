@@ -18,7 +18,8 @@
  */
 
 @Init(services = {
-        EnchantmentUpgradeHandler.class
+        EnchantmentUpgradeHandler.class,
+        TrapEffectUpgradeHandler.class
 })
 package org.screamingsandals.bedwars.game.upgrade.builtin;
 

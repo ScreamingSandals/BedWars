@@ -580,6 +580,7 @@ public class ShopInventory implements StoreManager {
         var itemInfo = event.getItem();
 
         // TODO: multi-price feature
+        // TODO: dynamic prices required for enchant upgrades
         var price = event.getPrices().get(0);
         ItemSpawnerTypeImpl type = game.getGameVariant().getItemSpawnerType(price.getCurrency());
 

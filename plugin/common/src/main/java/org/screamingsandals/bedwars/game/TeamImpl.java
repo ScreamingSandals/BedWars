@@ -31,6 +31,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.target.AExpirableTarget;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.game.upgrade.UpgradableImpl;
+import org.screamingsandals.bedwars.game.upgrade.builtin.TrapUpgradeDefinition;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.api.types.server.LocationHolder;
@@ -75,6 +76,7 @@ public class TeamImpl extends UpgradableImpl implements Team {
     private Hologram protectHologram;
     private final Random randomSpawn = new Random();
     private boolean forced = false;
+    private final @NotNull List<@NotNull TrapUpgradeDefinition> traps = new ArrayList<>();
 
     public void start() {
         if (started) {
@@ -161,6 +163,7 @@ public class TeamImpl extends UpgradableImpl implements Team {
         this.teamChestInventory = Objects.requireNonNull(ContainerFactory.createContainer(InventoryType.of("ender_chest"), message));
         syncBuiltInUpgrades(game.getGameVariant().getUpgrades());
         resetUpgrades();
+        this.traps.clear();
         this.started = true;
     }
 
@@ -183,6 +186,7 @@ public class TeamImpl extends UpgradableImpl implements Team {
         chests.clear();
         players.clear();
         teamMembers.clear();
+        this.traps.clear();
         started = false;
         forced = false;
     }

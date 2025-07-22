@@ -20,11 +20,13 @@
 package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameCycle;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.target.TargetBlock;
 import org.screamingsandals.bedwars.boss.BossBarImpl;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
@@ -48,6 +50,7 @@ import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.utils.TitleUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.item.meta.PotionEffectType;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
@@ -56,6 +59,7 @@ import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
+import org.screamingsandals.lib.world.Location;
 import org.screamingsandals.lib.world.gamerule.GameRuleType;
 
 import java.util.ArrayList;
@@ -158,6 +162,7 @@ public class GameCycleImpl implements GameCycle {
     private void tickRunningGame(GameChangedStatusEventImpl statusE, GameTickEventImpl tick) {
         var runningTeams = game.getTeamsAlive();
         updateExpirableTargetBlocks(runningTeams);
+        processTraps(runningTeams);
 
         var players = game.getPlayers();
         var teamsInGame = game.getTeamsInGame();
@@ -327,6 +332,74 @@ public class GameCycleImpl implements GameCycle {
                         .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
                         .times(TitleUtils.defaultTimes())
                         .title(t.getTeam().getPlayers());
+            }
+        }
+    }
+
+    private void processTraps(@NotNull List<@NotNull TeamImpl> teams) {
+        for (var team : teams) {
+            var target = team.getTarget();
+            Location location;
+            if (target instanceof TargetBlock) {
+                location = ((TargetBlock) target).getTargetBlock().as(Location.class);
+            } else {
+                // this team does not have locatable target, we have to use one of the spawns
+                location = team.getTeamSpawns().get(0);
+            }
+
+            for (var trap : List.copyOf(team.getTraps())) {
+                var squared = trap.getDetectionRange() * trap.getDetectionRange();
+
+                var stream = game.getConnectedPlayers().stream()
+                        .filter(player -> !player.isSpectator());
+                if (trap.isEnemies() && !trap.isTeam()) {
+                    stream = stream.filter(player -> !team.isPlayerInTeam(player));
+                } else if (!trap.isEnemies() && trap.isTeam()) {
+                    stream = stream.filter(team::isPlayerInTeam);
+                }
+                stream.filter(player -> location.getDistanceSquared(player.getLocation()) <= squared)
+                        .forEach(player -> {
+                            var event = new TrapTriggeredEventImpl(game, player, team, trap.getEffects(), trap.isTeam(), trap.isEnemies(), trap.isSingularUse(), trap.getDetectionRange());
+                            EventManager.fire(event);
+
+                            if (event.cancelled()) {
+                                return;
+                            }
+
+                            player.addPotionEffects(trap.getEffects());
+
+                            if (trap.isSingularUse()) {
+                                team.getTraps().remove(trap);
+                            }
+
+                            // TODO: invisible players? removing invisibility?
+
+                            if (trap.getName() != null) {
+                                if (trap.getMessage() != null) {
+                                    player.sendMessage(
+                                            Message.ofRichText(trap.getMessage())
+                                                    .prefix(game.getCustomPrefixComponent())
+                                                    .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
+                                                    .placeholder("trap", trap.getName())
+                                    );
+                                }
+
+                                if (trap.getTeamTitle() != null) {
+                                    var title = Message
+                                            .ofRichText(trap.getTeamTitle())
+                                            .joinRichText(trap.getTeamSubtitle() != null ? trap.getTeamSubtitle() : "")
+                                            .placeholder("trap", trap.getName())
+                                            .times(TitleUtils.defaultTimes());
+
+                                    team.getPlayers().forEach(pl -> pl.showTitle(title));
+                                }
+
+                                var triggerSound = trap.getTriggerSound();
+                                if (triggerSound != null) {
+                                    team.getPlayers().forEach(pl -> pl.playSound(triggerSound));
+                                }
+                            }
+                        });
             }
         }
     }
