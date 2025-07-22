@@ -22,6 +22,9 @@ package org.screamingsandals.bedwars.api.game.upgrade;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Map;
 
 /**
  * EXPERIMENTAL: Upgrade API is subject to change.
@@ -76,4 +79,12 @@ public interface Upgradable {
      * @since 0.3.0
      */
     @Nullable Upgrade getUpgrade(@NotNull String name);
+
+    /**
+     * Gets all registered upgrades.
+     *
+     * @return all upgrades on this object
+     * @since 0.3.0
+     */
+     @Unmodifiable @NotNull Map<@NotNull String, @NotNull Upgrade> getUpgrades();
 }

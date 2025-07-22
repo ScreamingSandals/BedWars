@@ -21,7 +21,9 @@ package org.screamingsandals.bedwars.game.upgrade;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.screamingsandals.bedwars.api.game.upgrade.Upgradable;
+import org.screamingsandals.bedwars.api.game.upgrade.Upgrade;
 import org.screamingsandals.bedwars.game.upgrade.builtin.BuiltInUpgradeDefinition;
 
 import java.util.HashMap;
@@ -46,6 +48,11 @@ public class UpgradableImpl implements Upgradable {
     @Override
     public @Nullable UpgradeImpl getUpgrade(@NotNull String name) {
         return teamUpgrades.get(name);
+    }
+
+    @Override
+    public @Unmodifiable @NotNull Map<@NotNull String, @NotNull Upgrade> getUpgrades() {
+        return Map.copyOf(teamUpgrades);
     }
 
     protected void syncBuiltInUpgrades(@NotNull Map<@NotNull String, BuiltInUpgradeDefinition> upgrades) {

@@ -72,8 +72,13 @@ public class EnchantmentUpgradeDefinition implements BuiltInUpgradeDefinition {
                 throw new ConfigurateException("Missing " + APPLY_TO_KEY + " list for enchantment upgrade " + enchantmentName);
             }
 
+            var type = EnchantmentType.ofNullable(enchantmentName);
+            if (type == null) {
+                throw new ConfigurateException("Invalid enchantment " + enchantmentName);
+            }
+
             return new EnchantmentUpgradeDefinition(
-                EnchantmentType.of(enchantmentName),
+                type,
                 node.node(MAX_LEVEL_KEY).getInt(1),
                 list
             );
