@@ -17,18 +17,22 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.variants.prefab;
+package org.screamingsandals.bedwars.game.upgrade.builtin;
 
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.player.Player;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.game.upgrade.Upgradable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
-public interface Prefab {
-    void place(@NotNull Game game, @NotNull Player player);
+public interface BuiltInUpgradeDefinition {
+    double getInitialLevel();
 
-    interface Loader<T extends Prefab> {
+    @Nullable Double getMaximalLevel();
+
+    boolean isApplicable(@NotNull Upgradable upgradable);
+
+    interface Loader<T extends BuiltInUpgradeDefinition> {
         @NotNull T load(@NotNull ConfigurationNode node) throws ConfigurateException;
     }
 }

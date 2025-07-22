@@ -19,12 +19,15 @@
 
 package org.screamingsandals.bedwars.api.upgrades;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 
 /**
- * @author ScreamingSandals
+ * EXPERIMENTAL: Upgrade API is subject to change.
  *
+ * @author ScreamingSandals
  */
+@ApiStatus.Experimental
 public interface Upgrade {
 	
 	/**

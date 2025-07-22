@@ -55,7 +55,7 @@ public class CommandPrefab implements Prefab {
         public static final @NotNull Loader INSTANCE = new Loader();
 
         @Override
-        public @NotNull Prefab load(@NotNull ConfigurationNode node) throws ConfigurateException {
+        public @NotNull CommandPrefab load(@NotNull ConfigurationNode node) throws ConfigurateException {
             return new CommandPrefab(Objects.requireNonNull(node.node(COMMANDS_KEY).getList(String.class)));
         }
     }

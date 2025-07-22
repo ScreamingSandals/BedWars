@@ -22,20 +22,31 @@ data:
   - stack: "IRON_CHESTPLATE;1;Protection;Click here to get more resistance to damage!"
     column: 2
     price: 4 of diamond
-    properties: protection
+    properties:
+      upgrade:
+        entities:
+          - type: team
+            upgrade-name: protection
 
   - stack: "IRON_SWORD;1;Sharpness;Kill players quicker!."
     column: 1
     price: 4 of diamond
-    properties: sharpness
+    properties:
+      upgrade:
+        entities:
+          - type: team
+            upgrade-name: sharpness
 
   - stack: "GOLDEN_PICKAXE;1;Efficiency;Break Blocks quicker!."
     price: 4 of diamond
     column: 3
-    properties: efficiency
+    properties:
+      upgrade:
+        entities:
+          - type: team
+            upgrade-name: efficiency
 
-  - price: 4
-    price-type: iron
+  - price: 4 of iron
     stack:
       type: FURNACE
       amount: 1
@@ -45,7 +56,11 @@ data:
   - stack: "BEACON;1;§bHeal Pool;§7Triggers a pool around the base that heals you!"
     column: 5
     row: 1
-    properties: healpool
+    properties:
+      upgrade:
+        entities:
+          - type: team
+            upgrade-name: healpool
     price: 8 of diamond
 
   - stack: "DRAGON_EGG;1;Ender Dragon;Get A Bonus Dragon when Dragons get summoned!"
@@ -57,7 +72,11 @@ data:
     items:
       - price: 2 of diamond
         skip: 1
-        properties: blindtrap
+        properties:
+          upgrade:
+            entities:
+              - type: team
+                upgrade-name: blindtrap
         stack:
           type: STRING
           display-name: "§bBlindess trap"
@@ -67,7 +86,11 @@ data:
 
       - price: 2 of diamond
         skip: 1
-        properties: minertrap
+        properties:
+          upgrade:
+            entities:
+              - type: team
+                upgrade-name: minertrap
         stack:
           type: STRING
           display-name: "§bMining Fatigue trap"

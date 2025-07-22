@@ -17,18 +17,28 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.variants.prefab;
+package org.screamingsandals.bedwars.game.upgrade;
 
-import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.player.Player;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.game.upgrade.Upgrade;
 
-public interface Prefab {
-    void place(@NotNull Game game, @NotNull Player player);
+@RequiredArgsConstructor
+@Getter
+public class UpgradeImpl implements Upgrade {
+    private final double initialLevel;
+    private final @Nullable Double maximalLevel;
+    @Setter
+    private double level;
 
-    interface Loader<T extends Prefab> {
-        @NotNull T load(@NotNull ConfigurationNode node) throws ConfigurateException;
+    public void reset() {
+        this.level = this.initialLevel;
+    }
+
+    @Override
+    public void increaseLevel(double level) {
+        setLevel(this.level + level);
     }
 }

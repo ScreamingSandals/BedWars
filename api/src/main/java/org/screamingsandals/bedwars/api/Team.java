@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.api;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnknownNullability;
 import org.screamingsandals.bedwars.api.game.LocalGame;
+import org.screamingsandals.bedwars.api.game.upgrade.Upgradable;
 import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.api.types.server.ContainerHolder;
@@ -35,7 +36,7 @@ import java.util.List;
  * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface Team {
+public interface Team extends Upgradable {
     /**
      * <p>Gets the team's current game.</p>
      *
