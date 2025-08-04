@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
+import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.game.StoreManager;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
@@ -679,10 +680,42 @@ public class ShopInventory implements StoreManager {
                         String customName = spawnerNameNode.getString();
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else if (!spawnerTypeNode.empty()) {
-                        String mapSpawnerType = spawnerTypeNode.getString();
-                        ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                        List<ItemSpawnerType> types = new ArrayList<>();
+                        if (spawnerTypeNode.isList()) {
+                            for (var child : spawnerTypeNode.childrenList()) {
+                                String mapSpawnerType = child.getString();
+                                ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                                types.add(spawnerType);
 
-                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                                upgrades.addAll(upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType));
+                            }
+                        } else {
+                            String mapSpawnerType = spawnerTypeNode.getString();
+                            ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                            types.add(spawnerType);
+
+                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                        }
+
+                        if (upgrades.isEmpty() && entity.node("auto-discover-spawners-if-not-linked").getBoolean()) {
+                            for (var spawnerType : types) {
+                                double closestDistance = Double.MAX_VALUE;
+                                ItemSpawner closestSpawner = null;
+                                for (var spawner : game.getItemSpawners()) {
+                                    if (spawner.getItemSpawnerType().toSpawnerType(game) == spawnerType) {
+                                        double distance = team.getRandomSpawn().getDistanceSquared(spawner.getLocation());
+                                        if (distance < closestDistance) {
+                                            closestDistance = distance;
+                                            closestSpawner = spawner;
+                                        }
+
+                                    }
+                                }
+                                if (closestSpawner != null) {
+                                    upgrades.add(closestSpawner);
+                                }
+                            }
+                        }
                     } else if (!teamUpgradeNode.empty()) {
                         boolean upgradeAllSpawnersInTeam = teamUpgradeNode.getBoolean();
 
