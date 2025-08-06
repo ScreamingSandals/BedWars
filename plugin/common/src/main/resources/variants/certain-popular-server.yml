@@ -202,11 +202,10 @@ upgrades:
       pitch: 1
       volume: 1
 
-# TODO: prefabs (already done shops with skin, shop file etc.)
 prefabs:
-  # Usage: /bw admin <arena> prefab upgradeShop
-  upgradeShop:
+  # Usage: /bw admin <arena> prefab upgrade-shop
+  upgrade-shop:
     type: command
     commands:
       - /bw admin %game% store add
-      - /bw admin %game% store file set certain-popular-server/upgradeShop.yml
+      - /bw admin %game% store file set certain-popular-server/upgrade-shop.yml

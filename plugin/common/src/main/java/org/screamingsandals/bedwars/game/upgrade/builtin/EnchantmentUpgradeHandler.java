@@ -58,7 +58,7 @@ public class EnchantmentUpgradeHandler {
             for (int i = 0; i < contents.length; i++) {
                 var item = contents[i];
 
-                if (!item.is(applyTo)) {
+                if (item == null || !item.is(applyTo)) {
                     continue;
                 }
 
@@ -100,7 +100,7 @@ public class EnchantmentUpgradeHandler {
                 for (int i = 0; i < contents.length; i++) {
                     var item = contents[i];
 
-                    if (!item.is(applyTo)) {
+                    if (item == null || !item.is(applyTo)) {
                         continue;
                     }
 
