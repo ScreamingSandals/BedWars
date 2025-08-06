@@ -28,12 +28,12 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
+import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.game.StoreManager;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
-import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -45,7 +45,6 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
-import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.event.EventManager;
@@ -62,6 +61,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
+import org.screamingsandals.lib.utils.logger.Logger;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
@@ -83,18 +83,19 @@ import java.util.stream.Collectors;
 })
 @RequiredArgsConstructor
 public class ShopInventory implements StoreManager {
-    private final Map<String, InventorySet> shopMap = new HashMap<>();
+    private final @NotNull Map<@NotNull String, InventorySet> shopMap = new HashMap<>();
     @DataFolder("shop")
-    private final Path shopFolder;
-    private final MainConfig mainConfig;
-    private final PlayerManagerImpl playerManager;
+    private final @NotNull Path shopFolder;
+    private final @NotNull MainConfig mainConfig;
+    private final @NotNull PlayerManagerImpl playerManager;
+    private final @NotNull Logger logger;
 
-    public static ShopInventory getInstance() {
+    public static @NotNull ShopInventory getInstance() {
         return ServiceManager.get(ShopInventory.class);
     }
 
     @OnPostEnable
-    public void onEnable(@DataFolder Path pluginFolder) {
+    public void onEnable(@DataFolder @NotNull Path pluginFolder) {
         try {
             // Only main shops are currently migrated to the new location!!!
             if (!Files.exists(shopFolder)) {
@@ -128,7 +129,7 @@ public class ShopInventory implements StoreManager {
         loadNewShop("default", null);
     }
 
-    public void show(BedWarsPlayer player, OpenShopEvent.@Nullable StoreLike store) {
+    public void show(@NotNull BedWarsPlayer player, OpenShopEvent.@Nullable StoreLike store) {
         try {
             String fileName = null;
             if (store != null) {
@@ -152,11 +153,11 @@ public class ShopInventory implements StoreManager {
             }
         } catch (Throwable throwable) {
             player.sendMessage(Component.text("[BW] Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord."));
-            throwable.printStackTrace();
+            logger.error("Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.", throwable);
         }
     }
 
-    public File normalizeShopFile(String name) {
+    public @NotNull File normalizeShopFile(@NotNull String name) {
         if (name.split("\\.").length > 1) {
             return shopFolder.resolve(name).toFile();
         }
@@ -168,7 +169,7 @@ public class ShopInventory implements StoreManager {
         return shopFolder.resolve(name + ".yml").toFile();
     }
 
-    public void onGeneratingItem(ItemRenderEvent event) {
+    public void onGeneratingItem(@NotNull ItemRenderEvent event) {
         var itemInfo = event.getItem();
         var item = itemInfo.getStack();
         var game = playerManager.getGameOfPlayer(event.getPlayer());
@@ -232,7 +233,7 @@ public class ShopInventory implements StoreManager {
         EventManager.fire(new PostPropertyScanEventImpl(event));
     }
 
-    public void onPreAction(PreClickEvent event) {
+    public void onPreAction(@NotNull PreClickEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -247,7 +248,7 @@ public class ShopInventory implements StoreManager {
         }
     }
 
-    public void onShopTransaction(OnTradeEvent event) {
+    public void onShopTransaction(@NotNull OnTradeEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -260,7 +261,7 @@ public class ShopInventory implements StoreManager {
     }
 
     @OnEvent
-    public void onApplyPropertyToBoughtItem(ApplyPropertyToItemEventImpl event) {
+    public void onApplyPropertyToBoughtItem(@NotNull ApplyPropertyToItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
                 || event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
             var player = event.getPlayer();
@@ -273,13 +274,13 @@ public class ShopInventory implements StoreManager {
     }
 
     @SneakyThrows
-    private void loadDefault(InventorySet inventorySet) {
+    private void loadDefault(@NotNull InventorySet inventorySet) {
         inventorySet.getMainSubInventory().dropContents();
         inventorySet.getMainSubInventory().getWaitingQueue().add(Include.of(Path.of(ShopInventory.class.getResource("/shop/shop.yml").toURI())));
         inventorySet.getMainSubInventory().process();
     }
 
-    private void loadNewShop(String name, File file) {
+    private void loadNewShop(@NotNull String name, @Nullable File file) {
         var inventorySet = SimpleInventoriesCore.builder()
                 .genericShop(true)
                 .genericShopPriceTypeRequired(true)
@@ -406,16 +407,14 @@ public class ShopInventory implements StoreManager {
         try {
             inventorySet.getMainSubInventory().process();
         } catch (Exception ex) {
-            Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);
-            Debug.warn("Check validity of your YAML/Groovy!", true);
-            ex.printStackTrace();
+            logger.warn("Wrong shop.yml/shop.groovy configuration! Check validity of your YAML/Groovy!", ex);
             loadDefault(inventorySet);
         }
 
         shopMap.put(name, inventorySet);
     }
 
-    private static Component getNameOrCustomNameOfItem(ItemStack item) {
+    private static @NotNull Component getNameOrCustomNameOfItem(@NotNull ItemStack item) {
         try {
             if (item.getDisplayName() != null) {
                 return item.getDisplayName();
@@ -433,7 +432,7 @@ public class ShopInventory implements StoreManager {
         return Component.fromLegacy(stringBuilder.toString().trim());
     }
 
-    private void handleBuy(OnTradeEvent event) {
+    private void handleBuy(@NotNull OnTradeEvent event) {
         var player = event.getPlayer();
         var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
         var clickType = event.getClickType();
@@ -575,12 +574,14 @@ public class ShopInventory implements StoreManager {
         }
     }
 
-    private void handleUpgrade(OnTradeEvent event) {
+    // TODO: refactor this method!!!!! It's full of bugs
+    private void handleUpgrade(@NotNull OnTradeEvent event) {
         var player = event.getPlayer().as(BedWarsPlayer.class);
         var game = player.getGame();
         var itemInfo = event.getItem();
 
         // TODO: multi-price feature
+        // TODO: dynamic prices required for enchant upgrades
         var price = event.getPrices().get(0);
         ItemSpawnerTypeImpl type = game.getGameVariant().getItemSpawnerType(price.getCurrency());
 
@@ -607,16 +608,65 @@ public class ShopInventory implements StoreManager {
                     return;
                 }
 
+                if ("team".equalsIgnoreCase(configuredType)) {
+                    var team = game.getTeamOfPlayer(player);
+                    var upgradeName = entity.node("upgrade-name").getString();
+                    var levels = entity.node("levels").getDouble(1);
+                    if (upgradeName == null) {
+                        logger.warn("Upgrade configuration is invalid, team upgrade name is missing!");
+                        return;
+                    }
+
+                    var teamUpgrade = team.getUpgrade(upgradeName);
+                    if (teamUpgrade == null) {
+                        logger.warn("Upgrade configuration is invalid, team upgrade name {} is not registered!", upgradeName);
+                        return;
+                    }
+
+                    /* You shouldn't use it in entities */
+                    itemName = entity.node("shop-name").getString(itemName);
+                    sendToAll = entity.node("notify-team").getBoolean(sendToAll);
+
+                    var maximalLevel = teamUpgrade.getMaximalLevel();
+                    if (maximalLevel != null && maximalLevel < levels + teamUpgrade.getLevel()) {
+                        Message.of(LangKeys.IN_GAME_SPAWNER_REACHED_MAXIMUM_LEVEL) // TODO: this is not actually a spawner, but a generic upgrade
+                                .prefixOrDefault(game.getCustomPrefixComponent())
+                                .placeholder("item", itemName)
+                                .placeholder("material", price + " " + type.getItemName())
+                                .placeholder("max_level", teamUpgrade.getMaximalLevel())
+                                .send(player);
+                        return;
+                    }
+
+                    var level = teamUpgrade.getLevel();
+                    teamUpgrade.increaseLevel(levels);
+
+                    var changeEvent = new UpgradeLevelChangeEventImpl(game, team, upgradeName, teamUpgrade, level, teamUpgrade.getLevel());
+                    EventManager.fire(changeEvent);
+
+                    if (changeEvent.isCancelled()) {
+                        teamUpgrade.setLevel(level);
+                        // TODO: error message
+                        return;
+                    }
+
+                    event.sellStack(materialItem);
+                    newLevel = changeEvent.getNewLevel();
+
+                    var changedEvent = new UpgradeLevelChangedEventImpl(game, team, upgradeName, teamUpgrade, level);
+                    EventManager.fire(changedEvent);
+                }
+
+                // TODO: refactor the rest to the new API
                 var upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
                 if (upgradeStorage != null) {
 
-                    // TODO: Learn SimpleGuiFormat upgrades pre-parsing and automatic renaming old
                     // variables
                     var team = game.getTeamOfPlayer(player);
                     double addLevels = entity.node("add-levels").getDouble(entity.node("levels").getDouble(0));
                     /* You shouldn't use it in entities */
                     itemName = entity.node("shop-name").getString(itemName);
-                    sendToAll = entity.node("notify-team").getBoolean();
+                    sendToAll = entity.node("notify-team").getBoolean(sendToAll);
                     maxLevel = entity.node("max-level").getDouble();
 
                     List<Upgrade> upgrades = new ArrayList<>();
@@ -630,10 +680,42 @@ public class ShopInventory implements StoreManager {
                         String customName = spawnerNameNode.getString();
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else if (!spawnerTypeNode.empty()) {
-                        String mapSpawnerType = spawnerTypeNode.getString();
-                        ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                        List<ItemSpawnerType> types = new ArrayList<>();
+                        if (spawnerTypeNode.isList()) {
+                            for (var child : spawnerTypeNode.childrenList()) {
+                                String mapSpawnerType = child.getString();
+                                ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                                types.add(spawnerType);
 
-                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                                upgrades.addAll(upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType));
+                            }
+                        } else {
+                            String mapSpawnerType = spawnerTypeNode.getString();
+                            ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
+                            types.add(spawnerType);
+
+                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                        }
+
+                        if (upgrades.isEmpty() && entity.node("auto-discover-spawners-if-not-linked").getBoolean()) {
+                            for (var spawnerType : types) {
+                                double closestDistance = Double.MAX_VALUE;
+                                ItemSpawner closestSpawner = null;
+                                for (var spawner : game.getItemSpawners()) {
+                                    if (spawner.getItemSpawnerType().toSpawnerType(game) == spawnerType) {
+                                        double distance = team.getRandomSpawn().getDistanceSquared(spawner.getLocation());
+                                        if (distance < closestDistance) {
+                                            closestDistance = distance;
+                                            closestSpawner = spawner;
+                                        }
+
+                                    }
+                                }
+                                if (closestSpawner != null) {
+                                    upgrades.add(closestSpawner);
+                                }
+                            }
+                        }
                     } else if (!teamUpgradeNode.empty()) {
                         boolean upgradeAllSpawnersInTeam = teamUpgradeNode.getBoolean();
 
@@ -646,7 +728,7 @@ public class ShopInventory implements StoreManager {
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else {
                         isUpgrade = false;
-                        Debug.warn("[BedWars]> Upgrade configuration is invalid.");
+                        logger.warn("Spawner upgrade configuration is invalid.");
                     }
 
                     if (isUpgrade) {

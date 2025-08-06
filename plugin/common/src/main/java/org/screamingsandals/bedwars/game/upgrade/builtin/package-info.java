@@ -17,18 +17,10 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.variants.prefab;
+@Init(services = {
+        EnchantmentUpgradeHandler.class,
+        TrapEffectUpgradeHandler.class
+})
+package org.screamingsandals.bedwars.game.upgrade.builtin;
 
-import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.player.Player;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
-
-public interface Prefab {
-    void place(@NotNull Game game, @NotNull Player player);
-
-    interface Loader<T extends Prefab> {
-        @NotNull T load(@NotNull ConfigurationNode node) throws ConfigurateException;
-    }
-}
+import org.screamingsandals.lib.utils.annotations.Init;

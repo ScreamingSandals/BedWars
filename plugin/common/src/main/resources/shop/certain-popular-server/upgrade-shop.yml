@@ -17,47 +17,70 @@
 # along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
-# TODO: change properties to be more specific (maybe certain_popular_server prefix??)
 data:
   - stack: "IRON_CHESTPLATE;1;Protection;Click here to get more resistance to damage!"
     column: 2
     price: 4 of diamond
-    properties: protection
+    properties:
+      name: upgrade
+      entities:
+        - type: team
+          upgrade-name: protection
 
   - stack: "IRON_SWORD;1;Sharpness;Kill players quicker!."
     column: 1
     price: 4 of diamond
-    properties: sharpness
+    properties:
+      name: upgrade
+      entities:
+        - type: team
+          upgrade-name: sharpness
 
   - stack: "GOLDEN_PICKAXE;1;Efficiency;Break Blocks quicker!."
     price: 4 of diamond
     column: 3
-    properties: efficiency
+    properties:
+      name: upgrade
+      entities:
+        - type: team
+          upgrade-name: efficiency
 
-  - price: 4
-    price-type: iron
+  - price: 4 of iron
+    properties:
+      name: upgrade
+      entities:
+        - type: spawner
+          add-levels: 0.2
+          max-level: 2
+          spawner-type:
+            - iron
+            - gold
+          auto-discover-spawners-if-not-linked: true
     stack:
       type: FURNACE
       amount: 1
-      display-name: "Forge Upgrade, Unconfigured"
-      # TODO: configure
+      display-name: "Forge Upgrade"
 
   - stack: "BEACON;1;§bHeal Pool;§7Triggers a pool around the base that heals you!"
     column: 5
     row: 1
-    properties: healpool
+    properties:
+      name: upgrade
+      entities:
+        - type: team
+          upgrade-name: healpool
     price: 8 of diamond
-
-  - stack: "DRAGON_EGG;1;Ender Dragon;Get A Bonus Dragon when Dragons get summoned!"
-    column: 6
-    row: 1
 
   - stack: "LEATHER;1;TRAPS;TRAP YOUR ENEMY"
     column: 7
     items:
       - price: 2 of diamond
         skip: 1
-        properties: blindtrap
+        properties:
+          name: upgrade
+          entities:
+            - type: team
+              upgrade-name: blindtrap
         stack:
           type: STRING
           display-name: "§bBlindess trap"
@@ -67,7 +90,11 @@ data:
 
       - price: 2 of diamond
         skip: 1
-        properties: minertrap
+        properties:
+          name: upgrade
+          entities:
+            - type: team
+              upgrade-name: minertrap
         stack:
           type: STRING
           display-name: "§bMining Fatigue trap"

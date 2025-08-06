@@ -126,11 +126,86 @@ custom-spawner-types:
     color: GOLD
     name: Gold
 
-# TODO: prefabs (already done shops with skin, shop file etc.)
+upgrades:
+  sharpness:
+    type: enchantment
+    enchantment: minecraft:sharpness
+    max-level: 1
+    apply-to:
+      - "#minecraft:swords"
+  knockback:
+    type: enchantment
+    enchantment: minecraft:knockback
+    max-level: 1
+    apply-to:
+      - "#minecraft:swords"
+  efficiency:
+    type: enchantment
+    enchantment: minecraft:efficiency
+    max-level: 2
+    apply-to:
+      - "#minecraft:pickaxes"
+  protection:
+    type: enchantment
+    enchantment: minecraft:protection
+    max-level: 4
+    apply-to:
+      - "#minecraft:head_armor"
+      - "#minecraft:foot_armor"
+      - "#minecraft:chest_armor"
+      - "#minecraft:leg_armor"
+  healpool:
+    type: trap
+    name: Healpool
+    detection-range: 7
+    effects:
+      - effect: minecraft:regeneration
+        duration: 30
+        amplifier: 1
+    enemies: false
+    team: true
+    singular-use: false
+  blindtrap:
+    type: trap
+    name: Blindtrap
+    detection-range: 7
+    effects:
+      - effect: minecraft:regeneration
+        duration: 30
+        amplifier: 1
+    enemies: true
+    team: false
+    singular-use: true
+    message: "@in_game.trap.blind_trap_triggered.message"
+    team-title: "@in_game.trap.blind_trap_triggered.title"
+    team-subtitle: "@in_game.trap.blind_trap_triggered.subtitle"
+    trigger-sound:
+      name: entity.ender_dragon.growl
+      pitch: 1
+      volume: 1
+  minertrap:
+    type: trap
+    name: Minertrap
+    detection-range: 7
+    effects:
+      - effect: minecraft:mining_fatigue
+        duration: 200
+        amplifier: 2
+    enemies: true
+    team: false
+    singular-use: true
+    message: "@in_game.trap.miner_trap_triggered.message"
+    team-title: "@in_game.trap.miner_trap_triggered.title"
+    team-subtitle: "@in_game.trap.miner_trap_triggered.subtitle"
+    trigger-sound:
+      name: entity.ender_dragon.growl
+      pitch: 1
+      volume: 1
+
 prefabs:
-  # Usage: /bw admin <arena> prefab upgradeShop
-  upgradeShop:
+  # Usage: /bw admin <arena> prefab upgrade-shop
+  upgrade-shop:
     type: command
     commands:
       - /bw admin %game% store add
-      - /bw admin %game% store file set certain-popular-server/upgradeShop.yml
+      - /bw admin %game% store file set certain-popular-server/upgrade-shop.yml

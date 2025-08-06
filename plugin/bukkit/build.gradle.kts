@@ -51,6 +51,7 @@ runTestServer {
         jvmArgs("-Dio.papermc.paper.suppress.sout.nags=true", "-DPaper.IgnoreJavaVersion=true")
         serverProperties {
             onlineMode(false)
+            property("level-type", "flat")
         }
     }
 }
