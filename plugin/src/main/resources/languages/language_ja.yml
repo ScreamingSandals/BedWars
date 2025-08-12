@@ -306,7 +306,7 @@ help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [ho
   [first level] [name] [team] [max spawned resources] - &eアイテムスポナーを自分の位置に追加する"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eスポナーをすべて削除する"
 help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file
-  with shop] [use main shop] - &e交易村人を自分の位置に追加する"
+  with shop] [team] [use main shop] - &e交易村人を自分の位置に追加する"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &e交易村人を自分の位置から削除する"
 help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eお店のエンティティ
   タイプを設定します (村人(Villager)、馬(Horse)、牛(Cow)、豚(Pig)など)"
@@ -389,3 +389,4 @@ admin_arena_overlaps: '&c選択した場所により、アリーナが別のア�
 waiting_placeholder_lobby_scoreboard: お待ちください...
 help_bw_cheatin_kill: /bw cheatIn <game> kill <player> - &cK指定したプレイヤーをキルします
 admin_arena_force_save: '&eとにかく&7%game%&eをセーブしたい場合、次のコマンドを実行してください: &7%command%'
+arena_info_villager_shop_team: '  チーム: &6%team%&r'
