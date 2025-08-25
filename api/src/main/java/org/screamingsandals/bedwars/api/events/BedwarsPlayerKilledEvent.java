@@ -37,6 +37,7 @@ public class BedwarsPlayerKilledEvent extends Event {
     private Player killer;
     private Player player;
     private List<ItemStack> drops;
+    private boolean playSound = true;
 
     /**
      * @param game
@@ -88,4 +89,11 @@ public class BedwarsPlayerKilledEvent extends Event {
         return this.drops;
     }
 
+    public boolean isPlaySound() {
+        return playSound;
+    }
+
+    public void setPlaySound(boolean playSound) {
+        this.playSound = playSound;
+    }
 }

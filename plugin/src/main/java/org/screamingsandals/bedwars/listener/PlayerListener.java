@@ -152,6 +152,11 @@ public class PlayerListener implements Listener {
                         false);
 
                 Player killer = victim.getKiller();
+
+                BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
+                        Main.isPlayerInGame(killer) ? killer : null, drops);
+                Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
+
                 if (Main.isPlayerInGame(killer)) {
                     GamePlayer gKiller = Main.getPlayerGameProfile(killer);
                     if (gKiller.getGame() == game) {
@@ -165,13 +170,17 @@ public class PlayerListener implements Listener {
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
-                            Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.team_kill.sound"),
-                                    Sounds.ENTITY_PLAYER_LEVELUP,  (float) Main.getConfigurator().config.getDouble("sounds.team_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.team_kill.pitch"));
+                            if (killedEvent.isPlaySound()) {
+                                Sounds.playSound(killer, killer.getLocation(),
+                                        Main.getConfigurator().config.getString("sounds.team_kill.sound"),
+                                        Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.team_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.team_kill.pitch"));
+                            }
                         } else {
-                            Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.player_kill.sound"),
-                                    Sounds.ENTITY_PLAYER_BIG_FALL, (float) Main.getConfigurator().config.getDouble("sounds.player_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.player_kill.pitch"));
+                            if (killedEvent.isPlaySound()) {
+                                Sounds.playSound(killer, killer.getLocation(),
+                                        Main.getConfigurator().config.getString("sounds.player_kill.sound"),
+                                        Sounds.ENTITY_PLAYER_BIG_FALL, (float) Main.getConfigurator().config.getDouble("sounds.player_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.player_kill.pitch"));
+                            }
                             if (!isBed) {
                                 Main.depositPlayer(killer, Main.getVaultFinalKillReward());
                             } else {
@@ -181,10 +190,6 @@ public class PlayerListener implements Listener {
 
                     }
                 }
-
-                BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
-                        Main.isPlayerInGame(killer) ? killer : null, drops);
-                Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
 
                 if (Main.isPlayerStatisticsEnabled()) {
                     PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
