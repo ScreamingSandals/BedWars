@@ -1,23 +1,3 @@
-#
-# Copyright (C) 2023 ScreamingSandals
-#
-# This file is part of Screaming BedWars.
-#
-# Screaming BedWars is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Screaming BedWars is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
-#
-
----
 lang_name: "Thai"
 prefix: "[ระบบ]"
 item_shop_name: "ร้านค้า"
@@ -26,16 +6,16 @@ leave: "%name% &cออกจากเกมส์แล้ว!"
 game_already_running: "&cเกมส์ &7%arena% &cกำลังทำงานอยู่! คุณไม่สามารถเข้าร่วมเกมส์นี้ได้"
 game_is_full: "&cเกมส์ &7%arena% &cเต็มแล้ว! โปรดรอจนกว่าเกมส์จะจบ!"
 unknown_command: "&cไม่รู้จักคำสั่งนี้! พิมพ์ &4/bw help &cเพื่อดูคำสั่ง!"
-unknown_usage: "&cจำนวน arguments ดังกล่าวไม่ตรงกับจำนวนที่ถูกต้องหรือไม่รู้จัก arguments\
-  \ นั้น! พิมพ์ &4/bw help &cเพื่อดูคำสั่ง!"
+unknown_usage: "&cจำนวน arguments ดังกล่าวไม่ตรงกับจำนวนที่ถูกต้องหรือไม่รู้จัก arguments
+  นั้น! พิมพ์ &4/bw help &cเพื่อดูคำสั่ง!"
 no_arena_found: "&cไม่พบเกมส์นี้!"
 usage_bw_join: "&cใช้คำสั่ง: /bw join <arena>"
 usage_bw_admin: "&cใช้คำสั่ง: /bw admin <arena> <add|edit|remove|save|...>"
 you_arent_in_game: "&cคุณไม่ได้อยู่ในเกมส์"
 allready_exists: "&cมีเกมส์นี้อยู่แล้ว!"
 allready_working_on_it: "&cมีเกมส์นี้อยู่แล้วแต่ยังทำไม่เสร็จ!"
-arena_not_in_edit: "&cไม่พบเกมส์นี้หรือกำลังทำงานอยู่! หยุดการทำงานโดยใช้คำสั่ง &7/bw\
-  \ admin <arena> edit&c และเปิดการใช้งานต่อโดยการใช้คำสั่ง &7/bw admin <arena> save"
+arena_not_in_edit: "&cไม่พบเกมส์นี้หรือกำลังทำงานอยู่! หยุดการทำงานโดยใช้คำสั่ง &7/bw
+  admin <arena> edit&c และเปิดการใช้งานต่อโดยการใช้คำสั่ง &7/bw admin <arena> save"
 no_permissions: "&cคุณไม่ได้รับการอนุญาตให้ทำแบบนั้นนะ!!"
 arena_must_be_in_edit_mode: "&cเกมส์จำเป็นต้องอยู่ในโหมดการแก้ไขก่อน!"
 arena_removed: "&cลบเกมส์เรียบร้อย!"
@@ -94,18 +74,18 @@ countdown_spawning: "&e%seconds% &bวินาที"
 every_second_spawning: "&bทุกๆ 1 วินาที"
 spawner_is_full: "§cSpawner หมดแล้ว"
 spawner_not_enough_level: "§cSpawner ไม่ทำงาน! คุณต้องอัพเกรดโดย %levels% เลเวล!"
-admin_command_mainlobby_info: "&cคำเตือน&f: คุณต้องใช้คำสั่ง /bw reload เพื่อที่จะทำให้\
-  \ ล็อบบี้หลัก ทำงานได้!"
+admin_command_mainlobby_info: "&cคำเตือน&f: คุณต้องใช้คำสั่ง /bw reload เพื่อที่จะทำให้
+  ล็อบบี้หลัก ทำงานได้!"
 admin_command_success: "&aใช้คำสั่งเรียบร้อย!"
 admin_command_must_be_in_same_world: "&cคำสั่งทั้งหมดต้องถูกเรียกจากโลกเดียวกัน!"
 admin_command_invalid_countdown: "&cการลดเวลาต้องอยู่ภายใน 10 < x < 600 วินาที!"
 admin_command_invalid_countdown2: "&cการลดเวลาต้องอยู่ภายใน 10 < x < 3600 วินาที!"
-admin_command_spawn_must_be_in_area: "&cตำแหน่งต้องอยู่ภายในอาณาเขตของเกมส์ที่เคยเซ็ตไว้\
-  \ (loc1 และ loc2 นั่นแหละ จำได้ป่าว)"
-admin_command_set_pos1_pos2_first: "&cก่อนที่จะเซ็ต Spawn โปรดเซ็ต pos1 และ pos2 ก่อนนะ!\
-  \ (มันคือการกำหนดขนาดของแมพ เหมือนการใช้ WorldEdit หน่ะ เซ็ตมุมทั้งสองนะ)"
-admin_command_pos1_pos2_difference_must_be_higher: "&cความสูงระหว่าง pos1 กับ pos2\
-  \ ใกล้กันเกินไป! น้อยสุดคือ 5 บล็อกนะ!"
+admin_command_spawn_must_be_in_area: "&cตำแหน่งต้องอยู่ภายในอาณาเขตของเกมส์ที่เคยเซ็ตไว้
+  (loc1 และ loc2 นั่นแหละ จำได้ป่าว)"
+admin_command_set_pos1_pos2_first: "&cก่อนที่จะเซ็ต Spawn โปรดเซ็ต pos1 และ pos2 ก่อนนะ!
+  (มันคือการกำหนดขนาดของแมพ เหมือนการใช้ WorldEdit หน่ะ เซ็ตมุมทั้งสองนะ)"
+admin_command_pos1_pos2_difference_must_be_higher: "&cความสูงระหว่าง pos1 กับ pos2
+  ใกล้กันเกินไป! น้อยสุดคือ 5 บล็อกนะ!"
 admin_command_game_saved_and_started: "&aเกมส์นี้ถูกบันทึกไว้และเริ่มทำงานแล้ว! ตอนนี้คุณสามารถเข้าร่วมเล่นเกมส์์นี้ได้เลย!"
 admin_command_store_already_exists: "&cมีร้านค้านี้อยู่แล้ว!"
 admin_command_store_not_exists: "&cไม่มีร้านค้านี้!"
@@ -118,74 +98,74 @@ admin_command_need_min_2_teems: "&cเกมส์ต้องการ 2 ที
 admin_command_spawners_needed: "&cเกมส์ต้องมี >= 1 Item Spawner!"
 admin_command_team_is_not_exists: "&cไม่มีทีมนี้อยู่!"
 admin_command_team_is_already_exists: "&cมีทีมนี้อยู่แล้ว"
-admin_command_bed_setted: "&aเตียงของทีม &7%team%&a ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%\
-  \ เรียบร้อยแล้ว!"
-admin_command_team_spawn_setted: "&aจุดเกิดของทีม &7%team%&a ถูกกำหนดไว้ในตำแหน่ง\
-  \ XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
-admin_command_team_maxplayers_setted: "&aจำกัดผู้เล่นสูงสุดของทีม &7%team%&a ถูกปรับเป็น\
-  \ &7%maxplayers% &aเรียบร้อยแล้ว"
+admin_command_bed_setted: "&aเตียงของทีม &7%team%&a ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%
+  เรียบร้อยแล้ว!"
+admin_command_team_spawn_setted: "&aจุดเกิดของทีม &7%team%&a ถูกกำหนดไว้ในตำแหน่ง
+  XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
+admin_command_team_maxplayers_setted: "&aจำกัดผู้เล่นสูงสุดของทีม &7%team%&a ถูกปรับเป็น
+  &7%maxplayers% &aเรียบร้อยแล้ว"
 admin_command_team_color_setted: "&aสีของทีม &7%team%&a ถูกปรับเป็น %teamcolor% &aเรียบร้อยแล้ว"
 admin_command_team_removed: "&aทีม &7%team%&a ถูกนำออกแล้ว!"
-admin_command_team_created: "&aทีม &7%team%&a ถูกสร้างขึ้นมาด้วยสี %teamcolor%&a และผู้เล่นสูงสุดในทีมคือ:\
-  \ &7%maxplayers%"
+admin_command_team_created: "&aทีม &7%team%&a ถูกสร้างขึ้นมาด้วยสี %teamcolor%&a และผู้เล่นสูงสุดในทีมคือ:
+  &7%maxplayers%"
 admin_command_spawners_reseted: "&aSpawner ทั้งหมดในเกมส์ &7%arena%&a ได้ถูกลบออกหมดแล้ว!"
-admin_command_spawner_added: "&aSpawner &7%resource%&a ถูกเพิ่มไว้ที่ตำแหน่ง XYZ:\
-  \ &7%x%/%y%/%z% เรียบร้อยแล้ว!"
-admin_command_store_added: "&aชาวบ้านถูกเพิ่มมาในตำแหน่งปัจจุบันของคุณ: &7%x%/%y%/%z%\
-  \ &aYAW: &7%yaw% &aPITCH: &7%pitch% &aแล้ว"
+admin_command_spawner_added: "&aSpawner &7%resource%&a ถูกเพิ่มไว้ที่ตำแหน่ง XYZ:
+  &7%x%/%y%/%z% เรียบร้อยแล้ว!"
+admin_command_store_added: "&aชาวบ้านถูกเพิ่มมาในตำแหน่งปัจจุบันของคุณ: &7%x%/%y%/%z%
+  &aYAW: &7%yaw% &aPITCH: &7%pitch% &aแล้ว"
 admin_command_store_removed: "&aชาวบ้านจากตำแหน่ง XYZ: &7%x%/%y%/%z%&a ถูกลบออกเรียบร้อยแล้ว!"
-admin_command_lobby_spawn_setted: "&aจุดเกิดในล็อบบี้ ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%\
-  \ &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
-admin_command_spec_spawn_setted: "&aจุดเกิดของผู้ชม ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%\
-  \ &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
-admin_command_pos1_setted: "&aตำแหน่งที่ 1 ของเกมส์ &7%arena%&a ถูกกำหนดไว้ในตำแหน่ง\
-  \ XYZ: &7%x%/%y%/%z% &aแล้ว"
-admin_command_pos2_setted: "&aตำแหน่งที่ 2 ของเกมส์ &7%arena%&a ถูกกำหนดไว้ในตำแหน่ง\
-  \ XYZ: &7%x%/%y%/%z% &aแล้ว"
+admin_command_lobby_spawn_setted: "&aจุดเกิดในล็อบบี้ ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%
+  &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
+admin_command_spec_spawn_setted: "&aจุดเกิดของผู้ชม ถูกกำหนดไว้ในตำแหน่ง XYZ: &7%x%/%y%/%z%
+  &aYAW: &7%yaw% &aPITCH: &7%pitch% เรียบร้อยแล้ว!"
+admin_command_pos1_setted: "&aตำแหน่งที่ 1 ของเกมส์ &7%arena%&a ถูกกำหนดไว้ในตำแหน่ง
+  XYZ: &7%x%/%y%/%z% &aแล้ว"
+admin_command_pos2_setted: "&aตำแหน่งที่ 2 ของเกมส์ &7%arena%&a ถูกกำหนดไว้ในตำแหน่ง
+  XYZ: &7%x%/%y%/%z% &aแล้ว"
 admin_command_pausecontdown_setted: "&aการนับถอยหลังถูกปรับเป็น &7%countdown%"
 admin_command_gametime_setted: "&aช่วงเวลาของเกมส์ถูกตั้งเป็นเวลา &7%time%"
-admin_command_set_pos1_pos2_before_save: "&cก่อนที่จะเซฟเกมส์นี้ โปรดเซ็ต pos1 และ\
-  \ pos2 ก่อนนะ! (มันคือการกำหนดขนาดของแมพ เหมือนการใช้ WorldEdit หน่ะ เซ็ตมุมทั้งสองนะ)"
-admin_command_set_lobby_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดตำแหน่งจุดเกิดล็อบบี้\
-  \ ซะก่อนนะ!"
-admin_command_set_spec_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดตำแหน่งจุดเกิดผู้ชม\
-  \ ซะก่อนนะ!"
-admin_command_set_stores_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดเพิ่มร้านค้าอย่างน้อย\
-  \ 1 แห่ง ซะก่อนนะ!"
-admin_command_set_spawners_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดเพิ่ม Spawner อย่างน้อย\
-  \ 1 แห่ง ซะก่อนนะ!"
-admin_command_set_bed_for_team_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดเตียงของทีม\
-  \ &7%team%&c ซะก่อนนะ!"
-admin_command_set_spawn_for_team_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดจุดเกิดของทีม\
-  \ &7%team%&c ซะก่อนนะ!"
-admin_command_click_right_on_entity_to_set_join: "&aตอนนี้ให้คุณคลิกขวาที่เอนทิตี้ที่คุณอยากจะเซ็ตให้เข้าร่วมทีม:\
-  \ &7%team%"
-admin_command_jointeam_entitynotcompatible: "&cล้มเหลว! เอนทิตี้ที่คุณพยายามใช้อยู่ไม่สามารถเข้ากันได้!\
-  \ เฉพาะเอนทิตี้ที่เป็นสิ่งมีชีวิตหรือ Armor Stands เท่านั้นที่ใช้ได้!"
+admin_command_set_pos1_pos2_before_save: "&cก่อนที่จะเซฟเกมส์นี้ โปรดเซ็ต pos1 และ
+  pos2 ก่อนนะ! (มันคือการกำหนดขนาดของแมพ เหมือนการใช้ WorldEdit หน่ะ เซ็ตมุมทั้งสองนะ)"
+admin_command_set_lobby_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดตำแหน่งจุดเกิดล็อบบี้
+  ซะก่อนนะ!"
+admin_command_set_spec_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดตำแหน่งจุดเกิดผู้ชม
+  ซะก่อนนะ!"
+admin_command_set_stores_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดเพิ่มร้านค้าอย่างน้อย
+  1 แห่ง ซะก่อนนะ!"
+admin_command_set_spawners_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดเพิ่ม Spawner อย่างน้อย
+  1 แห่ง ซะก่อนนะ!"
+admin_command_set_bed_for_team_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดเตียงของทีม
+  &7%team%&c ซะก่อนนะ!"
+admin_command_set_spawn_for_team_before_save: "&cก่อนที่จะบันทึกเกมส์โปรดกำหนดจุดเกิดของทีม
+  &7%team%&c ซะก่อนนะ!"
+admin_command_click_right_on_entity_to_set_join: "&aตอนนี้ให้คุณคลิกขวาที่เอนทิตี้ที่คุณอยากจะเซ็ตให้เข้าร่วมทีม:
+  &7%team%"
+admin_command_jointeam_entitynotcompatible: "&cล้มเหลว! เอนทิตี้ที่คุณพยายามใช้อยู่ไม่สามารถเข้ากันได้!
+  เฉพาะเอนทิตี้ที่เป็นสิ่งมีชีวิตหรือ Armor Stands เท่านั้นที่ใช้ได้!"
 admin_command_jointeam_entity_added: "&aสำเร็จ! เอนทิตี้ที่สำหรับเข้าร่วมทีมถูกเพิ่มแล้ว!"
 admin_command_invalid_min_players: "&cผู้เล่นอย่างน้อยต้องเป็น 2 หรือมากกว่านั้น!"
 admin_command_min_players_set: "&aกำหนดผู้เล่นอย่างน้อย &7%min% &aเรียบร้อยแล้ว!"
-admin_command_invalid_config_value: "&cค่าไม่ถูกต้อง! มันต้องเป็น &7true&c, &7false&c\
-  \ หรือ &7inherit&c เท่านั้น!"
+admin_command_invalid_config_value: "&cค่าไม่ถูกต้อง! มันต้องเป็น &7true&c, &7false&c
+  หรือ &7inherit&c เท่านั้น!"
 admin_command_invalid_config_variable_name: "&cชื่อผิด!"
-admin_command_config_variable_set_to: "&aค่าคงที่ &7%config%&a ถูกกำหนดเป็น &7%value%&a\
-  \ แล้ว!"
+admin_command_config_variable_set_to: "&aค่าคงที่ &7%config%&a ถูกกำหนดเป็น &7%value%&a
+  แล้ว!"
 admin_command_invalid_arena_time: "&cประเภทเวลาของเกมส์ไม่ถูกต้อง!"
 admin_command_arena_time_set: "&aเวลาของอารีน่านี้ถูกกำหนดเป็นเวลา &7%time%&a แล้ว!"
 admin_command_invalid_arena_weather: "&cประเภทสภาพอากาศของเกมส์ไม่ถูกต้อง!"
-admin_command_arena_weather_set: "&aสภาพอากาศของอารีน่านี้ถูกกำหนดเป็น &7%weather%&a\
-  \ แล้ว!"
+admin_command_arena_weather_set: "&aสภาพอากาศของอารีน่านี้ถูกกำหนดเป็น &7%weather%&a
+  แล้ว!"
 admin_command_invalid_bar_color: "&cสีของ Boos Bar ไม่ถูก!"
 admin_command_bar_color_set: "&aสีถูกเซ็ตเป็น &7%color%&a สำหรับบอสบาร์ &7%type%&a!"
 admin_command_wrong_living_entity_type: "&cประเภทของเอนทิตี้ไม่ถูกต้อง"
-admin_command_store_living_entity_type_set: "&aชนิดเอนทิตี้ของร้านค้าถูกเซ็ตเป็น &7%type%\
-  \ &aเรียบร้อยแล้ว!"
+admin_command_store_living_entity_type_set: "&aชนิดเอนทิตี้ของร้านค้าถูกเซ็ตเป็น &7%type%
+  &aเรียบร้อยแล้ว!"
 admin_command_upgrades: "&aการอัปเกรดถูกปรับเป็น &7%bool%&a!"
-safe_reload: "&aกำลังรอเกมส์ทั้งหมดปิดการใช้งาน(แบบปลอดภัย) อยู่ ประมาณ 60 วินาที\
-  \ ก่อนจะรีโหลดอ่ะนะ!"
+safe_reload: "&aกำลังรอเกมส์ทั้งหมดปิดการใช้งาน(แบบปลอดภัย) อยู่ ประมาณ 60 วินาที
+  ก่อนจะรีโหลดอ่ะนะ!"
 safe_reload_failed_to_stop_game: "&cเกมส์บางเกมส์ยังไม่จบลงในเวลาที่กำหนด, นี่หมายถึงเกมส์บางเกมส์อาจเกิดความเสียหาย!"
-holo_not_enabled: "&cโฮโลแกรมปิดใช้งานอยู่ ตรวจสอบอีกทีว่าคุณได้ติดตั้งปลั๊กอิน Holographic\
-  \ Displays แล้วหรือยัง?"
+holo_not_enabled: "&cโฮโลแกรมปิดใช้งานอยู่ ตรวจสอบอีกทีว่าคุณได้ติดตั้งปลั๊กอิน Holographic
+  Displays แล้วหรือยัง?"
 holo_added: "&aโฮโลแกรมถูกเพิ่มมาในตำแหน่งของคุณ!"
 click_to_holo_for_remove: "&eโอเค! คลิกที่โฮโลแกรมที่คุณอยากจะลบออกได้เลย!"
 holo_removed: "&aคุณได้ลบโฮโลแกรมแล้ว!"
@@ -266,24 +246,24 @@ specials_trap_caught: "&cคุณติดกับดักของทีม 
 specials_trap_caught_team: "&f%player%&c ติดกับดักของทีมคุณ!"
 specials_warp_powder_multiuse: "&cมีการเปิดใช้งาน WarpPowder อันอื่นแล้ว!"
 specials_warp_powder_canceled: "&cWarpPowder ถูกยกเลิก!"
-specials_warp_powder_started: "&aเริ่มใช้งาน WarpPowder แล้ว! โปรดอย่าขยับเป็นเวลา\
-  \ &7%time%&a วินาที!"
+specials_warp_powder_started: "&aเริ่มใช้งาน WarpPowder แล้ว! โปรดอย่าขยับเป็นเวลา
+  &7%time%&a วินาที!"
 specials_tracker_no_target_found: "&cไม่พบเป้าหมาย!"
-specials_tracker_target_found: "&f%target% &aถูกค้นพบและอยู่ห่างจากคุณ &f%distance%\
-  \ &aบล็อก!"
+specials_tracker_target_found: "&f%target% &aถูกค้นพบและอยู่ห่างจากคุณ &f%distance%
+  &aบล็อก!"
 specials_rescue_platform_not_in_air: "&cการจะใช้สิ่งนี้ คุณจำเป็นต้องต้องอยู่ในอากาศ"
 specials_rescue_platform_destroy: "&cPlatform จะถูกทำลายใน &f%time% &cวินาที"
 specials_rescue_platform_created_unbreakable: "&aPlatform ที่ไม่สามารถทุบได้ถูกสร้างขึ้นมาแล้ว!"
-specials_rescue_platform_created: "&cPlatform ถูกสร้างแล้วและจะถูกทำลายในอีก &f%time%\
-  \ &cวินาที"
+specials_rescue_platform_created: "&cPlatform ถูกสร้างแล้วและจะถูกทำลายในอีก &f%time%
+  &cวินาที"
 specials_protection_wall_not_usable_here: "&cมีพื้นที่ไม่เพียงพอในการสร้างกำแพงนี้!"
 specials_protection_wall_destroy: "&cกำแพงจะถูกทำลายใน &f%time% &cวินาที"
 specials_protection_wall_created_unbreakable: "&aกำแพงที่ไม่สามารถทุบได้ถูกสร้างขึ้นมาแล้ว!"
-specials_protection_wall_created: "&cกำแพงถูกสร้างแล้วและจะถูกทำลายในอีก &f%time%\
-  \ &cวินาที"
+specials_protection_wall_created: "&cกำแพงถูกสร้างแล้วและจะถูกทำลายในอีก &f%time%
+  &cวินาที"
 specials_tntsheep_no_target_found: "&cไม่พบเป้าหมาย!"
-specials_arrow_blocker_started: "&aเครื่องกันกระสุนธนูถูกเปิดใช้งานเป็นเวลา %time%\
-  \ วินาที!"
+specials_arrow_blocker_started: "&aเครื่องกันกระสุนธนูถูกเปิดใช้งานเป็นเวลา %time%
+  วินาที!"
 specials_arrow_blocker_already_activated: "&cเครื่องกันกระสุนธนูถูกเปิดใช้งานไปแล้ว!"
 specials_arrow_blocker_ended: "&cเครื่องกันกระุนธนูไม่ได้เปิดต่อแล้ว(ปิดนั่นแหละ)!"
 specials_golem_created: "&aโกเลมเกิดแล้ว"
@@ -313,8 +293,8 @@ help_bw_leaderboard: "/bw leaderboard - &aShow top players of this server"
 help_bw_stats: "/bw stats - &aแสดงสถิติของคุณ"
 help_bw_stats_other: "/bw stats [player] - &aแสดงสถิติของผู้เล่นอื่น"
 help_bw_reload: "/bw reload - &cรีโหลดปลั๊กอิน"
-help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's\
-  \ location"
+help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's
+  location"
 help_bw_removeholo: "/bw removeholo - &eหลังจากใช้คำสั่ง คุณสามารถคลิกขวาที่โฮโลแกรมเพื่อลบมันออกได้"
 help_bw_mainlobby: "/bw mainlobby [enable|set] - &eเปิดใช้งานล็อบบี้หลักหรือกำหนดตำแหน่งล็อบบี้หลัก"
 help_bw_admin_info: "/bw admin <arena> info [section] - &eแสดงรายละเอียดของเกมส์ทั้งหมด"
@@ -326,59 +306,58 @@ help_bw_admin_pos2: "/bw admin <arena> pos2 - &eกำหนดมุมที�
 help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eกำหนดระยะเวลานับถอยหลังก่อนที่เกมส์จะเริ่ม"
 help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eกำหนดผู้เล่นอย่างน้อยเพื่อเริ่มเกมส์"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eกำหนดความยาวของเกมส์"
-help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -\
-  \ &eเพิ่มทีมไปในเกมส์"
+help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -
+  &eเพิ่มทีมไปในเกมส์"
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eเปลี่ยนสีทีม"
-help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players>\
-  \ - &eเปลี่ยนผู้เล่นสูงสุดของทีม"
+help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players>
+  - &eเปลี่ยนผู้เล่นสูงสุดของทีม"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eกำหนดจุดเกิดของทีมที่ตำแหน่งของคุณ"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on]\
-  \ - &eกำหนดบล็อกเป้าหมายของทีมที่ตำแหน่งเป้าหมายของคุณ (ไม่จำเป็นต้องเป็นเตียงนะ\
-  \ เป็นอะไรก็ได้)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on]
+  - &eกำหนดบล็อกเป้าหมายของทีมที่ตำแหน่งเป้าหมายของคุณ (ไม่จำเป็นต้องเป็นเตียงนะ เป็นอะไรก็ได้)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eกำหนดเอนทิตี้ที่จะเข้าร่วมทีมเพื่อคลิก"
-help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram]\
-  \ [first level] [name] [team] [max spawned resources] - &eเพื่อ Spawner ในตำแหน่งของคุณ"
+help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram]
+  [first level] [name] [team] [max spawned resources] - &eเพื่อ Spawner ในตำแหน่งของคุณ"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eลบ Spawner ทั้งหมด"
-help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file\
-  \ with shop] [use main shop] - &eเพิ่มร้านค้าในตำแหน่งของคุณ"
+help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file
+  with shop] [use main shop] - &eเพิ่มร้านค้าในตำแหน่งของคุณ"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &eลบร้านค้าจากตำแหน่งของคุณ"
-help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eกำหนดประเภทเอนทิตี้ของร้านค้า\
-  \ (Villager, Horse, Cow, Pig และอื่นๆ)"
+help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eกำหนดประเภทเอนทิตี้ของร้านค้า
+  (Villager, Horse, Cow, Pig และอื่นๆ)"
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eกำหนดตัวแปรคงที่สำหรับเกมส์"
-help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eกำหนดเวลาในเกมส์\
-  \ (DAY, NIGHT, และอื่นๆ)"
-help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eกำหนดสภาพภูมิอากาศในเกมส์\
-  \ (default, CLEAN, DOWNFALL)"
-help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eSets\
-  \ the waiting time before player is teleported out of the arena"
-help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables\
-  \ custom prefix for arena"
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eกำหนดเวลาในเกมส์
+  (DAY, NIGHT, และอื่นๆ)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eกำหนดสภาพภูมิอากาศในเกมส์
+  (default, CLEAN, DOWNFALL)"
+help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eSets
+  the waiting time before player is teleported out of the arena"
+help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables
+  custom prefix for arena"
 help_bw_admin_remove: "/bw admin <arena> remove - &cลบอารีน่าทิ้ง"
 help_bw_admin_edit: "/bw admin <arena> edit - &eเปลี่ยนเกมส์เป็นโหมดการแก้ไข"
 help_bw_admin_save: "/bw admin <arena> save - &aบันทึกและเปิดใช้งานเกมส์!"
 update_checker_zero: "§aNew RELEASE version %version% of BedWars is available!"
 update_checker_zero_second: "Download it from %url%"
-update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information:\
-  \ %url%"
-update_checker_one_second_good: "§bYour server is prepared for this release! Download\
-  \ it right now!"
-update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft\
-  \ version at least 1.13 and Java at least 11!"
-help_bw_alljoin: "/bw alljoin [arena] - &aJoins all players on the server to bedwars\
-  \ game"
+update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information:
+  %url%"
+update_checker_one_second_good: "§bYour server is prepared for this release! Download
+  it right now!"
+update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft
+  version at least 1.13 and Java at least 11!"
+help_bw_alljoin: "/bw alljoin [arena] - &aJoins all players on the server to bedwars
+  game"
 admin_command_removed_spawners: "&7%count% &aspawners were deleted from &7%x%&a/&7%y%&a/&7%z%"
-help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners\
-  \ at location"
+help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners
+  at location"
 arena_info_spawner_no_team: "&cNo team"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper\
-  \ as child"
-help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper\
-  \ as adult"
-admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed\
-  \ to &7%value%"
+help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper
+  as child"
+help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper
+  as adult"
+admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed
+  to &7%value%"
 admin_command_invalid_time: "&cTime &7%number%§c is invalid!"
-admin_command_post_game_waiting: "&aWaiting time after game has been successfully\
-  \ set to &7%number%§a!"
+admin_command_post_game_waiting: "&aWaiting time after game has been successfully
+  set to &7%number%§a!"
 arena_info_postgamewaiting: "&7Post game waiting time: &f%time% s"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aLeaderboard hologram was added to your position!"
@@ -386,9 +365,9 @@ leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aCustom prefix was successfully set to &7%prefix%&a."
 admin_command_customprefix_disabled: "&aCustom prefix was successfully disabled."
-admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify\
-  \ skin name in format &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This\
-  \ link can be useful for support"
+admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify
+  skin name in format &7PLAYER:[skin's owner]"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This
+  link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
