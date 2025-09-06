@@ -1714,6 +1714,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (Main.getTabManager() != null) {
                     players.forEach(Main.getTabManager()::modifyForPlayer);
                 }
+
+                BedwarsPlayerRespawnedIngameEvent event = new BedwarsPlayerRespawnedIngameEvent(this, currentTeam, player);
+                Bukkit.getPluginManager().callEvent(event);
             });
         }
     }

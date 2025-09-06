@@ -50,6 +50,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerDeathMessageSendEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerRespawnedIngameEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.boss.BossBar18;
@@ -392,6 +393,9 @@ public class PlayerListener implements Listener {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
                 }
+
+                BedwarsPlayerRespawnedIngameEvent evt = new BedwarsPlayerRespawnedIngameEvent(game, team, gPlayer.player);
+                Bukkit.getPluginManager().callEvent(evt);
             }
 
             if (Main.getVersionNumber() <= 108 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
