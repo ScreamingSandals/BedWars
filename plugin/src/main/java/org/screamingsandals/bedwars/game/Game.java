@@ -1932,13 +1932,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
 
                         Main main = Main.getInstance();
-                        for (int x = minX; x <= maxX; x++) {
-                            for (int z = minZ; z <= maxZ; z++) {
-                                Chunk chunk = world.getChunkAt(x, z);
-                                if (chunk.addPluginChunkTicket(main)) {
-                                    chunksWithTickets.add(chunk);
+
+                        try {
+                            for (int x = minX; x <= maxX; x++) {
+                                for (int z = minZ; z <= maxZ; z++) {
+                                    Chunk chunk = world.getChunkAt(x, z);
+                                    if (chunk.addPluginChunkTicket(main)) {
+                                        chunksWithTickets.add(chunk);
+                                    }
                                 }
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            main.getLogger().warning("Failed to claim chunk tickets, skipping");
                         }
                     }
                     for (GameStore store : gameStore) {
@@ -2529,7 +2535,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (!chunksWithTickets.isEmpty()) {
             Main main = Main.getInstance();
             for (Chunk chunk : chunksWithTickets) {
-                chunk.removePluginChunkTicket(main);
+                try {
+                    chunk.removePluginChunkTicket(main);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             chunksWithTickets.clear();
         }
