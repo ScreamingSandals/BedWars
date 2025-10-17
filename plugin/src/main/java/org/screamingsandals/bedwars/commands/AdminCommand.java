@@ -523,7 +523,7 @@ public class AdminCommand extends BaseCommand {
                 }
             }
         } else if (args.size() == 2) {
-            completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown", "team", "spawner",
+            completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "lobbypos1", "lobbypos2", "pausecountdown", "team", "spawner",
                     "time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info", "config", "arenatime",
                     "arenaweather", "lobbybossbarcolor", "gamebossbarcolor", "postgamewaiting", "customprefix"));
         } else if (args.get(1).equalsIgnoreCase("pausecountdown") && args.size() == 3) {

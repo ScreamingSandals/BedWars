@@ -74,6 +74,10 @@ public class GameCreator {
             response = setPos1(player.getLocation(), args.length > 0 && "force".equalsIgnoreCase(args[0]));
         } else if (action.equalsIgnoreCase("pos2")) {
             response = setPos2(player.getLocation(), args.length > 0 && "force".equalsIgnoreCase(args[0]));
+        } else if (action.equalsIgnoreCase("lobbypos1")) {
+            response = setLobbyPos1(player.getLocation());
+        } else if (action.equalsIgnoreCase("lobbypos2")) {
+            response = setLobbyPos2(player.getLocation());
         } else if (action.equalsIgnoreCase("pausecountdown")) {
             if (args.length >= 1) {
                 response = setPauseCountdown(Integer.parseInt(args[0]));
@@ -977,6 +981,44 @@ public class GameCreator {
 
         game.setPos2(loc);
         return i18n("admin_command_pos2_setted").replace("%arena%", game.getName())
+                .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+                .replace("%z%", Integer.toString(loc.getBlockZ()));
+    }
+
+    public String setLobbyPos1(Location loc) {
+        if (game.getWorld() == null) {
+            game.setWorld(loc.getWorld());
+        }
+        if (game.getWorld() != loc.getWorld()) {
+            return i18n("admin_command_must_be_in_same_world");
+        }
+        if (game.getLobbyPos1() != null) {
+            if (Math.abs(game.getPos1().getBlockY() - loc.getBlockY()) <= 5) {
+                return i18n("admin_command_lobby_pos1_pos2_difference_must_be_higher");
+            }
+        }
+
+        game.setLobbyPos1(loc);
+        return i18n("admin_command_lobby_pos1_setted").replace("%arena%", game.getName())
+                .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+                .replace("%z%", Integer.toString(loc.getBlockZ()));
+    }
+
+    public String setLobbyPos2(Location loc) {
+        if (game.getWorld() == null) {
+            game.setWorld(loc.getWorld());
+        }
+        if (game.getWorld() != loc.getWorld()) {
+            return i18n("admin_command_must_be_in_same_world");
+        }
+        if (game.getLobbyPos2() != null) {
+            if (Math.abs(game.getPos1().getBlockY() - loc.getBlockY()) <= 5) {
+                return i18n("admin_command_lobby_pos1_pos2_difference_must_be_higher");
+            }
+        }
+
+        game.setLobbyPos2(loc);
+        return i18n("admin_command_lobby_pos2_setted").replace("%arena%", game.getName())
                 .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
                 .replace("%z%", Integer.toString(loc.getBlockZ()));
     }

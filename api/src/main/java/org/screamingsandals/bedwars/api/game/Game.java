@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.*;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -102,7 +103,22 @@ public interface Game {
     /**
      * @return
      */
-	Location getPos2();
+    Location getPos2();
+
+    /**
+     *
+     * @return First position of the lobby cube
+     * @since 0.2.42
+     */
+    @Nullable
+    Location getLobbyPos1();
+
+    /**
+     * @return second position of the lobby cube
+     * @since 0.2.42
+     */
+    @Nullable
+    Location getLobbyPos2();
 
     /**
      * @return
@@ -636,9 +652,22 @@ public interface Game {
     boolean getOriginalOrInheritedStopTeamSpawnersOnDie();
 
     /**
+     * @return if a lobby should be hidden after the game start
+     * @since 0.2.42
+     */
+    InGameConfigBooleanConstants getInvisibleLobbyOnGameStart();
+
+    /**
+     * @return if a lobby should be hidden after the game start
+     * @since 0.2.42
+     */
+    boolean getOriginalOrInheritedHideLobbyAfterGameStart();
+
+
+    /**
      * @return
      */
-	boolean getBungeeEnabled();
+    boolean getBungeeEnabled();
 
     /**
      * @return
@@ -723,4 +752,12 @@ public interface Game {
      * @since 0.2.40
      */
     boolean isSpectator(@NotNull Player player);
+
+    /**
+     * Returns the countdown value - remaining time to start the game
+     *
+     * @return the current countdown value
+     * @since 0.2.42
+     */
+    int getCountdown();
 }

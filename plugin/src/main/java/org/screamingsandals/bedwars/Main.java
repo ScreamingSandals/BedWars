@@ -478,6 +478,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (Main.getConfigurator().config.getBoolean("bungee.enabled") && Main.getConfigurator().config.getBoolean("bungee.motd.enabled")) {
             getServer().getPluginManager().registerEvents(new BungeeMotdListener(), this);
         }
+        getServer().getPluginManager().registerEvents(new LobbyInvisibleListener(), this);
 
         InventoryListener.init(this);
 
