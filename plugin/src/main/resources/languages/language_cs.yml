@@ -112,6 +112,8 @@ admin_command_set_pos1_pos2_first: "&cPřed nastavením spawnu prosím nastavte 
   pos1 a pos2 (Určující velikost a polohu arény)!"
 admin_command_pos1_pos2_difference_must_be_higher: "&cVýškový rozdíl mezi souřadnicí
   pos1 a pos2 je moc malý! Minimum je 5 kostiček!"
+admin_command_lobby_pos1_pos2_difference_must_be_higher: "&cVýškový rozdíl mezi souřadnicí
+  lobbypos1 a lobbypos2 je moc malý! Minimum je 5 kostiček!"
 admin_command_game_saved_and_started: "&aHra byla úspěšně uložena a spuštěna! Nyní
   se můžete do arény připojit a hrát!"
 admin_command_store_already_exists: "&cObchod již existuje!"
@@ -151,6 +153,8 @@ admin_command_spec_spawn_setted: "&aSpawn pozorovatele byl úspěšně nastaven 
   XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_pos1_setted: "&aPozice 1 arény &7%arena%&a nastavena na XYZ: &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aPozice 2 arény &7%arena%&a nastavena na XYZ: &7%x%/%y%/%z%"
+admin_command_lobby_pos1_setted: "&aPozice 1 lobby &7%arena%&a nastavena na XYZ: &7%x%/%y%/%z%"
+admin_command_lobby_pos2_setted: "&aPozice 2 lobby &7%arena%&a nastavena na XYZ: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aČekací lhůta v lobby nastavena na: &7%countdown%"
 admin_command_gametime_setted: "&aDoba trvání nastavena na: &7%time%"
 admin_command_set_pos1_pos2_before_save: "&cPřed uložením prosím nastavte souřadnice

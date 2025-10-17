@@ -19,15 +19,17 @@
 
 package org.screamingsandals.bedwars.game;
 
-import static org.screamingsandals.bedwars.lib.lang.I.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.onarandombox.MultiverseCore.api.Core;
 import lombok.Getter;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.GameMode;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.WeatherType;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -38,7 +40,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -53,6 +59,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
@@ -61,7 +68,28 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.BossBar19;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
-import org.screamingsandals.bedwars.api.events.*;
+import org.screamingsandals.bedwars.api.events.BedWarsGameDisabledEvent;
+import org.screamingsandals.bedwars.api.events.BedWarsGameEnabledEvent;
+import org.screamingsandals.bedwars.api.events.BedWarsPlayerLastLeaveEvent;
+import org.screamingsandals.bedwars.api.events.BedWarsServerRestartEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsBedDestroyedMessageSendEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameChangedStatusEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameEndEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameEndingEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameStartEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameStartedEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsGameTickEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerBreakBlock;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinTeamEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerRespawnedIngameEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPostRebuildingEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPreRebuildingEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsResourceSpawnEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsTargetBlockDestroyedEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -72,21 +100,40 @@ import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
+import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
-import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
+import org.screamingsandals.bedwars.utils.BungeeUtils;
+import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.bedwars.utils.SpawnEffects;
+import org.screamingsandals.bedwars.utils.Title;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
-import com.onarandombox.MultiverseCore.api.Core;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.mpr;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Getter
@@ -212,6 +259,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
     private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
 
+    public static final String HIDE_LOBBY_AFTER_GAME_START = "hide-lobby-after-game-start";
+    private InGameConfigBooleanConstants hideLobbyAfterGameStart = InGameConfigBooleanConstants.INHERIT;
+
     public boolean gameStartItem;
     public boolean forceGameToStart;
     private boolean preServerRestart = false;
@@ -237,6 +287,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private boolean preparing = false;
     private TeamSelectorInventory teamSelectorInventory;
     private List<Chunk> chunksWithTickets = new ArrayList<>();
+    private Location lobbyPos1 = null;
+    private Location lobbyPos2 = null;
 
     private Game() {
 
@@ -272,8 +324,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return pos2;
     }
 
+    @Override
+    public @Nullable Location getLobbyPos1() {
+        return lobbyPos1;
+    }
+
+    @Override
+    public @Nullable Location getLobbyPos2() {
+        return lobbyPos2;
+    }
+
     public void setPos2(Location pos2) {
         this.pos2 = pos2;
+    }
+
+    public void setLobbyPos1(Location pos1) {
+        this.lobbyPos1 = pos1;
+    }
+
+    public void setLobbyPos2(Location pos2) {
+        this.lobbyPos2 = pos2;
     }
 
     public Location getLobbySpawn() {
@@ -1131,6 +1201,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
             game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
             game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
+            game.hideLobbyAfterGameStart = readBooleanConstant(configMap.getString("constant." + HIDE_LOBBY_AFTER_GAME_START, "inherit"));
 
             game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
             game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -1219,6 +1290,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("world", world.getName());
         configMap.set("pos1", MiscUtils.setLocationToString(pos1));
         configMap.set("pos2", MiscUtils.setLocationToString(pos2));
+        configMap.set("lobbyPos1", MiscUtils.setLocationToString(lobbyPos1));
+        configMap.set("lobbyPos2", MiscUtils.setLocationToString(lobbyPos2));
         configMap.set("specSpawn", MiscUtils.setLocationToString(specSpawn));
         configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
         configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
@@ -1307,6 +1380,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + ANCHOR_DECREASING, writeBooleanConstant(anchorDecreasing));
         configMap.set("constant." + CAKE_TARGET_BLOCK_EATING, writeBooleanConstant(cakeTargetBlockEating));
         configMap.set("constant." + TARGET_BLOCK_EXPLOSIONS, writeBooleanConstant(targetBlockExplosions));
+        configMap.set("constant." + HIDE_LOBBY_AFTER_GAME_START, writeBooleanConstant(hideLobbyAfterGameStart));
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1817,7 +1891,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             } else if (
                     players.size() >= getMinPlayers()
-                    && (teamsInGame.size() > 1 || (getOriginalOrInheritedJoinRandomTeamAfterLobby() && countRespawnable() < players.size()))
+                            && (teamsInGame.size() > 1 || (getOriginalOrInheritedJoinRandomTeamAfterLobby() && countRespawnable() < players.size()))
             ) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
@@ -2674,7 +2748,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public static String anchorEmptyString() {
-        return ChatColor.translateAlternateColorCodes('&',Main.getConfigurator().config.getString("scoreboard.anchorEmpty"));
+        return ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.anchorEmpty"));
     }
 
     private void updateScoreboardTimer() {
@@ -2816,7 +2890,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             obj.setDisplayName(this.formatLobbyScoreboardString(
-                    ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("lobby-scoreboard.title", "&eBEDWARS") )
+                    ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("lobby-scoreboard.title", "&eBEDWARS"))
             ));
         }
 
@@ -3813,7 +3887,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         this.customPrefix = customPrefix;
     }
 
+    @Override
     public int getCountdown() {
         return countdown;
+    }
+
+    @Override
+    public InGameConfigBooleanConstants getHideLobbyAfterGameStart() {
+        return hideLobbyAfterGameStart;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedHideLobbyAfterGameStart() {
+        return hideLobbyAfterGameStart.isOriginal() ? hideLobbyAfterGameStart.getValue()
+                : Main.getConfigurator().config.getBoolean(HIDE_LOBBY_AFTER_GAME_START);
     }
 }

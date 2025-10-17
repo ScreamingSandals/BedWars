@@ -641,6 +641,7 @@ public class Configurator {
         checkOrSetConfig(modify, "party.enabled", false);
         checkOrSetConfig(modify, "party.autojoin-members", false);
         checkOrSetConfig(modify, "party.notify-when-warped", true);
+        checkOrSetConfig(modify, "hide-lobby-after-game-start", false);
 
         checkOrSetConfig(modify, "version", 2);
 
