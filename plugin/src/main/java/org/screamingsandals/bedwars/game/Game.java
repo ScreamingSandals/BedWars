@@ -259,8 +259,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
     private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
 
-    public static final String HIDE_LOBBY_AFTER_GAME_START = "hide-lobby-after-game-start";
-    private InGameConfigBooleanConstants hideLobbyAfterGameStart = InGameConfigBooleanConstants.INHERIT;
+    public static final String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
+    private InGameConfigBooleanConstants invisibleLobbyOnGameStart = InGameConfigBooleanConstants.INHERIT;
 
     public boolean gameStartItem;
     public boolean forceGameToStart;
@@ -1201,7 +1201,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
             game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
             game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
-            game.hideLobbyAfterGameStart = readBooleanConstant(configMap.getString("constant." + HIDE_LOBBY_AFTER_GAME_START, "inherit"));
+            game.invisibleLobbyOnGameStart = readBooleanConstant(configMap.getString("constant." + INVISIBLE_LOBBY_ON_GAME_START, "inherit"));
 
             game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
             game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -1380,7 +1380,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + ANCHOR_DECREASING, writeBooleanConstant(anchorDecreasing));
         configMap.set("constant." + CAKE_TARGET_BLOCK_EATING, writeBooleanConstant(cakeTargetBlockEating));
         configMap.set("constant." + TARGET_BLOCK_EXPLOSIONS, writeBooleanConstant(targetBlockExplosions));
-        configMap.set("constant." + HIDE_LOBBY_AFTER_GAME_START, writeBooleanConstant(hideLobbyAfterGameStart));
+        configMap.set("constant." + INVISIBLE_LOBBY_ON_GAME_START, writeBooleanConstant(invisibleLobbyOnGameStart));
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -3892,14 +3892,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return countdown;
     }
 
-    @Override
-    public InGameConfigBooleanConstants getHideLobbyAfterGameStart() {
-        return hideLobbyAfterGameStart;
+    public InGameConfigBooleanConstants getInvisibleLobbyOnGameStart() {
+        return invisibleLobbyOnGameStart;
     }
 
     @Override
     public boolean getOriginalOrInheritedHideLobbyAfterGameStart() {
-        return hideLobbyAfterGameStart.isOriginal() ? hideLobbyAfterGameStart.getValue()
-                : Main.getConfigurator().config.getBoolean(HIDE_LOBBY_AFTER_GAME_START);
+        return invisibleLobbyOnGameStart.isOriginal() ? invisibleLobbyOnGameStart.getValue()
+                : Main.getConfigurator().config.getBoolean(INVISIBLE_LOBBY_ON_GAME_START);
     }
 }

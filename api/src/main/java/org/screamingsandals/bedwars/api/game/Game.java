@@ -655,7 +655,7 @@ public interface Game {
      * @return if a lobby should be hidden after the game start
      * @since 0.2.42
      */
-    InGameConfigBooleanConstants getHideLobbyAfterGameStart();
+    InGameConfigBooleanConstants getInvisibleLobbyOnGameStart();
 
     /**
      * @return if a lobby should be hidden after the game start
