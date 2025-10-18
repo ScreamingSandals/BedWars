@@ -1073,6 +1073,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
             game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+            if (configMap.isString("lobbyPos1")) {
+                game.lobbyPos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("lobbyPos1"));
+            }
+            if (configMap.isString("lobbyPos2")) {
+                game.lobbyPos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("lobbyPos2"));
+            }
             game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
             String spawnWorld = configMap.getString("lobbySpawnWorld");
             World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
@@ -1290,8 +1296,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("world", world.getName());
         configMap.set("pos1", MiscUtils.setLocationToString(pos1));
         configMap.set("pos2", MiscUtils.setLocationToString(pos2));
-        configMap.set("lobbyPos1", MiscUtils.setLocationToString(lobbyPos1));
-        configMap.set("lobbyPos2", MiscUtils.setLocationToString(lobbyPos2));
+        configMap.set("lobbyPos1", lobbyPos1 != null ? MiscUtils.setLocationToString(lobbyPos1) : null);
+        configMap.set("lobbyPos2", lobbyPos2 != null ? MiscUtils.setLocationToString(lobbyPos2) : null);
         configMap.set("specSpawn", MiscUtils.setLocationToString(specSpawn));
         configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
         configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
