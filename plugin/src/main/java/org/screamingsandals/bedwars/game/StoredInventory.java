@@ -37,4 +37,6 @@ public class StoredInventory {
     public String listName = null;
     public GameMode mode = null;
     public float xp = 0.0F;
+    public double health = 20.0D;
+    public double maxHealth = 20.0D;
 }

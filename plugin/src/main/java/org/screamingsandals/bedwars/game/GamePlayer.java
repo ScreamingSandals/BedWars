@@ -111,6 +111,8 @@ public class GamePlayer {
         oldInventory.listName = player.getPlayerListName();
         oldInventory.displayName = player.getDisplayName();
         oldInventory.foodLevel = player.getFoodLevel();
+        oldInventory.maxHealth = player.getMaxHealth();
+        oldInventory.health = player.getHealth();
 
         if (Main.getConfigurator().config.getBoolean("remember-what-scoreboards-players-had-before")) {
             this.scoreboard = player.getScoreboard();
@@ -134,6 +136,8 @@ public class GamePlayer {
         player.setLevel(oldInventory.level);
         player.setExp(oldInventory.xp);
         player.setFoodLevel(oldInventory.foodLevel);
+        player.setMaxHealth(oldInventory.maxHealth);
+        player.setHealth(oldInventory.health);
 
         for (PotionEffect e : player.getActivePotionEffects())
             player.removePotionEffect(e.getType());
