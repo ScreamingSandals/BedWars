@@ -130,7 +130,7 @@ public class DumpCommand extends BaseCommand {
                                                 "weather", game.getArenaWeather(),
                                                 "customPrefix", game.getCustomPrefix(),
                                                 "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
-                                                        "type", itemSpawner.getItemSpawnerType().getConfigKey(),
+                                                        "type", itemSpawner.getItemSpawnerType() != null ? itemSpawner.getItemSpawnerType().getConfigKey() : itemSpawner.declaredSpawnerType,
                                                         "location", itemSpawner.getLocation(),
                                                         "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
                                                         "startLevel", itemSpawner.getStartLevel(),
