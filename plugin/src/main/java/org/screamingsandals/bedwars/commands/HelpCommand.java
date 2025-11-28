@@ -56,6 +56,7 @@ public class HelpCommand extends BaseCommand {
         console.sendMessage(i18nonly("help_bw_stats_other"));
         console.sendMessage(i18nonly("help_bw_alljoin"));
         console.sendMessage(i18nonly("help_bw_dump"));
+        console.sendMessage(i18nonly("help_bw_dumplogs"));
         console.sendMessage(i18nonly("help_bw_reload"));
 
         if (Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
@@ -149,6 +150,7 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_edit"));
             player.sendMessage(i18nonly("help_bw_admin_save"));
             player.sendMessage(i18nonly("help_bw_dump"));
+            player.sendMessage(i18nonly("help_bw_dumplogs"));
             player.sendMessage(i18nonly("help_bw_reload"));
         }
     }

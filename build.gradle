@@ -41,6 +41,7 @@ subprojects {
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
         relocate 'me.kcra.takenaka', 'org.screamingsandals.bedwars.lib.takenaka'
+        relocate 'gs.mclo', 'org.screamingsandals.bedwars.lib.mclogs'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))

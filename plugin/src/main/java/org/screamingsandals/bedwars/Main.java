@@ -452,6 +452,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new MainlobbyCommand();
         new LeaderboardCommand();
         new DumpCommand();
+        new DumplogsCommand();
         new CheatCommand("cheat", false);
         new CheatCommand("cheatIn", true);
 
