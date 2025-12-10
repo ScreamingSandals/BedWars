@@ -1068,7 +1068,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
             }
             if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
-                game.world.setGameRule((GameRule<Boolean>) GameRule.getByName("locatorBar"), false);
+                game.world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "locator_bar" : "locatorBar"), false);
             }
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
@@ -2230,7 +2230,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
                     if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
-                        world.setGameRule((GameRule<Boolean>) GameRule.getByName("locatorBar"), false);
+                        world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "locator_bar" : "locatorBar"), false);
                     }
                     preparing = false;
 
