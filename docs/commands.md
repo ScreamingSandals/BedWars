@@ -63,6 +63,8 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> spec` - Sets specatator's spawn to your position
 * `/bw admin <arena> pos1` - Sets the extreme point of the arena to your position
 * `/bw admin <arena> pos2` - Sets the second extreme point of the arena to your position
+* `/bw admin <arena> lobbypos1` - Sets the extreme point of the lobby to your position (this is optional and allows for lobby removal on the game start if set together with `invisible-lobby-on-game-start` config option)
+* `/bw admin <arena> lobbypos2` - Sets the second extreme point of the lobby to your position
 * `/bw admin <arena> pausecountdown <seconds>` - Sets the pause duration before game starts
 * `/bw admin <arena> minplayers <minimum>` - Sets minimum of players needed to start the game
 * `/bw admin <arena> time <seconds>` - Sets the game's duration
@@ -108,5 +110,6 @@ Additionaly to `/bw cheat` command, there is the `/bw cheatIn <game> <cheat> [pa
 * `/bw reload` - Reloads the plugin
 * `/bw mainlobby [enable|set]` - Enables main lobby or sets main lobby location
 * `/bw dump [paste.gg|pastes.dev]` - Dumps information about the server and gives you link to the dump. This link can be useful for support.
+* `/bw dumplogs` - Dumps the latest.log file using [mclo.gs](https://mclo.gs) and provides link to the dump.
 * `/bw addholo [leaderboard|stats]` - Adds new hologram to your position
 * `/bw removeholo` - After executing this command, the player can right-click the holographic statistic to remove it

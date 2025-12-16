@@ -479,6 +479,7 @@ party:
   enabled: false
   autojoin-members: false
   notify-when-warped: true
+invisible-lobby-on-game-start: false
 ```
 
 ## Custom resources
