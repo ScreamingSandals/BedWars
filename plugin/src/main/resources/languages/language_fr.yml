@@ -79,7 +79,7 @@ resource_iron: "Fer"
 resource_gold: "Or"
 resource_netherite: "Netherite"
 countdown_spawning: "&e%seconds% &bsecondes"
-every_second_spawning: "&betré seconde"
+every_second_spawning: "&bChaque secondes"
 spawner_is_full: "§c§lSpawner est épuisé"
 spawner_not_enough_level: "§cLe spawner ne peut pas fonctionner ! Vous devez améliorer
   de %levels% niveaux."
@@ -452,8 +452,8 @@ help_bw_cheat_kill: /bw cheat kill [player] - &cTue le joueur spécifié
 "party_warped": '&cLe chef de groupe vous a téléporté ici'
 "party_command_invalid_arguments": "&cNombre d'arguments invalide !, tapez /bw party
   help pour en savoir plus"
-"party_command_help": /bw party warp - &eTéléporte tous les joueurs du groupe dans
-  votre partie ou vers vous
+"party_command_help": /bw party warp - &eTéléporte tous les joueurs du groupe 
+  dans votre partie ou vers vous
 spawner_reached_maximum_level: §cLe spawner a atteint son niveau maximum !
 cheat_invalid_player: "&cLe joueur spécifié n'est ni dans la partie ni spectateur
   !"
@@ -461,37 +461,39 @@ cheat_received_kill: '&aLe joueur &7%player%&a a été tué par triche !'
 "party_command_warped": '&aLes membres du groupe ont été téléportés'
 "party_command_not_in_party": '&cVous devez être dans un groupe pour faire cette commande
   !'
-help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDonne au joueur
-  la quantité spécifiée de ressource
+help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDonne au 
+  joueur la quantité spécifiée de ressource
 door_is_destroyed: La porte %team%&r est détruite !
-help_bw_cheatin_kill: /bw cheatIn <partie> kill <joueur> - &cTue le joueur spécifié
-help_bw_cheatin_destroybed: /bw cheatIn <partie> destroybed <equipe> - &cDétruits
-  le lit de lit de l'équipe spécifiée
+help_bw_cheatin_kill: /bw cheatIn <partie> kill <joueur> - &cTue le joueur 
+  spécifié
+help_bw_cheatin_destroybed: /bw cheatIn <partie> destroybed <equipe> - 
+  &cDétruits le lit de lit de l'équipe spécifiée
 protect_your_door: '%teamcolor%&lProtégez votre porte!'
 protect_your_door_destroyed: '&7&lPorte détruite.'
 destroy_this_door: '%teamcolor%&lDétruisez cette porte!'
 team_not_in_game: "&cL'équipe &7%name%&c n'est pas dans la partie!"
 cheat_received_target_block_destroy: "&aLe lit de l'équipe &7%name%&a a été détruit!"
-help_bw_cheat_destroybed: /bw cheat destroybed <equipe> - &cDétruit le lit de l'équipe
-  spécifiée
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDétruits tous les lits
-  dans la partie
+help_bw_cheat_destroybed: /bw cheat destroybed <equipe> - &cDétruit le lit de 
+  l'équipe spécifiée
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDétruits tous les 
+  lits dans la partie
 cheat_received_target_blocks_destroy: '&aLes lits de toutes les équipes ont étés détruits!'
 kicking_in: "&cVous quitterez l'arène dans: &7%time%"
 cheat_not_waiting: "&cLa partie n'est pas en attente !"
 game_forced: '&aLa partie va commencer avec des équipes vides. Détruisez leurs blocs
   cibles pour gagner!'
 team_bed_is_already_destroyed: "&cLe lit de l'équipe &7%name%&c est déjà détruit!"
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cCommence une partie avec
-  seulement une équipe
-help_bw_cheat_jointeam: /bw cheat jointeam [équipe] - &cFait rejoindre un administrateur
-  dans l'équipe spécifiée, quelle que soit sa taille (peut aussi être utilisé pendant
-  une partie, l'équipe doit cependant avoir quelques joueurs)
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cCommence une partie 
+  avec seulement une équipe
+help_bw_cheat_jointeam: /bw cheat jointeam [équipe] - &cFait rejoindre un 
+  administrateur dans l'équipe spécifiée, quelle que soit sa taille (peut aussi 
+  être utilisé pendant une partie, l'équipe doit cependant avoir quelques 
+  joueurs)
 game_ended_too_early: "&cLa partie c'est terminée trop tôt. Personne n'a gagné."
-help_bw_cheatin_give: /bw cheatIn <partie> give <resource> <quantite> <joueur> - &cDonne
-  au joueur le nombre de la ressource spécifiée
-help_bw_cheatin_destroyallbeds: /bw cheatIn <partie> destroyallbeds - &cDetruits tous
-  les lits de la partie spécifiée
+help_bw_cheatin_give: /bw cheatIn <partie> give <resource> <quantite> <joueur> -
+  &cDonne au joueur le nombre de la ressource spécifiée
+help_bw_cheatin_destroyallbeds: /bw cheatIn <partie> destroyallbeds - &cDetruits
+  tous les lits de la partie spécifiée
 admin_arena_overlaps: "&cL'emplacement choisi entraîne un chevauchement de l'arène
   avec une autre arène, ce qui peut entraîner des erreurs ! Veuillez choisir un autre
   emplacement. Si vous tenez à utiliser cet emplacement, exécutez &7/bw admin %arena%
