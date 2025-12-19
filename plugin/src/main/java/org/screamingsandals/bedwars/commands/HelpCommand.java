@@ -124,6 +124,8 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_spec"));
             player.sendMessage(i18nonly("help_bw_admin_pos1"));
             player.sendMessage(i18nonly("help_bw_admin_pos2"));
+            player.sendMessage(i18nonly("help_bw_admin_lobbypos1"));
+            player.sendMessage(i18nonly("help_bw_admin_lobbypos2"));
             player.sendMessage(i18nonly("help_bw_admin_pausecountdown"));
             player.sendMessage(i18nonly("help_bw_admin_post_game_waiting"));
             player.sendMessage(i18nonly("help_bw_admin_customprefix"));

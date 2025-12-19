@@ -1065,7 +1065,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
 
             if (Main.getVersionNumber() >= 115) {
-                game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                game.world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "immediate_respawn" : "doImmediateRespawn"), true);
             }
             if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
                 game.world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "locator_bar" : "locatorBar"), false);
@@ -2227,7 +2227,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
-                        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                        world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "immediate_respawn" : "doImmediateRespawn"), true);
                     }
                     if (Version.isVersion(1, 21, 6) && Main.getConfigurator().config.getBoolean("disable-locator-bars-in-arena-worlds")) {
                         world.setGameRule((GameRule<Boolean>) GameRule.getByName(Version.isVersion(1, 21, 11) ? "locator_bar" : "locatorBar"), false);
