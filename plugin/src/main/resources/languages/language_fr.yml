@@ -54,7 +54,7 @@ vip_game_is_full: "&cLa partie &7%arena% &cest pleine de joueurs VIP. Veuillez a
 buy_succes: "&7%item%&a acheté avec succès pour &7%material%&a !"
 buy_failed: "&cPas assez de matériaux pour acheter &7%item%&c ! Besoin de &7%material%&c !"
 compass_selector_team: "&aChoisir une équipe"
-leave_from_game_item: "&cquitté &rla partie"
+leave_from_game_item: "&cQuitter &rla partie"
 start_game_item: "&2Commencer la partie"
 team_selection_name: "Sélectionner une équipe - %arena%"
 team_selected: "&aÉquipe sélectionnée : %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
