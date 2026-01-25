@@ -36,6 +36,13 @@ public class VersionFallback {
         String[] mappingNamespaces = MapperPlatforms.getCurrentPlatform().getMappingNamespaces();
         String version = MapperPlatforms.getCurrentPlatform().getVersion();
 
+        if ("1.21.11 Unobfuscated".equals(version)) {
+            // fix support for later spigot builds of 1.21.11, which has broken version string
+            // (because they are built from the 1.21.11_unobfuscated version jar despite the fact the result is obfuscated)
+            MapperPlatforms.setCurrentPlatform(MapperPlatform.create("1.21.11", MapperPlatforms.getCurrentPlatform().getClassLoader(), mappingNamespaces));
+            version = "1.21.11";
+        }
+
         if (MinecraftServerAccessor.TYPE.get() != null) {
             // everything is fine, we support this version
             Bukkit.getLogger().info("[BedWars] Loaded NMS modules for " + version + " in namespaces " + Arrays.toString(mappingNamespaces));
@@ -71,17 +78,21 @@ public class VersionFallback {
     }
 
     private static int compareVersions(String v1, String v2) {
-        String[] parts1 = v1.split("\\.");
-        String[] parts2 = v2.split("\\.");
-        int length = Math.max(parts1.length, parts2.length);
+        try {
+            String[] parts1 = v1.split("\\.");
+            String[] parts2 = v2.split("\\.");
+            int length = Math.max(parts1.length, parts2.length);
 
-        for (int i = 0; i < length; i++) {
-            int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
-            int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
-            if (num1 != num2) {
-                return Integer.compare(num1, num2);
+            for (int i = 0; i < length; i++) {
+                int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
+                int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
+                if (num1 != num2) {
+                    return Integer.compare(num1, num2);
+                }
             }
+            return 0;
+        } catch (NumberFormatException e) {
+            return -1;
         }
-        return 0;
     }
 }
