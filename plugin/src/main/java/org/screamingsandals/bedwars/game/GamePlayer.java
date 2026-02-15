@@ -19,19 +19,24 @@
 
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
 
 public class GamePlayer {
     public final Player player;
@@ -51,13 +56,50 @@ public class GamePlayer {
     }
 
     public void changeGame(Game game) {
+        changeGame(game, false);
+    }
+
+    public void changeGame(Game game, boolean gameEndLeave) {
         if (this.game != null && game == null) {
             this.game.internalLeavePlayer(this);
             this.game = null;
             this.isSpectator = false;
             this.clean();
             if (Game.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
+                if (gameEndLeave
+                        && !Main.isDisabling()
+                        && Main.getConfigurator().config.getBoolean("bungee.rejoin-players-after-game")
+                        && !Main.getConfigurator().config.getBoolean("bungee.serverRestart")
+                        && !Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+                    new BukkitRunnable() {
+                        public void run() {
+                            try {
+                                Game game = null;
+                                if (Main.getConfigurator().config.getBoolean("bungee.random-game-selection.enabled")) {
+                                    if (Main.getInstance().isPreSelectGames()) {
+                                        game = Main.getInstance().getSelectedGame();
+                                    }
+                                    if (game == null) {
+                                        game = (Game) Main.getInstance().getRandomWaitingGameForBungeeMode();
+                                    }
+                                } else {
+                                    game = (Game) Main.getInstance().getFirstWaitingGame();
+                                }
+                                if (game == null) {
+                                    game = (Game) Main.getInstance().getFirstRunningGame();
+                                }
+
+                                game.joinToGame(player);
+                            } catch (NullPointerException ignored) {
+                                if (!BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
+                                    BungeeUtils.movePlayerToBungeeServer(player, false);
+                                }
+                            }
+                        }
+                    }.runTaskLater(Main.getInstance(), 1L);
+                } else {
+                    BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
+                }
             } else {
                 this.restoreInv();
             }

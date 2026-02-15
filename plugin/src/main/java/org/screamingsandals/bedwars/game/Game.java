@@ -2479,7 +2479,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             String message = i18nc("game_end", customPrefix);
             for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
                 player.player.sendMessage(message);
-                player.changeGame(null);
+                player.changeGame(null, true);
 
                 if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
                     final Player pl = player.player;

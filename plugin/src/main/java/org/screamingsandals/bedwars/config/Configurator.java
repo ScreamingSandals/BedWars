@@ -175,11 +175,12 @@ public class Configurator {
         checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);
 
         checkOrSetConfig(modify, "bungee.enabled", false);
-        checkOrSetConfig(modify, "bungee.serverRestart", true);
+        checkOrSetConfig(modify, "bungee.serverRestart", false);
         checkOrSetConfig(modify, "bungee.serverStop", false);
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
         checkOrSetConfig(modify, "bungee.kick-when-proxy-too-slow", true);
+        checkOrSetConfig(modify, "bungee.rejoin-players-after-game", false);
         checkOrSetConfig(modify, "bungee.random-game-selection.enabled", config.getBoolean("bungee.select-random-game", true));
         checkOrSetConfig(modify, "bungee.random-game-selection.preselect-games", false);
         checkOrSetConfig(modify, "bungee.motd.enabled", false);
