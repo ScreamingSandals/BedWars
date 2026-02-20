@@ -149,6 +149,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private int pauseCountdown;
     private int gameTime;
     private int minPlayers;
+    private Map<Integer, Integer> dynamicPauseCountdown;
     private List<GamePlayer> players = new ArrayList<>();
     private World world;
     private List<GameStore> gameStore = new ArrayList<>();
@@ -1224,6 +1225,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 // We're using 1.8
             }
 
+            if (configMap.isSet("dynamicPauseCountdown")) {
+                ConfigurationSection dynamicPauseCountdown = configMap.getConfigurationSection("dynamicPauseCountdown");
+                Map<Integer, Integer> map = new HashMap<>();
+                for (String key : dynamicPauseCountdown.getKeys(false)) {
+                    map.put(Integer.parseInt(key), dynamicPauseCountdown.getInt(key));
+                }
+                if (!map.isEmpty()) {
+                    game.dynamicPauseCountdown = map;
+                }
+            }
+
             Main.addGame(game);
             game.start();
             Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
@@ -1398,6 +1410,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             // We're using 1.8
             configMap.set("lobbyBossBarColor", lobbyBossBarColorName == null ? "default" : lobbyBossBarColorName);
             configMap.set("gameBossBarColor", gameBossBarColorName == null ? "default" : gameBossBarColorName);
+        }
+
+        if (dynamicPauseCountdown != null) {
+            configMap.set("dynamicPauseCountdown", dynamicPauseCountdown);
         }
 
         try {
@@ -1904,6 +1920,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     nextStatus = GameStatus.RUNNING;
                 } else {
                     nextCountdown--;
+
+                    if (dynamicPauseCountdown != null) {
+                        Integer result = dynamicPauseCountdown.entrySet().stream()
+                                .filter(e -> e.getKey() <= players.size())
+                                .max(Map.Entry.comparingByKey())
+                                .map(Map.Entry::getValue)
+                                .orElse(null);
+                        if (result != null && result < nextCountdown) {
+                            nextCountdown = result;
+                        }
+                    }
 
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
 
@@ -3906,5 +3933,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public boolean getOriginalOrInheritedHideLobbyAfterGameStart() {
         return invisibleLobbyOnGameStart.isOriginal() ? invisibleLobbyOnGameStart.getValue()
                 : Main.getConfigurator().config.getBoolean(INVISIBLE_LOBBY_ON_GAME_START);
+    }
+
+    public Map<Integer, Integer> getDynamicPauseCountdown() {
+        return dynamicPauseCountdown;
+    }
+
+    public void setDynamicPauseCountdown(Map<Integer, Integer> dynamicPauseCountdown) {
+        this.dynamicPauseCountdown = dynamicPauseCountdown;
     }
 }

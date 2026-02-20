@@ -80,7 +80,7 @@ public class GameCreator {
             response = setLobbyPos2(player.getLocation());
         } else if (action.equalsIgnoreCase("pausecountdown")) {
             if (args.length >= 1) {
-                response = setPauseCountdown(Integer.parseInt(args[0]));
+                response = setPauseCountdown(Integer.parseInt(args[0]), args.length >= 2 ? args[1] : null);
             }
         } else if (action.equalsIgnoreCase("time")) {
             if (args.length >= 1) {
@@ -1023,9 +1023,39 @@ public class GameCreator {
                 .replace("%z%", Integer.toString(loc.getBlockZ()));
     }
 
-    public String setPauseCountdown(int countdown) {
+    public String setPauseCountdown(int countdown, String dynamicMinPlayers) {
         if (countdown >= 10 && countdown <= 600) {
             game.setPauseCountdown(countdown);
+            if (dynamicMinPlayers != null) {
+                String[] split = dynamicMinPlayers.split(",");
+                Map<Integer, Integer> map = new HashMap<>();
+                for (String spl : split) {
+                    String[] spl2 = spl.split(":", 2);
+                    if (spl2.length != 2) {
+                        return i18n("admin_command_invalid_countdown");
+                    }
+
+                    try {
+                        int players = Integer.parseInt(spl2[0]);
+                        int time = Integer.parseInt(spl2[1]);
+                        if (time <= 0 || time > 600) {
+                            return i18n("admin_command_invalid_countdown");
+                        }
+
+                        map.put(players, time);
+                    } catch (NumberFormatException e) {
+                        return i18n("admin_command_invalid_countdown");
+                    }
+                }
+
+                if (!map.isEmpty()) {
+                    game.setDynamicPauseCountdown(map);
+                    return i18n("admin_command_pausecontdown_set_dynamic")
+                            .replace("%countdown%", Integer.toString(countdown))
+                            .replace("%dynamic%", dynamicMinPlayers);
+                }
+            }
+            game.setDynamicPauseCountdown(null);
             return i18n("admin_command_pausecontdown_setted").replace("%countdown%", Integer.toString(countdown));
         }
         return i18n("admin_command_invalid_countdown");
