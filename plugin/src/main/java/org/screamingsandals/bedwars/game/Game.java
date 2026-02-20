@@ -939,7 +939,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 Location mainLobbyLocation = MiscUtils.readLocationFromString(
                         Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
                         Main.getConfigurator().config.getString("mainlobby.location"));
-                gamePlayer.teleport(mainLobbyLocation);
+                Bukkit.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> gamePlayer.teleport(mainLobbyLocation), 1L);
                 gamePlayer.mainLobbyUsed = true;
             } catch (Throwable t) {
                 Bukkit.getLogger().severe("You didn't setup properly the mainlobby! Do it via commands not directly in config.yml");
