@@ -33,9 +33,11 @@ dependencies {
 }
 
 tasks.processResources {
+    val pluginVersion = project.version.toString()
+
     filesMatching("plugin.yml") {
         filter(mapOf("tokens" to mapOf(
-            "version" to project.version
+            "version" to pluginVersion
         )), ReplaceTokens::class.java)
     }
 

@@ -39,6 +39,10 @@ subprojects {
         archiveClassifier.set(buildNumber)
     }
 
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.add("-Xlint:-options")
+    }
+
     configureShadowPlugin {
         relocate("com.zaxxer", "org.screamingsandals.bedwars.lib.HikariCP")
         relocate("org.screamingsandals.simpleinventories", "org.screamingsandals.bedwars.lib.sgui")
