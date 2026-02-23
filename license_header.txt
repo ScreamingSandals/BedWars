@@ -1,4 +1,4 @@
-Copyright (C) ${year} ScreamingSandals
+Copyright (C) ${CREATION_YEAR} ScreamingSandals
 
 This file is part of Screaming BedWars.
 
