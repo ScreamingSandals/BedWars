@@ -1,0 +1,13 @@
+[versions]
+
+takenaka = "1.2.1-SNAPSHOT"
+mappings = "1.8.8+1.21.11"
+
+[libraries]
+
+takenaka-runtime = { group = "me.kcra.takenaka", name = "generator-accessor-runtime", version.ref = "takenaka" }
+takenaka-mappings = { group = "me.kcra.takenaka", name = "mappings", version.ref = "mappings" }
+
+[plugins]
+
+takenaka = { id = "me.kcra.takenaka.accessor", version.ref = "takenaka" }
