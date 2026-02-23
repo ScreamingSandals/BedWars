@@ -1,13 +1,58 @@
 [versions]
+# shaded libraries
+bstats = "2.2.1"
+hikari = "3.3.0"
+simpleinventories = "1.0.6.18"
+mclogs-api = "3.0.1"
 
+# compileOnly libraries
+paper = "1.16.5-R0.1-SNAPSHOT"
+parties-api = "3.2.6"
+perworldinventory-old = "1.11.5"
+perworldinventory-kt = "2.3.1"
+multiverse = "4.0.0"
+jetbrains-annotations = "26.0.2"
+vault = "1.7"
+netty = "4.1.79.Final"
+citizens = "2.0.30-SNAPSHOT"
+viaversion = "4.4.1"
+placeholderapi = "2.11.5"
+
+# takenka
 takenaka = "1.2.1-SNAPSHOT"
 mappings = "1.8.8+1.21.11"
 
+# gradle plugins
+screaming-plugin-builder = "2.0.0"
+buildconfig = "6.0.7"
+lombok = "9.2.0"
+
 [libraries]
+# shaded libraries
+bstats = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
+hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
+simpleinventories = { group = "org.screamingsandals.simpleinventories", name = "SimpleInventories-Core", version.ref = "simpleinventories" }
+mclogs-api = { group = "gs.mclo", name = "api", version.ref = "mclogs-api" }
+
+# compileOnly librarier
+paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper"}
+parties-api = { group = "com.alessiodp.parties", name = "parties-api", version.ref = "parties-api" }
+perworldinventory-old = { group = "me.gnat008", name = "perworldinventory", version.ref = "perworldinventory-old" }
+perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt", version.ref = "perworldinventory-kt" }
+multiverse-core = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
+vault = { group = "net.milkbowl.vault", name = "VaultAPI", version.ref = "vault" }
+netty = { group = "io.netty", name = "netty-all", version.ref = "netty" }
+citizens = { group = "net.citizensnpcs", name = "citizens-main", version.ref = "citizens" }
+viaversion = { group = "com.viaversion", name = "viaversion-api", version.ref = "viaversion" }
+placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderapi" }
 
 takenaka-runtime = { group = "me.kcra.takenaka", name = "generator-accessor-runtime", version.ref = "takenaka" }
 takenaka-mappings = { group = "me.kcra.takenaka", name = "mappings", version.ref = "mappings" }
 
 [plugins]
-
+screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
+screaming-plugin-run = { id = "org.screamingsandals.plugin-run", version.ref = "screaming-plugin-builder" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
 takenaka = { id = "me.kcra.takenaka.accessor", version.ref = "takenaka" }

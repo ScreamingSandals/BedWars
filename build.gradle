@@ -1,52 +1,48 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.88' apply false
-    id 'me.kcra.takenaka.accessor' version '1.2.1-SNAPSHOT' apply false
-    id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
+    id("org.screamingsandals.plugin-builder") version "1.0.88" apply false
+    id("com.github.gmazzo.buildconfig") version "3.0.0" apply false
 }
 
-allprojects {
-    group = 'org.screamingsandals.bedwars'
-}
-
-defaultTasks 'clean', 'screamCompile'
+defaultTasks("clean", "screamCompile")
 
 subprojects {
     System.setProperty("JavadocUploadCustomDirectoryPath", "sbw-0-2-x")
     apply plugin: 'java'
 
-    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+    if (project.name != "BedWars-API" && project.name != "BedWars") { // upload only BW and BW-API
         project.ext.disablePublishingToMaven = true
     }
 
     apply plugin: 'org.screamingsandals.plugin-builder'
 
     repositories {
-        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
-        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
-        maven { url 'https://repo.citizensnpcs.co'  }
-        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
-        maven { url 'https://repo.alessiodp.com/releases/'  }
-        maven { url 'https://repo.viaversion.com' }
-        maven { url 'https://jitpack.io'  }
+        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/"  }
+        maven { url "https://repo.onarandombox.com/content/groups/public"  }
+        maven { url "https://repo.citizensnpcs.co"  }
+        maven { url "https://repo.codemc.org/repository/maven-public/"  }
+        maven { url "https://repo.alessiodp.com/releases/"  }
+        maven { url "https://repo.viaversion.com" }
+        maven { url "https://jitpack.io"  }
     }
 
     dependencies {
-        compileOnly paperLegacy("1.16.5")
+        compileOnly(libs.jetbrains.annotations)
+        compileOnly(libs.paper)
     }
 
     enableShadowPlugin()
 
     shadowJar {
-        relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
-        relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
-        relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
-        relocate 'me.kcra.takenaka', 'org.screamingsandals.bedwars.lib.takenaka'
-        relocate 'gs.mclo', 'org.screamingsandals.bedwars.lib.mclogs'
+        relocate("com.zaxxer", "org.screamingsandals.bedwars.lib.HikariCP")
+        relocate("org.screamingsandals.simpleinventories", "org.screamingsandals.bedwars.lib.sgui")
+        relocate("org.bstats", "org.screamingsandals.bedwars.lib.bstats")
+        relocate("me.kcra.takenaka", "org.screamingsandals.bedwars.lib.takenaka")
+        relocate("gs.mclo", "org.screamingsandals.bedwars.lib.mclogs")
 
-        if (System.getenv('BUILD_NUMBER') != null) {
-            archiveClassifier.set(System.getenv('BUILD_NUMBER'))
+        if (System.getenv("BUILD_NUMBER") != null) {
+            archiveClassifier.set(System.getenv("BUILD_NUMBER"))
         } else {
-            archiveClassifier.set('dev')
+            archiveClassifier.set("dev")
         }
     }
 
