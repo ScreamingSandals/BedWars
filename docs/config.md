@@ -47,10 +47,10 @@ spawner-holo-height: 0.25
 # Show countdown timer in generator holograms
 # true  = shows time until next resource spawn
 spawner-holograms-countdown: true
-# Controls whether players take damage when outside the arena boundaries
-# (falling into the void, walking past the arena border, etc.).
-# True  = players will take damage outside the arena and may die if not returning quickly.
-# False = players will not take damage outside the arena.
+# Allow players to take damage when outside the arena boundaries.
+# This includes falling into the void, walking past the arena border, etc.
+# True  = players take damage normally outside the arena and can die if they don't return quickly.
+# False = damage is handled differently, but players can still die in extreme cases (e.g., void fall).
 damage-when-player-is-not-in-arena: false
 # Remove unused target blocks (beds/anchors) automatically
 # Helps keep arena clean after rebuild
