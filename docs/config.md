@@ -47,8 +47,10 @@ spawner-holo-height: 0.25
 # Show countdown timer in generator holograms
 # true  = shows time until next resource spawn
 spawner-holograms-countdown: true
-# Allow players to take damage when not inside an arena
-# false = disables damage outside arena
+# Controls whether players take damage when outside the arena boundaries
+# (falling into the void, walking past the arena border, etc.).
+# True  = players will take damage outside the arena and may die if not returning quickly.
+# False = players will not take damage outside the arena.
 damage-when-player-is-not-in-arena: false
 # Remove unused target blocks (beds/anchors) automatically
 # Helps keep arena clean after rebuild
@@ -102,13 +104,10 @@ respawn-cooldown:
   time: 5 # Respawn delay in seconds
 # Stop team generators when the last player on a team dies
 stop-team-spawners-on-die: false
-# Enable "fake death" handling.
-# When enabled, the plugin simulates a player's death without showing
-# the normal "You Died" screen.
-# Example use-case: if a player falls into the void, they are teleported
-# to the spectator spawn, their inventory is cleared, but the death screen
-# does not appear. This allows for smoother integration with other plugins
-# and avoids interrupting gameplay with the death UI.
+# Enables "fake death" handling for plugin compatibility with Via*, Geyser, and other proxies.
+# When enabled, normal respawn logic is skipped, preventing the standard "You Died" screen.
+# Example: player falls into the void, inventory cleared, teleported to spectator spawn,
+# but no death screen appears. Useful to avoid conflicts with other plugins.
 allow-fake-death: false
 # Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+
 prefer-1-19-4-display-entities: true
