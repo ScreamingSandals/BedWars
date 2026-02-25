@@ -26,17 +26,40 @@ prevent-killing-villagers: true
 compass-enabled: true
 # should BedWars join the player to a random team when he joins the lobby?
 join-randomly-on-lobby-join: false
+# Should a wool block be given to the player when joining the lobby?
 add-wool-to-inventory-on-join: true
+# Prevent natural mob spawning in the arena world
+# (zombies, skeletons, etc.)
 prevent-spawning-mobs: true
+# Enable holograms above resource generators
+# Displays resource type and possibly countdown
 spawner-holograms: true
+# Disable merging of dropped resource items
+# true  = items stay separate
+# false = items stack together
 spawner-disable-merge: true
+# Prevent mob spawning within a specific radius around the lobby spawn
+# Value is measured in blocks
 prevent-lobby-spawn-mobs-in-radius: 16
+# Vertical offset of generator holograms (in blocks)
+# Adjust if holograms appear too high or too low
 spawner-holo-height: 0.25
+# Show countdown timer in generator holograms
+# true  = shows time until next resource spawn
 spawner-holograms-countdown: true
+# Allow players to take damage when outside the arena boundaries.
+# This includes falling into the void, walking past the arena border, etc.
+# True  = players take damage normally outside the arena and can die if they don't return quickly.
+# False = damage is handled differently, but players can still die in extreme cases (e.g., void fall).
 damage-when-player-is-not-in-arena: false
+# Remove unused target blocks (beds/anchors) automatically
+# Helps keep arena clean after rebuild
 remove-unused-target-blocks: true
+# Allow sand/gravel and similar blocks to fall naturally
 allow-block-falling: true
+# Enable giving predefined items at game start
 game-start-items: false
+# Enable giving predefined items on player respawn
 player-respawn-items: false
 # When game-start-items is enabled, the player is going to get all items listed in the following list.
 # Example:
@@ -48,23 +71,43 @@ player-respawn-items: false
 # - leather_chestplate
 gived-game-start-items: []
 gived-player-respawn-items: []
+# Disable hunger depletion inside arenas
+# true  = players do not lose hunger
+# false = normal hunger mechanics apply
 disable-hunger: false
+# Automatically apply team colors to items in the shop GUI
 automatic-coloring-in-shop: true
+# Allow players to purchase up to 64 items at once
+# when using SHIFT + click in the shop GUI
 sell-max-64-per-click-in-shop: true
+# Allow administrators to use /bw cheat | /bw cheatIn in game
 enable-cheat-command-for-admins: false
+# Prevent shopkeepers from making any sounds
 shopkeepers-are-silent: true
+# List of placed block materials that should NOT be destroyed by explosions
 destroy-placed-blocks-by-explosion-except: []
+# Allow explosions to destroy blocks placed during the game
 destroy-placed-blocks-by-explosion: true
+# Display a hologram above beds or other target blocks
 holo-above-bed: true
+# Allow players to join an arena as spectators
 allow-spectator-join: false
+# Disable default server join/leave messages
 disable-server-message:
   player-join: false
   player-leave: false
+# Disable flight for players inside arenas
 disable-flight: true
+# Configure respawn cooldown settings
 respawn-cooldown:
   enabled: true
-  time: 5
+  time: 5 # Respawn delay in seconds
+# Stop team generators when the last player on a team dies
 stop-team-spawners-on-die: false
+# Enables "fake death" handling for plugin compatibility with Via*, Geyser, and other proxies.
+# When enabled, normal respawn logic is skipped, preventing the standard "You Died" screen.
+# Example: player falls into the void, inventory cleared, teleported to spectator spawn,
+# but no death screen appears. Useful to avoid conflicts with other plugins.
 allow-fake-death: false
 # Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+
 prefer-1-19-4-display-entities: true
@@ -73,11 +116,13 @@ use-chunk-tickets-if-available: true
 reset-full-spawner-countdown-after-picking: true
 players-can-win-game-only-after-seconds: 0
 disable-locator-bars-in-arena-worlds: true
+# Prevent players from opening other teams' shopkeepers
 disable-opening-stores-of-other-teams: false
 disable-waterlogging-of-original-blocks: false
+# Kick players after final death instead of keeping them as spectators
 kick-players-upon-final-death:
   enabled: false
-  delay: 5
+  delay: 5 # In seconds
 allowed-commands: []
 change-allowed-commands-to-blacklist: false
 bungee:
@@ -357,6 +402,9 @@ chat:
   all-chat: '[ALL] '
   team-chat: '[TEAM] '
   death-chat: '[DEATH] '
+  # Disable all chat messages for spectators
+  # false = spectators can send messages in the main chat like normal players with prefix [DEATH]
+  # true  = spectators can only use the spectator chat; their messages won't appear in the main game chat
   disable-all-chat-for-spectators: false
 rewards:
   enabled: false
