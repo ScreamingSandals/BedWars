@@ -86,13 +86,7 @@ public class TabManager {
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                String clearString;
-                if (Main.getVersionNumber() >= 115) {
-                    clearString = "{\"text\": \"\"}";
-                } else {
-                    clearString = "{\"translate\": \"\"}";
-                }
-                Object blankComponent = serialize(clearString);
+                Object blankComponent = serialize("");
                 Object packet;
                 if (ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get() != null) {
                     packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get().newInstance(blankComponent, blankComponent);
@@ -125,7 +119,11 @@ public class TabManager {
         }
 
         if (text.isEmpty()) {
-            text = "{\"text\": \"\"}";
+            if (Main.getVersionNumber() >= 115) {
+                text = "{\"text\": \"\"}";
+            } else {
+                text = "{\"translate\": \"\"}";
+            }
         } else {
             text = "{\"text\": \"" + text.replace("\"", "\\\"") + "\"}";
         }
