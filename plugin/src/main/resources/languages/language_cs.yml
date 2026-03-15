@@ -361,8 +361,8 @@ help_bw_admin_spawner_add: "/bw admin <aréna> spawner add <bronze|gold|iron> [h
 help_bw_admin_spawner_reset: "/bw admin <aréna> spawner reset - &eSmaže se hry všechny
   spawnery"
 help_bw_admin_store_add: "/bw admin <aréna> store add [Jméno nad hlavou obchodníka]
-  [soubor s obchodem] [použít i hlavní soubor] - &ePřidá obchodujícího vesničana na
-  tvojí pozici"
+  [soubor s obchodem] [tým] [použít i hlavní soubor] - &ePřidá obchodujícího vesničana
+  na tvojí pozici"
 help_bw_admin_store_remove: "/bw admin <aréna> store remove - &eOdebere obchodujícího
   vesničana ze tvojí pozice"
 help_bw_admin_store_type: "/bw admin <aréna> store type <žijící entita> - &eNastaví
@@ -421,11 +421,11 @@ cheat_invalid_player: '&cZvolený hráč není ve hře nebo je pozorovatel!'
 cheat_received_kill: '&aHráč &7%player%&a byl zabit cheatem!'
 cheat_disabled: '&cCheaty jsou zablokovány na tomto serveru!'
 cheat_game_not_running: '&cNemůžeš cheatovat v lobby!'
-help_bw_cheat_give: /bw cheat give <surovina> [množství] [hráč] - &cDá hráči konkrétní
-  množství suroviny
+help_bw_cheat_give: /bw cheat give <surovina> [množství] [hráč] - &cDá hráči 
+  konkrétní množství suroviny
 "party_warped": '&aVedoucí party tě přivolal k sobě'
-"party_command_help": /bw party warp - &eTeleportuje všechny hráče do tvé hry nebo
-  za tebou
+"party_command_help": /bw party warp - &eTeleportuje všechny hráče do tvé hry 
+  nebo za tebou
 "party_command_not_in_party": '&cMusíš byt v nějaké partě, abys mohl použít tento
   příkaz!'
 "party_command_is_empty": '&cTvoje parta je prázdná, nelze nikoho přivolat!'
@@ -441,33 +441,48 @@ help_bw_cheat_kill: /bw cheat kill [hráč] - &cZabije konkrétního hráče
 "party_command_not_party_leader": '&cNejsi vedoucí této party!'
 protect_your_door: '%teamcolor%&lOchraňte si svoje dveře!'
 kicking_in: '&cOpuštění arény za &7%time%'
-help_bw_cheatin_give: /bw cheatIn <hra> give <surovina> <množství> <hráč> - &cDá hráči
-  konkrétní počet suroviny
-help_bw_cheatin_destroybed: /bw cheatIn <hra> destroybed <tým> - &cZničí postel konkrétního
-  týmu
-help_bw_cheatin_destroyallbeds: /bw cheatIn <hra> destroyallbeds - &cZničí všechny
-  postele ve hře
+help_bw_cheatin_give: /bw cheatIn <hra> give <surovina> <množství> <hráč> - &cDá
+  hráči konkrétní počet suroviny
+help_bw_cheatin_destroybed: /bw cheatIn <hra> destroybed <tým> - &cZničí postel 
+  konkrétního týmu
+help_bw_cheatin_destroyallbeds: /bw cheatIn <hra> destroyallbeds - &cZničí 
+  všechny postele ve hře
 door_is_destroyed: Dveře týmu %team%&r byly zničeny!
 destroy_this_door: '%teamcolor%&lZničte tyto dveře!'
 team_not_in_game: '&cTým &7%name%&c není ve hře!'
 team_bed_is_already_destroyed: '&cPostel týmu &7%name%&c již je zničena!'
 cheat_received_target_block_destroy: '&aPostel týmu &7%name%&a byla zničena!'
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cZapočne hru s pouze jedním
-  týmem
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cZničí všechny postele ve
-  hře
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cZapočne hru s pouze 
+  jedním týmem
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cZničí všechny postele
+  ve hře
 cheat_received_target_blocks_destroy: '&aPostele všech týmů byly zničeny!'
 protect_your_door_destroyed: '&7&lDveře byly zničeny.'
 cheat_not_waiting: '&cHra není ve stavu čekání!'
 game_forced: '&aHra začne s prázdnými týmy. Znič jejich bloky k vítězství!'
-help_bw_cheat_destroybed: /bw cheat destroybed <tým> - &cZničí postel konkrétního
-  týmu
-help_bw_cheat_jointeam: /bw cheat jointeam [tým] - &cPřipojí admina do konkrétního
-  týmu nebo náhodného týmu, ignoruje jeho velikost (může být použito i během hry,
-  ale tým musí mít nějaké hráče)
+help_bw_cheat_destroybed: /bw cheat destroybed <tým> - &cZničí postel 
+  konkrétního týmu
+help_bw_cheat_jointeam: /bw cheat jointeam [tým] - &cPřipojí admina do 
+  konkrétního týmu nebo náhodného týmu, ignoruje jeho velikost (může být použito
+  i během hry, ale tým musí mít nějaké hráče)
 game_ended_too_early: '&cHra skončila příliš brzy. Nikdo nevyhrál.'
 help_bw_cheatin_kill: /bw cheatIn <hra> kill <hráč> - &cZabije konkrétního hráče
 waiting_placeholder_lobby_scoreboard: Čekání...
 admin_arena_overlaps: '&cVybraná lokalita způsobuje, že tato aréna se překrývá s jinou
   arénou, což může vést k chybám! Vyberte jinou lokalitu. Pokud trváte na použití
   tohoto umístění, zadejte &7/bw admin %arena% %position% force'
+admin_command_lobby_pos1_pos2_difference_must_be_higher: '&cVýškový rozdíl mezi lobbypos1
+  a lobbypos2 je příliš malý! Minimum je 5 bloků!'
+admin_command_lobby_pos1_setted: '&aLobby pozice 1 arény &7%arena%&a byla nastavena
+  na XYZ: &7%x%/%y%/%z%'
+admin_command_lobby_pos2_setted: '&aLobby pozice 2 arény &7%arena%&a byla nastavena
+  na XYZ: &7%x%/%y%/%z%'
+arena_info_villager_shop_team: '  Tým: &6%team%&r'
+help_bw_admin_lobbypos1: /bw admin <aréna> lobbypos1 - &eNastaví krajní bod 
+  lobby na tvoji pozici
+help_bw_admin_lobbypos2: /bw admin <aréna> lobbypos2 - &eNastaví druhý krajní 
+  bod lobby na tvoji pozici
+admin_arena_force_save: '&ePokud i tak chcete uložit &7%game%&e, zadejte příkaz: &7%command%'
+dump_logs_success: '&aÚspěšně nahrán dump posledního logovacího souboru. Odkaz: '
+help_bw_dumplogs: /bw dumplogs - &aNahraje dump souboru latest.log pomocí služby
+  mclo.gs a poskytne odkaz na tento dump
