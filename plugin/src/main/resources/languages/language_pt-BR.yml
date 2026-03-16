@@ -409,16 +409,16 @@ dump_failed: "&cDump failed!"
 "party_command_not_in_party": '&cVocê precisa estar em uma party para executar este
   comando!'
 "party_command_is_empty": '&cSua party está vazia, cancelando teleporte!'
-"party_command_help": /bw party warp - &eTeletransporta todos os jogadores para seu
-  jogo
+"party_command_help": /bw party warp - &eTeletransporta todos os jogadores para 
+  seu jogo
 cheat_invalid_player: '&cO jogador não está no jogo nem espectando!'
 game_forced: '&aO jogo vai começar com os times vazios. Destrua os blocos alvos para
   ganhar!'
-help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cDestrói a cama de um time
-  específico
-help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cEntra em um time específico
-  ignorando o seu tamanho (também pode ser usado enquanto o jogo estiver em andamento,
-  mas a equipe deve ter alguns jogadores)
+help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cDestrói a cama de um 
+  time específico
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cEntra em um time 
+  específico ignorando o seu tamanho (também pode ser usado enquanto o jogo 
+  estiver em andamento, mas a equipe deve ter alguns jogadores)
 game_ended_too_early: '&cO jogo terminou muito cedo. Nenhum time venceu.'
 "party_inform_game_join": '&aEntrando no jogo do líder da sua party'
 "party_warped": '&aO líder da party teleportou você'
@@ -431,10 +431,10 @@ team_not_in_game: '&cO Time &7%name%&cnão está jogando!'
 team_bed_is_already_destroyed: '&cCama do time &7%name%&c já foi destruída!'
 cheat_not_waiting: '&cO jogo não está parado!'
 cheat_received_target_block_destroy: '&aA cama do time &7%name%&a foi destruída!'
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cComeça o jogo mesmo com
-  um único time
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDestrói todas as camas
-  do jogo
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cComeça o jogo mesmo 
+  com um único time
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDestrói todas as 
+  camas do jogo
 cheat_received_target_blocks_destroy: '&aA cama de todos os times foram destruídas!'
 upgrade_success: '&a%name% foi aprimorado %spawner% para o nível %level%!'
 upgrade_translate: aprimorar
