@@ -415,9 +415,10 @@ help_bw_dump: "/bw dump - &eDescarrega o servidor e fornece um link para o despe
   Este link pode ser útil para suporte"
 dump_success: "&aServidor descartado com sucesso. Link: "
 dump_failed: "&cFalha no despejo!"
-help_bw_cheatin_kill: /bw cheatIn <game> kill <player> - &cMata o player especificado
-help_bw_cheatin_destroybed: /bw cheatIn <game> destroybed <team> - &cDestroi a cama
-  do time especifico
+help_bw_cheatin_kill: /bw cheatIn <game> kill <player> - &cMata o player 
+  especificado
+help_bw_cheatin_destroybed: /bw cheatIn <game> destroybed <team> - &cDestroi a 
+  cama do time especifico
 door_is_destroyed: A porta do time %team%&r foi destruída!
 upgrade_success: '&a%name% fez o upgrade %spawner% para o level %level%!'
 spawner_reached_maximum_level: '&cSpawner chegou ao level maxímo!'
@@ -425,21 +426,22 @@ protect_your_door: '%teamcolor&lDefendeu sua porta!'
 cheat_please_provide_valid_cheat_type: '&cA trapaça que você digitou não é valida
   ou não existe!'
 cheat_invalid_player: '&cO jogador não está no jogo ou espectando!'
-help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDa ao player uma
-  quantidade do recurso
+help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDa ao player
+  uma quantidade do recurso
 "party_command_invalid_arguments": '&cArgumento inválido! digite /bw party help para
   saber mais'
 cheat_not_waiting: '&cA partida não está em espera!'
 team_bed_is_already_destroyed: '&cA cama do time &7%name%&c já foi destruída!'
-help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cDestroi a cama do time específico
-help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cEntra como um admin em um time
-  específico ignorando o seu tamanho (também pode ser usado enquanto o jogo estiver
-  em andamento, mas a equipe deve ter alguns jogadores)
+help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cDestroi a cama do time
+  específico
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cEntra como um admin em um 
+  time específico ignorando o seu tamanho (também pode ser usado enquanto o jogo
+  estiver em andamento, mas a equipe deve ter alguns jogadores)
 game_ended_too_early: '&cO jogo terminou muito cedo. Ninguém venceu.'
-help_bw_cheatin_give: /bw cheatIn <game> give <resource> <amount> <player> - &cDa
-  ao jogador uma quantidade de recursos
-help_bw_cheatin_destroyallbeds: /bw cheatIn <game> destroyallbeds - &cDestroi todas
-  as camas da partida
+help_bw_cheatin_give: /bw cheatIn <game> give <resource> <amount> <player> - 
+  &cDa ao jogador uma quantidade de recursos
+help_bw_cheatin_destroyallbeds: /bw cheatIn <game> destroyallbeds - &cDestroi 
+  todas as camas da partida
 upgrade_translate: melhoria
 protect_your_door_destroyed: '&7&lPorta foi destruída.'
 destroy_this_door: '%teamcolor%&lDestruiu sua porta!'
@@ -450,8 +452,8 @@ cheat_game_not_running: '&cVocê não pode trapaçear nesse lobby!'
 help_bw_cheat_kill: /bw cheat kill [player] - &cMata o player
 "party_inform_game_join": '&aEntrando no jogo do líder da party'
 "party_warped": '&aO líder da party teleportou você aqui'
-"party_command_help": /bw party warp - &eTeleporta todos os jogadores para o jogo
-  que você está
+"party_command_help": /bw party warp - &eTeleporta todos os jogadores para o 
+  jogo que você está
 "party_command_not_in_party": '&cVocê precisa estar em uma party para utilizar este
   comando!'
 "party_command_not_party_leader": '&cVocê não é o líder desta party!'
@@ -461,9 +463,9 @@ game_forced: '&aA partida vai começar com os times vazios. Destrua os blocos es
   para ganhar!'
 team_not_in_game: '&cO time &7%name%&c não está na partida!'
 cheat_received_target_block_destroy: '&aA cama do time &7%name%&a foi destruída!'
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cComeça a partida com apenas
-  um time
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDestroi todas as camas
-  do jogo
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cComeça a partida com 
+  apenas um time
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cDestroi todas as 
+  camas do jogo
 cheat_received_target_blocks_destroy: '&aTodas as camas foram destruídas!'
 kicking_in: '&cSaindo da arena em: &7%time%'
