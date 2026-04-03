@@ -23,7 +23,7 @@ takenaka = "1.2.1-SNAPSHOT"
 mappings = "1.8.8+26.1"
 
 # gradle plugins
-screaming-plugin-builder = "2.0.0"
+screaming-plugin-builder = "2.0.1"
 buildconfig = "6.0.7"
 lombok = "9.2.0"
 

@@ -607,8 +607,6 @@ public class Configurator {
 
         checkOrSetConfig(modify, "update-checker.zero.console", true);
         checkOrSetConfig(modify, "update-checker.zero.admins", true);
-        checkOrSetConfig(modify, "update-checker.one.console", true);
-        checkOrSetConfig(modify, "update-checker.one.admins", true);
 
         checkOrSetConfig(modify, "target-block.allow-destroying-with-explosions", false);
         checkOrSetConfig(modify, "target-block.respawn-anchor.fill-on-start", true);

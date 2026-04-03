@@ -70,7 +70,7 @@ public class VersionFallback {
 
         MapperPlatforms.setCurrentPlatform(MapperPlatform.create(latest, MapperPlatforms.getCurrentPlatform().getClassLoader(), mappingNamespaces));
         Bukkit.getLogger().warning("[BedWars] This Minecraft version (" + version + ") is newer than the latest supported version (" + latest + ").");
-        Bukkit.getLogger().warning("[BedWars] Compatibility is unknown. Check for updates or official support confirmation.");
+        Bukkit.getLogger().warning("[BedWars] Compatibility is unknown. Check for updates or official support confirmation. If support is confirmed, ignore this message.");
         Bukkit.getLogger().info("[BedWars] Loaded fallback NMS modules for " + latest + " in namespaces " + Arrays.toString(mappingNamespaces));
     }
 

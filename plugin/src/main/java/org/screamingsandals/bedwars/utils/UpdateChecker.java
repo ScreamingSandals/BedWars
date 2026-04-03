@@ -60,24 +60,6 @@ public class UpdateChecker {
                             Bukkit.getPluginManager().registerEvents(updateListener, Main.getInstance());
                         }
                     }
-                    if (result.isOneAvailable) {
-                        float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
-                        if (Main.getConfigurator().config.getBoolean("update-checker.one.console")) {
-                            mpr("update_checker_one").replace("url", result.oneWebsite).send(Bukkit.getConsoleSender());
-                            if (javaVer < 55.0F) {
-                                mpr("update_checker_one_second_bad").send(Bukkit.getConsoleSender());
-                            } else {
-                                mpr("update_checker_one_second_good").send(Bukkit.getConsoleSender());
-                            }
-                        }
-                        if (Main.getConfigurator().config.getBoolean("update-checker.one.admins")) {
-                            if (updateListener == null) {
-                                updateListener = new UpdateListener(result);
-                                Bukkit.getPluginManager().registerEvents(updateListener, Main.getInstance());
-                            }
-                            updateListener.javaVer = javaVer;
-                        }
-                    }
                 }
             } catch (Exception ignored) {
             }
@@ -90,10 +72,6 @@ public class UpdateChecker {
         public String currentZeroVersion;
         @SerializedName("zero_update")
         public boolean isUpdateAvailable;
-        @SerializedName("one_available")
-        public boolean isOneAvailable;
-        @SerializedName("one_page")
-        public String oneWebsite;
         @SerializedName("zero_download_url")
         public String download;
 
@@ -103,15 +81,12 @@ public class UpdateChecker {
                     "status=" + status +
                     ", currentZeroVersion='" + currentZeroVersion + '\'' +
                     ", isUpdateAvailable=" + isUpdateAvailable +
-                    ", isOneAvailable=" + isOneAvailable +
-                    ", oneWebsite='" + oneWebsite + '\'' +
                     ", download='" + download + '\'' +
                     '}';
         }
     }
 
     public static class UpdateListener implements Listener {
-        public float javaVer;
         private Result result;
 
         public UpdateListener(Result result) {
@@ -125,15 +100,6 @@ public class UpdateChecker {
                 if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins") && result.isUpdateAvailable) {
                     mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(player);
                     mpr("update_checker_zero_second").replace("url", result.download).send(player);
-                }
-
-                if (Main.getConfigurator().config.getBoolean("update-checker.one.admins") && result.isOneAvailable) {
-                    mpr("update_checker_one").replace("url", result.oneWebsite).send(player);
-                    if (javaVer < 55.0F) {
-                        mpr("update_checker_one_second_bad").send(player);
-                    } else {
-                        mpr("update_checker_one_second_good").send(player);
-                    }
                 }
             }
 

@@ -541,8 +541,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
         try {
             float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
-            if (javaVer < 55) {
-                getLogger().warning("Bedwars 0.3.0 will require at least Java 11. Your server is not prepared for it. Update your Java or contact your hosting. ");
+            if (javaVer < 61) {
+                getLogger().warning("BedWars 0.3.0 will require at least Java 17. Your server is not prepared for it. Update your Java or contact your hosting. ");
                 getLogger().warning("https://docs.papermc.io/misc/java-install");
             }
         } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D
@@ -609,9 +609,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")
-                || Main.getConfigurator().config.getBoolean("update-checker.zero.oped-players")
-        || Main.getConfigurator().config.getBoolean("update-checker.one.console")
-                || Main.getConfigurator().config.getBoolean("update-checker.one.oped-players")) {
+                || Main.getConfigurator().config.getBoolean("update-checker.zero.oped-players")) {
             UpdateChecker.run();
         }
 
@@ -630,9 +628,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 preSelectGames = true;
             }, 2L);
         }
-
-        Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
-        Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");
     }
 
     public void onDisable() {
