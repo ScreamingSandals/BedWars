@@ -20,7 +20,7 @@ placeholderapi = "2.11.5"
 
 # takenka
 takenaka = "1.2.1-SNAPSHOT"
-mappings = "1.8.8+26.1"
+mappings = "1.8.8+26.1.1"
 
 # gradle plugins
 screaming-plugin-builder = "2.0.1"
