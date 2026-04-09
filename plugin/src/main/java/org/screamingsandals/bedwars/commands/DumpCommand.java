@@ -48,6 +48,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -246,6 +247,17 @@ public class DumpCommand extends BaseCommand {
                                 e.printStackTrace();
                             }
                         });
+
+                if (Bukkit.getServer().getPluginManager().isPluginEnabled("SBA")) {
+                    Path sbaConfig = Main.getInstance().getDataFolder().toPath().resolve("../SBA/sbaconfig.yml");
+                    if (Files.exists(sbaConfig)) {
+                        files.add(new AFile(
+                                "sbaconfig.yml",
+                                "yaml",
+                                String.join("\n", Files.readAllLines(sbaConfig, StandardCharsets.UTF_8))
+                        ));
+                    }
+                }
 
                 if ("pastes.dev".equals(service)) {
                     URL url = new URL("https://api.pastes.dev/post");

@@ -469,8 +469,12 @@ public class AdminCommand extends BaseCommand {
                         player.sendMessage(i18n("arena_must_be_in_edit_mode"));
                     } else {
                         gc.remove(arN);
-                        new File(Main.getInstance().getDataFolder(), "arenas/" + arN + ".yml").delete();
-                        Main.removeGame(Main.getGame(arN));
+                        Game game = Main.getGame(arN);
+                        File file = game.getFile();
+                        if (file != null) {
+                            file.delete();
+                        }
+                        Main.removeGame(game);
                         player.sendMessage(i18n("arena_removed"));
                     }
                 } else if (gc.containsKey(arN)) {
