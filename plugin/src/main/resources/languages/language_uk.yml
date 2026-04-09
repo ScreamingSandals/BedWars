@@ -426,17 +426,19 @@ game_forced: '&aГра почнеться з порожніх команд. Зн
 team_not_in_game: '&cКоманда &7%name%&c не в грі!'
 team_bed_is_already_destroyed: '&cЛіжко команди &7%name%&c вже знищено!'
 cheat_received_target_block_destroy: '&aЛіжко команди &7%name%&a знищено!'
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cПочинає гру з однією командою
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cПочинає гру з однією 
+  командою
 upgrade_success: '&a%name% успішно оновив %spawner% до рівня %level%!'
-help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cЗнищує ліжко конкретної
-  команди
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cЗнищує всі ліжка в грі
-help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cПриєднує адміністратора до вказаної
-  команди або до поточної команди, ігноруючи її розмір (можна також використовувати
-  під час гри, але в команді має бути декілька гравців)
+help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cЗнищує ліжко 
+  конкретної команди
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cЗнищує всі ліжка в 
+  грі
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cПриєднує адміністратора до
+  вказаної команди або до поточної команди, ігноруючи її розмір (можна також 
+  використовувати під час гри, але в команді має бути декілька гравців)
 cheat_received_target_blocks_destroy: '&aЛіжка всіх команд знищені!'
-"party_command_help": /bw party warp - &eВідправляє всіх гравців до вашої гри або
-  до вас
+"party_command_help": /bw party warp - &eВідправляє всіх гравців до вашої гри 
+  або до вас
 cheat_not_waiting: '&cГра не перебуває в стані очікування!'
 upgrade_translate: покращення
 spawner_reached_maximum_level: §cСпавнер досяг максимального рівня!
@@ -446,8 +448,8 @@ cheat_received_give: '&aГравець &7%player%&a отримав &7%amount%&a 
 cheat_received_kill: '&aГравець &7%player%&a вбитий чітом!'
 cheat_disabled: '&cНа цьому сервері відключені чіти!'
 cheat_game_not_running: '&cВи не можете чітерити в лоббі!'
-help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cДає гравцеві вказану
-  кількість ресурсу
+help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cДає гравцеві
+  вказану кількість ресурсу
 help_bw_cheat_kill: /bw cheat kill [player] - &cВбиває вказаного гравця
 "party_command_invalid_arguments": '&cНевірна кількість аргументів!, введіть /bw party
   help щоб дізнатись більше'

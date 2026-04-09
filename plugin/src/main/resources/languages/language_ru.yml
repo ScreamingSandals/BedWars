@@ -419,13 +419,13 @@ cheat_disabled: '&cЧиты на этом сервере отключены!'
 help_bw_cheat_kill: /bw cheat kill [игрок] - &cУбивает указанного игрока
 "party_inform_game_join": '&aПодключение к игре лидера группы'
 "party_warped": '&aЛидер группы перенёс вас'
-"party_command_help": /bw party warp - &eПереносит всех игроков в вашу игру или к
-  вам
+"party_command_help": /bw party warp - &eПереносит всех игроков в вашу игру или 
+  к вам
 "party_command_not_in_party": '&cВам необходимо быть в группе!'
 "party_command_not_party_leader": '&cВы не лидер группы!'
 "party_command_is_empty": '&cВаша группа пуста, не можем никого перенести!'
-help_bw_cheat_give: /bw cheat give <ресурс> [кол-во] [игрок] - &cВыдаёт игроку указанное
-  количество ресурса
+help_bw_cheat_give: /bw cheat give <ресурс> [кол-во] [игрок] - &cВыдаёт игроку 
+  указанное количество ресурса
 "party_command_invalid_arguments": '&cНеверное количество аргументов! Введите /bw
   party help для получения помощи'
 "party_command_warped": '&aЧлены группы были перенесены'
@@ -435,15 +435,15 @@ game_forced: '&aИгра начнётся с пустыми командами. 
 team_bed_is_already_destroyed: '&cКровать команды &7%name%&c уже уничтожена!'
 team_not_in_game: '&cКоманда &7%name%&c не в игре!'
 cheat_received_target_block_destroy: '&aКровать команды &7%name%&a была уничтожена!'
-help_bw_cheat_startemptygame: /bw cheat startemptygame - &cЗапускает игру только с
-  одной командой
-help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cУничтожает кровать выбранной
-  команды
-help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cУничтожает все кровати
-  в матче
-help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cПрисоединяет админа в выбранную
-  команду или в текущую команду игнорируя её размер (также может использоваться когда
-  игра уже запущена, однако в команде должны быть игроки)
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cЗапускает игру только
+  с одной командой
+help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cУничтожает кровать 
+  выбранной команды
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cУничтожает все 
+  кровати в матче
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cПрисоединяет админа в 
+  выбранную команду или в текущую команду игнорируя её размер (также может 
+  использоваться когда игра уже запущена, однако в команде должны быть игроки)
 cheat_received_target_blocks_destroy: '&aКровати всех команд были уничтожены!'
 kicking_in: '&cВыход из арены через: &7%time%'
 protect_your_door: '%teamcolor%&lЗащищают вашу дверь!'
@@ -451,14 +451,15 @@ protect_your_door_destroyed: '&7&lДверь сломана.'
 destroy_this_door: '%teamcolor%&lРазрушили эту дверь!'
 door_is_destroyed: Дверь команды %team% уничтожена!
 game_ended_too_early: '&cИгра закончилась слишком рано. Никто не выиграл.'
-help_bw_cheatin_destroyallbeds: /bw cheatIn <арена> destroyallbeds - &cРазрушает все
-  кровати в игре
+help_bw_cheatin_destroyallbeds: /bw cheatIn <арена> destroyallbeds - &cРазрушает
+  все кровати в игре
 waiting_placeholder_lobby_scoreboard: Ожидание...
-help_bw_cheatin_kill: /bw cheatIn <арена> kill <игрок> - &cУбивает указанного игрока
-help_bw_cheatin_destroybed: /bw cheatIn <арена> destroybed <команда> - &cЛомает кровать
-  определённой команды
-help_bw_cheatin_give: /bw cheatIn <арена> give <ресурс> <число> <игрок> - &cВыдаёт
-  указанное количество ресурсов игроку
+help_bw_cheatin_kill: /bw cheatIn <арена> kill <игрок> - &cУбивает указанного 
+  игрока
+help_bw_cheatin_destroybed: /bw cheatIn <арена> destroybed <команда> - &cЛомает 
+  кровать определённой команды
+help_bw_cheatin_give: /bw cheatIn <арена> give <ресурс> <число> <игрок> - 
+  &cВыдаёт указанное количество ресурсов игроку
 admin_arena_overlaps: '&cВыбранная позиция пересекает другую арену, что может привести
   к проблемам! Выберите другую локацию. Если же вы хотите её использовать, введите
   &7/bw admin %arena% %position% force'
