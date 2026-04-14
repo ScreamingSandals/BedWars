@@ -65,7 +65,7 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> pos2` - Sets the second extreme point of the arena to your position
 * `/bw admin <arena> lobbypos1` - Sets the extreme point of the lobby to your position (this is optional and allows for lobby removal on the game start if set together with `invisible-lobby-on-game-start` config option)
 * `/bw admin <arena> lobbypos2` - Sets the second extreme point of the lobby to your position
-* `/bw admin <arena> pausecountdown <seconds>` - Sets the pause duration before game starts
+* `/bw admin <arena> pausecountdown <seconds> [players:seconds,players:seconds,...]` - Sets the pause duration before game starts. Smaller limits can be defined for multiple user thresholds to speed up the game start in full lobbies.
 * `/bw admin <arena> minplayers <minimum>` - Sets minimum of players needed to start the game
 * `/bw admin <arena> time <seconds>` - Sets the game's duration
 * `/bw admin <arena> team add <team> <color> <max players>` - Add a team to the game
@@ -85,7 +85,7 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> config <constant> <value>` - Sets value of constant variable for game
 * `/bw admin <arena> arenatime <type>` - Sets time in arena (DAY, NIGHT, etc.)
 * `/bw admin <arena> arenaweather <type>` - Sets weather in arena (default, CLEAN, DOWNFALL)
-* `/bw admin <arena> postgamewaiting <seconds> [players:seconds,players:seconds,...]` - Sets the waiting time before player is teleported out of the arena. Smaller limits can be defined for multiple user thresholds to speed up the game start in full lobbies.
+* `/bw admin <arena> postgamewaiting <seconds>` - Sets the waiting time before player is teleported out of the arena.
 * `/bw admin <arena> customprefix <name|off>` - Enables custom prefix for arena
 * `/bw admin <arena> save` - Saves the game and activates it!
 * `/bw admin <arena> edit` - Turns the game off and switches the arena to edit mode
