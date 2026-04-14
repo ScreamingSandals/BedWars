@@ -127,11 +127,12 @@ allowed-commands: []
 change-allowed-commands-to-blacklist: false
 bungee:
   enabled: false
-  serverRestart: true
+  serverRestart: false
   serverStop: false
   server: hub
   auto-game-connect: false
   kick-when-proxy-too-slow: true
+  rejoin-players-after-game: false
   random-game-selection:
     enabled: true
     preselect-games: false

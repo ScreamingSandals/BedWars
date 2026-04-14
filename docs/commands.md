@@ -85,7 +85,7 @@ All these commands require `bw.admin` permission if not specified.
 * `/bw admin <arena> config <constant> <value>` - Sets value of constant variable for game
 * `/bw admin <arena> arenatime <type>` - Sets time in arena (DAY, NIGHT, etc.)
 * `/bw admin <arena> arenaweather <type>` - Sets weather in arena (default, CLEAN, DOWNFALL)
-* `/bw admin <arena> postgamewaiting <seconds>` - Sets the waiting time before player is teleported out of the arena
+* `/bw admin <arena> postgamewaiting <seconds> [players:seconds,players:seconds,...]` - Sets the waiting time before player is teleported out of the arena. Smaller limits can be defined for multiple user thresholds to speed up the game start in full lobbies.
 * `/bw admin <arena> customprefix <name|off>` - Enables custom prefix for arena
 * `/bw admin <arena> save` - Saves the game and activates it!
 * `/bw admin <arena> edit` - Turns the game off and switches the arena to edit mode
