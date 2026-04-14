@@ -37,6 +37,7 @@ softdepend:
   - Citizens
   - Parties
   - ViaVersion
+  - ASPaperPlugin
 commands:
   bw:
     description: Command of BW plugin
