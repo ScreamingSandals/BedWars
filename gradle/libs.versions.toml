@@ -2,7 +2,7 @@
 # shaded libraries
 bstats = "2.2.1"
 hikari = "3.3.0"
-simpleinventories = "1.0.6.19"
+simpleinventories = "1.0.6.20"
 mclogs-api = "3.0.1"
 
 # compileOnly libraries
