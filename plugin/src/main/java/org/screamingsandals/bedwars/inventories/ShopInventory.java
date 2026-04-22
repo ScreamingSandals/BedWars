@@ -439,7 +439,7 @@ public class ShopInventory implements Listener {
             newItem = changeItemType.getStack(amount);
         }
 
-        if (!event.isHasExecutions() && clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
+        if (!event.isHasExecutions() && clickType.isShiftClick() && newItem.getMaxStackSize() > 1 && !mapReader.getBoolean("disable-shift-buying")) {
             double priceOfOne = (double) price / amount;
             double maxStackSize;
             int finalStackSize;
