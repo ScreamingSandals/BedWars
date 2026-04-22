@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
@@ -158,6 +160,60 @@ public class WarpPowderListener implements Listener {
                     .getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
             if (warpPowder != null) {
                 warpPowder.cancelTeleport(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onWarpPowderMove(InventoryClickEvent event) {
+        if (event.isCancelled() || !(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (!Main.isPlayerInGame(player)) {
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+
+        if (item == null) {
+            return;
+        }
+
+        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, WARP_POWDER_PREFIX);
+
+        if (unhidden != null) {
+            WarpPowder warpPowder = (WarpPowder) Main.getPlayerGameProfile(player).getGame()
+                    .getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
+            if (warpPowder != null) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemDrag(InventoryDragEvent event) {
+        if (event.isCancelled() || !(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (!Main.isPlayerInGame(player)) {
+            return;
+        }
+
+        ItemStack item = event.getOldCursor();
+
+        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(item, WARP_POWDER_PREFIX);
+
+        if (unhidden != null) {
+            WarpPowder warpPowder = (WarpPowder) Main.getPlayerGameProfile(player).getGame()
+                    .getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
+            if (warpPowder != null) {
+                event.setCancelled(true);
             }
         }
     }
