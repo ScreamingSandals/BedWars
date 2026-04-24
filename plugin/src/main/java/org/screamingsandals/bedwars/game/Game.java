@@ -2390,7 +2390,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         tick.setNextStatus(GameStatus.REBUILDING);
                         tick.setNextCountdown(0);
                     }
-                } else if (countdown != gameTime /* Prevent spawning resources on game start */) {
+                } else if (countdown != gameTime /* Prevent spawning resources on game start */ || Main.getConfigurator().config.getBoolean("spawn-resources-on-game-start")) {
                     for (ItemSpawner spawner : spawners) {
                         if (spawner.type == null) {
                             continue;

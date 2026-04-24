@@ -167,6 +167,7 @@ public class Configurator {
         checkOrSetConfig(modify, "disable-locator-bars-in-arena-worlds", true);
         checkOrSetConfig(modify, "disable-opening-stores-of-other-teams", false);
         checkOrSetConfig(modify, "disable-waterlogging-of-original-blocks", false);
+        checkOrSetConfig(modify, "spawn-resources-on-game-start", false);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);
@@ -305,6 +306,7 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.tnt-sheep.follow-range", 10.0);
         checkOrSetConfig(modify, "specials.tnt-sheep.max-target-distance", 32);
         checkOrSetConfig(modify, "specials.tnt-sheep.explosion-time", 8);
+        checkOrSetConfig(modify, "specials.tnt-sheep.damage", config.getDouble("specials.auto-igniteable-tnt.damage", 4.0));
         checkOrSetConfig(modify, "specials.arrow-blocker.protection-time", 10);
         checkOrSetConfig(modify, "specials.arrow-blocker.delay", 5);
         checkOrSetConfig(modify, "specials.warp-powder.teleport-time", 6);

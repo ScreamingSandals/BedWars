@@ -44,9 +44,10 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
     private double followRange;
     private double maxTargetDistance;
     private int explosionTime;
+    private float damage;
 
     public TNTSheep(Game game, Player player, Team team, Location loc, ItemStack item,
-                    double speed, double followRange, double maxTargetDistance, int explosionTime) {
+                    double speed, double followRange, double maxTargetDistance, int explosionTime, float damage) {
         super(game, player, team);
         this.loc = loc;
         this.item = item;
@@ -54,6 +55,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         this.followRange = followRange;
         this.maxTargetDistance = maxTargetDistance;
         this.explosionTime = explosionTime * 20;
+        this.damage = damage;
     }
 
     @Override
@@ -81,6 +83,11 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         return followRange;
     }
 
+    @Override
+    public float getDamage() {
+        return damage;
+    }
+
     public void spawn() {
         Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
         TeamColor color = TeamColor.fromApiColor(team.getColor());
@@ -100,6 +107,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         sheep.setTarget(target);
 
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+        tnt.setYield(damage);
         tnt.setFuseTicks(explosionTime);
         tnt.setIsIncendiary(false);
         try {
