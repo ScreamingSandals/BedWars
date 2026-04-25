@@ -50,6 +50,7 @@ public class GamePlayer {
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
     public boolean forceSynchronousTeleportation = false; // required when player leaves
+    public boolean temporaryTransitionSpectatorLockMovement = false;
 
     public GamePlayer(Player player) {
         this.player = player;
@@ -64,6 +65,7 @@ public class GamePlayer {
             this.game.internalLeavePlayer(this);
             this.game = null;
             this.isSpectator = false;
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.clean();
             if (Game.isBungeeEnabled()) {
                 if (gameEndLeave
@@ -109,6 +111,7 @@ public class GamePlayer {
             this.game = game;
             this.isSpectator = false;
             this.mainLobbyUsed = false;
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.game.internalJoinPlayer(this);
             if (this.game != null) {
                 this.latestGame = this.game.getName();
@@ -117,6 +120,7 @@ public class GamePlayer {
             this.game.internalLeavePlayer(this);
             this.game = game;
             this.isSpectator = false;
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.clean();
             this.mainLobbyUsed = false;
             this.game.internalJoinPlayer(this);

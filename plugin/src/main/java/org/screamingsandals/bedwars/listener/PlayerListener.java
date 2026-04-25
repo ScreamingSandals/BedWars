@@ -1341,6 +1341,11 @@ public class PlayerListener implements Listener {
 
         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 
+        if (!gPlayer.isSpectator) {
+            event.setCancelled(true);
+            return;
+        }
+
         Game game = gPlayer.getGame();
 
         if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {

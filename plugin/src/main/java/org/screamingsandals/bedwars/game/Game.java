@@ -1780,6 +1780,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.isSpectator = false;
+            gamePlayer.temporaryTransitionSpectatorLockMovement = true;
             if (player.getSpectatorTarget() != null) {
                 player.setSpectatorTarget(null);
             }
@@ -1787,6 +1788,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 player.setAllowFlight(false);
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
+                gamePlayer.temporaryTransitionSpectatorLockMovement = false;
 
                 if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
                     players.forEach(p -> p.showPlayer(player));

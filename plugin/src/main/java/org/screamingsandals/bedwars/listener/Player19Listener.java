@@ -80,6 +80,8 @@ public class Player19Listener implements Listener {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                 }
+            } else if (gPlayer.temporaryTransitionSpectatorLockMovement && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+                event.setCancelled(true);
             }
         }
     }
