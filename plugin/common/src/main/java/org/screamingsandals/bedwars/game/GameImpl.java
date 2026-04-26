@@ -1163,6 +1163,7 @@ public class GameImpl implements LocalGame {
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.setSpectator(false);
+            gamePlayer.temporaryTransitionSpectatorLockMovement = true;
             if (gamePlayer.getSpectatorTarget() != null) {
                 gamePlayer.setSpectatorTarget(null);
             }
@@ -1170,6 +1171,7 @@ public class GameImpl implements LocalGame {
                 gamePlayer.setAllowFlight(false);
                 gamePlayer.setFlying(false);
                 gamePlayer.setGameMode(GameMode.of("survival"));
+                gamePlayer.temporaryTransitionSpectatorLockMovement = false;
 
                 if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
                     players.forEach(p -> p.showPlayer(gamePlayer));

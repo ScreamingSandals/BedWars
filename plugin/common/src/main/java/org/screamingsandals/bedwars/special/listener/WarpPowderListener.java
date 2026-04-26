@@ -32,6 +32,8 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.EntityDamageEvent;
 import org.screamingsandals.lib.event.player.PlayerDropItemEvent;
 import org.screamingsandals.lib.event.player.PlayerInteractEvent;
+import org.screamingsandals.lib.event.player.PlayerInventoryClickEvent;
+import org.screamingsandals.lib.event.player.PlayerInventoryDragEvent;
 import org.screamingsandals.lib.event.player.PlayerMoveEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.Player;
@@ -150,6 +152,46 @@ public class WarpPowderListener {
         }
 
         var unhidden = ItemUtils.getIfStartsWith(event.itemDrop().getItem(), WARP_POWDER_PREFIX);
+        if (unhidden != null) {
+            var bwPlayer = event.player().as(BedWarsPlayer.class);
+            var warpPowder = bwPlayer.getGame().getFirstActiveSpecialItemOfPlayer(bwPlayer, WarpPowderImpl.class);
+            if (warpPowder != null) {
+                warpPowder.cancelTeleport(true);
+            }
+        }
+    }
+
+    @OnEvent
+    public void onWarpPowderMove(PlayerInventoryClickEvent event) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
+            return;
+        }
+
+        var item = event.currentItem();
+
+        if (item == null) {
+            return;
+        }
+
+        var unhidden = ItemUtils.getIfStartsWith(item, WARP_POWDER_PREFIX);
+        if (unhidden != null) {
+            var bwPlayer = event.player().as(BedWarsPlayer.class);
+            var warpPowder = bwPlayer.getGame().getFirstActiveSpecialItemOfPlayer(bwPlayer, WarpPowderImpl.class);
+            if (warpPowder != null) {
+                warpPowder.cancelTeleport(true);
+            }
+        }
+    }
+
+    @OnEvent
+    public void onWarpPowderDrag(PlayerInventoryDragEvent event) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
+            return;
+        }
+
+        var item = event.oldCursorItem();
+
+        var unhidden = ItemUtils.getIfStartsWith(item, WARP_POWDER_PREFIX);
         if (unhidden != null) {
             var bwPlayer = event.player().as(BedWarsPlayer.class);
             var warpPowder = bwPlayer.getGame().getFirstActiveSpecialItemOfPlayer(bwPlayer, WarpPowderImpl.class);

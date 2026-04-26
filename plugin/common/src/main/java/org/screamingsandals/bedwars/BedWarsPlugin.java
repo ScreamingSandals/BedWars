@@ -109,7 +109,8 @@ import java.util.stream.Collectors;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Parties"
+        "Parties",
+        "ASPaperPlugin"
 })
 @Init(
         services = {

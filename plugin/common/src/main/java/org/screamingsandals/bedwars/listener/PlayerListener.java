@@ -1412,6 +1412,8 @@ public class PlayerListener {
                     event.cancelled(true);
                     Debug.info(player.getName() + " is doing prohibited move, cancelling");
                 }
+            } else if (gPlayer.temporaryTransitionSpectatorLockMovement && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+                event.cancelled(true);
             }
         }
     }
@@ -1564,13 +1566,19 @@ public class PlayerListener {
             return;
         }
 
-        var game = PlayerManagerImpl.getInstance().getGameOfPlayer(event.player());
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(event.player());
 
-        if (game.isEmpty()) {
+        if (gPlayer.isEmpty()) {
             return;
         }
 
-        if (!ArenaUtils.isInArea(event.newLocation(), game.get().getPos1(), game.get().getPos2())) {
+        var game = gPlayer.get().getGame();
+
+        if (game == null) {
+            return;
+        }
+
+        if (!gPlayer.get().isSpectator() || !ArenaUtils.isInArea(event.newLocation(), game.getPos1(), game.getPos2())) {
             event.cancelled(true);
         }
     }

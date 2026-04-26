@@ -376,6 +376,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         boolean useHolograms = hologramEnabled && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_HOLOGRAMS, false)
                 && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, false);
         boolean stopTeamSpawnersOnDie = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, false);
+        boolean spawnResourcesOnGameStart = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWN_RESOURCES_ON_GAME_START, false);
         this.currentCycle = currentInterval.second().getBukkitTime(currentInterval.getFirst());
 
         // Cycle
@@ -385,8 +386,10 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         this.runningTask = this.location.tasker().runRepeatedly(taskItself -> {
             if (this.firstTick) {
                 this.firstTick = false;
-                this.elapsedTime++;
-                return;
+                if (!spawnResourcesOnGameStart) {
+                    this.elapsedTime++;
+                    return;
+                }
             }
             // Someone changed the ItemSpawnerType while the game was running. That is unsupported and may lead to weird behaviour
             if (this.cachedType == null) {

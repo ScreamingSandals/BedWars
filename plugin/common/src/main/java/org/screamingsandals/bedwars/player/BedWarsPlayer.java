@@ -69,6 +69,7 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
     public boolean forceSynchronousTeleportation = false;
+    public boolean temporaryTransitionSpectatorLockMovement = false;
 
     public BedWarsPlayer(Player player) {
         super(player);
@@ -85,6 +86,7 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
             this.game.internalLeavePlayer(this);
             this.game = null;
             this.setSpectator(false);
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.clean();
             this.restoreInv();
             if (GameImpl.isBungeeEnabled()) {
@@ -153,6 +155,7 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
             this.game = game;
             this.setSpectator(false);
             this.mainLobbyUsed = false;
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.game.internalJoinPlayer(this);
             if (this.game != null) {
                 this.latestGameName = this.game.getName();
@@ -163,6 +166,7 @@ public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
             this.setSpectator(false);
             this.clean();
             this.mainLobbyUsed = false;
+            this.temporaryTransitionSpectatorLockMovement = false;
             this.game.internalJoinPlayer(this);
             if (this.game != null) {
                 this.latestGameName = this.game.getName();

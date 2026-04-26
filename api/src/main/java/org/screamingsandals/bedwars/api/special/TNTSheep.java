@@ -53,4 +53,6 @@ public interface TNTSheep extends SpecialItem {
 	 * @return
 	 */
 	double getFollowRange();
+
+	float getDamage();
 }

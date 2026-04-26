@@ -73,6 +73,7 @@ public class TNTSheepListener {
                     var follow = Double.parseDouble(propertiesSplit[3]);
                     var maxTargetDistance = Double.parseDouble(propertiesSplit[4]);
                     var explosionTime = Integer.parseInt(propertiesSplit[5]);
+                    float damage = (float) Double.parseDouble(propertiesSplit[6]);
 
                     final var clickedBlock = event.clickedBlock();
                     var startLocation = (clickedBlock == null)
@@ -80,7 +81,7 @@ public class TNTSheepListener {
                             : clickedBlock.location().add(event.blockFace().getDirection());
 
                     var sheep = new TNTSheepImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer),
-                            startLocation, stack, speed, follow, maxTargetDistance, explosionTime);
+                            startLocation, stack, speed, follow, maxTargetDistance, explosionTime, damage);
 
                     sheep.spawn();
                 }
@@ -155,6 +156,8 @@ public class TNTSheepListener {
                 + MiscUtils.getDoubleFromProperty(
                 "max-target-distance", "specials.tnt-sheep.max-target-distance", event) + ":"
                 + MiscUtils.getIntFromProperty(
-                "explosion-time", "specials.tnt-sheep.explosion-time", event);
+                "explosion-time", "specials.tnt-sheep.explosion-time", event) + ":"
+                + MiscUtils.getDoubleFromProperty(
+                        "damage", "specials.tnt-sheep.damage", event);
     }
 }

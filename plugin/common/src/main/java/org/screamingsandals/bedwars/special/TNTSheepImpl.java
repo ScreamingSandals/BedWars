@@ -52,11 +52,12 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     private final double followRange;
     private final double maxTargetDistance;
     private final int explosionTime;
+    private final float damage;
     private Sheep entity;
     private PrimedTnt tnt;
 
     public TNTSheepImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Location loc, ItemStack item,
-                        double speed, double followRange, double maxTargetDistance, int explosionTime) {
+                        double speed, double followRange, double maxTargetDistance, int explosionTime, float damage) {
         super(game, player, team);
         this.initialLocation = loc;
         this.item = item;
@@ -64,6 +65,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         this.followRange = followRange;
         this.maxTargetDistance = maxTargetDistance;
         this.explosionTime = explosionTime * 20;
+        this.damage = damage;
     }
 
     public void spawn() {
@@ -102,6 +104,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
 
         tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", initialLocation, en -> {
             var tnt1 = (PrimedTnt) en;
+            tnt1.yield(damage);
             tnt1.fuseTicks(explosionTime);
             tnt1.isIncendiary(false);
         }));

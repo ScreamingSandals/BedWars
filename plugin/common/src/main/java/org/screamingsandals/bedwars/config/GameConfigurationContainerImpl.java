@@ -105,6 +105,7 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(PLAYERS_CAN_WIN_GAME_ONLY_AFTER_SECONDS, "players-can-win-game-only-after-seconds");
         register(DISABLE_OPENING_STORES_OF_OTHER_TEAMS, "disable-opening-stores-of-other-teams");
         register(DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, "disable-waterlogging-of-original-blocks");
+        register(SPAWN_RESOURCES_ON_GAME_START, "spawn-resources-on-game-start");
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);

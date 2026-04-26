@@ -314,6 +314,7 @@ public class ShopInventory implements StoreManager {
                 .variableToProperty("generate-lore", "generateLore")
                 .variableToProperty("generated-lore-text", "generatedLoreText")
                 .variableToProperty("currency-changer", "currencyChanger")
+                .variableToProperty("disable-shift-buying", "disableShiftBuying")
 
                 .render(this::onGeneratingItem)
                 .preClick(this::onPreAction)
@@ -475,7 +476,12 @@ public class ShopInventory implements StoreManager {
         }
 
         var originalMaxStackSize = newItem.getMaterial().maxStackSize();
-        if (!event.isHasAnyExecutions() && clickType.isShiftClick() && originalMaxStackSize > 1) {
+        if (
+                !event.isHasAnyExecutions()
+                && clickType.isShiftClick()
+                && originalMaxStackSize > 1
+                && !itemInfo.getFirstPropertyByName("disableShiftBuying").map(v -> v.getPropertyData().getBoolean(false)).orElse(false)
+        ) {
             double priceOfOne = (double) priceAmount / amount;
             double maxStackSize;
             int finalStackSize;
