@@ -51,6 +51,9 @@ public class LegacyRegion implements Region {
 
     @Override
     public void putOriginalBlock(Location loc, BlockState block) {
+        if (brokenBlockTypes.containsKey(loc.getBlock())) {
+            return;
+        }
     	if (!block.getType().name().equals("BED_BLOCK")) {
     		brokenBlocks.add(loc.getBlock());
     	}
@@ -78,7 +81,9 @@ public class LegacyRegion implements Region {
 
     @Override
     public void addBuiltDuringGame(Location loc) {
-        builtBlocks.add(loc);
+        if (!builtBlocks.contains(loc)) {
+            builtBlocks.add(loc);
+        }
     }
 
     @Override

@@ -1235,11 +1235,19 @@ public class PlayerListener implements Listener {
                     !Main.isLegacy()
                     && event.getBucket() == Material.WATER_BUCKET
                     && event.getBlockClicked().getBlockData() instanceof Waterlogged
-                    && !Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks")
                 ) {
                     block = event.getBlockClicked();
-                    game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
-                    game.getRegion().addBuiltDuringGame(block.getLocation());
+                    boolean breakable = Main.isBreakableBlock(block.getType());
+                    if (!Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks") || breakable) {
+                        game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
+                        if (breakable) {
+                            game.getRegion().addBuiltDuringGame(block.getLocation());
+                        } else {
+                            game.getRegion().setOriginalBlockWaterlogged(block.getLocation(), true);
+                        }
+                    } else {
+                        event.setCancelled(true);
+                    }
                 } else if (block.getType() == Material.AIR) {
                     game.getRegion().addBuiltDuringGame(block.getLocation());
                 } else {
@@ -1277,18 +1285,22 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
+                if (game.getRegion().isOriginalBlockWaterlogged(block.getLocation())) {
+                    game.getRegion().setOriginalBlockWaterlogged(block.getLocation(), false);
+                    return;
+                }
+
                 if (
                     Main.isBreakableBlock(block.getType())
                     || (
                         !Main.isLegacy()
-                        && event.getBucket() == Material.WATER_BUCKET
+                        && event.getBucket() == Material.BUCKET
                         && Main.isBreakableBlock(Material.valueOf("WATER")) // Require breakable water
                         && block.getBlockData() instanceof Waterlogged
                         && !Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks")
                     )
                 ) {
                     game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
-                    game.getRegion().addBuiltDuringGame(block.getLocation());
                 } else {
                     event.setCancelled(true);
                 }

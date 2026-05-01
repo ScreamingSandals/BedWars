@@ -54,6 +54,7 @@ import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.nms.utils.TagApplier;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
@@ -475,6 +476,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         if (!Main.isLegacy()) {
             getServer().getPluginManager().registerEvents(new World113Listener(), this);
+            if (Version.isVersion(1, 13, 2)) {
+                getServer().getPluginManager().registerEvents(new World1132Listener(), this);
+            }
+        } else {
+            getServer().getPluginManager().registerEvents(new LegacyWaterListener(), this);
         }
         if (Main.getConfigurator().config.getBoolean("bungee.enabled") && Main.getConfigurator().config.getBoolean("bungee.motd.enabled")) {
             getServer().getPluginManager().registerEvents(new BungeeMotdListener(), this);

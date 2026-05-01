@@ -89,4 +89,11 @@ public interface Region {
      * Don't use from API
      */
     void regen();
+
+    default boolean isOriginalBlockWaterlogged(Location loc) {
+        return false;
+    }
+
+    default void setOriginalBlockWaterlogged(Location loc, boolean value) {
+    }
 }

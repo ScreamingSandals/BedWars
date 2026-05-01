@@ -38,6 +38,7 @@ import java.util.Map;
 
 public class FlatteningRegion implements Region {
     private List<Location> builtBlocks = new ArrayList<>();
+    private List<Location> originalBlocksWaterlogged = new ArrayList<>();
     private Map<Location, BlockData> brokenOriginalBlocks = new HashMap<>();
 
     @Override
@@ -46,13 +47,33 @@ public class FlatteningRegion implements Region {
     }
 
     @Override
+    public boolean isOriginalBlockWaterlogged(Location loc) {
+        return originalBlocksWaterlogged.contains(loc);
+    }
+
+    @Override
+    public void setOriginalBlockWaterlogged(Location loc, boolean value) {
+        if (value) {
+            if (!originalBlocksWaterlogged.contains(loc)) {
+                originalBlocksWaterlogged.add(loc);
+            }
+        } else {
+            originalBlocksWaterlogged.remove(loc);
+        }
+    }
+
+    @Override
     public void putOriginalBlock(Location loc, BlockState block) {
-        brokenOriginalBlocks.put(loc, block.getBlockData());
+        if (!brokenOriginalBlocks.containsKey(loc)) {
+            brokenOriginalBlocks.put(loc, block.getBlockData());
+        }
     }
 
     @Override
     public void addBuiltDuringGame(Location loc) {
-        builtBlocks.add(loc);
+        if (!builtBlocks.contains(loc)) {
+            builtBlocks.add(loc);
+        }
     }
 
     @Override
@@ -86,9 +107,10 @@ public class FlatteningRegion implements Region {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getKey().getBlock().setBlockData(block.getValue());
+            block.getKey().getBlock().setBlockData(block.getValue(), false);
         }
         brokenOriginalBlocks.clear();
+        originalBlocksWaterlogged.clear();
     }
 
     @Override
