@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.utils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
 /* Sound 1.8 - 1.13.2 list by @XxTreme_Creeper_ */
 
@@ -1063,11 +1064,20 @@ public enum Sounds {
 
     public static void playSound(Player player, Location location, String name, Sounds fallbackSound, float volume, float pitch) {
         try {
+            if (name.contains(":") || name.startsWith(";")) {
+                if (name.startsWith(";")) {
+                    name = name.substring(1);
+                }
+
+                player.playSound(location, name, volume, pitch);
+                return;
+            }
+
             Sounds sound = Sounds.valueOf(name.toUpperCase());
             sound.playSound(player, location, volume, pitch);
         } catch (IllegalArgumentException | NullPointerException ex) {
             try {
-                // If something is exists in bukkit, but not in this mapping
+                // If something exists in bukkit, but not in this mapping
                 Sound s = Sound.valueOf(name);
                 player.playSound(location, s, volume, pitch);
             } catch (IllegalArgumentException | NullPointerException t) {
@@ -1080,11 +1090,25 @@ public enum Sounds {
 
     public static void playSound(Location location, String name, Sounds fallbackSound, float volume, float pitch) {
         try {
+            if (name.contains(":") || name.startsWith(";")) {
+                if (Version.isVersion(1,9)) {
+                    String finalName = name;
+                    if (name.startsWith(";")) {
+                        finalName = name.substring(1);
+                    }
+
+                    location.getWorld().playSound(location, finalName, volume, pitch);
+                } else {
+                    location.getWorld().getPlayers().forEach(player -> playSound(player, location, name, fallbackSound, volume, pitch));
+                }
+                return;
+            }
+
             Sounds sound = Sounds.valueOf(name.toUpperCase());
             sound.playSound(location, volume, pitch);
         } catch (IllegalArgumentException | NullPointerException ex) {
             try {
-                // If something is exists in bukkit, but not in this mapping
+                // If something exists in bukkit, but not in this mapping
                 Sound s = Sound.valueOf(name);
                 location.getWorld().playSound(location, s, volume, pitch);
             } catch (IllegalArgumentException | NullPointerException t) {
