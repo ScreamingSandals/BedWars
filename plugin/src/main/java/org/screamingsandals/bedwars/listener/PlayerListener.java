@@ -245,10 +245,9 @@ public class PlayerListener implements Listener {
                             Sounds.playSound(player, player.getLocation(),
                                     Main.getConfigurator().config.getString("sounds.respawn_cooldown_wait.sound"),
                                     Sounds.BLOCK_STONE_BUTTON_CLICK_ON, (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_wait.volume"), (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_wait.pitch"));
-                        }
 
-                        livingTime--;
-                        if (livingTime == 0) {
+                            livingTime--;
+                        } else if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),
                                     Main.getConfigurator().config.getString("sounds.respawn_cooldown_done.sound"),
@@ -257,7 +256,7 @@ public class PlayerListener implements Listener {
                             this.cancel();
                         }
                     }
-                }.runTaskTimer(Main.getInstance(), 20L, 20L);
+                }.runTaskTimer(Main.getInstance(), 0L, 20L);
             } else if (!victimTeam.getConnectedPlayers().contains(victim) && Main.getConfigurator().config.getBoolean("kick-players-upon-final-death.enabled")) {
                 int delay = Main.getConfigurator().config.getInt("kick-players-upon-final-death.delay", 0);
 
