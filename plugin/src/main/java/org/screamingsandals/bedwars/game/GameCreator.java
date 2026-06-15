@@ -707,6 +707,7 @@ public class GameCreator {
                 }
 
                 t.color = c;
+                t.newColor = true;
 
                 return i18n("admin_command_team_color_setted").replace("%team%", t.name).replace("%teamcolor%",
                         t.color.chatColor + t.color.name());
@@ -753,6 +754,7 @@ public class GameCreator {
         Team team = new Team();
         team.name = name;
         team.color = c;
+        team.newColor = true;
         team.maxPlayers = maxPlayers;
         team.game = game;
         team.saveName = saveName;
