@@ -37,7 +37,7 @@ public class EntityTextDisplayNMS extends EntityNMS implements DisplayAccessor, 
     }
 
     public EntityTextDisplayNMS(Location loc) throws Throwable {
-        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypeAccessor.FIELD_TEXT_DISPLAY.get(), getHandle(loc.getWorld())));
+        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypesAccessor.TYPE.get() != null ? EntityTypesAccessor.FIELD_TEXT_DISPLAY.get() : EntityTypeAccessor.FIELD_TEXT_DISPLAY.get(), getHandle(loc.getWorld())));
         this.setLocation(loc);
     }
 
