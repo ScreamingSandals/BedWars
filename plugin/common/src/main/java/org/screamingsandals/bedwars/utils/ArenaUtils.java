@@ -20,7 +20,6 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.lib.utils.math.BoundingBox;
 import org.screamingsandals.lib.world.Location;
 import org.screamingsandals.lib.world.chunk.Chunk;
 
@@ -31,12 +30,24 @@ public class ArenaUtils {
             return false;
         }
 
-        var min = new Location(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
-                Math.min(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld());
-        var max = new Location(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),
-                Math.max(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld());
-        return (min.getX() <= l.getX() && min.getY() <= l.getY() && min.getZ() <= l.getZ() && max.getX() >= l.getX()
-                && max.getY() >= l.getY() && max.getZ() >= l.getZ());
+        double lx = l.getX();
+        double p1x = p1.getX();
+        double p2x = p2.getX();
+        if (lx < Math.min(p1x, p2x) || lx > Math.max(p1x, p2x)) {
+            return false;
+        }
+
+        double ly = l.getY();
+        double p1y = p1.getY();
+        double p2y = p2.getY();
+        if (ly < Math.min(p1y, p2y) || ly > Math.max(p1y, p2y)) {
+            return false;
+        }
+
+        double lz = l.getZ();
+        double p1z = p1.getZ();
+        double p2z = p2.getZ();
+        return lz >= Math.min(p1z, p2z) && lz <= Math.max(p1z, p2z);
     }
 
     public boolean isChunkInArea(Chunk l, Location p1, Location p2) {
@@ -44,11 +55,18 @@ public class ArenaUtils {
             return false;
         }
 
-        var min = new Location(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
-                Math.min(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld()).getChunk();
-        var max = new Location(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),
-                Math.max(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld()).getChunk();
-        return (min.getX() <= l.getX() && min.getZ() <= l.getZ() && max.getX() >= l.getX() && max.getZ() >= l.getZ());
+        int lx = l.getX();
+        int lz = l.getZ();
+
+        int minChunkX = (int) Math.floor(Math.min(p1.getX(), p2.getX()) / 16.0);
+        int maxChunkX = (int) Math.floor(Math.max(p1.getX(), p2.getX()) / 16.0);
+        if (lx < minChunkX || lx > maxChunkX) {
+            return false;
+        }
+
+        int minChunkZ = (int) Math.floor(Math.min(p1.getZ(), p2.getZ()) / 16.0);
+        int maxChunkZ = (int) Math.floor(Math.max(p1.getZ(), p2.getZ()) / 16.0);
+        return lz >= minChunkZ && lz <= maxChunkZ;
     }
 
     public static boolean arenaOverlaps(Location l1, Location l2, Location p1, Location p2) {
@@ -56,11 +74,26 @@ public class ArenaUtils {
             return false;
         }
 
-        var box1 = BoundingBox.of(l1.asVector(), l2.asVector());
-        var box2 = BoundingBox.of(p1.asVector(), p2.asVector());
+        double min1X = Math.min(l1.getX(), l2.getX());
+        double max1X = Math.max(l1.getX(), l2.getX());
+        double min2X = Math.min(p1.getX(), p2.getX());
+        double max2X = Math.max(p1.getX(), p2.getX());
+        if (min1X >= max2X || max1X <= min2X) {
+            return false;
+        }
 
-        return box1.overlaps(box2);
+        double min1Y = Math.min(l1.getY(), l2.getY());
+        double max1Y = Math.max(l1.getY(), l2.getY());
+        double min2Y = Math.min(p1.getY(), p2.getY());
+        double max2Y = Math.max(p1.getY(), p2.getY());
+        if (min1Y >= max2Y || max1Y <= min2Y) {
+            return false;
+        }
+
+        double min1Z = Math.min(l1.getZ(), l2.getZ());
+        double max1Z = Math.max(l1.getZ(), l2.getZ());
+        double min2Z = Math.min(p1.getZ(), p2.getZ());
+        double max2Z = Math.max(p1.getZ(), p2.getZ());
+        return min1Z < max2Z && max1Z > min2Z;
     }
-
-
 }
