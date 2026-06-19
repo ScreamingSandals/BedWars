@@ -119,6 +119,8 @@ disable-locator-bars-in-arena-worlds: true
 # Prevent players from opening other teams' shopkeepers
 disable-opening-stores-of-other-teams: false
 disable-waterlogging-of-original-blocks: false
+# Spawns resources right when the game starts instead of waiting the interval for the first spawn
+spawn-resources-on-game-start: false
 # Kick players after final death instead of keeping them as spectators
 kick-players-upon-final-death:
   enabled: false
@@ -233,6 +235,7 @@ specials:
     follow-range: 10.0
     max-target-distance: 32
     explosion-time: 8
+    damage: 4.0
   arrow-blocker:
     protection-time: 10
     delay: 5

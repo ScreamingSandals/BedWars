@@ -470,6 +470,7 @@ There are several configurable options for this special item:
 * `follow-range` - The range within which the sheep will follow enemies.
 * `max-target-distance` - The maximum distance (in blocks) from which the initial target can be. The sheep does not spawn if there is no target within this distance.
 * `explosion-time` - The time (in seconds) after which the TNT explodes and the sheep disappears.
+* `damage` - The damage dealt by the TNT Sheep upon explosion.
 
 Here is an example of the TNT Sheep configured in the shop:
 
@@ -481,6 +482,7 @@ Here is an example of the TNT Sheep configured in the shop:
     follow-range: 10.0
     max-target-distance: 32
     explosion-time: 8
+    damage: 4.0
   stack:
     type: sheep_spawn_egg
     display-name: "TNT Sheep"
@@ -500,6 +502,7 @@ specials:
     follow-range: 10.0
     max-target-distance: 32
     explosion-time: 8
+    damage: 4.0
   # ...
 ```
 
