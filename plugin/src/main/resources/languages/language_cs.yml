@@ -339,8 +339,8 @@ help_bw_admin_pos1: "/bw admin <aréna> pos1 - &eNastaví krajní bod arény na 
   pozici"
 help_bw_admin_pos2: "/bw admin <aréna> pos2 - &eNastaví protilehlý krajní bod arény
   na tvojí pozici"
-help_bw_admin_pausecountdown: "/bw admin <aréna> pausecountdown <sekundy> - &eNastaví
-  dobu trvání pauzy před začátkem hry"
+help_bw_admin_pausecountdown: "/bw admin <aréna> pausecountdown <sekundy> [hráči:sekundy,hráči:sekundy,..]
+  - &eNastaví dobu trvání pauzy před začátkem hry"
 help_bw_admin_minplayers: "/bw admin <aréna> minplayers <minimum> - &eNastaví minimum
   hráčů potřebných pro start hry"
 help_bw_admin_time: "/bw admin <aréna> time <sekundy> - &eNastaví dobu trvání hry"
@@ -486,3 +486,5 @@ admin_arena_force_save: '&ePokud i tak chcete uložit &7%game%&e, zadejte přík
 dump_logs_success: '&aÚspěšně nahrán dump posledního logovacího souboru. Odkaz: '
 help_bw_dumplogs: /bw dumplogs - &aNahraje dump souboru latest.log pomocí služby
   mclo.gs a poskytne odkaz na tento dump
+admin_command_pausecontdown_set_dynamic: '&aČekací lhůta v lobby nastavena na &7%countdown%&a
+  s dynamickou lhůtou &7%dynamic%'
