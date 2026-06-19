@@ -33,6 +33,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -520,7 +521,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (region.isBlockAddedDuringGame(block.getLocation())) {
-            region.removeBlockBuiltDuringGame(block.getLocation());
+            // do not remove placed blocks if they are currently waterlogged as they will be replaced by placed water instead
+            if (
+                Main.isLegacy()
+                        || !(block.getBlockData() instanceof Waterlogged)
+                        || !((Waterlogged) block.getBlockData()).isWaterlogged()
+            ) {
+                region.removeBlockBuiltDuringGame(block.getLocation());
+            }
 
             if (block.getType() == Material.ENDER_CHEST) {
                 CurrentTeam team = getTeamOfChest(block);

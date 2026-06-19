@@ -1226,16 +1226,17 @@ public class PlayerListener implements Listener {
 
             Block block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
-                    return;
-                }
-
                 if (
                     !Main.isLegacy()
                     && event.getBucket() == Material.WATER_BUCKET
                     && event.getBlockClicked().getBlockData() instanceof Waterlogged
                 ) {
                     block = event.getBlockClicked();
+
+                    if (game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                        return;
+                    }
+
                     boolean breakable = Main.isBreakableBlock(block.getType());
                     if (!Main.getConfigurator().config.getBoolean("disable-waterlogging-of-original-blocks") || breakable) {
                         game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
@@ -1247,10 +1248,16 @@ public class PlayerListener implements Listener {
                     } else {
                         event.setCancelled(true);
                     }
-                } else if (block.getType() == Material.AIR) {
-                    game.getRegion().addBuiltDuringGame(block.getLocation());
                 } else {
-                    event.setCancelled(true);
+                    if (game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                        return;
+                    }
+
+                    if (block.getType() == Material.AIR) {
+                        game.getRegion().addBuiltDuringGame(block.getLocation());
+                    } else {
+                        event.setCancelled(true);
+                    }
                 }
             } else if (game.getStatus() != GameStatus.DISABLED) {
                 event.setCancelled(true);
