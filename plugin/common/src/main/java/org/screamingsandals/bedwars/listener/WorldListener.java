@@ -268,6 +268,27 @@ public class WorldListener {
     }
 
     @OnEvent
+    public void onFluidLevelChange(FluidLevelChangeEvent event) {
+        if (event.cancelled()) {
+            return;
+        }
+
+        for (var game : GameManagerImpl.getInstance().getLocalGames()) {
+            Location location = event.block().location();
+            if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
+                if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                    if (!game.isBlockAddedDuringGame(location)) {
+                        game.getRegion().putOriginalBlockIfAbsent(location, event.block().blockSnapshot());
+                    }
+                } else if (game.getStatus() != GameStatus.DISABLED) {
+                    event.cancelled(true);
+                }
+            }
+            break;
+        }
+    }
+
+    @OnEvent
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
         if (event.cancelled()) {
             return;

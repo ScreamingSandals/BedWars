@@ -30,6 +30,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +40,11 @@ import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
+import org.screamingsandals.bedwars.bukkit.listener.LegacyWaterListener;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
@@ -57,6 +60,7 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskBase;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Locale;
@@ -68,6 +72,13 @@ import java.util.function.Consumer;
         BukkitBStatsMetrics.class
 })
 public class BukkitPlatformService extends PlatformService {
+    @OnEnable
+    public void onEnable(@NotNull Plugin plugin) {
+        if (!Server.isVersion(1, 12, 2)) {
+            plugin.getServer().getPluginManager().registerEvents(new LegacyWaterListener(), plugin);
+        }
+    }
+
     @Override
     public void reloadPlugin(@NotNull CommandSender sender) {
         sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());

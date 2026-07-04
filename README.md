@@ -9,7 +9,7 @@
 
 A highly flexible BedWars plugin with wide Minecraft version support, originally inspired by BedwarsRel.
 
-Supported versions: \[1.8.8 - 26.1.2\]. Recommended version: \[1.21.11\]
+Supported versions: \[1.8.8 - 26.2\]. Recommended version: \[26.1.2\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

@@ -132,4 +132,23 @@ public interface Region {
      * @return does the block state match a bottom door block?
      */
     boolean isDoorBottomBlock(BlockSnapshotHolder blockSnapshot);
+
+    /**
+     * <p>Checks if a block is still original bus has been waterlogged.</p>
+     *
+     * @param loc location
+     * @return true if the block has been waterlogged, false otherwise
+     */
+    default boolean isOriginalBlockWaterlogged(LocationHolder loc) {
+        return false;
+    }
+
+    /**
+     * <p>Sets an original block to be waterlogged.</p>
+     *
+     * @param loc location
+     * @param value true if the block has been waterlogged, false otherwise
+     */
+    default void setOriginalBlockWaterlogged(LocationHolder loc, boolean value) {
+    }
 }

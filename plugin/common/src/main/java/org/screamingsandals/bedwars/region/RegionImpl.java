@@ -41,10 +41,25 @@ import java.util.Map;
 
 public class RegionImpl implements Region {
     private final List<Location> builtBlocks = new ArrayList<>();
+    private List<Location> originalBlocksWaterlogged = new ArrayList<>();
     private final Map<Location, BlockSnapshot> brokenOriginalBlocks = new HashMap<>();
 
     public boolean isLocationModifiedDuringGame(Location loc) {
         return builtBlocks.contains(loc);
+    }
+
+    public boolean isOriginalBlockWaterlogged(Location loc) {
+        return originalBlocksWaterlogged.contains(loc);
+    }
+
+    public void setOriginalBlockWaterlogged(Location loc, boolean value) {
+        if (value) {
+            if (!originalBlocksWaterlogged.contains(loc)) {
+                originalBlocksWaterlogged.add(loc);
+            }
+        } else {
+            originalBlocksWaterlogged.remove(loc);
+        }
     }
 
     public boolean isOriginalBlockStored(@NotNull Location loc) {
@@ -63,7 +78,9 @@ public class RegionImpl implements Region {
     }
 
     public void addBuiltDuringGame(Location loc) {
-        builtBlocks.add(loc);
+        if (!builtBlocks.contains(loc)) {
+            builtBlocks.add(loc);
+        }
     }
 
     public void removeBlockBuiltDuringGame(Location loc) {
@@ -95,6 +112,7 @@ public class RegionImpl implements Region {
             block.getValue().updateBlock(true, false);
         }
         brokenOriginalBlocks.clear();
+        originalBlocksWaterlogged.clear();
     }
 
     public boolean isBedHead(BlockSnapshot block) {
@@ -135,6 +153,16 @@ public class RegionImpl implements Region {
     @ApiStatus.Obsolete
     public boolean isLocationModifiedDuringGame(LocationHolder loc) {
         return isLocationModifiedDuringGame(loc.as(Location.class));
+    }
+
+    @Override
+    public boolean isOriginalBlockWaterlogged(LocationHolder loc) {
+        return isOriginalBlockWaterlogged(loc.as(Location.class));
+    }
+
+    @Override
+    public void setOriginalBlockWaterlogged(LocationHolder loc, boolean value) {
+        setOriginalBlockWaterlogged(loc.as(Location.class), value);
     }
 
     @Override

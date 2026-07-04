@@ -313,10 +313,9 @@ public class PlayerListener {
                                         (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
                                         (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble()
                                 ));
-                            }
 
-                            livingTime.decrementAndGet();
-                            if (livingTime.get() == 0) {
+                                livingTime.decrementAndGet();
+                            } else if (livingTime.get() == 0) {
                                 game.makePlayerFromSpectator(gVictim);
                                 gVictim.playSound(
                                         SoundStart.sound(
@@ -328,7 +327,7 @@ public class PlayerListener {
                                 );
                                 task.cancel();
                             }
-                        }, 20, TaskerTime.TICKS, 20, TaskerTime.TICKS);
+                        }, 0, TaskerTime.TICKS, 20, TaskerTime.TICKS);
             } else if (!victimTeam.getPlayers().contains(gVictim) && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, false)) {
                 int delay = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_DELAY, 5);
 
@@ -1432,41 +1431,65 @@ public class PlayerListener {
 
             var block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (game.getRegion().isLocationModifiedDuringGame(block.location())) {
-                    return;
-                }
-
                 if (event.action() == PlayerBucketEvent.Action.EMPTY) {
                     if (
                         Server.isVersion(1, 13)
                         && event.bucket().is("minecraft:water_bucket")
                         && event.blockClicked().block().getBoolean("waterlogged") != null
-                        && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
                     ) {
                         block = event.blockClicked();
-                        game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
-                        game.getRegion().addBuiltDuringGame(block.location());
-                        Debug.info(player.getName() + " placed liquid");
-                    } else if (block.block().isAir()) {
-                        game.getRegion().addBuiltDuringGame(block.location());
-                        Debug.info(player.getName() + " placed liquid");
+
+                        if (game.getRegion().isLocationModifiedDuringGame(block.location())) {
+                            return;
+                        }
+
+                        boolean breakable = BedWarsPlugin.isBreakableBlock(block.block());
+                        if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false) || breakable) {
+                            game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
+                            if (breakable) {
+                                game.getRegion().addBuiltDuringGame(block.location());
+                            } else {
+                                game.getRegion().setOriginalBlockWaterlogged(block.location(), true);
+                            }
+                            Debug.info(player.getName() + " placed liquid");
+                        } else {
+                            event.cancelled(true);
+                            Debug.info(player.getName() + " placed liquid, cancelling");
+                        }
                     } else {
-                        event.cancelled(true);
-                        Debug.info(player.getName() + " placed liquid, cancelling");
+                        if (game.getRegion().isLocationModifiedDuringGame(block.location())) {
+                            return;
+                        }
+
+                        if (block.block().isAir()) {
+                            game.getRegion().addBuiltDuringGame(block.location());
+                            Debug.info(player.getName() + " placed liquid");
+                        } else {
+                            event.cancelled(true);
+                            Debug.info(player.getName() + " placed liquid, cancelling");
+                        }
                     }
                 } else {
+                    if (game.getRegion().isLocationModifiedDuringGame(block.location())) {
+                        return;
+                    }
+
+                    if (game.getRegion().isOriginalBlockWaterlogged(block.location())) {
+                        game.getRegion().setOriginalBlockWaterlogged(block.location(), false);
+                        return;
+                    }
+
                     if (
                         BedWarsPlugin.isBreakableBlock(block.block())
                             || (
                                 Server.isVersion(1, 13)
-                                && event.bucket().is("minecraft:water_bucket")
+                                && event.bucket().is("minecraft:bucket")
                                 && event.blockClicked().block().getBoolean("waterlogged") != null
                                 && BedWarsPlugin.isBreakableBlock(Block.of("minecraft:water")) // Require breakable water
                                 && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_WATERLOGGING_OF_ORIGINAL_BLOCKS, false)
                         )
                     ) {
                         game.getRegion().putOriginalBlockIfAbsent(block.location(), block.blockSnapshot());
-                        game.getRegion().addBuiltDuringGame(block.location());
                         Debug.info(player.getName() + " broken liquid");
                     } else {
                         event.cancelled(true);

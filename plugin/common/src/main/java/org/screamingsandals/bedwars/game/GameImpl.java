@@ -337,7 +337,10 @@ public class GameImpl implements LocalGame {
         }
 
         if (region.isLocationModifiedDuringGame(block.location())) {
-            region.removeBlockBuiltDuringGame(block.location());
+            // do not remove placed blocks if they are currently waterlogged as they will be replaced by placed water instead
+            if (block.block().getBoolean("waterlogged") != Boolean.TRUE) {
+                region.removeBlockBuiltDuringGame(block.location());
+            }
 
             if (block.block().isSameType("ender_chest")) {
                 var team = getTeamOfChest(block.location());

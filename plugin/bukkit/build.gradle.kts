@@ -23,6 +23,7 @@ runTestServer {
     pluginJar(tasks.shadowJar.flatMap { it.archiveFile })
 
     val versionList = listOf(
+        "26.2",
         "26.1.2",
         "1.21.11",
         "1.21.10",
