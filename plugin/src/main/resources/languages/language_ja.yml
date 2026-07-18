@@ -25,7 +25,7 @@ leave: "%name% &cがゲームから退出しました！"
 game_already_running: "&cゲーム「&7%arena% &c」はすでに試合中です！試合中には参加できません！"
 game_is_full: "&cGame &7%arena% &cは満員です！ゲーム終了までお待ちください！"
 unknown_command: "&c不明なコマンドです! ヘルプを表示するには、&4/bw help &cと入力してください!"
-unknown_usage: "&c引数の値が正しい数と一致しないか、不明な引数です! ヘルプを表示するには &4/bw help &cと入力してください!"
+unknown_usage: "&c引数の値が正しい数と一致しないか、不明な引数です! &4/bw help &cを入力することでヘルプ画面が表示されます!"
 no_arena_found: "&cゲームが見つかりません！"
 usage_bw_join: "&c使い方：/bw join <arena>"
 usage_bw_admin: "&c使い方：/bw admin <arena> <add|edit|remove|save|...> ..."
@@ -174,7 +174,7 @@ sign_status_running: "&a実行中"
 sign_status_running_players: "&c「%players%」&8/&c「%maxplayers%」"
 sign_status_waiting: "&6待機中"
 sign_status_waiting_players: "&a「%players%」&8/&a「%maxplayers%」"
-list_header: "&a利用可能なアリーナ:"
+list_header: "&a利用可能アリーナ:"
 team_chest: "&a&lチームチェスト"
 team_chest_is_not_your: "&eこのチームチェストはあなたのものではありません！"
 team_chest_placed: "&a新しいチームチェストが設置されました！"
@@ -290,7 +290,8 @@ help_bw_admin_lobby: "/bw admin <arena> lobby - &eロビーの位置を自分が
 help_bw_admin_spec: "/bw admin <arena> spec - &eスペクテイター(試合を見てる人)のスポーンをあなたのいる位置に設定します"
 help_bw_admin_pos1: "/bw admin <arena> pos1 - &eアリーナの端を自分のいる位置に設定します"
 help_bw_admin_pos2: "/bw admin <arena> pos2 - &eアリーナの2番目の端(pos1と反対側)を自分のいる位置に設定します"
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eゲーム開始前の一時停止時間を設定します"
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> [players:seconds,players:seconds,...]
+  - &eゲーム開始前の一時停止時間を設定します"
 help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eゲームを開始するために必要な最少プレイヤー数を設定します"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eゲームの全体時間を設定します"
 help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -
@@ -401,3 +402,6 @@ admin_command_lobby_pos1_pos2_difference_must_be_higher: '&clobbypos1とlobbypos
 admin_command_lobby_pos1_setted: '&7%arena%&aのロビー位置1は次のように設定されました: XYZ: &7%x%/%y%/%z%'
 admin_command_lobby_pos2_setted: '&7%arena%&aのロビー位置2は次のように設定されました: XYZ: &7%x%/%y%/%z%'
 dump_logs_success: '&alatest.logファイルのダンプに成功しました。リンク: '
+admin_command_pausecontdown_set_dynamic: '&aロビーのカウントダウンは&7%countdown%&aに設定され、条件カウントダウン&7%dynamic%になりました'
+help_bw_admin_lobbypos1: /bw admin <arena> lobbypos1 - &eロビーの端点をあなたの位置に設定します
+help_bw_admin_lobbypos2: /bw admin <arena> robopos2 - &eロビーの２番目の極点を自分の位置に設定します
