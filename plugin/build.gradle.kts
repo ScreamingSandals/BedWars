@@ -9,6 +9,7 @@ dependencies {
     /* PROVIDED */
     compileOnly(libs.vault)
     compileOnly(libs.multiverse.core)
+    compileOnly(libs.multiverse5.core)
     compileOnly(libs.placeholderapi)
     compileOnly(libs.perworldinventory.kt) {
         exclude(group="*", module="*")

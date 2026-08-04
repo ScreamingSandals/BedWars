@@ -61,6 +61,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
@@ -1050,16 +1051,30 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
-                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(worldName)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
-                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                    if (ClassStorage.safeGetClass("org.mvplugins.multiverse.core.MultiverseCoreApi") != null) {
+                        MultiverseCoreApi multiverse = MultiverseCoreApi.get();
+                        if (multiverse != null && multiverse.getWorldManager().loadWorld(worldName).isSuccess()) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
-                        game.world = Bukkit.getWorld(worldName);
+                            game.world = Bukkit.getWorld(worldName);
+                        } else {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                    + " can't be loaded, because world " + worldName + " is missing!");
+                            return null;
+                        }
                     } else {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                                + " can't be loaded, because world " + worldName + " is missing!");
-                        return null;
+                        Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                        if (multiverse != null && multiverse.getMVWorldManager().loadWorld(worldName)) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+                            game.world = Bukkit.getWorld(worldName);
+                        } else {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                    + " can't be loaded, because world " + worldName + " is missing!");
+                            return null;
+                        }
                     }
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
@@ -1096,16 +1111,30 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
-                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
-                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                    if (ClassStorage.safeGetClass("org.mvplugins.multiverse.core.MultiverseCoreApi") != null) {
+                        MultiverseCoreApi multiverse = MultiverseCoreApi.get();
+                        if (multiverse != null && multiverse.getWorldManager().loadWorld(spawnWorld).isSuccess()) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
-                        lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                            lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                        } else {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                    + " can't be loaded, because world " + spawnWorld + " is missing!");
+                            return null;
+                        }
                     } else {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                                + " can't be loaded, because world " + spawnWorld + " is missing!");
-                        return null;
+                        Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                        if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+                            lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                        } else {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                    + " can't be loaded, because world " + spawnWorld + " is missing!");
+                            return null;
+                        }
                     }
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
