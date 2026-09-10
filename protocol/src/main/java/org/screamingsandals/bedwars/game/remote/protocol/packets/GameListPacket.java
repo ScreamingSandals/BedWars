@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.Constants;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.DataInputStream;
@@ -42,7 +43,13 @@ public class GameListPacket implements Packet {
     public GameListPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);
         int size = dataInputStream.readInt();
-        games = new ArrayList<>(size);
+        if (size < 0) {
+            throw new IOException("GameListPacket declared a negative game count: " + size);
+        }
+        // Do not pre-size the list with an untrusted count: a malicious peer could declare
+        // Integer.MAX_VALUE and force a multi-gigabyte allocation (remote OOM). The real number
+        // of entries is naturally bounded by the frame length while decoding below.
+        games = new ArrayList<>(Math.min(size, Constants.MAX_PREALLOC_ELEMENTS));
         for (int i = 0; i < size; i++) {
             var uuid = PacketUtils.readUuid(dataInputStream);
             var name = PacketUtils.readStandardUTF(dataInputStream);
