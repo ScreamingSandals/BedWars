@@ -43,13 +43,11 @@ public class GameListPacket implements Packet {
     public GameListPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);
         int size = dataInputStream.readInt();
-        if (size < 0) {
-            throw new IOException("GameListPacket declared a negative game count: " + size);
+        // Reject an untrusted count up front so a peer can't force a huge allocation (remote OOM).
+        if (size < 0 || size > Constants.MAX_PREALLOC_ELEMENTS) {
+            throw new IOException("GameListPacket declared an illegal game count: " + size);
         }
-        // Do not pre-size the list with an untrusted count: a malicious peer could declare
-        // Integer.MAX_VALUE and force a multi-gigabyte allocation (remote OOM). The real number
-        // of entries is naturally bounded by the frame length while decoding below.
-        games = new ArrayList<>(Math.min(size, Constants.MAX_PREALLOC_ELEMENTS));
+        games = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             var uuid = PacketUtils.readUuid(dataInputStream);
             var name = PacketUtils.readStandardUTF(dataInputStream);

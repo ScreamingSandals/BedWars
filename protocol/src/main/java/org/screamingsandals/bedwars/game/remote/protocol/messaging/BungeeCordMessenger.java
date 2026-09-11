@@ -68,8 +68,7 @@ public final class BungeeCordMessenger implements Messenger {
             return null;
         }
 
-        // readUnsignedShort: a signed readShort() could yield a negative length, which
-        // readNBytes rejects with IllegalArgumentException (crash on malformed input).
+        // readUnsignedShort: a signed length could be negative and crash readNBytes.
         return outerIn.readNBytes(outerIn.readUnsignedShort());
     }
 }

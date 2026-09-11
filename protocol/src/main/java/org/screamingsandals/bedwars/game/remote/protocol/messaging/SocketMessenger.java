@@ -88,8 +88,7 @@ public final class SocketMessenger implements ServerNameAwareMessenger, IgnoreCa
                     try {
                         var size = in.readInt();
                         if (size < 0 || size > Constants.MAX_PACKET_SIZE) {
-                            // The stream is now unusable; stop instead of buffering an oversized
-                            // frame (remote OOM) or looping on desynced data.
+                            // Stop instead of buffering an oversized frame or looping on desynced data.
                             running = false;
                             throw new IOException("Relay declared an illegal packet size: " + size);
                         }

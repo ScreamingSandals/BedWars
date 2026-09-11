@@ -63,11 +63,7 @@ public final class SimpleSocketServer {
         running = false;
     }
 
-    /**
-     * Reads a framed packet length and validates it against {@link Constants#MAX_PACKET_SIZE}.
-     * Returns {@code -1} if the peer declared a negative or oversized length, so the caller can
-     * kick the connection instead of attempting a huge (or invalid) allocation.
-     */
+    // Reads a framed length; returns -1 for a negative or oversized value so the caller can kick.
     private static int readFrameSize(@NotNull DataInputStream in) throws IOException {
         var size = in.readInt();
         if (size < 0 || size > Constants.MAX_PACKET_SIZE) {

@@ -27,17 +27,9 @@ public class Constants {
     public static final @NotNull String MESSAGING_CHANNEL = "ScreamingSandalsMinigameV1";
     public static final int PROTOCOL_VERSION = 1;
 
-    /**
-     * Hard upper bound (in bytes) for a single framed packet accepted from the network.
-     * Prevents a peer from declaring an arbitrarily large length and forcing the receiver
-     * to allocate/buffer gigabytes of memory (remote denial of service).
-     */
+    // Upper bound (bytes) for a single framed packet, to prevent remote OOM from an oversized length.
     public static final int MAX_PACKET_SIZE = 2 * 1024 * 1024; // 2 MiB
 
-    /**
-     * Sanity cap for the initial capacity of collections sized from untrusted packet data.
-     * The real number of elements is still bounded by the frame size while decoding, but this
-     * stops a declared element count from triggering a huge up-front allocation.
-     */
+    // Upper bound for element counts read from untrusted packet data.
     public static final int MAX_PREALLOC_ELEMENTS = 8192;
 }
