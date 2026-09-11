@@ -68,7 +68,6 @@ public final class BungeeCordMessenger implements Messenger {
             return null;
         }
 
-        // readUnsignedShort: a signed length could be negative and crash readNBytes.
         return outerIn.readNBytes(outerIn.readUnsignedShort());
     }
 }

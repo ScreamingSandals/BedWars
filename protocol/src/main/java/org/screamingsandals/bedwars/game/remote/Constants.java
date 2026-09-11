@@ -27,9 +27,6 @@ public class Constants {
     public static final @NotNull String MESSAGING_CHANNEL = "ScreamingSandalsMinigameV1";
     public static final int PROTOCOL_VERSION = 1;
 
-    // Upper bound (bytes) for a single framed packet, to prevent remote OOM from an oversized length.
     public static final int MAX_PACKET_SIZE = 2 * 1024 * 1024; // 2 MiB
-
-    // Upper bound for element counts read from untrusted packet data.
     public static final int MAX_PREALLOC_ELEMENTS = 8192;
 }

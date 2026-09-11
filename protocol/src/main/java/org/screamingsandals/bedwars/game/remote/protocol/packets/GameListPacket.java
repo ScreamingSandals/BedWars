@@ -43,7 +43,6 @@ public class GameListPacket implements Packet {
     public GameListPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);
         int size = dataInputStream.readInt();
-        // Reject an untrusted count up front so a peer can't force a huge allocation (remote OOM).
         if (size < 0 || size > Constants.MAX_PREALLOC_ELEMENTS) {
             throw new IOException("GameListPacket declared an illegal game count: " + size);
         }

@@ -63,7 +63,6 @@ public final class SimpleSocketServer {
         running = false;
     }
 
-    // Reads a framed length; returns -1 for a negative or oversized value so the caller can kick.
     private static int readFrameSize(@NotNull DataInputStream in) throws IOException {
         var size = in.readInt();
         if (size < 0 || size > Constants.MAX_PACKET_SIZE) {
@@ -136,7 +135,7 @@ public final class SimpleSocketServer {
 
                     var payload = in.readNBytes(size);
                     if (payload.length == 0) {
-                        continue; // stream ended / empty read, nothing to relay
+                        continue;
                     }
                     var isIncomingState = Byte.toUnsignedInt(payload[0]) == PacketId.GAME_STATE.getId();
 
