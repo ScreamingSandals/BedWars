@@ -26,4 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class Constants {
     public static final @NotNull String MESSAGING_CHANNEL = "ScreamingSandalsMinigameV1";
     public static final int PROTOCOL_VERSION = 1;
+
+    public static final int MAX_PACKET_SIZE = 2 * 1024 * 1024; // 2 MiB
+    public static final int MAX_PREALLOC_ELEMENTS = 8192;
 }

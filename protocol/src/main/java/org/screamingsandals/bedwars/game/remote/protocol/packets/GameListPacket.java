@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.Constants;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
 import java.io.DataInputStream;
@@ -42,6 +43,9 @@ public class GameListPacket implements Packet {
     public GameListPacket(@NotNull DataInputStream dataInputStream) throws IOException {
         server = PacketUtils.readStandardUTF(dataInputStream);
         int size = dataInputStream.readInt();
+        if (size < 0 || size > Constants.MAX_PREALLOC_ELEMENTS) {
+            throw new IOException("GameListPacket declared an illegal game count: " + size);
+        }
         games = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             var uuid = PacketUtils.readUuid(dataInputStream);

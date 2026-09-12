@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.game.remote.protocol.sockets;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.Constants;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketId;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 
@@ -60,6 +61,14 @@ public final class SimpleSocketServer {
 
     public void shutdown() {
         running = false;
+    }
+
+    private static int readFrameSize(@NotNull DataInputStream in) throws IOException {
+        var size = in.readInt();
+        if (size < 0 || size > Constants.MAX_PACKET_SIZE) {
+            return -1;
+        }
+        return size;
     }
 
     public class ClientConnection implements Runnable {
@@ -105,17 +114,29 @@ public final class SimpleSocketServer {
                     if (action == Action.SEND_PACKET) {
                         client = clients.get(PacketUtils.readStandardUTF(in));
                         if (client == null || client.socket.isClosed()) {
-                            in.readNBytes(in.readInt()); // we have to read the whole packet
+                            var skip = readFrameSize(in);
+                            if (skip < 0) {
+                                System.out.println("Received illegal packet size from " + identifier + ". Kicking...");
+                                break;
+                            }
+                            in.readNBytes(skip); // we have to read the whole packet
                             continue;
                         }
                     }
 
-                    var size = in.readInt();
+                    var size = readFrameSize(in);
+                    if (size < 0) {
+                        System.out.println("Received illegal packet size from " + identifier + ". Kicking...");
+                        break;
+                    }
                     if (size == 0) {
                         continue;
                     }
 
                     var payload = in.readNBytes(size);
+                    if (payload.length == 0) {
+                        continue;
+                    }
                     var isIncomingState = Byte.toUnsignedInt(payload[0]) == PacketId.GAME_STATE.getId();
 
                     if (client != null) {

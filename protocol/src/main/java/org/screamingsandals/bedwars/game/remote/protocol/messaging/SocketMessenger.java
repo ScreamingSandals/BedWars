@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.game.remote.protocol.messaging;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.game.remote.Constants;
 import org.screamingsandals.bedwars.game.remote.protocol.PacketUtils;
 import org.screamingsandals.bedwars.game.remote.protocol.sockets.Action;
 
@@ -86,6 +87,10 @@ public final class SocketMessenger implements ServerNameAwareMessenger, IgnoreCa
                 while (running && clientSocket.isConnected() && !clientSocket.isClosed()) {
                     try {
                         var size = in.readInt();
+                        if (size < 0 || size > Constants.MAX_PACKET_SIZE) {
+                            running = false;
+                            throw new IOException("Relay declared an illegal packet size: " + size);
+                        }
                         packetHandler.accept(in.readNBytes(size));
                     } catch (EOFException e) {
                         throw new RuntimeException(e);

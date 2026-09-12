@@ -68,6 +68,6 @@ public final class BungeeCordMessenger implements Messenger {
             return null;
         }
 
-        return outerIn.readNBytes(outerIn.readShort());
+        return outerIn.readNBytes(outerIn.readUnsignedShort());
     }
 }
