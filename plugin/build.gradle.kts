@@ -65,6 +65,7 @@ runTestServer {
     pluginJar(tasks.shadowJar.flatMap { it.archiveFile })
 
     val versionList = listOf(
+        "26.3",
         "26.2",
         "26.1.2",
         "1.21.11",
@@ -97,6 +98,7 @@ runTestServer {
         serverProperties {
             onlineMode(false)
             property("level-type", "flat")
+            property("white-list", "false")
         }
     }
 
@@ -105,6 +107,7 @@ runTestServer {
         serverProperties {
             onlineMode(false)
             property("level-type", "flat")
+            property("white-list", "false")
         }
     }
 }
