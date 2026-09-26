@@ -5,6 +5,7 @@ plugins {
 dependencies {
     /* PROVIDED */
     compileOnly(libs.multiverse)
+    compileOnly(libs.multiverse5.core)
     compileOnly(libs.parties.api)
 
     /* SHADED */

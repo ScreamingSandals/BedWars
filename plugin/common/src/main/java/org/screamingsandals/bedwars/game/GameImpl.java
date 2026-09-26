@@ -455,7 +455,7 @@ public class GameImpl implements LocalGame {
         if (target instanceof TargetBlockImpl) {
             var loc = ((TargetBlockImpl) target).getTargetBlock();
             var block = loc.getBlock();
-            if (type.is("#beds")) {
+            if (type.is("#beds", "straw_bed[*]")) {
                 if (!region.isBedHead(block.blockSnapshot())) {
                     loc = region.getBedNeighbor(block).location();
                 }

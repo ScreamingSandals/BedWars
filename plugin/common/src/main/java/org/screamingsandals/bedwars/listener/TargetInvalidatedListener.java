@@ -66,7 +66,7 @@ public class TargetInvalidatedListener {
             Debug.info(game.getName()+ ": target block of  " + team.getName() + " has been destroyed");
 
             var type = event.getBlockType();
-            var isItBedBlock = type != null && type.is("#beds");
+            var isItBedBlock = type != null && type.is("#beds", "straw_bed[*]");
             var isItAnchor = type != null && type.isSameType("respawn_anchor");
             var isItCake = type != null && type.isSameType("cake");
             var isItDoor = type != null && type.is("#doors");

@@ -13,6 +13,7 @@ parties-api = "3.2.6"
 perworldinventory-old = "1.11.5"
 perworldinventory-kt = "2.3.1"
 multiverse = "4.0.0"
+multiverse5 = "5.7.3"
 jetbrains-annotations = "26.0.2"
 
 # plugins
@@ -38,6 +39,7 @@ parties-api = { group = "com.alessiodp.parties", name = "parties-api", version.r
 perworldinventory-old = { group = "me.gnat008", name = "perworldinventory", version.ref = "perworldinventory-old" }
 perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt", version.ref = "perworldinventory-kt" }
 multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
+multiverse5-core = { group = "org.mvplugins.multiverse.core", name = "multiverse-core", version.ref = "multiverse5" }
 configurate-gson = { group = "org.spongepowered", name = "configurate-gson", version.ref = "configurate-patched-gson" }
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }

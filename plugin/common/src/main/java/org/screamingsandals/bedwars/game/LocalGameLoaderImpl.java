@@ -23,6 +23,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.LocalGame;
 import org.screamingsandals.bedwars.api.game.LocalGameLoader;
@@ -47,6 +48,7 @@ import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 import org.screamingsandals.lib.world.Worlds;
 import org.screamingsandals.lib.world.chunk.Chunk;
 import org.screamingsandals.lib.world.gamerule.GameRuleType;
@@ -120,21 +122,41 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                             )
                     );
 
-                    if (((Core) multiverse).getMVWorldManager().loadWorld(worldName)) {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
-                                )
-                        );
+                    if (Reflect.has("org.mvplugins.multiverse.core.MultiverseCoreApi")) {
+                        var multiverseCoreApi = MultiverseCoreApi.get();
+                        if (multiverseCoreApi != null && multiverseCoreApi.getWorldManager().loadWorld(worldName).isSuccess()) {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
+                                    )
+                            );
 
-                        game.setWorld(Objects.requireNonNull(Worlds.getWorld(worldName)));
+                            game.setWorld(Objects.requireNonNull(Worlds.getWorld(worldName)));
+                        } else {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
+                                    )
+                            );
+                            return CompletableFuture.completedFuture(null);
+                        }
                     } else {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
-                                )
-                        );
-                        return CompletableFuture.completedFuture(null);
+                        if (((Core) multiverse.getInstance()).getMVWorldManager().loadWorld(worldName)) {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
+                                    )
+                            );
+
+                            game.setWorld(Objects.requireNonNull(Worlds.getWorld(worldName)));
+                        } else {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("Arena " + game.getName() + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
+                                    )
+                            );
+                            return CompletableFuture.completedFuture(null);
+                        }
                     }
                 } else if (firstAttempt) {
                     Server.getConsoleSender().sendMessage(
@@ -191,21 +213,41 @@ public class LocalGameLoaderImpl implements LocalGameLoader {
                             )
                     );
 
-                    if (((Core) multiverse).getMVWorldManager().loadWorld(spawnWorld)) {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
-                                )
-                        );
+                    if (Reflect.has("org.mvplugins.multiverse.core.MultiverseCoreApi")) {
+                        var multiverseCoreApi = MultiverseCoreApi.get();
+                        if (multiverseCoreApi != null && multiverseCoreApi.getWorldManager().loadWorld(spawnWorld).isSuccess()) {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
+                                    )
+                            );
 
-                        lobbySpawnWorld = Objects.requireNonNull(Worlds.getWorld(Objects.requireNonNull(spawnWorld)));
+                            lobbySpawnWorld = Objects.requireNonNull(Worlds.getWorld(Objects.requireNonNull(spawnWorld)));
+                        } else {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
+                                    )
+                            );
+                            return CompletableFuture.completedFuture(null);
+                        }
                     } else {
-                        Server.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.withAppendix(
-                                        Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
-                                )
-                        );
-                        return CompletableFuture.completedFuture(null);
+                        if (((Core) multiverse.getInstance()).getMVWorldManager().loadWorld(spawnWorld)) {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
+                                    )
+                            );
+
+                            lobbySpawnWorld = Objects.requireNonNull(Worlds.getWorld(Objects.requireNonNull(spawnWorld)));
+                        } else {
+                            Server.getConsoleSender().sendMessage(
+                                    MiscUtils.BW_PREFIX.withAppendix(
+                                            Component.text("Arena " + game.getName() + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
+                                    )
+                            );
+                            return CompletableFuture.completedFuture(null);
+                        }
                     }
                 } else if (firstAttempt) {
                     Server.getConsoleSender().sendMessage(

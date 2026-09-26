@@ -457,7 +457,7 @@ public class TeamCommand extends BaseAdminSubCommand {
             }
 
             var chosenLoc = loc;
-            if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+            if (block.block().is("#beds", "straw_bed[*]") && !"head".equals(block.block().get("part"))) {
                 chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
             } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
                 chosenLoc = loc.subtract(0, 1, 0);
@@ -621,7 +621,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             }
 
                             var chosenLoc = loc;
-                            if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+                            if (block.block().is("#beds", "straw_bed[*]") && !"head".equals(block.block().get("part"))) {
                                 chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
                             } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
                                 chosenLoc = loc.subtract(0, 1, 0);

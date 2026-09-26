@@ -45,10 +45,10 @@ public class BedUtils {
             return false;
         }
 
-        return block.block().is("#beds");
+        return block.block().is("#beds", "straw_bed[*]");
     }
 
     public static boolean isBedBlock(Block data) {
-        return data != null && data.is("#beds");
+        return data != null && data.is("#beds", "straw_bed[*]");
     }
 }
