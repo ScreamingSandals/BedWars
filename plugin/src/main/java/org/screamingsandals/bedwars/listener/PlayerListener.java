@@ -1035,8 +1035,6 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
-        System.out.println("CLICKED " + entity);
-
         if (Main.isPlayerInGame(player)) {
             Game game = Main.getPlayerGameProfile(player).getGame();
             if (!(entity instanceof LivingEntity)) {
