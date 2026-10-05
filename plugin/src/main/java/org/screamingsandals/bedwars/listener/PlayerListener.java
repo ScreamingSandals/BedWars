@@ -965,7 +965,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractEntityEvent event) {
-        if (event.isCancelled()) {
+        if (event.isCancelled() || event instanceof PlayerInteractAtEntityEvent) {
             return;
         }
 
@@ -1034,6 +1034,8 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
+
+        System.out.println("CLICKED " + entity);
 
         if (Main.isPlayerInGame(player)) {
             Game game = Main.getPlayerGameProfile(player).getGame();
