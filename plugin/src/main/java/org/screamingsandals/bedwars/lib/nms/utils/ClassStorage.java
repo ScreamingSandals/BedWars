@@ -305,7 +305,14 @@ public class ClassStorage {
 	}
 
 	public static ItemStack asCBStack(ItemStack item) {
-		return (ItemStack) ClassStorage.getMethod(CB.CraftItemStack, "asCraftCopy", ItemStack.class).invokeStatic(item);
+		ClassMethod asCraftCopyMethod = ClassStorage.getMethod(CB.CraftItemStack, "asCraftCopy", ItemStack.class);
+
+		if (asCraftCopyMethod.getReflectedMethod() == null) {
+			// Paper 26.3+
+			return nmsAsStack(ClassStorage.getMethod(CB.CraftItemStack, "asNMSCopy", ItemStack.class).invokeStatic(item));
+		} else {
+			return (ItemStack) asCraftCopyMethod.invokeStatic(item);
+		}
 	}
 
 	public static Object getHandleOfItemStack(Object obj) {
@@ -313,6 +320,6 @@ public class ClassStorage {
 	}
 
 	public static ItemStack nmsAsStack(Object nmsStack) {
-		return (ItemStack) ClassStorage.getMethod(CB.CraftItemStack, "asCraftMirror", ItemStackAccessor.TYPE.get()).invokeStatic(nmsStack);
+		return (ItemStack) ClassStorage.getMethod(CB.CraftItemStack, "asCraftMirror,asBukkitMirror", ItemStackAccessor.TYPE.get()).invokeStatic(nmsStack);
 	}
 }
