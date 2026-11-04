@@ -24,11 +24,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import java.io.InputStreamReader;
@@ -50,10 +52,26 @@ public class UpdateChecker {
 
                 if ("ok".equalsIgnoreCase(result.status)) {
                     UpdateListener updateListener = null;
-                    if (result.isUpdateAvailable) {
+                    if (result.isUpdateAvailable || result.hasAdvisory || !result.isBranchSupported || (result.warningMessage != null && !result.warningMessage.isEmpty())) {
                         if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")) {
-                            mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(Bukkit.getConsoleSender());
-                            mpr("update_checker_zero_second").replace("url", result.download).send(Bukkit.getConsoleSender());
+                            CommandSender console = Bukkit.getConsoleSender();
+
+                            if (!result.isBranchSupported) {
+                                mpr("update_checker_branch_unsupported")
+                                        .replace("branch", VersionInfo.VERSION.replaceFirst("^(\\d+\\.\\d+)\\..*$", "$1.x"))
+                                        .send(console);
+                            }
+                            if (result.isUpdateAvailable) {
+                                mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(console);
+                                mpr("update_checker_zero_second").replace("url", result.download).send(console);
+                                if (result.hasAdvisory) {
+                                    mpr("update_checker_advisory").send(console);
+                                    mpr("update_checker_advisory_part2").send(console);
+                                }
+                            }
+                            if (result.warningMessage != null && !result.warningMessage.isEmpty()) {
+                                console.sendMessage(i18n("update_checker_note") + result.warningMessage);
+                            }
                         }
                         if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins")) {
                             updateListener = new UpdateListener(result);
@@ -74,6 +92,12 @@ public class UpdateChecker {
         public boolean isUpdateAvailable;
         @SerializedName("zero_download_url")
         public String download;
+        @SerializedName("branch_support")
+        public boolean isBranchSupported;
+        @SerializedName("advisory")
+        public boolean hasAdvisory;
+        @SerializedName("warning_message")
+        public String warningMessage;
 
         @Override
         public String toString() {
@@ -82,6 +106,9 @@ public class UpdateChecker {
                     ", currentZeroVersion='" + currentZeroVersion + '\'' +
                     ", isUpdateAvailable=" + isUpdateAvailable +
                     ", download='" + download + '\'' +
+                    ", isBranchSupported=" + isBranchSupported +
+                    ", hasAdvisory=" + hasAdvisory +
+                    ", warningMessage='" + warningMessage + '\'' +
                     '}';
         }
     }
@@ -97,9 +124,23 @@ public class UpdateChecker {
         public void onPlayerJoin(PlayerJoinEvent event) {
             Player player = event.getPlayer();
             if (BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false)) {
-                if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins") && result.isUpdateAvailable) {
-                    mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(player);
-                    mpr("update_checker_zero_second").replace("url", result.download).send(player);
+                if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins")) {
+                    if (!result.isBranchSupported) {
+                        mpr("update_checker_branch_unsupported")
+                                .replace("branch", VersionInfo.VERSION.replaceFirst("^(\\d+\\.\\d+)\\..*$", "$1.x"))
+                                .send(player);
+                    }
+                    if (result.isUpdateAvailable) {
+                        mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(player);
+                        mpr("update_checker_zero_second").replace("url", result.download).send(player);
+                        if (result.hasAdvisory) {
+                            mpr("update_checker_advisory").send(player);
+                            mpr("update_checker_advisory_part2").send(player);
+                        }
+                    }
+                    if (result.warningMessage != null && !result.warningMessage.isEmpty()) {
+                        player.sendMessage(i18n("update_checker_note") + result.warningMessage);
+                    }
                 }
             }
 
