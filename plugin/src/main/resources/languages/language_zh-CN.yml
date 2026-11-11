@@ -316,8 +316,8 @@ help_bw_admin_pos1: "/bw admin <arena> pos1 - &eSets the extreme point of the ar
   to your position"
 help_bw_admin_pos2: "/bw admin <arena> pos2 - &eSets the second extreme point of the
   arena to your position"
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eSets
-  the pause duration before game starts"
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <秒数> [玩家数:秒数,玩家数:秒数,...]
+  - &e设置游戏开始前的暂停倒计时时长"
 help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eSets minimum
   of players needed to start the game"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eSets the game's duration"
@@ -413,3 +413,13 @@ team_not_in_game: '&c队伍 &7%name%&c 不在游戏内!'
 cheat_received_target_block_destroy: '&a队伍 &7%name%&a 已被摧毁!'
 help_bw_cheat_startemptygame: '/bw cheat startemptygame 开始'
 door_is_destroyed: '%team%队的门&r 被摧毁了'
+admin_command_lobby_pos1_pos2_difference_must_be_higher: '&c大厅位置1和大厅位置2的高度差距太小了!至少是五个方块或以上!'
+admin_command_lobby_pos1_setted: '&a大厅1的位置 &7%arena%&a 已设置为坐标：&7%x%/%y%/%z%'
+admin_command_lobby_pos2_setted: '&a大厅2的位置 &7%arena%&a 已设置为坐标：&7%x%/%y%/%z%'
+admin_command_pausecontdown_set_dynamic: '&a大厅倒计时已设置为 &7%countdown%&a，动态倒计时为 &7%dynamic%'
+arena_info_villager_shop_team: '  队伍：&6%team%&r'
+protect_your_door: '%teamcolor%&l保护你的床！'
+protect_your_door_destroyed: '&7&l床已被摧毁。'
+destroy_this_door: '%teamcolor%&l摧毁这张床！'
+help_bw_admin_lobbypos1: /bw admin <竞技场> lobbypos1 - &e设置大厅位置1为你的当前位置
+help_bw_admin_lobbypos2: /bw admin <竞技场> lobbypos1 - &e设置大厅位置2为你的当前位置
